@@ -1,50 +1,81 @@
-Analizza questo collage di 3 frame estratti sequenzialmente da un video per creare un meme narrativo.
+# Prompt Template per Creazione Meme Perfetto
 
-TIPOLOGIA MEME RICHIESTA: {{BUSINESS_THEME}}
+## 1. OBIETTIVO PRINCIPALE
 
-FILTRO CONTENUTI: {{CONTENT_FILTER}}
+Il tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.
 
-ESEMPI DI STILE: {{STYLE_EXAMPLES}}
+**L'obiettivo finale è generare un meme che:**
+- Sia visivamente e concettualmente perfetto
+- Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato
+- Segua lo stile linguistico richiesto
+- Sia posizionato ottimalmente nell'immagine
 
-ISTRUZIONI OPERATIVE:
-1. Analizza la sequenza temporale dei 3 frame (rappresentano 25%, 50%, 75% della durata del video)
-2. Identifica la progressione narrativa, emotiva o visiva tra i frame
-3. Cerca pattern, evoluzioni, contrasti o sviluppi della situazione
-4. Considera come questa progressione possa essere sfruttata per creare un meme efficace
-5. Rispetta la tipologia di meme richiesta e i filtri contenuti
-6. Segui lo stile degli esempi forniti
-7. Crea un meme che sfrutti la dimensione temporale e narrativa
+## 2. VERIFICA FILTRO IMMAGINE
 
-FORMATO RISPOSTA RICHIESTO:
+Devi analizzare se il contenuto dei tre frame corrisponde al filtro specificato dall'utente: **{{CONTENT_FILTER}}**
 
-FRAME_1_DESCRIZIONE: [Descrizione dettagliata del primo frame - cosa succede, chi c'è, espressioni, azioni]
+**Criteri di valutazione:**
+- Osserva l'azione principale, i soggetti e l'ambiente
+- Considera la progressione attraverso i 3 frame
+- Verifica se gli elementi richiesti dal filtro sono presenti e prominenti
+- Assegna `1` se corrisponde, `0` se non corrisponde
 
-FRAME_2_DESCRIZIONE: [Descrizione dettagliata del secondo frame - evoluzione rispetto al primo]
+## 3. POSIZIONAMENTO BANNER
 
-FRAME_3_DESCRIZIONE: [Descrizione dettagliata del terzo frame - evoluzione finale]
+Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) analizzando:
+- **Soggetti principali**: Dove si trovano nell'inquadratura
+- **Azione centrale**: Quale area è più importante per la comprensione
+- **Spazi liberi**: Dove il testo non interferirebbe con l'elemento visivo chiave
+- **Regola**: Scegli la posizione che **meno ostruisce** il soggetto/azione principale
 
-PROGRESSIONE_NARRATIVA: [Analisi di come si sviluppa la situazione attraverso i 3 frame - cosa cambia, come evolve]
+## 4. CREAZIONE MEME COERENTE
 
-ELEMENTI_CHIAVE_SEQUENZA: [Elementi specifici della sequenza che possono essere sfruttati per il meme]
+Se il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusione perfetta** di:
 
-CONCEPT_MEME_NARRATIVO: [Idea del meme che sfrutta la progressione temporale]
+### Formula del Meme Perfetto:
+**CONTENUTO VISIVO + STILE LINGUISTICO + OBIETTIVO = MEME PERFETTO**
 
-TESTO_FRAME_1: [Testo da posizionare sul primo frame - se necessario]
+### Elementi Obbligatori:
+1. **CONTENUTO VISIVO**: Utilizza la descrizione dell'immagine come contesto
+2. **STILE LINGUISTICO**: Segui gli esempi di stile forniti dall'utente
+3. **OBIETTIVO**: Integra l'obiettivo specificato: **{{BUSINESS_THEME}}**
+4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo
 
-TESTO_FRAME_2: [Testo da posizionare sul secondo frame - se necessario]
+### Esempi di Stile da Seguire:
+{{STYLE_EXAMPLES}}
 
-TESTO_FRAME_3: [Testo da posizionare sul terzo frame - se necessario]
+## ISTRUZIONI TECNICHE
 
-TESTO_GENERALE: [Eventuale testo generale che unifica il meme - caption principale]
+### Formato di Risposta
+Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
 
-FORMATO_MEME: [Indica il formato più efficace - es: "Before/During/After", "Setup/Buildup/Punchline", "Problem/Escalation/Solution"]
+### Campi JSON Richiesti
 
-TARGET_AUDIENCE: [Pubblico target per questo meme narrativo]
+1. **`"description"`**: Descrizione coerente (3-5 frasi) dell'azione continua, movimenti, interazioni e sfondo. Concentrati sulla **progressione attraverso i 3 frame** (non frame per frame).
 
-TONE_OF_VOICE: [Tono del messaggio]
+2. **`"matches_filter"`**: Inserisci `1` se l'azione principale corrisponde al filtro `{{CONTENT_FILTER}}`, altrimenti `0`.
 
-HASHTAG_SUGGERITI: [3-5 hashtag appropriati]
+3. **`"banner_position"`**: Specifica `"top"` o `"bottom"`, scegliendo la posizione che meno ostruisce il soggetto/azione principale.
 
-RATIONALE_NARRATIVO: [Spiegazione di come la sequenza temporale rafforza l'efficacia del meme]
+4. **`"meme_text"`**: 
+   - Se `"matches_filter" = 1`: genera il **meme perfetto** che deve:
+     - Utilizzare la **descrizione dell'immagine** come contesto visuale
+     - Seguire lo **stile linguistico** degli esempi forniti
+     - Essere **coerente con l'obiettivo**: "{{BUSINESS_THEME}}"
+     - **COLLEGARE** in modo intelligente il contenuto visivo con l'obiettivo
+   - Se `"matches_filter" = 0`: lascia stringa vuota `""`
 
-Ricorda: sfrutta la potenza narrativa della sequenza per creare un meme più coinvolgente e memorabile.
+### Regola Fondamentale
+❌ **SBAGLIATO**: Meme generico sull'obiettivo senza connessione visuale  
+✅ **CORRETTO**: Meme che unisce perfettamente ciò che si vede con l'obiettivo
+
+### Esempio di Output
+
+```json
+{
+  "description": "La tua descrizione continua qui...",
+  "matches_filter": 1,
+  "banner_position": "top",
+  "meme_text": "Il tuo meme perfetto qui..."
+}
+```

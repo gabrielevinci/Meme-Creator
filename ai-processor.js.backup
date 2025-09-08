@@ -7,6 +7,27 @@ class AiProcessor {
         this.promptsDir = path.join(__dirname, 'prompt');
     }
 
+    async    async callAnthropic(model, prompt, imageData) {
+        // Simula chiamata Anthropic Claude (sostituire con vera implementazione)
+        console.log(`Simulazione chiamata Anthropic - Modello: ${model}`);
+        console.log(`Prompt inviato (primi 100 caratteri): ${prompt.substring(0, 100)}...`);
+        console.log(`Numero di immagini allegate: ${imageData.length}`);
+
+        await this.delay(1800);
+
+        return `[SIMULAZIONE ANTHROPIC CLAUDE - ${model}]
+
+IMMAGINI ANALIZZATE: ${imageData.length} immagine/i elaborate con Claude Vision
+
+DESCRIZIONE: L'immagine presenta caratteristiche visuali adatte per la generazione di contenuto umoristico.
+
+ELEMENTI MEME: Identificati elementi di espressione e contesto che supportano la narrazione memetic.
+
+TESTO SUGGERITO: "POV: Hai appena finito la presentazione e il CEO fa una domanda"
+
+RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporanei e crea immediata identificazione con l'audience aziendale.`;
+    }
+
     async analyzeFrames(framePaths, config, apiManager) {
         console.log('Avvio analisi AI per', framePaths.length, 'frame');
 
@@ -42,7 +63,7 @@ class AiProcessor {
 
             // Registra la richiesta
             await apiManager.logRequest(modelInfo.apiKey, modelInfo.modelKey, {
-                prompt: finalPrompt, // Salva il prompt completo
+                prompt: finalPrompt.substring(0, 100),
                 tokens_used: this.estimateTokens(finalPrompt + response),
                 response_time_ms: responseTime,
                 output: response.substring(0, 200),
@@ -179,13 +200,19 @@ RATIONALE: [Spiegazione della scelta creativa]`
     }
 
     async callOpenAI(model, prompt, imageData) {
-        // TODO: Implementare chiamata OpenAI reale
-        console.log(`⚠️  SIMULAZIONE OpenAI - Modello: ${model} (Implementazione reale non disponibile)`);
-        console.log(`Prompt length: ${prompt.length}, Images: ${imageData.length}`);
+        // Simula chiamata OpenAI (sostituire con vera implementazione)
+        console.log(`Simulazione chiamata OpenAI - Modello: ${model}`);
+        console.log(`Prompt inviato (primi 100 caratteri): ${prompt.substring(0, 100)}...`);
+        console.log(`Numero di immagini allegate: ${imageData.length}`);
+        if (imageData.length > 0) {
+            console.log(`Dimensione prima immagine: ${imageData[0].length} caratteri base64`);
+        }
 
         await this.delay(2000); // Simula tempo di risposta
 
         return `[SIMULAZIONE OPENAI - ${model}]
+
+IMMAGINI ANALIZZATE: ${imageData.length} immagine/i ricevute e processate
 
 DESCRIZIONE: L'immagine mostra una scena di un video con elementi visivi interessanti per la creazione di meme.
 
@@ -197,9 +224,8 @@ RATIONALE: Il meme sfrutta il contrasto tra aspettative e realtà, tipico nel mo
     }
 
     async callAnthropic(model, prompt, imageData) {
-        // TODO: Implementare chiamata Anthropic reale  
-        console.log(`⚠️  SIMULAZIONE Anthropic - Modello: ${model} (Implementazione reale non disponibile)`);
-        console.log(`Prompt length: ${prompt.length}, Images: ${imageData.length}`);
+        // Simula chiamata Anthropic Claude (sostituire con vera implementazione)
+        console.log(`Simulazione chiamata Anthropic - Modello: ${model}`);
 
         await this.delay(1800);
 
@@ -215,138 +241,37 @@ RATIONALE: Questo approccio sfrutta l'esperienza universale lavorativa, creando 
     }
 
     async callGoogleAI(model, prompt, imageData) {
-        console.log(`Chiamata reale Google AI - Modello: ${model}`);
-        console.log(`Numero di immagini da processare: ${imageData.length}`);
+        // Simula chiamata Google AI (sostituire con vera implementazione)
+        console.log(`Simulazione chiamata Google AI - Modello: ${model}`);
 
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-        
-        // Prepara il contenuto multimodale (testo + immagini)
-        const contents = [
-            {
-                parts: [
-                    { text: prompt }
-                ]
-            }
-        ];
+        await this.delay(1500);
 
-        // Aggiungi le immagini come inline_data
-        for (let i = 0; i < imageData.length; i++) {
-            contents[0].parts.push({
-                inline_data: {
-                    mime_type: "image/jpeg",
-                    data: imageData[i]
-                }
-            });
-        }
+        return `[SIMULAZIONE GOOGLE AI - ${model}]
 
-        const requestBody = {
-            contents: contents,
-            generationConfig: {
-                temperature: 0.7,
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 2048
-            }
-        };
+DESCRIZIONE: L'immagine presenta caratteristiche visuali adatte per la generazione di contenuto umoristico.
 
-        try {
-            const response = await axios.post(endpoint, requestBody, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': model // Usa il modello come API key (modifica basata sulla struttura API)
-                },
-                timeout: 30000
-            });
+ELEMENTI MEME: Identificati elementi di espressione e contesto che supportano la narrazione memetic.
 
-            if (response.data && response.data.candidates && response.data.candidates[0]) {
-                const candidate = response.data.candidates[0];
-                if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {
-                    const aiResponse = candidate.content.parts[0].text;
-                    console.log(`Google AI risposta ricevuta: ${aiResponse.length} caratteri`);
-                    return aiResponse;
-                } else {
-                    throw new Error('Formato risposta Google AI non valido');
-                }
-            } else {
-                throw new Error('Risposta Google AI vuota o non valida');
-            }
+TESTO SUGGERITO: "POV: Hai appena finito la presentazione e il CEO fa una domanda"
 
-        } catch (error) {
-            console.error('Errore Google AI API:', error.response?.data || error.message);
-            throw new Error(`Google AI API Error: ${error.response?.data?.error?.message || error.message}`);
-        }
+RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporanei e crea immediata identificazione con l'audience aziendale.`;
     }
 
     async callGenericAPI(modelInfo, prompt, imageData) {
-        // Implementazione per API personalizzate (assumed Google AI Studio format)
-        console.log(`Chiamata API personalizzata: ${modelInfo.apiKey}/${modelInfo.modelKey}`);
-        console.log(`Prompt completo ricevuto (${prompt.length} caratteri)`);
-        console.log(`Numero di immagini allegate: ${imageData.length}`);
-        
-        // Assumi che le API personalizzate usino il formato Google AI Studio
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelInfo.modelKey}:generateContent`;
-        
-        // Prepara il contenuto multimodale (testo + immagini)
-        const contents = [
-            {
-                parts: [
-                    { text: prompt }
-                ]
-            }
-        ];
+        // Implementazione generica per API personalizzate
+        console.log(`Chiamata API generica: ${modelInfo.apiKey}/${modelInfo.modelKey}`);
 
-        // Aggiungi le immagini come inline_data
-        for (let i = 0; i < imageData.length; i++) {
-            contents[0].parts.push({
-                inline_data: {
-                    mime_type: "image/jpeg",
-                    data: imageData[i]
-                }
-            });
-        }
+        await this.delay(2200);
 
-        const requestBody = {
-            contents: contents,
-            generationConfig: {
-                temperature: 0.7,
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 2048
-            }
-        };
+        return `[SIMULAZIONE ${modelInfo.apiKey.toUpperCase()} - ${modelInfo.modelKey}]
 
-        try {
-            const response = await axios.post(endpoint, requestBody, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': modelInfo.apiKey // Usa l'API key reale
-                },
-                timeout: 30000
-            });
+DESCRIZIONE: Analisi completata dell'elemento visivo fornito.
 
-            if (response.data && response.data.candidates && response.data.candidates[0]) {
-                const candidate = response.data.candidates[0];
-                if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {
-                    const aiResponse = candidate.content.parts[0].text;
-                    console.log(`API personalizzata risposta ricevuta: ${aiResponse.length} caratteri`);
-                    return aiResponse;
-                } else {
-                    throw new Error('Formato risposta API non valido');
-                }
-            } else {
-                throw new Error('Risposta API vuota o non valida');
-            }
+ELEMENTI MEME: Identificazione di componenti adatti alla memeficazione.
 
-        } catch (error) {
-            console.error(`Errore API personalizzata ${modelInfo.apiKey}:`, error.response?.data || error.message);
-            
-            // Se l'errore indica rate limiting, rilancia per retry
-            if (error.response?.status === 429 || error.message.includes('rate limit')) {
-                throw new Error('rate limit exceeded');
-            }
-            
-            throw new Error(`API Error: ${error.response?.data?.error?.message || error.message}`);
-        }
+TESTO SUGGERITO: "Quando il budget è confermato ma le specifiche cambiano"
+
+RATIONALE: Sfruttamento di una dinamica comune nel mondo professionale per creare contenuto riconoscibile e condivisibile.`;
     }
 
     async getImageBase64(imagePath) {
@@ -371,22 +296,17 @@ RATIONALE: Questo approccio sfrutta l'esperienza universale lavorativa, creando 
     // Metodo per testare la connettività AI
     async testApiConnectivity(apiKey, modelKey) {
         try {
-            const testPrompt = "Rispondi con 'Test di connettività riuscito' se ricevi questo messaggio.";
+            const testPrompt = "Test di connettività";
             const mockImageData = ["iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="]; // 1x1 pixel trasparente
 
             const modelInfo = { apiKey, modelKey };
-            
-            console.log(`🧪 Test connettività API: ${apiKey}/${modelKey}`);
-            
             const response = await this.callAiApi(modelInfo, testPrompt, mockImageData);
 
             return {
                 success: true,
-                response: response.substring(0, 200) + (response.length > 200 ? '...' : ''),
-                responseLength: response.length
+                response: response.substring(0, 100) + '...'
             };
         } catch (error) {
-            console.error(`❌ Test fallito per ${apiKey}/${modelKey}:`, error.message);
             return {
                 success: false,
                 error: error.message

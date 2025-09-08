@@ -1,40 +1,81 @@
-Analizza questa immagine estratta da un video per creare un meme efficace e coinvolgente.
+# Prompt Template per Creazione Meme Perfetto
 
-TIPOLOGIA MEME RICHIESTA: {{BUSINESS_THEME}}
+## 1. OBIETTIVO PRINCIPALE
 
-FILTRO CONTENUTI: {{CONTENT_FILTER}}
+Il tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.
 
-ESEMPI DI STILE: {{STYLE_EXAMPLES}}
+**L'obiettivo finale è generare un meme che:**
+- Sia visivamente e concettualmente perfetto
+- Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato
+- Segua lo stile linguistico richiesto
+- Sia posizionato ottimalmente nell'immagine
 
-ISTRUZIONI OPERATIVE:
-1. Esamina attentamente tutti gli elementi visivi presenti nell'immagine
-2. Identifica espressioni facciali, gesti, oggetti e contesto che potrebbero essere utilizzati per creare contenuto umoristico
-3. Considera la tipologia di meme richiesta e assicurati che il contenuto sia allineato
-4. Rispetta rigorosamente i filtri contenuti specificati
-5. Segui lo stile e il tono degli esempi forniti
-6. Crea un meme che sia relatable per il pubblico target
-7. Assicurati che il testo sia breve, incisivo e facile da leggere
+## 2. VERIFICA FILTRO IMMAGINE
 
-FORMATO RISPOSTA RICHIESTO:
+Devi analizzare se il contenuto dei tre frame corrisponde al filtro specificato dall'utente: **{{CONTENT_FILTER}}**
 
-DESCRIZIONE_IMMAGINE: [Descrizione dettagliata di ciò che vedi nell'immagine - elementi visivi, persone, oggetti, ambientazione, espressioni, azioni in corso]
+**Criteri di valutazione:**
+- Osserva l'azione principale, i soggetti e l'ambiente
+- Considera la progressione attraverso i 3 frame
+- Verifica se gli elementi richiesti dal filtro sono presenti e prominenti
+- Assegna `1` se corrisponde, `0` se non corrisponde
 
-ELEMENTI_CHIAVE: [Lista degli elementi specifici che possono essere sfruttati per il meme - espressioni, gesti, situazioni, contrasti, simboli]
+## 3. POSIZIONAMENTO BANNER
 
-CONCEPT_MEME: [Idea principale del meme - quale situazione/emozione/concetto vuoi rappresentare]
+Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) analizzando:
+- **Soggetti principali**: Dove si trovano nell'inquadratura
+- **Azione centrale**: Quale area è più importante per la comprensione
+- **Spazi liberi**: Dove il testo non interferirebbe con l'elemento visivo chiave
+- **Regola**: Scegli la posizione che **meno ostruisce** il soggetto/azione principale
 
-TESTO_PRINCIPALE: [Il testo principale del meme - massimo 10-15 parole, deve essere impattante]
+## 4. CREAZIONE MEME COERENTE
 
-TESTO_SECONDARIO: [Eventuale testo secondario o di supporto - se necessario]
+Se il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusione perfetta** di:
 
-POSIZIONAMENTO_TESTO: [Indica dove posizionare il testo sull'immagine per massima efficacia]
+### Formula del Meme Perfetto:
+**CONTENUTO VISIVO + STILE LINGUISTICO + OBIETTIVO = MEME PERFETTO**
 
-TARGET_AUDIENCE: [Per chi è pensato questo meme - descrivi brevemente il pubblico target]
+### Elementi Obbligatori:
+1. **CONTENUTO VISIVO**: Utilizza la descrizione dell'immagine come contesto
+2. **STILE LINGUISTICO**: Segui gli esempi di stile forniti dall'utente
+3. **OBIETTIVO**: Integra l'obiettivo specificato: **{{BUSINESS_THEME}}**
+4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo
 
-TONE_OF_VOICE: [Tono del messaggio - umoristico, sarcastico, motivazionale, etc.]
+### Esempi di Stile da Seguire:
+{{STYLE_EXAMPLES}}
 
-HASHTAG_SUGGERITI: [3-5 hashtag appropriati per la diffusione sui social media]
+## ISTRUZIONI TECNICHE
 
-RATIONALE: [Spiegazione del perché questa scelta è efficace - perché funziona, cosa lo rende memorabile e condivisibile]
+### Formato di Risposta
+Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
 
-Ricorda: il meme deve essere immediatamente comprensibile, emotivamente coinvolgente e facilmente condivisibile sui social media.
+### Campi JSON Richiesti
+
+1. **`"description"`**: Descrizione coerente (3-5 frasi) del contenuto dell'immagine, includendo azioni, soggetti, movimenti, interazioni e sfondo.
+
+2. **`"matches_filter"`**: Inserisci `1` se l'azione principale corrisponde al filtro `{{CONTENT_FILTER}}`, altrimenti `0`.
+
+3. **`"banner_position"`**: Specifica `"top"` o `"bottom"`, scegliendo la posizione che meno ostruisce il soggetto/azione principale.
+
+4. **`"meme_text"`**: 
+   - Se `"matches_filter" = 1`: genera il **meme perfetto** che deve:
+     - Utilizzare la **descrizione dell'immagine** come contesto visuale
+     - Seguire lo **stile linguistico** degli esempi forniti
+     - Essere **coerente con l'obiettivo**: "{{BUSINESS_THEME}}"
+     - **COLLEGARE** in modo intelligente il contenuto visivo con l'obiettivo
+   - Se `"matches_filter" = 0`: lascia stringa vuota `""`
+
+### Regola Fondamentale
+❌ **SBAGLIATO**: Meme generico sull'obiettivo senza connessione visuale  
+✅ **CORRETTO**: Meme che unisce perfettamente ciò che si vede con l'obiettivo
+
+### Esempio di Output
+
+```json
+{
+  "description": "La tua descrizione continua qui...",
+  "matches_filter": 1,
+  "banner_position": "top",
+  "meme_text": "Il tuo meme perfetto qui..."
+}
+```

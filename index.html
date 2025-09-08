@@ -295,20 +295,23 @@
         .api-modal-content {
             background: white;
             border-radius: 15px;
-            padding: 30px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
+            padding: 0;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 95vh;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
         
         .modal-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
         }
         
         .modal-close {
@@ -316,11 +319,326 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-            color: #999;
+            color: white;
+            padding: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .modal-close:hover {
-            color: #333;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .api-dashboard {
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+            min-height: 600px;
+        }
+
+        .api-sidebar {
+            flex: 0 0 300px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .api-main {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .api-list-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .api-list-item:hover {
+            border-color: #3498db;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .api-list-item.active {
+            border-color: #27ae60;
+            background: #f8fff8;
+        }
+
+        .api-list-item.disabled {
+            opacity: 0.6;
+            border-color: #e74c3c;
+            background: #fff8f8;
+        }
+
+        .api-status-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #27ae60;
+        }
+
+        .api-status-badge.disabled {
+            background: #e74c3c;
+        }
+
+        .add-api-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .add-api-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .api-form {
+            display: none;
+        }
+
+        .api-form.active {
+            display: block;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-section h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: end;
+        }
+
+        .form-field {
+            flex: 1;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-field input,
+        .form-field select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .model-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .model-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .model-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .limits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .limit-item {
+            text-align: center;
+            background: #f0f9ff;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #3498db;
+        }
+
+        .limit-value {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .limit-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .cancel-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cancel-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #27ae60;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
         }
         
         @media (max-width: 1024px) {
@@ -429,11 +747,148 @@
     <div id="api-modal" class="api-modal">
         <div class="api-modal-content">
             <div class="modal-header">
-                <h2>⚙️ Gestione API</h2>
+                <h2>⚙️ Gestione API & Modelli</h2>
                 <button class="modal-close">&times;</button>
             </div>
-            <div id="api-content">
-                <p>Caricamento configurazione API...</p>
+            
+            <div class="api-dashboard">
+                <!-- Sidebar con lista API -->
+                <div class="api-sidebar">
+                    <button class="add-api-btn" onclick="ui.showNewApiForm()">
+                        ➕ Aggiungi Nuova API
+                    </button>
+                    
+                    <div id="api-list">
+                        <!-- Le API saranno caricate qui -->
+                    </div>
+                </div>
+
+                <!-- Area principale di editing -->
+                <div class="api-main">
+                    <div id="api-welcome" class="empty-state">
+                        <h3>🔌 Gestione API</h3>
+                        <p>Seleziona un'API dalla lista a sinistra per modificarla<br>
+                        oppure aggiungi una nuova API per iniziare.</p>
+                    </div>
+
+                    <!-- Form per nuova API -->
+                    <div id="new-api-form" class="api-form">
+                        <div class="form-section">
+                            <h3>📝 Nuova API</h3>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label>ID API</label>
+                                    <input type="text" id="new-api-id" placeholder="es: openai, anthropic, google">
+                                </div>
+                                <div class="form-field">
+                                    <label>Nome Descrittivo</label>
+                                    <input type="text" id="new-api-alias" placeholder="es: OpenAI Official">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label>Priorità</label>
+                                    <select id="new-api-priority">
+                                        <option value="1">1 - Massima priorità</option>
+                                        <option value="2">2 - Alta priorità</option>
+                                        <option value="3">3 - Media priorità</option>
+                                        <option value="4">4 - Bassa priorità</option>
+                                        <option value="5">5 - Minima priorità</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label>Stato</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="new-api-enabled" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <button class="save-btn" onclick="ui.saveNewApi()">💾 Crea API</button>
+                                <button class="cancel-btn" onclick="ui.cancelNewApi()">❌ Annulla</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form per editing API esistente -->
+                    <div id="edit-api-form" class="api-form">
+                        <div class="form-section">
+                            <h3 id="edit-api-title">✏️ Modifica API</h3>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label>ID API</label>
+                                    <input type="text" id="edit-api-id" readonly style="background: #f5f5f5;">
+                                </div>
+                                <div class="form-field">
+                                    <label>Nome Descrittivo</label>
+                                    <input type="text" id="edit-api-alias">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label>Priorità</label>
+                                    <select id="edit-api-priority">
+                                        <option value="1">1 - Massima priorità</option>
+                                        <option value="2">2 - Alta priorità</option>
+                                        <option value="3">3 - Media priorità</option>
+                                        <option value="4">4 - Bassa priorità</option>
+                                        <option value="5">5 - Minima priorità</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label>Stato</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="edit-api-enabled">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sezione modelli -->
+                        <div class="form-section">
+                            <h3>🤖 Modelli Configurati</h3>
+                            <div id="models-list">
+                                <!-- I modelli saranno caricati qui -->
+                            </div>
+                            
+                            <!-- Form per nuovo modello -->
+                            <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border: 2px dashed #3498db;">
+                                <h4 style="margin: 0 0 15px 0; color: #2c3e50;">➕ Aggiungi Nuovo Modello</h4>
+                                <div class="form-row">
+                                    <div class="form-field">
+                                        <label>Nome Modello</label>
+                                        <input type="text" id="new-model-name" placeholder="es: gpt-4o, claude-3">
+                                    </div>
+                                    <div class="form-field">
+                                        <label>RPM (Richieste/Minuto)</label>
+                                        <input type="number" id="new-model-rpm" value="100" min="1">
+                                    </div>
+                                    <div class="form-field">
+                                        <label>RPD (Richieste/Giorno)</label>
+                                        <input type="number" id="new-model-rpd" value="1000" min="1">
+                                    </div>
+                                    <div class="form-field">
+                                        <label>TPM (Token/Minuto)</label>
+                                        <input type="number" id="new-model-tpm" value="50000" min="1">
+                                    </div>
+                                </div>
+                                <button class="save-btn" onclick="ui.addNewModel()" style="margin-top: 10px;">
+                                    ➕ Aggiungi Modello
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+                            <button class="save-btn" onclick="ui.saveApiChanges()">💾 Salva Modifiche</button>
+                            <button class="cancel-btn" onclick="ui.cancelEdit()">❌ Annulla</button>
+                            <button class="btn-small btn-delete" onclick="ui.deleteCurrentApi()" style="float: right; padding: 12px 20px;">
+                                🗑️ Elimina API
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -804,100 +1259,276 @@
                 this.elements.apiContent.innerHTML = html;
             }
 
-            async addNewApi() {
+            // Metodi per la dashboard integrata
+            async openApiManager() {
+                this.elements.apiModal.style.display = 'flex';
+                await this.loadApiConfig();
+                this.renderApiList();
+                this.showWelcomeScreen();
+            }
+
+            closeApiManager() {
+                this.elements.apiModal.style.display = 'none';
+                this.hideAllForms();
+            }
+
+            async loadApiConfig() {
                 try {
-                    const apiKey = await window.electronAPI.showInputDialog('Nuovo API Provider', 'Inserisci ID API (es: openai, anthropic):');
-                    if (!apiKey) return;
+                    this.apiConfig = await window.electronAPI.loadApiConfig();
+                } catch (error) {
+                    console.error('Errore caricamento API config:', error);
+                    this.apiConfig = {};
+                }
+            }
 
-                    const alias = await window.electronAPI.showInputDialog('Alias API', 'Inserisci alias descrittivo:', apiKey);
-                    if (!alias) return;
+            renderApiList() {
+                const apiList = document.getElementById('api-list');
+                const apis = Object.keys(this.apiConfig || {});
 
-                    if (!this.apiConfig[apiKey]) {
-                        this.apiConfig[apiKey] = {
-                            alias: alias,
-                            models: {},
-                            enabled: true,
-                            priority: Object.keys(this.apiConfig).length + 1
-                        };
-                    }
+                if (apis.length === 0) {
+                    apiList.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: #666;">
+                            <p>Nessuna API configurata</p>
+                        </div>
+                    `;
+                    return;
+                }
 
+                let html = '';
+                apis.sort((a, b) => (this.apiConfig[a].priority || 999) - (this.apiConfig[b].priority || 999));
+
+                apis.forEach(apiKey => {
+                    const api = this.apiConfig[apiKey];
+                    const enabled = api.enabled !== false;
+                    const modelCount = Object.keys(api.models || {}).length;
+
+                    html += `
+                        <div class="api-list-item ${enabled ? 'active' : 'disabled'}" onclick="ui.selectApi('${apiKey}')">
+                            <div class="api-status-badge ${enabled ? '' : 'disabled'}"></div>
+                            <div style="font-weight: 600; margin-bottom: 5px;">${api.alias || apiKey}</div>
+                            <div style="font-size: 12px; color: #666;">
+                                ID: ${apiKey}<br>
+                                ${modelCount} modelli • Priorità: ${api.priority || 'N/A'}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                apiList.innerHTML = html;
+            }
+
+            showWelcomeScreen() {
+                this.hideAllForms();
+                document.getElementById('api-welcome').style.display = 'block';
+            }
+
+            hideAllForms() {
+                document.getElementById('api-welcome').style.display = 'none';
+                document.getElementById('new-api-form').classList.remove('active');
+                document.getElementById('edit-api-form').classList.remove('active');
+            }
+
+            showNewApiForm() {
+                this.hideAllForms();
+                document.getElementById('new-api-form').classList.add('active');
+                
+                // Reset form
+                document.getElementById('new-api-id').value = '';
+                document.getElementById('new-api-alias').value = '';
+                document.getElementById('new-api-priority').value = '1';
+                document.getElementById('new-api-enabled').checked = true;
+            }
+
+            async saveNewApi() {
+                const id = document.getElementById('new-api-id').value.trim();
+                const alias = document.getElementById('new-api-alias').value.trim();
+                const priority = parseInt(document.getElementById('new-api-priority').value);
+                const enabled = document.getElementById('new-api-enabled').checked;
+
+                if (!id || !alias) {
+                    alert('Compila tutti i campi obbligatori');
+                    return;
+                }
+
+                if (this.apiConfig[id]) {
+                    alert('Un\'API con questo ID esiste già');
+                    return;
+                }
+
+                this.apiConfig[id] = {
+                    alias: alias,
+                    priority: priority,
+                    enabled: enabled,
+                    models: {}
+                };
+
+                await this.saveApiConfig();
+                this.renderApiList();
+                this.selectApi(id);
+                this.addLog(`API ${alias} creata con successo`, 'success');
+            }
+
+            cancelNewApi() {
+                this.showWelcomeScreen();
+            }
+
+            selectApi(apiKey) {
+                this.currentApiKey = apiKey;
+                this.hideAllForms();
+                this.loadApiForm(apiKey);
+                document.getElementById('edit-api-form').classList.add('active');
+            }
+
+            loadApiForm(apiKey) {
+                const api = this.apiConfig[apiKey];
+                
+                document.getElementById('edit-api-title').textContent = `✏️ Modifica ${api.alias}`;
+                document.getElementById('edit-api-id').value = apiKey;
+                document.getElementById('edit-api-alias').value = api.alias || '';
+                document.getElementById('edit-api-priority').value = api.priority || 1;
+                document.getElementById('edit-api-enabled').checked = api.enabled !== false;
+
+                this.renderModelsList(apiKey);
+            }
+
+            renderModelsList(apiKey) {
+                const modelsList = document.getElementById('models-list');
+                const models = this.apiConfig[apiKey].models || {};
+                const modelKeys = Object.keys(models);
+
+                if (modelKeys.length === 0) {
+                    modelsList.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: #666; border: 2px dashed #e0e0e0; border-radius: 8px;">
+                            <p>Nessun modello configurato</p>
+                            <p style="font-size: 12px;">Usa il form qui sotto per aggiungere il primo modello</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                modelKeys.forEach(modelKey => {
+                    const model = models[modelKey];
+                    const limits = model.limits || {};
+
+                    html += `
+                        <div class="model-item">
+                            <div class="model-header">
+                                <div class="model-name">${modelKey}</div>
+                                <div class="model-actions">
+                                    <button class="btn-small btn-delete" onclick="ui.deleteModel('${apiKey}', '${modelKey}')">
+                                        🗑️ Elimina
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="limits-grid">
+                                <div class="limit-item">
+                                    <div class="limit-value">${limits.RPM || 'N/A'}</div>
+                                    <div class="limit-label">RPM</div>
+                                </div>
+                                <div class="limit-item">
+                                    <div class="limit-value">${limits.RPD || 'N/A'}</div>
+                                    <div class="limit-label">RPD</div>
+                                </div>
+                                <div class="limit-item">
+                                    <div class="limit-value">${limits.TPM || 'N/A'}</div>
+                                    <div class="limit-label">TPM</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                modelsList.innerHTML = html;
+            }
+
+            async addNewModel() {
+                if (!this.currentApiKey) return;
+
+                const name = document.getElementById('new-model-name').value.trim();
+                const rpm = parseInt(document.getElementById('new-model-rpm').value) || 100;
+                const rpd = parseInt(document.getElementById('new-model-rpd').value) || 1000;
+                const tpm = parseInt(document.getElementById('new-model-tpm').value) || 50000;
+
+                if (!name) {
+                    alert('Inserisci il nome del modello');
+                    return;
+                }
+
+                if (this.apiConfig[this.currentApiKey].models[name]) {
+                    alert('Un modello con questo nome esiste già');
+                    return;
+                }
+
+                this.apiConfig[this.currentApiKey].models[name] = {
+                    limits: { RPM: rpm, RPD: rpd, TPM: tpm },
+                    requests: {}
+                };
+
+                // Reset form
+                document.getElementById('new-model-name').value = '';
+                document.getElementById('new-model-rpm').value = '100';
+                document.getElementById('new-model-rpd').value = '1000';
+                document.getElementById('new-model-tpm').value = '50000';
+
+                this.renderModelsList(this.currentApiKey);
+                this.renderApiList(); // Aggiorna anche la lista
+                this.addLog(`Modello ${name} aggiunto a ${this.apiConfig[this.currentApiKey].alias}`, 'success');
+            }
+
+            async deleteModel(apiKey, modelKey) {
+                if (confirm(`Eliminare il modello ${modelKey}?`)) {
+                    delete this.apiConfig[apiKey].models[modelKey];
+                    this.renderModelsList(apiKey);
+                    this.renderApiList();
+                    this.addLog(`Modello ${modelKey} eliminato`, 'info');
+                }
+            }
+
+            async saveApiChanges() {
+                if (!this.currentApiKey) return;
+
+                const alias = document.getElementById('edit-api-alias').value.trim();
+                const priority = parseInt(document.getElementById('edit-api-priority').value);
+                const enabled = document.getElementById('edit-api-enabled').checked;
+
+                if (!alias) {
+                    alert('Il nome descrittivo è obbligatorio');
+                    return;
+                }
+
+                this.apiConfig[this.currentApiKey].alias = alias;
+                this.apiConfig[this.currentApiKey].priority = priority;
+                this.apiConfig[this.currentApiKey].enabled = enabled;
+
+                await this.saveApiConfig();
+                this.renderApiList();
+                this.addLog(`API ${alias} aggiornata con successo`, 'success');
+            }
+
+            cancelEdit() {
+                this.showWelcomeScreen();
+            }
+
+            async deleteCurrentApi() {
+                if (!this.currentApiKey) return;
+
+                const apiName = this.apiConfig[this.currentApiKey].alias;
+                if (confirm(`Eliminare l'API ${apiName}?\n\nQuesta azione eliminerà anche tutti i modelli configurati.`)) {
+                    delete this.apiConfig[this.currentApiKey];
                     await this.saveApiConfig();
-                    this.renderApiManager();
-                } catch (error) {
-                    console.error('Errore aggiunta API:', error);
+                    this.renderApiList();
+                    this.showWelcomeScreen();
+                    this.addLog(`API ${apiName} eliminata`, 'info');
                 }
-            }
-
-            editApi(apiKey) {
-                // Implementa l'editor API completo
-                window.electronAPI.showMessage('Editor API', `Funzionalità di modifica per ${apiKey} in sviluppo`, 'info');
-            }
-
-            deleteApi(apiKey) {
-                if (confirm(`Eliminare l'API ${apiKey}?`)) {
-                    delete this.apiConfig[apiKey];
-                    this.renderApiManager();
-                }
-            }
-
-            toggleApi(apiKey) {
-                if (this.apiConfig[apiKey]) {
-                    this.apiConfig[apiKey].enabled = !this.apiConfig[apiKey].enabled;
-                    this.renderApiManager();
-                }
-            }
-
-            async addModel(apiKey) {
-                try {
-                    const modelName = await window.electronAPI.showInputDialog('Nuovo Modello', 'Nome del modello:');
-                    if (!modelName) return;
-
-                    const rpm = await window.electronAPI.showInputDialog('Limiti RPM', 'Richieste per minuto:', '100');
-                    const rpd = await window.electronAPI.showInputDialog('Limiti RPD', 'Richieste per giorno:', '1000');
-                    const tpm = await window.electronAPI.showInputDialog('Limiti TPM', 'Token per minuto:', '50000');
-
-                    if (!this.apiConfig[apiKey].models) {
-                        this.apiConfig[apiKey].models = {};
-                    }
-
-                    this.apiConfig[apiKey].models[modelName] = {
-                        limits: {
-                            RPM: parseInt(rpm) || 100,
-                            RPD: parseInt(rpd) || 1000,
-                            TPM: parseInt(tpm) || 50000
-                        },
-                        requests: {}
-                    };
-
-                    this.renderApiManager();
-                } catch (error) {
-                    console.error('Errore aggiunta modello:', error);
-                }
-            }
-
-            reorderAPIs() {
-                window.electronAPI.showMessage('Riordina API', 'Funzionalità di riordinamento in sviluppo', 'info');
-            }
-
-            testAPIs() {
-                window.electronAPI.showMessage('Test API', 'Funzionalità di test connessioni in sviluppo', 'info');
-            }
-
-            exportConfig() {
-                window.electronAPI.showMessage('Esporta Config', 'Funzionalità di esportazione in sviluppo', 'info');
-            }
-
-            importConfig() {
-                window.electronAPI.showMessage('Importa Config', 'Funzionalità di importazione in sviluppo', 'info');
             }
 
             async saveApiConfig() {
                 try {
                     await window.electronAPI.saveApiConfig(this.apiConfig);
-                    this.addLog('Configurazione API salvata', 'success');
-                    this.closeApiManager();
                 } catch (error) {
-                    this.addLog(`Errore nel salvataggio API: ${error.message}`, 'error');
+                    console.error('Errore salvataggio API config:', error);
+                    this.addLog('Errore nel salvataggio configurazione API', 'error');
                 }
             }
         }

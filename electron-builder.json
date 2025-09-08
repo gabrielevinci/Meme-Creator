@@ -1,0 +1,77 @@
+{
+    "appId": "com.contentcreator.zerotalk",
+    "productName": "Content Creator - 0 Chiacchiere",
+    "directories": {
+        "output": "dist",
+        "app": ".",
+        "buildResources": "build-resources"
+    },
+    "files": [
+        "main.js",
+        "index.html",
+        "api-manager.js",
+        "video-processor.js",
+        "ai-processor.js",
+        "package.json",
+        "font/**/*",
+        "prompt/**/*",
+        "icon.ico",
+        "api.json",
+        "node_modules/**/*",
+        "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+        "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+        "!node_modules/*.d.ts",
+        "!node_modules/.bin",
+        "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+        "!.editorconfig",
+        "!**/._*",
+        "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+        "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+        "!**/{appveyor.yml,.travis.yml,circle.yml}",
+        "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+    ],
+    "extraFiles": [{
+            "from": "INPUT",
+            "to": "INPUT",
+            "filter": [".gitkeep"]
+        },
+        {
+            "from": "OUTPUT",
+            "to": "OUTPUT",
+            "filter": [".gitkeep"]
+        }
+    ],
+    "win": {
+        "target": [{
+                "target": "nsis",
+                "arch": ["x64"]
+            },
+            {
+                "target": "portable",
+                "arch": ["x64"]
+            }
+        ],
+        "icon": "icon.ico",
+        "requestedExecutionLevel": "asInvoker",
+        "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "allowElevation": true,
+        "installerIcon": "icon.ico",
+        "uninstallerIcon": "icon.ico",
+        "installerHeaderIcon": "icon.ico",
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "shortcutName": "Content Creator - 0 Chiacchiere",
+        "include": "build-resources/installer.nsh"
+    },
+    "portable": {
+        "artifactName": "${productName}-${version}-Portable.${ext}"
+    },
+    "publish": null,
+    "compression": "maximum",
+    "nodeGypRebuild": false,
+    "buildDependenciesFromSource": false
+}

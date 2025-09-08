@@ -1,0 +1,50 @@
+Analizza questo collage di 3 frame estratti sequenzialmente da un video per creare un meme narrativo.
+
+TIPOLOGIA MEME RICHIESTA: {{BUSINESS_THEME}}
+
+FILTRO CONTENUTI: {{CONTENT_FILTER}}
+
+ESEMPI DI STILE: {{STYLE_EXAMPLES}}
+
+ISTRUZIONI OPERATIVE:
+1. Analizza la sequenza temporale dei 3 frame (rappresentano 25%, 50%, 75% della durata del video)
+2. Identifica la progressione narrativa, emotiva o visiva tra i frame
+3. Cerca pattern, evoluzioni, contrasti o sviluppi della situazione
+4. Considera come questa progressione possa essere sfruttata per creare un meme efficace
+5. Rispetta la tipologia di meme richiesta e i filtri contenuti
+6. Segui lo stile degli esempi forniti
+7. Crea un meme che sfrutti la dimensione temporale e narrativa
+
+FORMATO RISPOSTA RICHIESTO:
+
+FRAME_1_DESCRIZIONE: [Descrizione dettagliata del primo frame - cosa succede, chi c'è, espressioni, azioni]
+
+FRAME_2_DESCRIZIONE: [Descrizione dettagliata del secondo frame - evoluzione rispetto al primo]
+
+FRAME_3_DESCRIZIONE: [Descrizione dettagliata del terzo frame - evoluzione finale]
+
+PROGRESSIONE_NARRATIVA: [Analisi di come si sviluppa la situazione attraverso i 3 frame - cosa cambia, come evolve]
+
+ELEMENTI_CHIAVE_SEQUENZA: [Elementi specifici della sequenza che possono essere sfruttati per il meme]
+
+CONCEPT_MEME_NARRATIVO: [Idea del meme che sfrutta la progressione temporale]
+
+TESTO_FRAME_1: [Testo da posizionare sul primo frame - se necessario]
+
+TESTO_FRAME_2: [Testo da posizionare sul secondo frame - se necessario]
+
+TESTO_FRAME_3: [Testo da posizionare sul terzo frame - se necessario]
+
+TESTO_GENERALE: [Eventuale testo generale che unifica il meme - caption principale]
+
+FORMATO_MEME: [Indica il formato più efficace - es: "Before/During/After", "Setup/Buildup/Punchline", "Problem/Escalation/Solution"]
+
+TARGET_AUDIENCE: [Pubblico target per questo meme narrativo]
+
+TONE_OF_VOICE: [Tono del messaggio]
+
+HASHTAG_SUGGERITI: [3-5 hashtag appropriati]
+
+RATIONALE_NARRATIVO: [Spiegazione di come la sequenza temporale rafforza l'efficacia del meme]
+
+Ricorda: sfrutta la potenza narrativa della sequenza per creare un meme più coinvolgente e memorabile.

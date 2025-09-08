@@ -1,0 +1,3 @@
+# Mantiene la cartella OUTPUT nel repository
+# Qui verranno salvati i risultati dell'analisi AI
+# La cartella viene pulita automaticamente ad ogni avvio

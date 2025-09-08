@@ -1,0 +1,57 @@
+{
+    "openai": {
+        "alias": "OpenAI Official",
+        "models": {
+            "gpt-4o-mini": {
+                "limits": {
+                    "RPM": 300,
+                    "RPD": 20000,
+                    "TPM": 50000
+                },
+                "requests": {}
+            },
+            "gpt-4o": {
+                "limits": {
+                    "RPM": 100,
+                    "RPD": 10000,
+                    "TPM": 30000
+                },
+                "requests": {}
+            }
+        }
+    },
+    "anthropic": {
+        "alias": "Anthropic Claude",
+        "models": {
+            "claude-3-haiku": {
+                "limits": {
+                    "RPM": 200,
+                    "RPD": 15000,
+                    "TPM": 40000
+                },
+                "requests": {}
+            },
+            "claude-3-sonnet": {
+                "limits": {
+                    "RPM": 100,
+                    "RPD": 8000,
+                    "TPM": 25000
+                },
+                "requests": {}
+            }
+        }
+    },
+    "google": {
+        "alias": "Google Gemini",
+        "models": {
+            "gemini-pro-vision": {
+                "limits": {
+                    "RPM": 150,
+                    "RPD": 12000,
+                    "TPM": 35000
+                },
+                "requests": {}
+            }
+        }
+    }
+}

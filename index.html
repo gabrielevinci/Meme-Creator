@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Creator - 0 Chiacchiere</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            min-height: 600px;
+        }
+        
+        .left-panel,
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .input-field {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            resize: vertical;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .textarea-small {
+            min-height: 80px;
+            font-family: inherit;
+        }
+        
+        .textarea-large {
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3498db;
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        .select-field {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .select-field:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            flex: 2;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-api {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-api:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(155, 89, 182, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .status-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .status-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .log-container {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+        }
+        
+        .log-entry.error {
+            color: #e74c3c;
+        }
+        
+        .log-entry.success {
+            color: #2ecc71;
+        }
+        
+        .log-entry.info {
+            color: #3498db;
+        }
+        
+        .video-list {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .video-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        
+        .video-item:last-child {
+            border-bottom: none;
+        }
+        
+        .api-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .api-modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-close:hover {
+            color: #333;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .main-content {
+                padding: 20px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Content Creator</h1>
+            <p>0 Chiacchiere - Generatore di Meme AI</p>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="form-group">
+                    <label for="meme-type">📝 Tipologia Meme</label>
+                    <textarea id="meme-type" class="input-field textarea-small" placeholder="Descrivi il tipo di meme che vuoi creare..." rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="video-filter">🎯 Filtro Video</label>
+                    <textarea id="video-filter" class="input-field textarea-small" placeholder="Specifica criteri per filtrare i contenuti video..." rows="3"></textarea>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="collage-mode">
+                        <label for="collage-mode">🖼️ Rilevamento con collage</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="font-select">🎨 Font</label>
+                    <select id="font-select" class="select-field">
+                        <option value="">Caricamento font...</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button id="start-btn" class="btn btn-primary">🚀 START</button>
+                    <button id="stop-btn" class="btn btn-secondary" disabled>⏹️ STOP</button>
+                    <button id="api-btn" class="btn btn-api">⚙️ API</button>
+                </div>
+
+                <div class="status-panel">
+                    <h3>📊 Status Elaborazione</h3>
+                    <div class="status-item">
+                        <span>Video in INPUT:</span>
+                        <span id="video-count">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Fase corrente:</span>
+                        <span id="current-phase">In attesa</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <div id="progress-text" style="text-align: center; margin-top: 10px; font-size: 14px;">
+                        Pronto per l'elaborazione
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="form-group">
+                    <label for="meme-style">✨ Stile Meme</label>
+                    <textarea id="meme-style" class="input-field textarea-large" placeholder="Inserisci esempi dettagliati dello stile di meme desiderato..." rows="15"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>📹 Video nella cartella INPUT</label>
+                    <div id="video-list" class="video-list">
+                        <div class="video-item">Caricamento...</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>📋 Log di Sistema</label>
+                    <div id="log-container" class="log-container">
+                        <div class="log-entry info">Sistema inizializzato e pronto</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal per gestione API -->
+    <div id="api-modal" class="api-modal">
+        <div class="api-modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Gestione API</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="api-content">
+                <p>Caricamento configurazione API...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const {
+            ipcRenderer
+        } = require('electron');
+
+        class ContentCreatorUI {
+            constructor() {
+                this.isProcessing = false;
+                this.apiConfig = null;
+                this.initializeElements();
+                this.setupEventListeners();
+                this.loadInitialData();
+            }
+
+            initializeElements() {
+                this.elements = {
+                    memeType: document.getElementById('meme-type'),
+                    videoFilter: document.getElementById('video-filter'),
+                    collageMode: document.getElementById('collage-mode'),
+                    fontSelect: document.getElementById('font-select'),
+                    memeStyle: document.getElementById('meme-style'),
+                    startBtn: document.getElementById('start-btn'),
+                    stopBtn: document.getElementById('stop-btn'),
+                    apiBtn: document.getElementById('api-btn'),
+                    videoCount: document.getElementById('video-count'),
+                    currentPhase: document.getElementById('current-phase'),
+                    progressFill: document.getElementById('progress-fill'),
+                    progressText: document.getElementById('progress-text'),
+                    videoList: document.getElementById('video-list'),
+                    logContainer: document.getElementById('log-container'),
+                    apiModal: document.getElementById('api-modal'),
+                    apiContent: document.getElementById('api-content')
+                };
+            }
+
+            setupEventListeners() {
+                // Pulsanti principali
+                this.elements.startBtn.addEventListener('click', () => this.startProcessing());
+                this.elements.stopBtn.addEventListener('click', () => this.stopProcessing());
+                this.elements.apiBtn.addEventListener('click', () => this.openApiManager());
+
+                // Modal API
+                this.elements.apiModal.addEventListener('click', (e) => {
+                    if (e.target === this.elements.apiModal) {
+                        this.closeApiManager();
+                    }
+                });
+
+                document.querySelector('.modal-close').addEventListener('click', () => {
+                    this.closeApiManager();
+                });
+
+                // Eventi IPC
+                ipcRenderer.on('processing-status', (event, data) => {
+                    this.updateProcessingStatus(data);
+                });
+
+                ipcRenderer.on('processing-complete', (event, data) => {
+                    this.onProcessingComplete(data);
+                });
+
+                ipcRenderer.on('processing-error', (event, error) => {
+                    this.onProcessingError(error);
+                });
+
+                ipcRenderer.on('output-cleaned', () => {
+                    this.addLog('Cartella OUTPUT pulita', 'success');
+                });
+
+                ipcRenderer.on('open-api-manager', () => {
+                    this.openApiManager();
+                });
+            }
+
+            async loadInitialData() {
+                try {
+                    // Carica font
+                    const fonts = await ipcRenderer.invoke('get-fonts');
+                    this.populateFontSelect(fonts);
+
+                    // Carica video
+                    await this.refreshVideoList();
+
+                    // Carica configurazione API
+                    this.apiConfig = await ipcRenderer.invoke('api-get-config');
+
+                    this.addLog('Dati iniziali caricati con successo', 'success');
+                } catch (error) {
+                    this.addLog(`Errore nel caricamento dati: ${error.message}`, 'error');
+                }
+            }
+
+            populateFontSelect(fonts) {
+                this.elements.fontSelect.innerHTML = '<option value="">Seleziona un font...</option>';
+
+                if (fonts.length === 0) {
+                    this.elements.fontSelect.innerHTML = '<option value="">Nessun font trovato</option>';
+                    return;
+                }
+
+                fonts.forEach(font => {
+                    const option = document.createElement('option');
+                    option.value = font;
+                    option.textContent = font;
+                    this.elements.fontSelect.appendChild(option);
+                });
+            }
+
+            async refreshVideoList() {
+                try {
+                    const videos = await ipcRenderer.invoke('get-input-videos');
+                    this.elements.videoCount.textContent = videos.length;
+
+                    if (videos.length === 0) {
+                        this.elements.videoList.innerHTML =
+                            '<div class="video-item">Nessun video trovato nella cartella INPUT</div>';
+                    } else {
+                        this.elements.videoList.innerHTML = videos
+                            .map(video => `<div class="video-item">📹 ${video}</div>`)
+                            .join('');
+                    }
+                } catch (error) {
+                    this.addLog(`Errore nel caricamento video: ${error.message}`, 'error');
+                }
+            }
+
+            async startProcessing() {
+                if (this.isProcessing) return;
+
+                // Validazioni
+                if (!this.elements.memeType.value.trim()) {
+                    alert('Inserisci la tipologia di meme');
+                    return;
+                }
+
+                if (!this.elements.videoFilter.value.trim()) {
+                    alert('Inserisci i criteri per il filtro video');
+                    return;
+                }
+
+                if (!this.elements.memeStyle.value.trim()) {
+                    alert('Inserisci lo stile del meme');
+                    return;
+                }
+
+                // Prepara configurazione
+                const config = {
+                    memeType: this.elements.memeType.value.trim(),
+                    videoFilter: this.elements.videoFilter.value.trim(),
+                    memeStyle: this.elements.memeStyle.value.trim(),
+                    useCollage: this.elements.collageMode.checked,
+                    selectedFont: this.elements.fontSelect.value
+                };
+
+                try {
+                    this.setProcessingState(true);
+                    this.addLog('Avvio elaborazione...', 'info');
+
+                    const result = await ipcRenderer.invoke('start-processing', config);
+                    this.addLog(result.message, 'success');
+
+                } catch (error) {
+                    this.addLog(`Errore: ${error.message}`, 'error');
+                    this.setProcessingState(false);
+                }
+            }
+
+            async stopProcessing() {
+                try {
+                    await ipcRenderer.invoke('stop-processing');
+                    this.setProcessingState(false);
+                    this.addLog('Elaborazione interrotta dall\'utente', 'info');
+                } catch (error) {
+                    this.addLog(`Errore nella terminazione: ${error.message}`, 'error');
+                }
+            }
+
+            setProcessingState(processing) {
+                this.isProcessing = processing;
+                this.elements.startBtn.disabled = processing;
+                this.elements.stopBtn.disabled = !processing;
+
+                if (!processing) {
+                    this.elements.currentPhase.textContent = 'In attesa';
+                    this.elements.progressFill.style.width = '0%';
+                    this.elements.progressText.textContent = 'Pronto per l\'elaborazione';
+                }
+            }
+
+            updateProcessingStatus(data) {
+                const {
+                    phase,
+                    current,
+                    total,
+                    file
+                } = data;
+
+                let phaseText = '';
+                switch (phase) {
+                    case 'extraction':
+                        phaseText = 'Estrazione frame';
+                        break;
+                    case 'ai-analysis':
+                        phaseText = 'Analisi AI';
+                        break;
+                    default:
+                        phaseText = phase;
+                }
+
+                this.elements.currentPhase.textContent = phaseText;
+
+                const progress = (current / total) * 100;
+                this.elements.progressFill.style.width = `${progress}%`;
+                this.elements.progressText.textContent =
+                    `${phaseText}: ${current}/${total} - ${file}`;
+
+                this.addLog(`${phaseText}: elaborazione ${file} (${current}/${total})`, 'info');
+            }
+
+            onProcessingComplete(data) {
+                this.setProcessingState(false);
+                this.addLog(`Elaborazione completata! Processati ${data.totalProcessed} video`, 'success');
+                this.addLog(`Risultati salvati in ${data.results.length} file`, 'success');
+
+                // Aggiorna la lista video se necessario
+                this.refreshVideoList();
+            }
+
+            onProcessingError(error) {
+                this.setProcessingState(false);
+                this.addLog(`Errore durante l'elaborazione: ${error}`, 'error');
+            }
+
+            addLog(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+
+                this.elements.logContainer.appendChild(logEntry);
+                this.elements.logContainer.scrollTop = this.elements.logContainer.scrollHeight;
+
+                // Mantieni solo gli ultimi 100 log
+                const logs = this.elements.logContainer.querySelectorAll('.log-entry');
+                if (logs.length > 100) {
+                    logs[0].remove();
+                }
+            }
+
+            async openApiManager() {
+                try {
+                    this.apiConfig = await ipcRenderer.invoke('api-get-config');
+                    this.renderApiManager();
+                    this.elements.apiModal.style.display = 'flex';
+                } catch (error) {
+                    this.addLog(`Errore apertura gestione API: ${error.message}`, 'error');
+                }
+            }
+
+            closeApiManager() {
+                this.elements.apiModal.style.display = 'none';
+            }
+
+            renderApiManager() {
+                const apis = Object.keys(this.apiConfig);
+
+                let html = `
+                    <div style="margin-bottom: 20px;">
+                        <h3>🔌 API Configurate</h3>
+                        <p>Gestisci le configurazioni API per l'analisi AI</p>
+                    </div>
+                `;
+
+                if (apis.length === 0) {
+                    html += `
+                        <div style="text-align: center; padding: 40px; color: #999;">
+                            <p>Nessuna API configurata</p>
+                            <button class="btn btn-primary" onclick="ui.addNewApi()" style="margin-top: 20px;">
+                                Aggiungi Prima API
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    apis.forEach(apiKey => {
+                                const api = this.apiConfig[apiKey];
+                                const modelCount = Object.keys(api.models || {}).length;
+
+                                html += `
+                            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 10px;">
+                                    <div>
+                                        <h4>${api.alias || apiKey}</h4>
+                                        <small style="color: #666;">ID: ${apiKey} • ${modelCount} modelli</small>
+                                    </div>
+                                    <div>
+                                        <button class="btn" style="padding: 5px 10px; margin-right: 5px;" onclick="ui.editApi('${apiKey}')">
+                                            ✏️ Modifica
+                                        </button>
+                                        <button class="btn btn-secondary" style="padding: 5px 10px;" onclick="ui.deleteApi('${apiKey}')">
+                                            🗑️ Elimina
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                                    <strong>Modelli:</strong><br>
+                                    ${Object.keys(api.models || {}).map(model => 
+                                        ` < span style = "display: inline-block; background: #e3f2fd; padding: 2px 8px; border-radius: 12px; margin: 2px; font-size: 12px;" > $ {
+                                    model
+                                } < /span>`
+                            ).join('')
+                        } <
+                        /div> <
+                        /div>
+                    `;
+                    });
+                    
+                    html += ` <
+                    div style = "text-align: center; margin-top: 20px;" >
+                        <
+                        button class = "btn btn-primary"
+                    onclick = "ui.addNewApi()" > ➕Aggiungi Nuova API <
+                        /button> <
+                        button class = "btn btn-api"
+                    onclick = "ui.saveApiConfig()"
+                    style = "margin-left: 10px;" > 💾Salva Configurazione <
+                        /button> <
+                        /div>
+                    `;
+                }
+                
+                this.elements.apiContent.innerHTML = html;
+            }
+            
+            addNewApi() {
+                const apiKey = prompt('Inserisci ID API (es: openai, anthropic):');
+                if (!apiKey) return;
+                
+                const alias = prompt('Inserisci alias descrittivo:') || apiKey;
+                
+                if (!this.apiConfig[apiKey]) {
+                    this.apiConfig[apiKey] = {
+                        alias: alias,
+                        models: {}
+                    };
+                }
+                
+                this.renderApiManager();
+            }
+            
+            editApi(apiKey) {
+                // Implementazione semplificata - in una versione completa 
+                // si aprirebbe un form dettagliato
+                alert(`
+                    Modifica API $ {
+                        apiKey
+                    } - Funzionalità in sviluppo `);
+            }
+            
+            deleteApi(apiKey) {
+                if (confirm(`
+                    Eliminare l 'API ${apiKey}?`)) {
+                    delete this.apiConfig[apiKey];
+                    this.renderApiManager();
+                }
+            }
+
+            async saveApiConfig() {
+                try {
+                    await ipcRenderer.invoke('api-save-config', this.apiConfig);
+                    this.addLog('Configurazione API salvata', 'success');
+                    this.closeApiManager();
+                } catch (error) {
+                    this.addLog(`Errore nel salvataggio API: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        // Inizializza l'interfaccia
+        const ui = new ContentCreatorUI();
+
+        // Aggiorna periodicamente la lista video
+        setInterval(() => {
+            if (!ui.isProcessing) {
+                ui.refreshVideoList();
+            }
+        }, 5000);
+    </script>
+</body>
+
+</html>

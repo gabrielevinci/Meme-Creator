@@ -11,7 +11,68 @@
           "RPD": 1000,
           "TPM": 250000
         },
-        "requests": {}
+        "requests": {
+          "1757302209591_cueivw6pe": {
+            "timestamp": 1757302209591,
+            "tokens": {
+              "prompt": "Analizza questa immagine estratta da un video per creare un meme efficace e coinvolgente.\r\n\r\nTIPOLOG",
+              "tokens_used": 805,
+              "response_time_ms": 2216,
+              "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m",
+              "success": true
+            }
+          },
+          "1757302211808_tm7hlj60h": {
+            "timestamp": 1757302211808,
+            "tokens": {
+              "prompt": "Analizza questa immagine estratta da un video per creare un meme efficace e coinvolgente.\r\n\r\nTIPOLOG",
+              "tokens_used": 805,
+              "response_time_ms": 2213,
+              "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m",
+              "success": true
+            }
+          },
+          "1757302214025_zjpxw8dwp": {
+            "timestamp": 1757302214025,
+            "tokens": {
+              "prompt": "Analizza questa immagine estratta da un video per creare un meme efficace e coinvolgente.\r\n\r\nTIPOLOG",
+              "tokens_used": 805,
+              "response_time_ms": 2213,
+              "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m",
+              "success": true
+            }
+          },
+          "1757302473494_aeccv9hy3": {
+            "timestamp": 1757302473494,
+            "tokens": {
+              "prompt": "Analizza questa immagine estratta da un video per creare un meme efficace e coinvolgente.\r\n\r\nTIPOLOG",
+              "tokens_used": 807,
+              "response_time_ms": 2210,
+              "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m",
+              "success": true
+            }
+          },
+          "1757302475705_lsvf0kcem": {
+            "timestamp": 1757302475705,
+            "tokens": {
+              "prompt": "Analizza questa immagine estratta da un video per creare un meme efficace e coinvolgente.\r\n\r\nTIPOLOG",
+              "tokens_used": 807,
+              "response_time_ms": 2208,
+              "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m",
+              "success": true
+            }
+          },
+          "1757302477917_id1t4zu70": {
+            "timestamp": 1757302477917,
+            "tokens": {
+              "prompt": "Analizza questa immagine estratta da un video per creare un meme efficace e coinvolgente.\r\n\r\nTIPOLOG",
+              "tokens_used": 807,
+              "response_time_ms": 2208,
+              "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m",
+              "success": true
+            }
+          }
+        }
       },
       "fdiocanr": {
         "priority": 1,

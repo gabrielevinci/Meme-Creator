@@ -32,9 +32,38 @@ class VideoProcessor {
 
     async cleanTempDir() {
         try {
+            // Prima prova eliminazione normale
             const files = await fs.readdir(this.tempDir);
+            
             for (const file of files) {
-                await fs.unlink(path.join(this.tempDir, file));
+                const filePath = path.join(this.tempDir, file);
+                let deleted = false;
+                
+                // Prova 5 volte con delay crescente
+                for (let retry = 0; retry < 5; retry++) {
+                    try {
+                        await fs.unlink(filePath);
+                        deleted = true;
+                        break;
+                    } catch (fileError) {
+                        // Attesa crescente: 100ms, 200ms, 500ms, 1s, 2s
+                        const delay = Math.min(100 * Math.pow(2, retry), 2000);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        
+                        if (retry === 4) {
+                            console.log(`Impossibile eliminare ${file}:`, fileError.message);
+                            // Come ultima risorsa, rinomina il file
+                            try {
+                                const timestamp = Date.now();
+                                const newPath = `${filePath}.old.${timestamp}`;
+                                await fs.rename(filePath, newPath);
+                                console.log(`File rinominato: ${file} -> ${path.basename(newPath)}`);
+                            } catch (renameError) {
+                                console.log(`Impossibile anche rinominare ${file}:`, renameError.message);
+                            }
+                        }
+                    }
+                }
             }
         } catch (error) {
             console.log('Errore nella pulizia directory temporanea:', error.message);
@@ -45,7 +74,7 @@ class VideoProcessor {
         console.log(`Estrazione frame da: ${videoPath}, Collage: ${useCollage}`);
 
         await this.ensureTempDir();
-        await this.cleanTempDir();
+        // Rimuovo cleanTempDir() per non eliminare i file durante l'elaborazione
 
         try {
             // Ottieni la durata del video
@@ -88,6 +117,7 @@ class VideoProcessor {
             console.error('Errore nell\'estrazione frame:', error);
             throw error;
         }
+        // Rimuovo il finally che puliva immediatamente le risorse
     }
 
     async getVideoDuration(videoPath) {
@@ -134,13 +164,18 @@ class VideoProcessor {
     }
 
     async extractSingleFrame(videoPath, timestamp, outputName) {
-        const outputPath = path.join(this.tempDir, outputName);
+        // Crea un nome completamente unico basato su timestamp e random
+        const uniqueTimestamp = Date.now();
+        const randomId = Math.random().toString(36).substr(2, 8);
+        const uniqueName = `${uniqueTimestamp}_${randomId}_${outputName}`;
+        const outputPath = path.join(this.tempDir, uniqueName);
 
         return new Promise((resolve, reject) => {
             const ffmpeg = spawn(this.ffmpegPath, [
                 '-ss', timestamp.toString(),
                 '-i', videoPath,
                 '-vframes', '1',
+                '-update', '1', // Flag necessario per sovrascrivere singoli file
                 '-q:v', '2',
                 '-y', // Overwrite output files
                 outputPath
@@ -149,12 +184,20 @@ class VideoProcessor {
             });
 
             let errorOutput = '';
+            let timeoutId;
+
+            // Timeout per evitare processi bloccati
+            timeoutId = setTimeout(() => {
+                ffmpeg.kill('SIGKILL');
+                reject(new Error('Timeout: FFmpeg impiegava troppo tempo per estrarre il frame'));
+            }, 30000); // 30 secondi timeout
 
             ffmpeg.stderr.on('data', (data) => {
                 errorOutput += data.toString();
             });
 
             ffmpeg.on('close', async(code) => {
+                clearTimeout(timeoutId);
                 if (code === 0) {
                     try {
                         // Verifica che il file sia stato creato
@@ -171,6 +214,7 @@ class VideoProcessor {
             });
 
             ffmpeg.on('error', (error) => {
+                clearTimeout(timeoutId);
                 if (error.code === 'ENOENT') {
                     reject(new Error('FFmpeg non trovato. Assicurati che FFmpeg sia installato e nel PATH.'));
                 } else {

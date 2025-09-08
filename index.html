@@ -315,7 +315,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .modal-close {
@@ -536,55 +536,55 @@
             gap: 10px;
             margin-top: 10px;
         }
-
+        
         .limit-item input {
             border: 1px solid transparent;
             padding: 4px;
             border-radius: 4px;
             transition: all 0.2s ease;
         }
-
+        
         .limit-item input:hover {
             border-color: #ddd;
             background: #f9f9f9;
         }
-
+        
         .limit-item input:focus {
             border-color: #3498db;
             background: white;
             outline: none;
         }
-
+        
         .model-name input {
             border: 1px solid transparent;
             padding: 2px 4px;
             border-radius: 4px;
             transition: all 0.2s ease;
         }
-
+        
         .model-name input:hover {
             border-color: #ddd;
             background: #f9f9f9;
         }
-
+        
         .model-name input:focus {
             border-color: #3498db;
             background: white;
             outline: none;
         }
-
+        
         .model-name select {
             border: 1px solid transparent;
             padding: 2px;
             border-radius: 4px;
             transition: all 0.2s ease;
         }
-
+        
         .model-name select:hover {
             border-color: #ddd;
             background: #f9f9f9;
         }
-
+        
         .model-name select:focus {
             border-color: #3498db;
             background: white;
@@ -1166,6 +1166,12 @@
             }
 
             updateProcessingStatus(data) {
+                // Se data è una stringa, mostrala semplicemente
+                if (typeof data === 'string') {
+                    this.elements.currentPhase.textContent = data;
+                    return;
+                }
+
                 const {
                     phase,
                     current,
@@ -1182,23 +1188,39 @@
                         phaseText = 'Analisi AI';
                         break;
                     default:
-                        phaseText = phase;
+                        phaseText = phase || 'Elaborazione';
                 }
 
                 this.elements.currentPhase.textContent = phaseText;
 
-                const progress = (current / total) * 100;
-                this.elements.progressFill.style.width = `${progress}%`;
-                this.elements.progressText.textContent =
-                    `${phaseText}: ${current}/${total} - ${file}`;
+                // Verifica che current e total siano definiti
+                if (current !== undefined && total !== undefined) {
+                    const progress = (current / total) * 100;
+                    this.elements.progressFill.style.width = `${progress}%`;
+                    this.elements.progressText.textContent =
+                        `${phaseText}: ${current}/${total} - ${file || 'File sconosciuto'}`;
+                }
 
-                this.addLog(`${phaseText}: elaborazione ${file} (${current}/${total})`, 'info');
+                // Aggiungi log dettagliato se i valori sono definiti
+                if (file && current !== undefined && total !== undefined) {
+                    this.addLog(`${phaseText}: elaborazione ${file} (${current}/${total})`, 'info');
+                }
             }
 
             onProcessingComplete(data) {
                 this.setProcessingState(false);
-                this.addLog(`Elaborazione completata! Processati ${data.totalProcessed} video`, 'success');
-                this.addLog(`Risultati salvati in ${data.results.length} file`, 'success');
+
+                if (data.totalProcessed !== undefined) {
+                    this.addLog(`Elaborazione completata! Processati ${data.totalProcessed} video`, 'success');
+                }
+
+                if (data.results && data.results.length !== undefined) {
+                    this.addLog(`Risultati salvati in ${data.results.length} file`, 'success');
+                }
+
+                if (data.message) {
+                    this.addLog(data.message, 'success');
+                }
 
                 // Aggiorna la lista video se necessario
                 this.refreshVideoList();
@@ -1513,34 +1535,34 @@
             }
 
             renderModelsList(apiKey) {
-                const modelsList = document.getElementById('models-list');
-                const models = this.apiConfig[apiKey].models || {};
-                const modelKeys = Object.keys(models);
+                    const modelsList = document.getElementById('models-list');
+                    const models = this.apiConfig[apiKey].models || {};
+                    const modelKeys = Object.keys(models);
 
-                if (modelKeys.length === 0) {
-                    modelsList.innerHTML = `
+                    if (modelKeys.length === 0) {
+                        modelsList.innerHTML = `
                         <div style="text-align: center; padding: 20px; color: #666; border: 2px dashed #e0e0e0; border-radius: 8px;">
                             <p>Nessun modello configurato</p>
                             <p style="font-size: 12px;">Usa il form qui sotto per aggiungere il primo modello</p>
                         </div>
                     `;
-                    return;
-                }
+                        return;
+                    }
 
-                let html = '';
-                // Ordina i modelli per priorità
-                modelKeys.sort((a, b) => {
-                    const priorityA = models[a].priority || 999;
-                    const priorityB = models[b].priority || 999;
-                    return priorityA - priorityB;
-                });
+                    let html = '';
+                    // Ordina i modelli per priorità
+                    modelKeys.sort((a, b) => {
+                        const priorityA = models[a].priority || 999;
+                        const priorityB = models[b].priority || 999;
+                        return priorityA - priorityB;
+                    });
 
-                modelKeys.forEach(modelKey => {
-                    const model = models[modelKey];
-                    const limits = model.limits || {};
-                    const priority = model.priority || 'N/A';
+                    modelKeys.forEach(modelKey => {
+                        const model = models[modelKey];
+                        const limits = model.limits || {};
+                        const priority = model.priority || 'N/A';
 
-                    html += `
+                        html += `
                         <div class="model-item">
                             <div class="model-header">
                                 <div class="model-name">
@@ -1550,46 +1572,70 @@
                                         <select onchange="ui.editModelPriority('${apiKey}', '${modelKey}', this.value)" style="border: none; background: transparent;">
                                             ${Array.from({length: 10}, (_, i) => {
                                                 const val = i + 1;
-                                                return `<option value="${val}" ${priority == val ? 'selected' : ''}>${val}</option>`;
-                                            }).join('')}
-                                        </select>)
-                                    </span>
-                                </div>
-                                <div class="model-actions">
-                                    <button class="btn-small btn-edit" onclick="ui.editModel('${apiKey}', '${modelKey}')" title="Modifica">
-                                        ✏️ Modifica
-                                    </button>
-                                    <button class="btn-small btn-delete" onclick="ui.deleteModel('${apiKey}', '${modelKey}')">
-                                        🗑️ Elimina
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="limits-grid">
-                                <div class="limit-item">
-                                    <input type="number" value="${limits.RPM || 100}" min="1" 
-                                           onchange="ui.editModelLimit('${apiKey}', '${modelKey}', 'RPM', this.value)"
-                                           style="border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" />
-                                    <div class="limit-label">RPM</div>
-                                </div>
-                                <div class="limit-item">
-                                    <input type="number" value="${limits.RPD || 1000}" min="1" 
-                                           onchange="ui.editModelLimit('${apiKey}', '${modelKey}', 'RPD', this.value)"
-                                           style="border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" />
-                                    <div class="limit-label">RPD</div>
-                                </div>
-                                <div class="limit-item">
-                                    <input type="number" value="${limits.TPM || 50000}" min="1" 
-                                           onchange="ui.editModelLimit('${apiKey}', '${modelKey}', 'TPM', this.value)"
-                                           style="border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" />
-                                    <div class="limit-label">TPM</div>
-                                </div>
-                                <div class="limit-item">
-                                    <div class="limit-value">${priority}</div>
-                                    <div class="limit-label">Priorità</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                                                return ` < option value = "${val}"
+                        $ {
+                            priority == val ? 'selected' : ''
+                        } > $ {
+                            val
+                        } < /option>`;
+                    }).join('')
+                } <
+                /select>) < /
+                span > <
+                /div> <
+            div class = "model-actions" >
+                <
+                button class = "btn-small btn-edit"
+            onclick = "ui.editModel('${apiKey}', '${modelKey}')"
+            title = "Modifica" > ✏️Modifica <
+                /button> <
+            button class = "btn-small btn-delete"
+            onclick = "ui.deleteModel('${apiKey}', '${modelKey}')" > 🗑️Elimina <
+                /button> < /
+                div > <
+                /div> <
+            div class = "limits-grid" >
+                <
+                div class = "limit-item" >
+                <
+                input type = "number"
+            value = "${limits.RPM || 100}"
+            min = "1"
+            onchange = "ui.editModelLimit('${apiKey}', '${modelKey}', 'RPM', this.value)"
+            style = "border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" / >
+                <
+                div class = "limit-label" > RPM < /div> < /
+                div > <
+                div class = "limit-item" >
+                <
+                input type = "number"
+            value = "${limits.RPD || 1000}"
+            min = "1"
+            onchange = "ui.editModelLimit('${apiKey}', '${modelKey}', 'RPD', this.value)"
+            style = "border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" / >
+                <
+                div class = "limit-label" > RPD < /div> < /
+                div > <
+                div class = "limit-item" >
+                <
+                input type = "number"
+            value = "${limits.TPM || 50000}"
+            min = "1"
+            onchange = "ui.editModelLimit('${apiKey}', '${modelKey}', 'TPM', this.value)"
+            style = "border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" / >
+                <
+                div class = "limit-label" > TPM < /div> < /
+                div > <
+                div class = "limit-item" >
+                <
+                div class = "limit-value" > $ {
+                    priority
+                } < /div> <
+            div class = "limit-label" > Priorità < /div> < /
+                div > <
+                /div> < /
+                div >
+                `;
                 });
 
                 modelsList.innerHTML = html;
@@ -1619,7 +1665,12 @@
                     .find(([, model]) => model.priority === priority);
 
                 if (existingModelWithPriority) {
-                    alert(`Errore: Esiste già un modello "${existingModelWithPriority[0]}" con priorità ${priority}.\nCambia la priorità per il nuovo modello.`);
+                    alert(`
+            Errore: Esiste già un modello "${existingModelWithPriority[0]}"
+            con priorità $ {
+                priority
+            }.\nCambia la priorità per il nuovo modello.
+            `);
                     return;
                 }
 
@@ -1645,15 +1696,32 @@
 
                 this.renderModelsList(this.currentApiKey);
                 this.renderApiList(); // Aggiorna anche la lista
-                this.addLog(`Modello ${name} aggiunto a ${this.apiConfig[this.currentApiKey].alias} con priorità ${priority}`, 'success');
+                this.addLog(`
+            Modello $ {
+                name
+            }
+            aggiunto a $ {
+                this.apiConfig[this.currentApiKey].alias
+            }
+            con priorità $ {
+                priority
+            }
+            `, 'success');
             }
 
             async deleteModel(apiKey, modelKey) {
-                if (confirm(`Eliminare il modello ${modelKey}?`)) {
+                if (confirm(`
+            Eliminare il modello $ {
+                modelKey
+            } ? `)) {
                     delete this.apiConfig[apiKey].models[modelKey];
                     this.renderModelsList(apiKey);
                     this.renderApiList();
-                    this.addLog(`Modello ${modelKey} eliminato`, 'info');
+                    this.addLog(`
+            Modello $ {
+                modelKey
+            }
+            eliminato `, 'info');
                 }
             }
 
@@ -1675,7 +1743,11 @@
 
                 await this.saveApiConfig();
                 this.renderApiList();
-                this.addLog(`API ${alias} aggiornata con successo`, 'success');
+                this.addLog(`
+            API $ {
+                alias
+            }
+            aggiornata con successo `, 'success');
             }
 
             cancelEdit() {
@@ -1686,101 +1758,102 @@
                 if (!this.currentApiKey) return;
 
                 const apiName = this.apiConfig[this.currentApiKey].alias;
-                if (confirm(`Eliminare l'API ${apiName}?\n\nQuesta azione eliminerà anche tutti i modelli configurati.`)) {
-                    delete this.apiConfig[this.currentApiKey];
-                    await this.saveApiConfig();
-                    this.renderApiList();
-                    this.showWelcomeScreen();
-                    this.addLog(`API ${apiName} eliminata`, 'info');
-                }
+                if (confirm(`
+            Eliminare l 'API ${apiName}?\n\nQuesta azione eliminerà anche tutti i modelli configurati.`)) {
+            delete this.apiConfig[this.currentApiKey];
+            await this.saveApiConfig();
+            this.renderApiList();
+            this.showWelcomeScreen();
+            this.addLog(`API ${apiName} eliminata`, 'info');
+        }
+        }
+
+        async saveApiConfig() {
+            try {
+                await window.electronAPI.saveApiConfig(this.apiConfig);
+            } catch (error) {
+                console.error('Errore salvataggio API config:', error);
+                this.addLog('Errore nel salvataggio configurazione API', 'error');
             }
+        }
 
-            async saveApiConfig() {
-                try {
-                    await window.electronAPI.saveApiConfig(this.apiConfig);
-                } catch (error) {
-                    console.error('Errore salvataggio API config:', error);
-                    this.addLog('Errore nel salvataggio configurazione API', 'error');
-                }
-            }
+        // Auto-save per le modifiche API
+        async autoSaveApiChanges() {
+            if (!this.currentApiKey) return;
 
-            // Auto-save per le modifiche API
-            async autoSaveApiChanges() {
-                if (!this.currentApiKey) return;
+            const alias = document.getElementById('edit-api-alias').value.trim();
+            const priority = parseInt(document.getElementById('edit-api-priority').value);
+            const enabled = document.getElementById('edit-api-enabled').checked;
 
-                const alias = document.getElementById('edit-api-alias').value.trim();
-                const priority = parseInt(document.getElementById('edit-api-priority').value);
-                const enabled = document.getElementById('edit-api-enabled').checked;
+            if (!alias) return;
 
-                if (!alias) return;
+            this.apiConfig[this.currentApiKey].alias = alias;
+            this.apiConfig[this.currentApiKey].priority = priority;
+            this.apiConfig[this.currentApiKey].enabled = enabled;
 
-                this.apiConfig[this.currentApiKey].alias = alias;
-                this.apiConfig[this.currentApiKey].priority = priority;
-                this.apiConfig[this.currentApiKey].enabled = enabled;
+            await this.saveApiConfig();
+            this.renderApiList();
+        }
 
-                await this.saveApiConfig();
-                this.renderApiList();
-            }
+        // Modifica nome modello
+        async editModelName(apiKey, oldName, newName) {
+            if (!newName.trim() || oldName === newName) return;
 
-            // Modifica nome modello
-            async editModelName(apiKey, oldName, newName) {
-                if (!newName.trim() || oldName === newName) return;
-
-                if (this.apiConfig[apiKey].models[newName]) {
-                    alert('Un modello con questo nome esiste già');
-                    this.renderModelsList(apiKey);
-                    return;
-                }
-
-                // Sposta il modello con il nuovo nome
-                const modelData = this.apiConfig[apiKey].models[oldName];
-                this.apiConfig[apiKey].models[newName] = modelData;
-                delete this.apiConfig[apiKey].models[oldName];
-
-                await this.saveApiConfig();
+            if (this.apiConfig[apiKey].models[newName]) {
+                alert('Un modello con questo nome esiste già');
                 this.renderModelsList(apiKey);
-                this.renderApiList();
-                this.addLog(`Modello rinominato da "${oldName}" a "${newName}"`, 'info');
+                return;
             }
 
-            // Modifica priorità modello
-            async editModelPriority(apiKey, modelName, newPriority) {
-                const priority = parseInt(newPriority);
-                const currentPriority = this.apiConfig[apiKey].models[modelName].priority;
+            // Sposta il modello con il nuovo nome
+            const modelData = this.apiConfig[apiKey].models[oldName];
+            this.apiConfig[apiKey].models[newName] = modelData;
+            delete this.apiConfig[apiKey].models[oldName];
 
-                if (priority === currentPriority) return;
+            await this.saveApiConfig();
+            this.renderModelsList(apiKey);
+            this.renderApiList();
+            this.addLog(`Modello rinominato da "${oldName}" a "${newName}"`, 'info');
+        }
 
-                // Controlla se esiste già un modello con la stessa priorità
-                const existingModelWithPriority = Object.entries(this.apiConfig[apiKey].models || {})
-                    .find(([name, model]) => name !== modelName && model.priority === priority);
+        // Modifica priorità modello
+        async editModelPriority(apiKey, modelName, newPriority) {
+            const priority = parseInt(newPriority);
+            const currentPriority = this.apiConfig[apiKey].models[modelName].priority;
 
-                if (existingModelWithPriority) {
-                    alert(`Errore: Il modello "${existingModelWithPriority[0]}" ha già priorità ${priority}.\nCambia prima la priorità di quel modello.`);
-                    this.renderModelsList(apiKey);
-                    return;
-                }
+            if (priority === currentPriority) return;
 
-                this.apiConfig[apiKey].models[modelName].priority = priority;
-                await this.saveApiConfig();
+            // Controlla se esiste già un modello con la stessa priorità
+            const existingModelWithPriority = Object.entries(this.apiConfig[apiKey].models || {})
+                .find(([name, model]) => name !== modelName && model.priority === priority);
+
+            if (existingModelWithPriority) {
+                alert(`Errore: Il modello "${existingModelWithPriority[0]}" ha già priorità ${priority}.\nCambia prima la priorità di quel modello.`);
                 this.renderModelsList(apiKey);
-                this.addLog(`Priorità modello "${modelName}" cambiata a ${priority}`, 'info');
+                return;
             }
 
-            // Modifica limiti modello
-            async editModelLimit(apiKey, modelName, limitType, newValue) {
-                const value = parseInt(newValue);
-                if (value <= 0) return;
+            this.apiConfig[apiKey].models[modelName].priority = priority;
+            await this.saveApiConfig();
+            this.renderModelsList(apiKey);
+            this.addLog(`Priorità modello "${modelName}" cambiata a ${priority}`, 'info');
+        }
 
-                this.apiConfig[apiKey].models[modelName].limits[limitType] = value;
-                await this.saveApiConfig();
-                this.addLog(`${limitType} modello "${modelName}" aggiornato a ${value}`, 'info');
-            }
+        // Modifica limiti modello
+        async editModelLimit(apiKey, modelName, limitType, newValue) {
+            const value = parseInt(newValue);
+            if (value <= 0) return;
 
-            // Modifica modello (modal dettagliato)
-            editModel(apiKey, modelName) {
-                const model = this.apiConfig[apiKey].models[modelName];
-                alert(`Modifica dettagliata del modello "${modelName}":\n\nPriorità: ${model.priority}\nRPM: ${model.limits.RPM}\nRPD: ${model.limits.RPD}\nTPM: ${model.limits.TPM}\n\nUsa i campi diretti per modificare i valori.`);
-            }
+            this.apiConfig[apiKey].models[modelName].limits[limitType] = value;
+            await this.saveApiConfig();
+            this.addLog(`${limitType} modello "${modelName}" aggiornato a ${value}`, 'info');
+        }
+
+        // Modifica modello (modal dettagliato)
+        editModel(apiKey, modelName) {
+            const model = this.apiConfig[apiKey].models[modelName];
+            alert(`Modifica dettagliata del modello "${modelName}":\n\nPriorità: ${model.priority}\nRPM: ${model.limits.RPM}\nRPD: ${model.limits.RPD}\nTPM: ${model.limits.TPM}\n\nUsa i campi diretti per modificare i valori.`);
+        }
         }
 
         // Inizializza l'interfaccia

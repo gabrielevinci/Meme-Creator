@@ -336,8 +336,9 @@ class ContentCreatorApp {
                 const result = await this.processVideos(config);
 
                 this.mainWindow.webContents.send('log-update', {
-                    type: 'success',
-                    message: 'Elaborazione completata con successo'
+                    totalProcessed: result.results ? result.results.length : 0,
+                    results: result.results || [],
+                    message: result.message || 'Elaborazione completata'
                 });
 
                 return result;
@@ -379,6 +380,8 @@ class ContentCreatorApp {
         const frameResults = [];
         for (let i = 0; i < videos.length; i++) {
             const video = videos[i];
+            this.log('info', `Estrazione frame: elaborazione ${video} (${i + 1}/${videos.length})`);
+
             this.mainWindow.webContents.send('status-update', {
                 phase: 'extraction',
                 current: i + 1,
@@ -386,11 +389,17 @@ class ContentCreatorApp {
                 file: video
             });
 
-            const frames = await this.videoProcessor.extractFrames(
-                path.join(__dirname, 'INPUT', video),
-                config.useCollage
-            );
-            frameResults.push({ video, frames });
+            try {
+                const frames = await this.videoProcessor.extractFrames(
+                    path.join(__dirname, 'INPUT', video),
+                    config.useCollage
+                );
+                frameResults.push({ video, frames });
+            } catch (error) {
+                this.log('error', `Errore nell'estrazione frame per ${video}: ${error.message}`);
+                // Continua con il prossimo video invece di interrompere tutto
+                frameResults.push({ video, frames: [], error: error.message });
+            }
         }
 
         console.log('Estrazione frame completata per tutti i video');
@@ -399,6 +408,8 @@ class ContentCreatorApp {
         const aiResults = [];
         for (let i = 0; i < frameResults.length; i++) {
             const result = frameResults[i];
+            this.log('info', `Analisi AI: elaborazione ${result.video} (${i + 1}/${frameResults.length})`);
+
             this.mainWindow.webContents.send('status-update', {
                 phase: 'ai-analysis',
                 current: i + 1,
@@ -412,15 +423,25 @@ class ContentCreatorApp {
                 this.apiManager
             );
 
-            // Salva risultato
-            const outputFile = path.join(__dirname, 'OUTPUT',
-                `${path.parse(result.video).name}_analysis.txt`);
-            await fs.writeFile(outputFile, analysis);
-
-            aiResults.push({ video: result.video, analysis, outputFile });
+            // Il file viene salvato automaticamente dall'AI processor
+            aiResults.push({ 
+                video: result.video, 
+                analysis: analysis.response,
+                outputFile: analysis.outputFile,
+                modelUsed: analysis.modelUsed,
+                responseTime: analysis.responseTime
+            });
         }
 
         console.log('Analisi AI completata per tutti i video');
+
+        // Pulizia finale delle risorse temporanee
+        try {
+            await this.videoProcessor.cleanup();
+            this.log('info', 'Pulizia finale delle risorse temporanee completata');
+        } catch (error) {
+            this.log('error', `Errore durante la pulizia finale: ${error.message}`);
+        }
 
         return {
             success: true,

@@ -48,7 +48,20 @@ class AiProcessor {
             });
 
             console.log(`Analisi AI completata in ${responseTime}ms`);
-            return response;
+            
+            // Salva l'output AI in un file .txt nella cartella OUTPUT
+            const outputFileName = this.generateOutputFileName(framePaths[0]);
+            const outputPath = path.join(__dirname, 'OUTPUT', outputFileName);
+            await this.saveAiOutputToFile(outputPath, response, config, framePaths[0]);
+
+            console.log(`Output salvato in: ${outputFileName}`);
+
+            return {
+                response: response,
+                outputFile: outputFileName,
+                modelUsed: `${modelInfo.apiKey}/${modelInfo.modelKey}`,
+                responseTime: responseTime
+            };
 
         } catch (error) {
             console.error('Errore nell\'analisi AI:', error);
@@ -301,6 +314,41 @@ RATIONALE: Sfruttamento di una dinamica comune nel mondo professionale per crear
         }
 
         return results;
+    }
+
+    generateOutputFileName(framePath) {
+        // Estrae il nome del video dal path del frame
+        const baseName = path.basename(framePath);
+        // Rimuove i timestamp e suffissi per ottenere il nome originale del video
+        const videoName = baseName.replace(/^\d+_[a-z0-9]+_/, '').replace(/_compressed\.jpg$/, '').replace(/\.jpg$/, '');
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        return `${videoName}_${timestamp}.txt`;
+    }
+
+    async saveAiOutputToFile(outputPath, aiResponse, config, framePath) {
+        const videoName = path.basename(framePath);
+        const content = `ANALISI AI - ${videoName}
+========================================
+
+CONFIGURAZIONE:
+- Tipologia Meme: ${config.memeType}
+- Filtro Video: ${config.videoFilter}
+- Stile Meme: ${config.memeStyle}
+- Usa Collage: ${config.useCollage ? 'Sì' : 'No'}
+- Font Selezionato: ${config.selectedFont}
+
+TIMESTAMP: ${new Date().toISOString()}
+
+RISPOSTA AI:
+========================================
+
+${aiResponse}
+
+========================================
+Fine Analisi
+`;
+
+        await fs.writeFile(outputPath, content, 'utf8');
     }
 }
 

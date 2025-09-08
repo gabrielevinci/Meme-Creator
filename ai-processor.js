@@ -10,6 +10,11 @@ class AiProcessor {
     async analyzeFrames(framePaths, config, apiManager) {
         console.log('Avvio analisi AI per', framePaths.length, 'frame');
 
+        // Verifica che ci siano frame da elaborare
+        if (!framePaths || framePaths.length === 0) {
+            throw new Error('Nessun frame disponibile per l\'analisi AI');
+        }
+
         try {
             // Carica il template prompt appropriato
             const templateName = config.useCollage ? 'collage.txt' : 'single_frame.txt';
@@ -427,6 +432,12 @@ RATIONALE: Questo approccio sfrutta l'esperienza universale lavorativa, creando 
     }
 
     generateOutputFileName(framePath) {
+        // Gestisce il caso in cui framePath sia undefined o vuoto
+        if (!framePath) {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+            return `output_${timestamp}.txt`;
+        }
+        
         // Estrae il nome del video dal path del frame
         const baseName = path.basename(framePath);
         // Rimuove i timestamp e suffissi per ottenere il nome originale del video
@@ -436,7 +447,7 @@ RATIONALE: Questo approccio sfrutta l'esperienza universale lavorativa, creando 
     }
 
     async saveAiOutputToFile(outputPath, aiResponse, config, framePath) {
-        const videoName = path.basename(framePath);
+        const videoName = framePath ? path.basename(framePath) : 'unknown_video';
         const content = `ANALISI AI - ${videoName}
 ========================================
 

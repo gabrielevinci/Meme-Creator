@@ -227,7 +227,9 @@ class VideoProcessor {
     async createCollage(framePaths) {
         console.log('Creazione collage da:', framePaths);
 
-        const collagePath = path.join(this.tempDir, 'collage.jpg');
+        // Crea nome file unico per evitare conflitti
+        const uniqueId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const collagePath = path.join(this.tempDir, `collage_${uniqueId}.jpg`);
 
         try {
             // Carica le immagini
@@ -281,7 +283,9 @@ class VideoProcessor {
     }
 
     async compressImage(imagePath) {
-        const compressedPath = imagePath.replace('.jpg', '_compressed.jpg');
+        // Crea nome file unico per la compressione per evitare conflitti
+        const uniqueId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const compressedPath = imagePath.replace('.jpg', `_compressed_${uniqueId}.jpg`);
 
         try {
             await sharp(imagePath)
@@ -303,13 +307,21 @@ class VideoProcessor {
 
             // Se ancora troppo grande, comprimi ulteriormente
             if (sizeKB > 100) {
+                const finalPath = compressedPath.replace('.jpg', '_final.jpg');
                 await sharp(compressedPath)
                     .jpeg({ quality: 60 })
-                    .toFile(compressedPath.replace('.jpg', '_final.jpg'));
+                    .toFile(finalPath);
 
-                await fs.unlink(compressedPath);
-                const finalPath = compressedPath.replace('.jpg', '_final.jpg');
-                await fs.rename(finalPath, compressedPath);
+                // Attendi un momento prima di eliminare il file originale
+                await this.delay(100);
+                try {
+                    await fs.unlink(compressedPath);
+                    await fs.rename(finalPath, compressedPath);
+                } catch (unlinkError) {
+                    console.warn('Avviso: impossibile rimuovere file temporaneo:', unlinkError.message);
+                    // Se non riesce a rimuovere il file originale, usa il finale
+                    return finalPath;
+                }
             }
 
             return compressedPath;
@@ -353,6 +365,11 @@ class VideoProcessor {
                 resolve(false);
             });
         });
+    }
+
+    // Metodo per introdurre un delay
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     // Metodo per ottenere informazioni dettagliate del video

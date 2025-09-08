@@ -1,0 +1,31 @@
+const { contextBridge, ipcRenderer } = require('electron');
+
+// Espone API sicure al renderer
+contextBridge.exposeInMainWorld('electronAPI', {
+    // Dialog APIs
+    showInputDialog: (title, message, defaultValue = '') => ipcRenderer.invoke('show-input-dialog', title, message, defaultValue),
+    showMessage: (title, message, type = 'info') => ipcRenderer.invoke('show-message', title, message, type),
+    showConfirm: (title, message) => ipcRenderer.invoke('show-confirm', title, message),
+
+    // API Management
+    loadApiConfig: () => ipcRenderer.invoke('load-api-config'),
+    saveApiConfig: (config) => ipcRenderer.invoke('save-api-config', config),
+
+    // Font loading
+    loadFonts: () => ipcRenderer.invoke('load-fonts'),
+
+    // Video management
+    getInputVideos: () => ipcRenderer.invoke('get-input-videos'),
+
+    // Processing
+    startProcessing: (params) => ipcRenderer.invoke('start-processing', params),
+    stopProcessing: () => ipcRenderer.invoke('stop-processing'),
+
+    // Status updates
+    onStatusUpdate: (callback) => ipcRenderer.on('status-update', callback),
+    onLogUpdate: (callback) => ipcRenderer.on('log-update', callback),
+    onProgressUpdate: (callback) => ipcRenderer.on('progress-update', callback),
+
+    // Remove listeners
+    removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel)
+});

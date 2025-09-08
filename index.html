@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self';">
     <title>Content Creator - 0 Chiacchiere</title>
     <style>
         * {
@@ -438,10 +439,6 @@
     </div>
 
     <script>
-        const {
-            ipcRenderer
-        } = require('electron');
-
         class ContentCreatorUI {
             constructor() {
                 this.isProcessing = false;
@@ -490,38 +487,30 @@
                 });
 
                 // Eventi IPC
-                ipcRenderer.on('processing-status', (event, data) => {
+                window.electronAPI.onStatusUpdate((event, data) => {
                     this.updateProcessingStatus(data);
                 });
 
-                ipcRenderer.on('processing-complete', (event, data) => {
+                window.electronAPI.onLogUpdate((event, data) => {
                     this.onProcessingComplete(data);
                 });
 
-                ipcRenderer.on('processing-error', (event, error) => {
+                window.electronAPI.onProgressUpdate((event, error) => {
                     this.onProcessingError(error);
-                });
-
-                ipcRenderer.on('output-cleaned', () => {
-                    this.addLog('Cartella OUTPUT pulita', 'success');
-                });
-
-                ipcRenderer.on('open-api-manager', () => {
-                    this.openApiManager();
                 });
             }
 
             async loadInitialData() {
                 try {
                     // Carica font
-                    const fonts = await ipcRenderer.invoke('get-fonts');
+                    const fonts = await window.electronAPI.loadFonts();
                     this.populateFontSelect(fonts);
 
                     // Carica video
                     await this.refreshVideoList();
 
                     // Carica configurazione API
-                    this.apiConfig = await ipcRenderer.invoke('api-get-config');
+                    this.apiConfig = await window.electronAPI.loadApiConfig();
 
                     this.addLog('Dati iniziali caricati con successo', 'success');
                 } catch (error) {
@@ -547,7 +536,7 @@
 
             async refreshVideoList() {
                 try {
-                    const videos = await ipcRenderer.invoke('get-input-videos');
+                    const videos = await window.electronAPI.getInputVideos();
                     this.elements.videoCount.textContent = videos.length;
 
                     if (videos.length === 0) {
@@ -595,7 +584,7 @@
                     this.setProcessingState(true);
                     this.addLog('Avvio elaborazione...', 'info');
 
-                    const result = await ipcRenderer.invoke('start-processing', config);
+                    const result = await window.electronAPI.startProcessing(config);
                     this.addLog(result.message, 'success');
 
                 } catch (error) {
@@ -606,7 +595,7 @@
 
             async stopProcessing() {
                 try {
-                    await ipcRenderer.invoke('stop-processing');
+                    await window.electronAPI.stopProcessing();
                     this.setProcessingState(false);
                     this.addLog('Elaborazione interrotta dall\'utente', 'info');
                 } catch (error) {
@@ -688,7 +677,7 @@
 
             async openApiManager() {
                 try {
-                    this.apiConfig = await ipcRenderer.invoke('api-get-config');
+                    this.apiConfig = await window.electronAPI.loadApiConfig();
                     this.renderApiManager();
                     this.elements.apiModal.style.display = 'flex';
                 } catch (error) {
@@ -701,112 +690,210 @@
             }
 
             renderApiManager() {
-                const apis = Object.keys(this.apiConfig);
+                const apis = Object.keys(this.apiConfig || {});
 
                 let html = `
                     <div style="margin-bottom: 20px;">
                         <h3>🔌 API Configurate</h3>
                         <p>Gestisci le configurazioni API per l'analisi AI</p>
+                        <button class="btn btn-primary" onclick="ui.addNewApi()" style="margin-top: 10px;">
+                            ➕ Aggiungi Nuova API
+                        </button>
                     </div>
                 `;
 
                 if (apis.length === 0) {
                     html += `
                         <div style="text-align: center; padding: 40px; color: #999;">
-                            <p>Nessuna API configurata</p>
-                            <button class="btn btn-primary" onclick="ui.addNewApi()" style="margin-top: 20px;">
-                                Aggiungi Prima API
-                            </button>
+                            <p>Nessuna API configurata. Inizia aggiungendo la tua prima API.</p>
                         </div>
                     `;
                 } else {
-                    apis.forEach(apiKey => {
-                                const api = this.apiConfig[apiKey];
-                                const modelCount = Object.keys(api.models || {}).length;
+                    html += '<div id="api-list">';
 
-                                html += `
-                            <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
-                                <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 10px;">
-                                    <div>
-                                        <h4>${api.alias || apiKey}</h4>
-                                        <small style="color: #666;">ID: ${apiKey} • ${modelCount} modelli</small>
+                    apis.forEach((apiKey, index) => {
+                        const api = this.apiConfig[apiKey];
+                        const modelCount = Object.keys(api.models || {}).length;
+                        const enabled = api.enabled !== false;
+                        const priority = api.priority || index + 1;
+
+                        html += `
+                            <div class="api-card" style="border: 2px solid ${enabled ? '#27ae60' : '#e74c3c'}; border-radius: 12px; padding: 20px; margin-bottom: 20px; background: ${enabled ? '#f8fff8' : '#fff8f8'};">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                                    <div style="flex: 1;">
+                                        <h4 style="margin: 0; color: #2c3e50; font-size: 18px;">
+                                            <span style="color: ${enabled ? '#27ae60' : '#e74c3c'};">${enabled ? '●' : '○'}</span>
+                                            ${api.alias || apiKey}
+                                        </h4>
+                                        <p style="margin: 5px 0; color: #666; font-size: 14px;">
+                                            ID: <code>${apiKey}</code> • ${modelCount} modelli • Priorità: ${priority}
+                                        </p>
                                     </div>
-                                    <div>
-                                        <button class="btn" style="padding: 5px 10px; margin-right: 5px;" onclick="ui.editApi('${apiKey}')">
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn" style="padding: 8px 12px; background: #3498db; color: white; border-radius: 6px;" onclick="ui.editApi('${apiKey}')">
                                             ✏️ Modifica
                                         </button>
-                                        <button class="btn btn-secondary" style="padding: 5px 10px;" onclick="ui.deleteApi('${apiKey}')">
+                                        <button class="btn" style="padding: 8px 12px; background: ${enabled ? '#e67e22' : '#27ae60'}; color: white; border-radius: 6px;" onclick="ui.toggleApi('${apiKey}')">
+                                            ${enabled ? '⏸️ Disabilita' : '▶️ Abilita'}
+                                        </button>
+                                        <button class="btn" style="padding: 8px 12px; background: #e74c3c; color: white; border-radius: 6px;" onclick="ui.deleteApi('${apiKey}')">
                                             🗑️ Elimina
                                         </button>
                                     </div>
                                 </div>
                                 
-                                <div style="background: #f8f9fa; padding: 10px; border-radius: 5px;">
-                                    <strong>Modelli:</strong><br>
-                                    ${Object.keys(api.models || {}).map(model => 
-                                        ` < span style = "display: inline-block; background: #e3f2fd; padding: 2px 8px; border-radius: 12px; margin: 2px; font-size: 12px;" > $ {
-                                    model
-                                } < /span>`
-                            ).join('')
-                        } <
-                        /div> <
-                        /div>
-                    `;
+                                <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
+                                    <div style="margin-bottom: 10px;">
+                                        <strong style="color: #2c3e50;">Modelli Configurati:</strong>
+                                    </div>
+                                    ${Object.keys(api.models || {}).length > 0 ? 
+                                        Object.entries(api.models).map(([modelName, modelConfig]) => ` <
+                            div style = "display: inline-block; background: #e3f2fd; padding: 8px 12px; border-radius: 20px; margin: 4px; font-size: 13px; border: 1px solid #90caf9;" >
+                            <
+                            strong > $ {
+                                modelName
+                            } < /strong><br> <
+                            small style = "color: #1976d2;" >
+                            RPM: $ {
+                                modelConfig.limits ? .RPM || 'N/A'
+                            } |
+                            RPD: $ {
+                                modelConfig.limits ? .RPD || 'N/A'
+                            } |
+                            TPM: $ {
+                                modelConfig.limits ? .TPM || 'N/A'
+                            } <
+                            /small> <
+                            /div>
+                        `).join('')
+                                        : '<span style="color: #999; font-style: italic;">Nessun modello configurato</span>'
+                                    }
+                                    <div style="margin-top: 10px;">
+                                        <button class="btn" style="padding: 6px 12px; background: #9b59b6; color: white; border-radius: 6px; font-size: 12px;" onclick="ui.addModel('${apiKey}')">
+                                            ➕ Aggiungi Modello
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
                     });
-                    
-                    html += ` <
-                    div style = "text-align: center; margin-top: 20px;" >
-                        <
-                        button class = "btn btn-primary"
-                    onclick = "ui.addNewApi()" > ➕Aggiungi Nuova API <
-                        /button> <
-                        button class = "btn btn-api"
-                    onclick = "ui.saveApiConfig()"
-                    style = "margin-left: 10px;" > 💾Salva Configurazione <
-                        /button> <
-                        /div>
+
+                    html += '</div>';
+
+                    html += `
+                        <div style="margin-top: 30px; padding: 20px; background: #f0f9ff; border-radius: 10px; border: 1px solid #3498db;">
+                            <h4 style="color: #2c3e50; margin-bottom: 15px;">🎯 Impostazioni Globali</h4>
+                            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                                <button class="btn" style="padding: 10px 15px; background: #34495e; color: white; border-radius: 6px;" onclick="ui.reorderAPIs()">
+                                    🔄 Riordina Priorità
+                                </button>
+                                <button class="btn" style="padding: 10px 15px; background: #16a085; color: white; border-radius: 6px;" onclick="ui.testAPIs()">
+                                    🧪 Test Connessioni
+                                </button>
+                                <button class="btn" style="padding: 10px 15px; background: #8e44ad; color: white; border-radius: 6px;" onclick="ui.exportConfig()">
+                                    📤 Esporta Config
+                                </button>
+                                <button class="btn" style="padding: 10px 15px; background: #d35400; color: white; border-radius: 6px;" onclick="ui.importConfig()">
+                                    📥 Importa Config
+                                </button>
+                            </div>
+                        </div>
                     `;
                 }
-                
+
                 this.elements.apiContent.innerHTML = html;
             }
-            
-            addNewApi() {
-                const apiKey = prompt('Inserisci ID API (es: openai, anthropic):');
-                if (!apiKey) return;
-                
-                const alias = prompt('Inserisci alias descrittivo:') || apiKey;
-                
-                if (!this.apiConfig[apiKey]) {
-                    this.apiConfig[apiKey] = {
-                        alias: alias,
-                        models: {}
-                    };
+
+            async addNewApi() {
+                try {
+                    const apiKey = await window.electronAPI.showInputDialog('Nuovo API Provider', 'Inserisci ID API (es: openai, anthropic):');
+                    if (!apiKey) return;
+
+                    const alias = await window.electronAPI.showInputDialog('Alias API', 'Inserisci alias descrittivo:', apiKey);
+                    if (!alias) return;
+
+                    if (!this.apiConfig[apiKey]) {
+                        this.apiConfig[apiKey] = {
+                            alias: alias,
+                            models: {},
+                            enabled: true,
+                            priority: Object.keys(this.apiConfig).length + 1
+                        };
+                    }
+
+                    await this.saveApiConfig();
+                    this.renderApiManager();
+                } catch (error) {
+                    console.error('Errore aggiunta API:', error);
                 }
-                
-                this.renderApiManager();
             }
-            
+
             editApi(apiKey) {
-                // Implementazione semplificata - in una versione completa 
-                // si aprirebbe un form dettagliato
-                alert(`
-                    Modifica API $ {
-                        apiKey
-                    } - Funzionalità in sviluppo `);
+                // Implementa l'editor API completo
+                window.electronAPI.showMessage('Editor API', `Funzionalità di modifica per ${apiKey} in sviluppo`, 'info');
             }
-            
+
             deleteApi(apiKey) {
-                if (confirm(`
-                    Eliminare l 'API ${apiKey}?`)) {
+                if (confirm(`Eliminare l'API ${apiKey}?`)) {
                     delete this.apiConfig[apiKey];
                     this.renderApiManager();
                 }
             }
 
+            toggleApi(apiKey) {
+                if (this.apiConfig[apiKey]) {
+                    this.apiConfig[apiKey].enabled = !this.apiConfig[apiKey].enabled;
+                    this.renderApiManager();
+                }
+            }
+
+            async addModel(apiKey) {
+                try {
+                    const modelName = await window.electronAPI.showInputDialog('Nuovo Modello', 'Nome del modello:');
+                    if (!modelName) return;
+
+                    const rpm = await window.electronAPI.showInputDialog('Limiti RPM', 'Richieste per minuto:', '100');
+                    const rpd = await window.electronAPI.showInputDialog('Limiti RPD', 'Richieste per giorno:', '1000');
+                    const tpm = await window.electronAPI.showInputDialog('Limiti TPM', 'Token per minuto:', '50000');
+
+                    if (!this.apiConfig[apiKey].models) {
+                        this.apiConfig[apiKey].models = {};
+                    }
+
+                    this.apiConfig[apiKey].models[modelName] = {
+                        limits: {
+                            RPM: parseInt(rpm) || 100,
+                            RPD: parseInt(rpd) || 1000,
+                            TPM: parseInt(tpm) || 50000
+                        },
+                        requests: {}
+                    };
+
+                    this.renderApiManager();
+                } catch (error) {
+                    console.error('Errore aggiunta modello:', error);
+                }
+            }
+
+            reorderAPIs() {
+                window.electronAPI.showMessage('Riordina API', 'Funzionalità di riordinamento in sviluppo', 'info');
+            }
+
+            testAPIs() {
+                window.electronAPI.showMessage('Test API', 'Funzionalità di test connessioni in sviluppo', 'info');
+            }
+
+            exportConfig() {
+                window.electronAPI.showMessage('Esporta Config', 'Funzionalità di esportazione in sviluppo', 'info');
+            }
+
+            importConfig() {
+                window.electronAPI.showMessage('Importa Config', 'Funzionalità di importazione in sviluppo', 'info');
+            }
+
             async saveApiConfig() {
                 try {
-                    await ipcRenderer.invoke('api-save-config', this.apiConfig);
+                    await window.electronAPI.saveApiConfig(this.apiConfig);
                     this.addLog('Configurazione API salvata', 'success');
                     this.closeApiManager();
                 } catch (error) {

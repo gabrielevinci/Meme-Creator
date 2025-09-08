@@ -71,9 +71,9 @@ class ContentCreatorApp {
             minHeight: 600,
             icon: path.join(__dirname, 'icon.ico'),
             webPreferences: {
-                nodeIntegration: true,
-                contextIsolation: false,
-                enableRemoteModule: true
+                nodeIntegration: false,
+                contextIsolation: true,
+                preload: path.join(__dirname, 'preload.js')
             },
             title: 'Content Creator - 0 Chiacchiere'
         });
@@ -158,17 +158,85 @@ class ContentCreatorApp {
     }
 
     setupIpcHandlers() {
+        // Dialog APIs - versione migliorata
+        ipcMain.handle('show-input-dialog', async(event, title, message, defaultValue = '') => {
+            return new Promise((resolve) => {
+                const dialogWindow = new BrowserWindow({
+                    parent: this.mainWindow,
+                    modal: true,
+                    width: 450,
+                    height: 250,
+                    resizable: false,
+                    minimizable: false,
+                    maximizable: false,
+                    webPreferences: {
+                        nodeIntegration: true,
+                        contextIsolation: false
+                    },
+                    show: false
+                });
+
+                // Store params for the dialog
+                this.dialogParams = { title, message, defaultValue };
+
+                dialogWindow.loadFile(path.join(__dirname, 'dialog.html'));
+
+                dialogWindow.once('ready-to-show', () => {
+                    dialogWindow.show();
+                });
+
+                // Handle dialog result
+                const resultHandler = (event, result) => {
+                    ipcMain.removeListener('dialog-result', resultHandler);
+                    resolve(result);
+                };
+
+                ipcMain.on('dialog-result', resultHandler);
+
+                dialogWindow.on('closed', () => {
+                    ipcMain.removeListener('dialog-result', resultHandler);
+                    resolve(null);
+                });
+            });
+        });
+
+        // Helper per i parametri del dialog
+        ipcMain.handle('get-dialog-params', () => {
+            return this.dialogParams || {};
+        });
+
+        ipcMain.handle('show-message', async(event, title, message, type = 'info') => {
+            return await dialog.showMessageBox(this.mainWindow, {
+                type: type,
+                title: title,
+                message: message,
+                buttons: ['OK']
+            });
+        });
+
+        ipcMain.handle('show-confirm', async(event, title, message) => {
+            const result = await dialog.showMessageBox(this.mainWindow, {
+                type: 'question',
+                title: title,
+                message: message,
+                buttons: ['Sì', 'No'],
+                defaultId: 0,
+                cancelId: 1
+            });
+            return result.response === 0;
+        });
+
         // Gestione API
-        ipcMain.handle('api-get-config', () => {
+        ipcMain.handle('load-api-config', () => {
             return this.apiManager.getConfig();
         });
 
-        ipcMain.handle('api-save-config', (event, config) => {
+        ipcMain.handle('save-api-config', (event, config) => {
             return this.apiManager.saveConfig(config);
         });
 
         // Caricamento font
-        ipcMain.handle('get-fonts', async() => {
+        ipcMain.handle('load-fonts', async() => {
             const fontPath = path.join(__dirname, 'font');
             try {
                 const files = await fs.readdir(fontPath);
@@ -199,7 +267,7 @@ class ContentCreatorApp {
             }
         });
 
-        // Processo principale di elaborazione
+        // Elaborazione principale
         ipcMain.handle('start-processing', async(event, config) => {
             if (this.isProcessing) {
                 throw new Error('Elaborazione già in corso');
@@ -208,93 +276,97 @@ class ContentCreatorApp {
             this.isProcessing = true;
 
             try {
-                console.log('Avvio elaborazione con configurazione:', config);
+                this.mainWindow.webContents.send('status-update', 'Avvio elaborazione...');
 
-                // Step 1: Ottieni lista video
-                const videos = await this.getInputVideos();
-                if (videos.length === 0) {
-                    throw new Error('Nessun video trovato nella cartella INPUT');
-                }
+                const result = await this.processVideos(config);
 
-                console.log(`Trovati ${videos.length} video da elaborare`);
-
-                // Step 2: Estrazione frame (processo sequenziale)
-                const frameResults = [];
-                for (let i = 0; i < videos.length; i++) {
-                    const video = videos[i];
-                    event.sender.send('processing-status', {
-                        phase: 'extraction',
-                        current: i + 1,
-                        total: videos.length,
-                        file: video
-                    });
-
-                    const frames = await this.videoProcessor.extractFrames(
-                        path.join(__dirname, 'INPUT', video),
-                        config.useCollage
-                    );
-                    frameResults.push({ video, frames });
-                }
-
-                console.log('Estrazione frame completata per tutti i video');
-
-                // Step 3: Analisi AI (processo sequenziale)
-                const aiResults = [];
-                for (let i = 0; i < frameResults.length; i++) {
-                    const result = frameResults[i];
-                    event.sender.send('processing-status', {
-                        phase: 'ai-analysis',
-                        current: i + 1,
-                        total: frameResults.length,
-                        file: result.video
-                    });
-
-                    const analysis = await this.aiProcessor.analyzeFrames(
-                        result.frames,
-                        config,
-                        this.apiManager
-                    );
-
-                    // Salva risultato
-                    const outputFile = path.join(__dirname, 'OUTPUT',
-                        `${path.parse(result.video).name}_analysis.txt`);
-                    await fs.writeFile(outputFile, analysis);
-
-                    aiResults.push({ video: result.video, analysis, outputFile });
-                }
-
-                console.log('Analisi AI completata per tutti i video');
-
-                event.sender.send('processing-complete', {
-                    results: aiResults,
-                    totalProcessed: videos.length
+                this.mainWindow.webContents.send('log-update', {
+                    type: 'success',
+                    message: 'Elaborazione completata con successo'
                 });
 
-                return {
-                    success: true,
-                    message: `Elaborazione completata per ${videos.length} video`,
-                    results: aiResults
-                };
-
+                return result;
             } catch (error) {
-                console.error('Errore durante l\'elaborazione:', error);
-                event.sender.send('processing-error', error.message);
+                this.mainWindow.webContents.send('log-update', {
+                    type: 'error',
+                    message: `Errore durante l'elaborazione: ${error.message}`
+                });
                 throw error;
             } finally {
                 this.isProcessing = false;
             }
         });
 
-        // Stop elaborazione
-        ipcMain.handle('stop-processing', () => {
+        ipcMain.handle('stop-processing', async() => {
             this.isProcessing = false;
-            return { success: true };
+            this.mainWindow.webContents.send('status-update', 'Elaborazione interrotta');
+            return true;
         });
+    }
 
-        // Status elaborazione
-        ipcMain.handle('get-processing-status', () => {
-            return { isProcessing: this.isProcessing };
-        });
+    async processVideos(config) {
+        console.log('Avvio elaborazione con configurazione:', config);
+
+        // Step 1: Ottieni lista video
+        const videos = await this.getInputVideos();
+        if (videos.length === 0) {
+            throw new Error('Nessun video trovato nella cartella INPUT');
+        }
+
+        console.log(`Trovati ${videos.length} video da elaborare`);
+
+        // Step 2: Estrazione frame (processo sequenziale)
+        const frameResults = [];
+        for (let i = 0; i < videos.length; i++) {
+            const video = videos[i];
+            this.mainWindow.webContents.send('status-update', {
+                phase: 'extraction',
+                current: i + 1,
+                total: videos.length,
+                file: video
+            });
+
+            const frames = await this.videoProcessor.extractFrames(
+                path.join(__dirname, 'INPUT', video),
+                config.useCollage
+            );
+            frameResults.push({ video, frames });
+        }
+
+        console.log('Estrazione frame completata per tutti i video');
+
+        // Step 3: Analisi AI (processo sequenziale)
+        const aiResults = [];
+        for (let i = 0; i < frameResults.length; i++) {
+            const result = frameResults[i];
+            this.mainWindow.webContents.send('status-update', {
+                phase: 'ai-analysis',
+                current: i + 1,
+                total: frameResults.length,
+                file: result.video
+            });
+
+            const analysis = await this.aiProcessor.analyzeFrames(
+                result.frames,
+                config,
+                this.apiManager
+            );
+
+            // Salva risultato
+            const outputFile = path.join(__dirname, 'OUTPUT',
+                `${path.parse(result.video).name}_analysis.txt`);
+            await fs.writeFile(outputFile, analysis);
+
+            aiResults.push({ video: result.video, analysis, outputFile });
+        }
+
+        console.log('Analisi AI completata per tutti i video');
+
+        return {
+            success: true,
+            message: `Elaborazione completata per ${videos.length} video`,
+            results: aiResults
+        };
     }
 
     async getInputVideos() {

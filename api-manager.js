@@ -84,215 +84,203 @@ class ApiManager {
 
     // Ottiene la prossima API/modello disponibile basato sulla priorità
     getNextAvailableModel() {
-        const apis = Object.keys(this.config);
+        // Ordina le API per priorità (1 = più alta priorità)
+        const sortedApis = Object.entries(this.config)
+            .filter(([apiKey, api]) => api.enabled !== false)
+            .sort(([, a], [, b]) => (a.priority || 999) - (b.priority || 999));
 
-        for (const apiKey of apis) {
-            const api = this.config[apiKey];
-            const models = Object.keys(api.models || {});
+        for (const [apiKey, api] of sortedApis) {
+            const models = Object.entries(api.models || {});
 
-            for (const modelKey of models) {
-                const model = api.models[modelKey];
+            // Ordina i modelli per priorità interna (se definita)
+            const sortedModels = models.sort(([, a], [, b]) =>
+                (a.priority || 999) - (b.priority || 999)
+            );
 
-                // Controlla se il modello è disponibile (semplificato)
+            for (const [modelKey, model] of sortedModels) {
                 if (this.isModelAvailable(apiKey, modelKey, model)) {
                     return {
                         apiKey,
                         modelKey,
-                        model,
+                        config: model,
                         alias: api.alias
                     };
                 }
             }
         }
 
-        return null;
+        throw new Error('Nessun modello disponibile al momento. Controlla i limiti di rate limiting.');
     }
 
-    // Controlla se un modello è disponibile per l'uso
+    // Verifica se un modello è disponibile considerando i limiti
     isModelAvailable(apiKey, modelKey, model) {
-        const now = new Date();
-        const limits = model.limits;
+        const now = Date.now();
         const requests = model.requests || {};
+        const limits = model.limits || {};
 
-        // Conta le richieste nell'ultimo minuto
-        const oneMinuteAgo = new Date(now.getTime() - 60000);
-        const recentRequests = Object.keys(requests).filter(timestamp =>
-            new Date(timestamp) > oneMinuteAgo
-        ).length;
+        // Controllo RPM (Richieste Per Minuto)
+        if (limits.RPM) {
+            const lastMinute = now - 60 * 1000;
+            const recentRequests = Object.values(requests)
+                .filter(timestamp => timestamp > lastMinute).length;
 
-        // Conta le richieste oggi
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const todayRequests = Object.keys(requests).filter(timestamp =>
-            new Date(timestamp) >= todayStart
-        ).length;
-
-        // Verifica limiti
-        const withinRPM = recentRequests < limits.RPM;
-        const withinRPD = todayRequests < limits.RPD;
-
-        return withinRPM && withinRPD;
-    }
-
-    // Registra una nuova richiesta
-    async logRequest(apiKey, modelKey, requestData) {
-        try {
-            const timestamp = new Date().toISOString();
-
-            if (!this.config[apiKey] || !this.config[apiKey].models[modelKey]) {
-                throw new Error(`API o modello non trovato: ${apiKey}/${modelKey}`);
+            if (recentRequests >= limits.RPM) {
+                console.log(`Modello ${apiKey}/${modelKey} ha raggiunto il limite RPM (${recentRequests}/${limits.RPM})`);
+                return false;
             }
-
-            // Aggiungi la richiesta al log
-            this.config[apiKey].models[modelKey].requests[timestamp] = {
-                prompt: requestData.prompt ? requestData.prompt.substring(0, 100) + '...' : '',
-                tokens_used: requestData.tokens_used || 0,
-                response_time_ms: requestData.response_time_ms || 0,
-                output: requestData.output ? requestData.output.substring(0, 200) + '...' : '',
-                success: requestData.success || true
-            };
-
-            // Pulisci vecchi log (mantieni solo ultimi 30 giorni)
-            const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-            const requests = this.config[apiKey].models[modelKey].requests;
-
-            Object.keys(requests).forEach(timestamp => {
-                if (new Date(timestamp) < thirtyDaysAgo) {
-                    delete requests[timestamp];
-                }
-            });
-
-            // Salva configurazione aggiornata
-            await this.saveConfig(this.config);
-
-            console.log(`Richiesta registrata per ${apiKey}/${modelKey}`);
-
-        } catch (error) {
-            console.error('Errore nella registrazione richiesta:', error);
         }
+
+        // Controllo RPD (Richieste Per Giorno)
+        if (limits.RPD) {
+            const lastDay = now - 24 * 60 * 60 * 1000;
+            const dailyRequests = Object.values(requests)
+                .filter(timestamp => timestamp > lastDay).length;
+
+            if (dailyRequests >= limits.RPD) {
+                console.log(`Modello ${apiKey}/${modelKey} ha raggiunto il limite RPD (${dailyRequests}/${limits.RPD})`);
+                return false;
+            }
+        }
+
+        // Controllo TPM verrebbe implementato considerando i token effettivi
+        // Per ora è semplificato
+
+        return true;
     }
 
-    // Ottiene statistiche di utilizzo
-    getUsageStats(apiKey, modelKey) {
-        if (!this.config[apiKey] || !this.config[apiKey].models[modelKey]) {
-            return null;
+    // Registra una richiesta per il rate limiting
+    logRequest(apiKey, modelKey, tokensUsed = 0) {
+        const now = Date.now();
+        const requestId = `${now}_${Math.random().toString(36).substr(2, 9)}`;
+
+        if (!this.config[apiKey]) {
+            throw new Error(`API ${apiKey} non configurata`);
         }
 
-        const requests = this.config[apiKey].models[modelKey].requests || {};
-        const now = new Date();
+        if (!this.config[apiKey].models[modelKey]) {
+            throw new Error(`Modello ${modelKey} non configurato per API ${apiKey}`);
+        }
 
-        // Statistiche ultima ora
-        const oneHourAgo = new Date(now.getTime() - 3600000);
-        const hourlyRequests = Object.keys(requests).filter(timestamp =>
-            new Date(timestamp) > oneHourAgo
-        ).length;
+        if (!this.config[apiKey].models[modelKey].requests) {
+            this.config[apiKey].models[modelKey].requests = {};
+        }
 
-        // Statistiche oggi
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const dailyRequests = Object.keys(requests).filter(timestamp =>
-            new Date(timestamp) >= todayStart
-        ).length;
-
-        // Statistiche totali
-        const totalRequests = Object.keys(requests).length;
-
-        return {
-            hourly: hourlyRequests,
-            daily: dailyRequests,
-            total: totalRequests,
-            limits: this.config[apiKey].models[modelKey].limits
+        this.config[apiKey].models[modelKey].requests[requestId] = {
+            timestamp: now,
+            tokens: tokensUsed
         };
+
+        // Pulisci richieste vecchie (più di 1 giorno)
+        this.cleanOldRequests(apiKey, modelKey);
+
+        // Salva la configurazione aggiornata
+        this.saveConfig(this.config);
+
+        console.log(`Richiesta registrata: ${apiKey}/${modelKey} - ${tokensUsed} token`);
     }
 
-    // Ottiene tutte le API configurate con le loro statistiche
-    getAllApisWithStats() {
-        const result = {};
+    // Pulisce le richieste vecchie per ottimizzare la memoria
+    cleanOldRequests(apiKey, modelKey) {
+        const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+        const requests = this.config[apiKey].models[modelKey].requests || {};
 
-        Object.keys(this.config).forEach(apiKey => {
-            const api = this.config[apiKey];
-            result[apiKey] = {
-                alias: api.alias,
-                models: {}
+        for (const [requestId, requestData] of Object.entries(requests)) {
+            if (requestData.timestamp < oneDayAgo) {
+                delete requests[requestId];
+            }
+        }
+    }
+
+    // Ottiene statistiche di utilizzo per un'API
+    getApiStats(apiKey) {
+        if (!this.config[apiKey]) return null;
+
+        const api = this.config[apiKey];
+        const now = Date.now();
+        const stats = {
+            alias: api.alias,
+            enabled: api.enabled !== false,
+            priority: api.priority || 999,
+            models: {}
+        };
+
+        for (const [modelKey, model] of Object.entries(api.models || {})) {
+            const requests = Object.values(model.requests || {});
+            const lastHour = now - 60 * 60 * 1000;
+            const lastDay = now - 24 * 60 * 60 * 1000;
+
+            stats.models[modelKey] = {
+                limits: model.limits || {},
+                usage: {
+                    lastHour: requests.filter(req => req.timestamp > lastHour).length,
+                    lastDay: requests.filter(req => req.timestamp > lastDay).length,
+                    totalTokens: requests.reduce((sum, req) => sum + (req.tokens || 0), 0)
+                },
+                available: this.isModelAvailable(apiKey, modelKey, model)
             };
+        }
 
-            Object.keys(api.models || {}).forEach(modelKey => {
-                result[apiKey].models[modelKey] = {
-                    ...api.models[modelKey],
-                    stats: this.getUsageStats(apiKey, modelKey),
-                    available: this.isModelAvailable(apiKey, modelKey, api.models[modelKey])
-                };
-            });
+        return stats;
+    }
+
+    // Ottiene tutte le statistiche
+    getAllStats() {
+        const stats = {};
+        for (const apiKey of Object.keys(this.config)) {
+            stats[apiKey] = this.getApiStats(apiKey);
+        }
+        return stats;
+    }
+
+    // Riordina le priorità delle API
+    reorderPriorities(newOrder) {
+        newOrder.forEach((apiKey, index) => {
+            if (this.config[apiKey]) {
+                this.config[apiKey].priority = index + 1;
+            }
         });
 
-        return result;
+        return this.saveConfig(this.config);
     }
 
-    // Aggiungi una nuova API
-    async addApi(apiKey, alias, models = {}) {
+    // Abilita/disabilita un'API
+    toggleApi(apiKey) {
         if (this.config[apiKey]) {
-            throw new Error(`API ${apiKey} già esistente`);
+            this.config[apiKey].enabled = !this.config[apiKey].enabled;
+            return this.saveConfig(this.config);
         }
-
-        this.config[apiKey] = {
-            alias: alias,
-            models: models
-        };
-
-        await this.saveConfig(this.config);
-        return { success: true };
+        throw new Error(`API ${apiKey} non trovata`);
     }
 
-    // Rimuovi un'API
-    async removeApi(apiKey) {
+    // Aggiunge un nuovo modello a un'API esistente
+    addModel(apiKey, modelName, limits = {}) {
         if (!this.config[apiKey]) {
-            throw new Error(`API ${apiKey} non trovata`);
+            throw new Error(`API ${apiKey} non configurata`);
         }
 
-        delete this.config[apiKey];
-        await this.saveConfig(this.config);
-        return { success: true };
-    }
-
-    // Aggiungi un modello a un'API esistente
-    async addModel(apiKey, modelKey, limits) {
-        if (!this.config[apiKey]) {
-            throw new Error(`API ${apiKey} non trovata`);
+        if (!this.config[apiKey].models) {
+            this.config[apiKey].models = {};
         }
 
-        if (this.config[apiKey].models[modelKey]) {
-            throw new Error(`Modello ${modelKey} già esistente per API ${apiKey}`);
-        }
-
-        this.config[apiKey].models[modelKey] = {
-            limits: limits,
+        this.config[apiKey].models[modelName] = {
+            limits: {
+                RPM: limits.RPM || 100,
+                RPD: limits.RPD || 1000,
+                TPM: limits.TPM || 50000
+            },
             requests: {}
         };
 
-        await this.saveConfig(this.config);
-        return { success: true };
+        return this.saveConfig(this.config);
     }
 
-    // Rimuovi un modello da un'API
-    async removeModel(apiKey, modelKey) {
-        if (!this.config[apiKey] || !this.config[apiKey].models[modelKey]) {
-            throw new Error(`Modello ${apiKey}/${modelKey} non trovato`);
+    // Rimuove un modello
+    removeModel(apiKey, modelName) {
+        if (this.config[apiKey] && this.config[apiKey].models[modelName]) {
+            delete this.config[apiKey].models[modelName];
+            return this.saveConfig(this.config);
         }
-
-        delete this.config[apiKey].models[modelKey];
-        await this.saveConfig(this.config);
-        return { success: true };
-    }
-
-    // Reset dei contatori per tutti i modelli
-    async resetAllCounters() {
-        Object.keys(this.config).forEach(apiKey => {
-            Object.keys(this.config[apiKey].models || {}).forEach(modelKey => {
-                this.config[apiKey].models[modelKey].requests = {};
-            });
-        });
-
-        await this.saveConfig(this.config);
-        console.log('Tutti i contatori sono stati resettati');
-        return { success: true };
+        throw new Error(`Modello ${modelName} non trovato per API ${apiKey}`);
     }
 }
 

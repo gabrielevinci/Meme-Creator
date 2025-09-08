@@ -312,6 +312,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .modal-close {
@@ -528,9 +532,63 @@
         
         .limits-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-top: 10px;
+        }
+
+        .limit-item input {
+            border: 1px solid transparent;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .limit-item input:hover {
+            border-color: #ddd;
+            background: #f9f9f9;
+        }
+
+        .limit-item input:focus {
+            border-color: #3498db;
+            background: white;
+            outline: none;
+        }
+
+        .model-name input {
+            border: 1px solid transparent;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .model-name input:hover {
+            border-color: #ddd;
+            background: #f9f9f9;
+        }
+
+        .model-name input:focus {
+            border-color: #3498db;
+            background: white;
+            outline: none;
+        }
+
+        .model-name select {
+            border: 1px solid transparent;
+            padding: 2px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .model-name select:hover {
+            border-color: #ddd;
+            background: #f9f9f9;
+        }
+
+        .model-name select:focus {
+            border-color: #3498db;
+            background: white;
+            outline: none;
         }
         
         .limit-item {
@@ -826,13 +884,13 @@
                                 </div>
                                 <div class="form-field">
                                     <label>Nome Descrittivo</label>
-                                    <input type="text" id="edit-api-alias">
+                                    <input type="text" id="edit-api-alias" oninput="ui.autoSaveApiChanges()">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-field">
                                     <label>Priorità</label>
-                                    <select id="edit-api-priority">
+                                    <select id="edit-api-priority" onchange="ui.autoSaveApiChanges()">
                                         <option value="1">1 - Massima priorità</option>
                                         <option value="2">2 - Molto alta</option>
                                         <option value="3">3 - Alta priorità</option>
@@ -848,7 +906,7 @@
                                 <div class="form-field">
                                     <label>Stato</label>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" id="edit-api-enabled">
+                                        <input type="checkbox" id="edit-api-enabled" onchange="ui.autoSaveApiChanges()">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -907,11 +965,17 @@
                         </div>
 
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
-                            <button class="save-btn" onclick="ui.saveApiChanges()">💾 Salva Modifiche</button>
-                            <button class="cancel-btn" onclick="ui.cancelEdit()">❌ Annulla</button>
-                            <button class="btn-small btn-delete" onclick="ui.deleteCurrentApi()" style="float: right; padding: 12px 20px;">
-                                🗑️ Elimina API
-                            </button>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span style="color: #27ae60; font-size: 14px;">✅ Auto-save attivo - Le modifiche vengono salvate automaticamente</span>
+                                </div>
+                                <div>
+                                    <button class="cancel-btn" onclick="ui.cancelEdit()">❌ Chiudi</button>
+                                    <button class="btn-small btn-delete" onclick="ui.deleteCurrentApi()" style="margin-left: 10px; padding: 12px 20px;">
+                                        🗑️ Elimina API
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1149,7 +1213,7 @@
                 const timestamp = new Date().toLocaleTimeString();
                 const logEntry = document.createElement('div');
                 logEntry.className = `log-entry ${type}`;
-                
+
                 // Formato dettagliato per debug
                 const sourceLabel = source !== 'ui' ? `[${source.toUpperCase()}] ` : '';
                 logEntry.textContent = `[${timestamp}] ${sourceLabel}${message}`;
@@ -1173,7 +1237,7 @@
                 const timestamp = new Date(logData.timestamp).toLocaleTimeString();
                 const logEntry = document.createElement('div');
                 logEntry.className = `log-entry ${logData.level}`;
-                
+
                 const sourceLabel = logData.source !== 'ui' ? `[${logData.source.toUpperCase()}] ` : '';
                 logEntry.textContent = `[${timestamp}] ${sourceLabel}${logData.message}`;
 
@@ -1276,7 +1340,7 @@
                                 modelConfig.limits ? .TPM || 'N/A'
                             } <
                             /small> < /
-                            div >
+                        div >
                             `).join('')
                                         : '<span style="color: #999; font-style: italic;">Nessun modello configurato</span>'
                                     }
@@ -1479,8 +1543,22 @@
                     html += `
                         <div class="model-item">
                             <div class="model-header">
-                                <div class="model-name">${modelKey} <span style="color: #666; font-size: 12px;">(Priorità: ${priority})</span></div>
+                                <div class="model-name">
+                                    <input type="text" value="${modelKey}" style="border: none; background: transparent; font-weight: bold; font-size: 16px; width: 100%;" 
+                                           onchange="ui.editModelName('${apiKey}', '${modelKey}', this.value)" />
+                                    <span style="color: #666; font-size: 12px;">(Priorità: 
+                                        <select onchange="ui.editModelPriority('${apiKey}', '${modelKey}', this.value)" style="border: none; background: transparent;">
+                                            ${Array.from({length: 10}, (_, i) => {
+                                                const val = i + 1;
+                                                return `<option value="${val}" ${priority == val ? 'selected' : ''}>${val}</option>`;
+                                            }).join('')}
+                                        </select>)
+                                    </span>
+                                </div>
                                 <div class="model-actions">
+                                    <button class="btn-small btn-edit" onclick="ui.editModel('${apiKey}', '${modelKey}')" title="Modifica">
+                                        ✏️ Modifica
+                                    </button>
                                     <button class="btn-small btn-delete" onclick="ui.deleteModel('${apiKey}', '${modelKey}')">
                                         🗑️ Elimina
                                     </button>
@@ -1488,15 +1566,21 @@
                             </div>
                             <div class="limits-grid">
                                 <div class="limit-item">
-                                    <div class="limit-value">${limits.RPM || 'N/A'}</div>
+                                    <input type="number" value="${limits.RPM || 100}" min="1" 
+                                           onchange="ui.editModelLimit('${apiKey}', '${modelKey}', 'RPM', this.value)"
+                                           style="border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" />
                                     <div class="limit-label">RPM</div>
                                 </div>
                                 <div class="limit-item">
-                                    <div class="limit-value">${limits.RPD || 'N/A'}</div>
+                                    <input type="number" value="${limits.RPD || 1000}" min="1" 
+                                           onchange="ui.editModelLimit('${apiKey}', '${modelKey}', 'RPD', this.value)"
+                                           style="border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" />
                                     <div class="limit-label">RPD</div>
                                 </div>
                                 <div class="limit-item">
-                                    <div class="limit-value">${limits.TPM || 'N/A'}</div>
+                                    <input type="number" value="${limits.TPM || 50000}" min="1" 
+                                           onchange="ui.editModelLimit('${apiKey}', '${modelKey}', 'TPM', this.value)"
+                                           style="border: none; background: transparent; text-align: center; font-weight: bold; width: 100%;" />
                                     <div class="limit-label">TPM</div>
                                 </div>
                                 <div class="limit-item">
@@ -1530,6 +1614,15 @@
                     return;
                 }
 
+                // Controlla se esiste già un modello con la stessa priorità
+                const existingModelWithPriority = Object.entries(this.apiConfig[this.currentApiKey].models || {})
+                    .find(([, model]) => model.priority === priority);
+
+                if (existingModelWithPriority) {
+                    alert(`Errore: Esiste già un modello "${existingModelWithPriority[0]}" con priorità ${priority}.\nCambia la priorità per il nuovo modello.`);
+                    return;
+                }
+
                 this.apiConfig[this.currentApiKey].models[name] = {
                     priority: priority,
                     limits: {
@@ -1539,6 +1632,9 @@
                     },
                     requests: {}
                 };
+
+                // Auto-save
+                await this.saveApiConfig();
 
                 // Reset form
                 document.getElementById('new-model-name').value = '';
@@ -1606,6 +1702,84 @@
                     console.error('Errore salvataggio API config:', error);
                     this.addLog('Errore nel salvataggio configurazione API', 'error');
                 }
+            }
+
+            // Auto-save per le modifiche API
+            async autoSaveApiChanges() {
+                if (!this.currentApiKey) return;
+
+                const alias = document.getElementById('edit-api-alias').value.trim();
+                const priority = parseInt(document.getElementById('edit-api-priority').value);
+                const enabled = document.getElementById('edit-api-enabled').checked;
+
+                if (!alias) return;
+
+                this.apiConfig[this.currentApiKey].alias = alias;
+                this.apiConfig[this.currentApiKey].priority = priority;
+                this.apiConfig[this.currentApiKey].enabled = enabled;
+
+                await this.saveApiConfig();
+                this.renderApiList();
+            }
+
+            // Modifica nome modello
+            async editModelName(apiKey, oldName, newName) {
+                if (!newName.trim() || oldName === newName) return;
+
+                if (this.apiConfig[apiKey].models[newName]) {
+                    alert('Un modello con questo nome esiste già');
+                    this.renderModelsList(apiKey);
+                    return;
+                }
+
+                // Sposta il modello con il nuovo nome
+                const modelData = this.apiConfig[apiKey].models[oldName];
+                this.apiConfig[apiKey].models[newName] = modelData;
+                delete this.apiConfig[apiKey].models[oldName];
+
+                await this.saveApiConfig();
+                this.renderModelsList(apiKey);
+                this.renderApiList();
+                this.addLog(`Modello rinominato da "${oldName}" a "${newName}"`, 'info');
+            }
+
+            // Modifica priorità modello
+            async editModelPriority(apiKey, modelName, newPriority) {
+                const priority = parseInt(newPriority);
+                const currentPriority = this.apiConfig[apiKey].models[modelName].priority;
+
+                if (priority === currentPriority) return;
+
+                // Controlla se esiste già un modello con la stessa priorità
+                const existingModelWithPriority = Object.entries(this.apiConfig[apiKey].models || {})
+                    .find(([name, model]) => name !== modelName && model.priority === priority);
+
+                if (existingModelWithPriority) {
+                    alert(`Errore: Il modello "${existingModelWithPriority[0]}" ha già priorità ${priority}.\nCambia prima la priorità di quel modello.`);
+                    this.renderModelsList(apiKey);
+                    return;
+                }
+
+                this.apiConfig[apiKey].models[modelName].priority = priority;
+                await this.saveApiConfig();
+                this.renderModelsList(apiKey);
+                this.addLog(`Priorità modello "${modelName}" cambiata a ${priority}`, 'info');
+            }
+
+            // Modifica limiti modello
+            async editModelLimit(apiKey, modelName, limitType, newValue) {
+                const value = parseInt(newValue);
+                if (value <= 0) return;
+
+                this.apiConfig[apiKey].models[modelName].limits[limitType] = value;
+                await this.saveApiConfig();
+                this.addLog(`${limitType} modello "${modelName}" aggiornato a ${value}`, 'info');
+            }
+
+            // Modifica modello (modal dettagliato)
+            editModel(apiKey, modelName) {
+                const model = this.apiConfig[apiKey].models[modelName];
+                alert(`Modifica dettagliata del modello "${modelName}":\n\nPriorità: ${model.priority}\nRPM: ${model.limits.RPM}\nRPD: ${model.limits.RPD}\nTPM: ${model.limits.TPM}\n\nUsa i campi diretti per modificare i valori.`);
             }
         }
 

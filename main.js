@@ -65,7 +65,7 @@ class ContentCreatorApp {
         };
 
         console.log(`[${logEntry.timestamp}] [${logEntry.level.toUpperCase()}] [${logEntry.source}] ${logEntry.message}`);
-        
+
         if (this.mainWindow && !this.mainWindow.isDestroyed()) {
             this.mainWindow.webContents.send('app-log', logEntry);
         }
@@ -73,7 +73,7 @@ class ContentCreatorApp {
 
     async initialize() {
         this.log('info', 'Inizializzazione Content Creator - 0 Chiacchiere...');
-        
+
         // Nota: questa è un'applicazione Electron desktop, non una web app
         this.log('info', 'NOTA: Questa è un\'applicazione desktop Electron, non viene avviato alcun server localhost');
         this.log('info', 'L\'applicazione si aprirà come finestra desktop separata');

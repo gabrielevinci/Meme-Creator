@@ -18,10 +18,65 @@ class ContentCreatorApp {
 
         // Verifica modalità sviluppo
         this.isDev = process.argv.includes('--enable-localhost');
+
+        // Sistema di logging centralizzato
+        this.setupLogging();
+    }
+
+    setupLogging() {
+        // Override console.log per inviare al renderer
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        console.log = (...args) => {
+            originalLog(...args);
+            this.sendLogToRenderer('info', args.join(' '));
+        };
+
+        console.error = (...args) => {
+            originalError(...args);
+            this.sendLogToRenderer('error', args.join(' '));
+        };
+
+        console.warn = (...args) => {
+            originalWarn(...args);
+            this.sendLogToRenderer('warning', args.join(' '));
+        };
+    }
+
+    sendLogToRenderer(level, message) {
+        if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            this.mainWindow.webContents.send('app-log', {
+                timestamp: new Date().toISOString(),
+                level: level,
+                message: message,
+                source: 'main'
+            });
+        }
+    }
+
+    log(level, message, source = 'main') {
+        const logEntry = {
+            timestamp: new Date().toISOString(),
+            level: level,
+            message: message,
+            source: source
+        };
+
+        console.log(`[${logEntry.timestamp}] [${logEntry.level.toUpperCase()}] [${logEntry.source}] ${logEntry.message}`);
+        
+        if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            this.mainWindow.webContents.send('app-log', logEntry);
+        }
     }
 
     async initialize() {
-        console.log('Inizializzazione Content Creator - 0 Chiacchiere...');
+        this.log('info', 'Inizializzazione Content Creator - 0 Chiacchiere...');
+        
+        // Nota: questa è un'applicazione Electron desktop, non una web app
+        this.log('info', 'NOTA: Questa è un\'applicazione desktop Electron, non viene avviato alcun server localhost');
+        this.log('info', 'L\'applicazione si aprirà come finestra desktop separata');
 
         // Assicurati che le cartelle necessarie esistano
         await this.ensureDirectories();
@@ -57,9 +112,9 @@ class ContentCreatorApp {
             for (const file of files) {
                 await fs.unlink(path.join(outputPath, file));
             }
-            console.log('Cartella OUTPUT pulita');
+            this.log('info', 'Cartella OUTPUT pulita');
         } catch (error) {
-            console.log('Errore nella pulizia OUTPUT:', error.message);
+            this.log('error', `Errore nella pulizia OUTPUT: ${error.message}`);
         }
     }
 
@@ -301,6 +356,11 @@ class ContentCreatorApp {
             this.isProcessing = false;
             this.mainWindow.webContents.send('status-update', 'Elaborazione interrotta');
             return true;
+        });
+
+        // Handler per logging dal renderer
+        ipcMain.handle('log-message', (event, level, message, source = 'renderer') => {
+            this.log(level, message, source);
         });
     }
 

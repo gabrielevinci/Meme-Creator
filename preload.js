@@ -21,10 +21,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
     startProcessing: (params) => ipcRenderer.invoke('start-processing', params),
     stopProcessing: () => ipcRenderer.invoke('stop-processing'),
 
+    // Logging
+    log: (level, message, source) => ipcRenderer.invoke('log-message', level, message, source),
+
     // Status updates
     onStatusUpdate: (callback) => ipcRenderer.on('status-update', callback),
     onLogUpdate: (callback) => ipcRenderer.on('log-update', callback),
     onProgressUpdate: (callback) => ipcRenderer.on('progress-update', callback),
+    onAppLog: (callback) => ipcRenderer.on('app-log', callback),
 
     // Remove listeners
     removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel)

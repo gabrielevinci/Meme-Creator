@@ -789,10 +789,15 @@
                                     <label>Priorità</label>
                                     <select id="new-api-priority">
                                         <option value="1">1 - Massima priorità</option>
-                                        <option value="2">2 - Alta priorità</option>
-                                        <option value="3">3 - Media priorità</option>
-                                        <option value="4">4 - Bassa priorità</option>
-                                        <option value="5">5 - Minima priorità</option>
+                                        <option value="2">2 - Molto alta</option>
+                                        <option value="3">3 - Alta priorità</option>
+                                        <option value="4">4 - Media-alta</option>
+                                        <option value="5">5 - Media priorità</option>
+                                        <option value="6">6 - Media-bassa</option>
+                                        <option value="7">7 - Bassa priorità</option>
+                                        <option value="8">8 - Molto bassa</option>
+                                        <option value="9">9 - Minima priorità</option>
+                                        <option value="10">10 - Backup/Fallback</option>
                                     </select>
                                 </div>
                                 <div class="form-field">
@@ -829,10 +834,15 @@
                                     <label>Priorità</label>
                                     <select id="edit-api-priority">
                                         <option value="1">1 - Massima priorità</option>
-                                        <option value="2">2 - Alta priorità</option>
-                                        <option value="3">3 - Media priorità</option>
-                                        <option value="4">4 - Bassa priorità</option>
-                                        <option value="5">5 - Minima priorità</option>
+                                        <option value="2">2 - Molto alta</option>
+                                        <option value="3">3 - Alta priorità</option>
+                                        <option value="4">4 - Media-alta</option>
+                                        <option value="5">5 - Media priorità</option>
+                                        <option value="6">6 - Media-bassa</option>
+                                        <option value="7">7 - Bassa priorità</option>
+                                        <option value="8">8 - Molto bassa</option>
+                                        <option value="9">9 - Minima priorità</option>
+                                        <option value="10">10 - Backup/Fallback</option>
                                     </select>
                                 </div>
                                 <div class="form-field">
@@ -860,6 +870,23 @@
                                         <label>Nome Modello</label>
                                         <input type="text" id="new-model-name" placeholder="es: gpt-4o, claude-3">
                                     </div>
+                                    <div class="form-field">
+                                        <label>Priorità Modello</label>
+                                        <select id="new-model-priority">
+                                            <option value="1">1 - Primo uso</option>
+                                            <option value="2">2 - Secondo uso</option>
+                                            <option value="3">3 - Terzo uso</option>
+                                            <option value="4">4 - Quarto uso</option>
+                                            <option value="5">5 - Quinto uso</option>
+                                            <option value="6">6 - Sesto uso</option>
+                                            <option value="7">7 - Settimo uso</option>
+                                            <option value="8">8 - Ottavo uso</option>
+                                            <option value="9">9 - Nono uso</option>
+                                            <option value="10">10 - Ultimo uso/Fallback</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
                                     <div class="form-field">
                                         <label>RPM (Richieste/Minuto)</label>
                                         <input type="number" id="new-model-rpm" value="100" min="1">
@@ -951,6 +978,11 @@
 
                 window.electronAPI.onProgressUpdate((event, error) => {
                     this.onProcessingError(error);
+                });
+
+                // Log centralizzato dal main process
+                window.electronAPI.onAppLog((event, logData) => {
+                    this.handleAppLog(logData);
                 });
             }
 
@@ -1113,11 +1145,37 @@
                 this.addLog(`Errore durante l'elaborazione: ${error}`, 'error');
             }
 
-            addLog(message, type = 'info') {
+            addLog(message, type = 'info', source = 'ui') {
                 const timestamp = new Date().toLocaleTimeString();
                 const logEntry = document.createElement('div');
                 logEntry.className = `log-entry ${type}`;
-                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                // Formato dettagliato per debug
+                const sourceLabel = source !== 'ui' ? `[${source.toUpperCase()}] ` : '';
+                logEntry.textContent = `[${timestamp}] ${sourceLabel}${message}`;
+
+                this.elements.logContainer.appendChild(logEntry);
+                this.elements.logContainer.scrollTop = this.elements.logContainer.scrollHeight;
+
+                // Mantieni solo gli ultimi 100 log
+                const logs = this.elements.logContainer.querySelectorAll('.log-entry');
+                if (logs.length > 100) {
+                    logs[0].remove();
+                }
+
+                // Invia anche al main process per il logging centralizzato
+                if (source === 'ui') {
+                    window.electronAPI.log(type, message, 'renderer');
+                }
+            }
+
+            handleAppLog(logData) {
+                const timestamp = new Date(logData.timestamp).toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${logData.level}`;
+                
+                const sourceLabel = logData.source !== 'ui' ? `[${logData.source.toUpperCase()}] ` : '';
+                logEntry.textContent = `[${timestamp}] ${sourceLabel}${logData.message}`;
 
                 this.elements.logContainer.appendChild(logEntry);
                 this.elements.logContainer.scrollTop = this.elements.logContainer.scrollHeight;
@@ -1406,14 +1464,22 @@
                 }
 
                 let html = '';
+                // Ordina i modelli per priorità
+                modelKeys.sort((a, b) => {
+                    const priorityA = models[a].priority || 999;
+                    const priorityB = models[b].priority || 999;
+                    return priorityA - priorityB;
+                });
+
                 modelKeys.forEach(modelKey => {
                     const model = models[modelKey];
                     const limits = model.limits || {};
+                    const priority = model.priority || 'N/A';
 
                     html += `
                         <div class="model-item">
                             <div class="model-header">
-                                <div class="model-name">${modelKey}</div>
+                                <div class="model-name">${modelKey} <span style="color: #666; font-size: 12px;">(Priorità: ${priority})</span></div>
                                 <div class="model-actions">
                                     <button class="btn-small btn-delete" onclick="ui.deleteModel('${apiKey}', '${modelKey}')">
                                         🗑️ Elimina
@@ -1433,6 +1499,10 @@
                                     <div class="limit-value">${limits.TPM || 'N/A'}</div>
                                     <div class="limit-label">TPM</div>
                                 </div>
+                                <div class="limit-item">
+                                    <div class="limit-value">${priority}</div>
+                                    <div class="limit-label">Priorità</div>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -1445,6 +1515,7 @@
                 if (!this.currentApiKey) return;
 
                 const name = document.getElementById('new-model-name').value.trim();
+                const priority = parseInt(document.getElementById('new-model-priority').value) || 1;
                 const rpm = parseInt(document.getElementById('new-model-rpm').value) || 100;
                 const rpd = parseInt(document.getElementById('new-model-rpd').value) || 1000;
                 const tpm = parseInt(document.getElementById('new-model-tpm').value) || 50000;
@@ -1460,6 +1531,7 @@
                 }
 
                 this.apiConfig[this.currentApiKey].models[name] = {
+                    priority: priority,
                     limits: {
                         RPM: rpm,
                         RPD: rpd,
@@ -1470,13 +1542,14 @@
 
                 // Reset form
                 document.getElementById('new-model-name').value = '';
+                document.getElementById('new-model-priority').value = '1';
                 document.getElementById('new-model-rpm').value = '100';
                 document.getElementById('new-model-rpd').value = '1000';
                 document.getElementById('new-model-tpm').value = '50000';
 
                 this.renderModelsList(this.currentApiKey);
                 this.renderApiList(); // Aggiorna anche la lista
-                this.addLog(`Modello ${name} aggiunto a ${this.apiConfig[this.currentApiKey].alias}`, 'success');
+                this.addLog(`Modello ${name} aggiunto a ${this.apiConfig[this.currentApiKey].alias} con priorità ${priority}`, 'success');
             }
 
             async deleteModel(apiKey, modelKey) {

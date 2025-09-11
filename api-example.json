@@ -1,0 +1,111 @@
+{
+  "openai": {
+    "alias": "OpenAI GPT Models",
+    "priority": 1,
+    "enabled": true,
+    "models": {
+      "gpt-4o": {
+        "priority": 1,
+        "limits": {
+          "RPM": 500,
+          "RPD": 10000,
+          "TPM": 150000
+        },
+        "requests": {}
+      },
+      "gpt-4o-mini": {
+        "priority": 2,
+        "limits": {
+          "RPM": 1000,
+          "RPD": 20000,
+          "TPM": 200000
+        },
+        "requests": {}
+      },
+      "gpt-4-turbo": {
+        "priority": 3,
+        "limits": {
+          "RPM": 300,
+          "RPD": 8000,
+          "TPM": 100000
+        },
+        "requests": {}
+      }
+    }
+  },
+  "anthropic": {
+    "alias": "Anthropic Claude Models",
+    "priority": 2,
+    "enabled": true,
+    "models": {
+      "claude-3-5-sonnet": {
+        "priority": 1,
+        "limits": {
+          "RPM": 400,
+          "RPD": 8000,
+          "TPM": 120000
+        },
+        "requests": {}
+      },
+      "claude-3-haiku": {
+        "priority": 2,
+        "limits": {
+          "RPM": 600,
+          "RPD": 12000,
+          "TPM": 180000
+        },
+        "requests": {}
+      }
+    }
+  },
+  "google": {
+    "alias": "Google Gemini Models",
+    "priority": 3,
+    "enabled": true,
+    "models": {
+      "gemini-1.5-pro": {
+        "priority": 1,
+        "limits": {
+          "RPM": 350,
+          "RPD": 7000,
+          "TPM": 100000
+        },
+        "requests": {}
+      },
+      "gemini-1.5-flash": {
+        "priority": 2,
+        "limits": {
+          "RPM": 500,
+          "RPD": 10000,
+          "TPM": 150000
+        },
+        "requests": {}
+      }
+    }
+  },
+  "groq": {
+    "alias": "Groq Fast Inference",
+    "priority": 4,
+    "enabled": false,
+    "models": {
+      "mixtral-8x7b": {
+        "priority": 1,
+        "limits": {
+          "RPM": 200,
+          "RPD": 5000,
+          "TPM": 80000
+        },
+        "requests": {}
+      },
+      "llama-3.1-70b": {
+        "priority": 2,
+        "limits": {
+          "RPM": 150,
+          "RPD": 3000,
+          "TPM": 60000
+        },
+        "requests": {}
+      }
+    }
+  }
+}

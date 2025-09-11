@@ -253,7 +253,7 @@ class ApiManager {
     }
 
     // Aggiunge un nuovo modello a un'API esistente
-    addModel(apiKey, modelName, limits = {}) {
+    addModel(apiKey, modelName, limits = {}, priority = null) {
         if (!this.config[apiKey]) {
             throw new Error(`API ${apiKey} non configurata`);
         }
@@ -262,13 +262,66 @@ class ApiManager {
             this.config[apiKey].models = {};
         }
 
+        if (this.config[apiKey].models[modelName]) {
+            throw new Error(`Modello ${modelName} già esistente per API ${apiKey}`);
+        }
+
+        // Se non specificata, assegna la priorità più alta disponibile
+        if (priority === null) {
+            const existingPriorities = Object.values(this.config[apiKey].models)
+                .map(model => model.priority || 999)
+                .filter(p => p !== 999);
+            priority = existingPriorities.length > 0 ? Math.max(...existingPriorities) + 1 : 1;
+        }
+
+        // Verifica che la priorità non sia già in uso
+        const conflictingModel = Object.entries(this.config[apiKey].models)
+            .find(([, model]) => model.priority === priority);
+        
+        if (conflictingModel) {
+            throw new Error(`Priorità ${priority} già in uso dal modello ${conflictingModel[0]}`);
+        }
+
         this.config[apiKey].models[modelName] = {
+            priority: priority,
             limits: {
                 RPM: limits.RPM || 100,
                 RPD: limits.RPD || 1000,
                 TPM: limits.TPM || 50000
             },
             requests: {}
+        };
+
+        return this.saveConfig(this.config);
+    }
+
+    // Aggiunge una nuova API
+    addApi(apiKey, alias, priority = null, enabled = true) {
+        if (this.config[apiKey]) {
+            throw new Error(`API ${apiKey} già esistente`);
+        }
+
+        // Se non specificata, assegna la priorità più alta disponibile
+        if (priority === null) {
+            const existingPriorities = Object.values(this.config)
+                .map(api => api.priority || 999)
+                .filter(p => p !== 999);
+            priority = existingPriorities.length > 0 ? Math.max(...existingPriorities) + 1 : 1;
+        }
+
+        // Verifica che la priorità non sia già in uso
+        const conflictingApi = Object.entries(this.config)
+            .find(([, api]) => api.priority === priority);
+        
+        if (conflictingApi) {
+            throw new Error(`Priorità ${priority} già in uso dall'API ${conflictingApi[0]}`);
+        }
+
+        this.config[apiKey] = {
+            alias: alias,
+            priority: priority,
+            enabled: enabled,
+            models: {}
         };
 
         return this.saveConfig(this.config);
@@ -281,6 +334,51 @@ class ApiManager {
             return this.saveConfig(this.config);
         }
         throw new Error(`Modello ${modelName} non trovato per API ${apiKey}`);
+    }
+
+    // Rimuove un'API
+    removeApi(apiKey) {
+        if (this.config[apiKey]) {
+            delete this.config[apiKey];
+            return this.saveConfig(this.config);
+        }
+        throw new Error(`API ${apiKey} non trovata`);
+    }
+
+    // Modifica la priorità di un modello
+    setModelPriority(apiKey, modelName, newPriority) {
+        if (!this.config[apiKey] || !this.config[apiKey].models[modelName]) {
+            throw new Error(`Modello ${modelName} non trovato per API ${apiKey}`);
+        }
+
+        // Verifica che la priorità non sia già in uso da un altro modello
+        const conflictingModel = Object.entries(this.config[apiKey].models)
+            .find(([name, model]) => name !== modelName && model.priority === newPriority);
+        
+        if (conflictingModel) {
+            throw new Error(`Priorità ${newPriority} già in uso dal modello ${conflictingModel[0]}`);
+        }
+
+        this.config[apiKey].models[modelName].priority = newPriority;
+        return this.saveConfig(this.config);
+    }
+
+    // Modifica la priorità di un'API
+    setApiPriority(apiKey, newPriority) {
+        if (!this.config[apiKey]) {
+            throw new Error(`API ${apiKey} non trovata`);
+        }
+
+        // Verifica che la priorità non sia già in uso da un'altra API
+        const conflictingApi = Object.entries(this.config)
+            .find(([key, api]) => key !== apiKey && api.priority === newPriority);
+        
+        if (conflictingApi) {
+            throw new Error(`Priorità ${newPriority} già in uso dall'API ${conflictingApi[0]}`);
+        }
+
+        this.config[apiKey].priority = newPriority;
+        return this.saveConfig(this.config);
     }
 }
 

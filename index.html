@@ -1760,7 +1760,7 @@
                                         </p>
                                     </div>
                                     <div style="display: flex; gap: 8px;">
-                                        <button class="btn" style="padding: 8px 12px; background: #3498db; color: white; border-radius: 6px;" onclick="ui.selectApi('${apiKey}')">
+                                        <button class="btn" style="padding: 8px 12px; background: #3498db; color: white; border-radius: 6px;" onclick="ui.selectApiSync('${apiKey}')">
                                             ✏️ Modifica
                                         </button>
                                         <button class="btn" style="padding: 8px 12px; background: ${enabled ? '#e67e22' : '#27ae60'}; color: white; border-radius: 6px;" onclick="ui.toggleApiStatus('${apiKey}')">
@@ -1868,7 +1868,7 @@
                     }
 
                     html += `
-                        <div class="api-list-item ${enabled ? 'active' : 'disabled'}" onclick="ui.selectApi('${apiKey}')">
+                        <div class="api-list-item ${enabled ? 'active' : 'disabled'}" onclick="ui.selectApiSync('${apiKey}')">
                             <div class="api-status-badge ${enabled ? '' : 'disabled'}"></div>
                             <div style="font-weight: 600; margin-bottom: 5px;">${api.alias || apiKey}</div>
                             <div style="font-size: 12px; color: #666; margin-bottom: 5px;">
@@ -1950,14 +1950,21 @@
                 this.showWelcomeScreen();
             }
 
-            selectApi(apiKey) {
+            async selectApi(apiKey) {
                 this.currentApiKey = apiKey;
                 this.hideAllForms();
-                this.loadApiForm(apiKey);
+                await this.loadApiForm(apiKey);
                 document.getElementById('edit-api-form').classList.add('active');
             }
 
-            loadApiForm(apiKey) {
+            // Wrapper per onclick
+            selectApiSync(apiKey) {
+                this.selectApi(apiKey).catch(error => {
+                    console.error('Errore selezione API:', error);
+                });
+            }
+
+            async loadApiForm(apiKey) {
                 const api = this.apiConfig[apiKey];
 
                 document.getElementById('edit-api-title').textContent = `✏️ Modifica ${api.alias}`;
@@ -1966,13 +1973,21 @@
                 document.getElementById('edit-api-priority').value = api.priority || 1;
                 document.getElementById('edit-api-enabled').checked = api.enabled !== false;
 
-                this.renderModelsList(apiKey);
+                await this.renderModelsList(apiKey);
             }
 
-            renderModelsList(apiKey) {
+            async renderModelsList(apiKey) {
                 const modelsList = document.getElementById('models-list');
                 const models = this.apiConfig[apiKey].models || {};
                 const modelKeys = Object.keys(models);
+
+                // Carica le statistiche API aggiornate
+                let apiStats = {};
+                try {
+                    apiStats = await window.electronAPI.getApiStats();
+                } catch (error) {
+                    console.error('Errore caricamento statistiche modelli:', error);
+                }
 
                 if (modelKeys.length === 0) {
                     modelsList.innerHTML = `
@@ -1996,6 +2011,12 @@
                     const model = models[modelKey];
                     const limits = model.limits || {};
                     const priority = model.priority || 'N/A';
+                    
+                    // Ottieni le statistiche per questo modello specifico
+                    const modelStats = apiStats[apiKey]?.models?.[modelKey] || {};
+                    const todayRequests = modelStats.todayRequests || 0;
+                    const totalRequests = modelStats.totalRequests || 0;
+                    const rpdUsage = modelStats.rpdUsage || 0;
 
                     html += `
                         <div class="model-item" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
@@ -2025,6 +2046,32 @@
                                             onclick="ui.deleteModel('${apiKey}', '${modelKey}')">🗑️</button>
                                 </div>
                             </div>
+                            
+                            <!-- Statistiche utilizzo modello -->
+                            <div class="model-stats" style="background: white; border-radius: 6px; padding: 10px; margin-bottom: 15px; border-left: 4px solid ${rpdUsage > 80 ? '#dc3545' : rpdUsage > 60 ? '#ffc107' : '#28a745'};">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <div style="font-size: 13px; font-weight: 500; color: #2c3e50;">
+                                        📊 Statistiche utilizzo (Pacifico)
+                                    </div>
+                                    <div style="font-size: 11px; color: #666;">
+                                        Totale: ${totalRequests} richieste
+                                    </div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 12px; color: #28a745; font-weight: 500;">
+                                        🟢 Oggi: ${todayRequests} richieste
+                                    </span>
+                                    <span style="font-size: 12px; color: ${rpdUsage > 80 ? '#dc3545' : rpdUsage > 60 ? '#ffc107' : '#28a745'}; font-weight: 500;">
+                                        ${rpdUsage}% RPD utilizzato
+                                    </span>
+                                </div>
+                                ${rpdUsage > 0 ? `
+                                <div class="rpd-usage-bar" style="width: 100%; height: 4px; background-color: #e9ecef; border-radius: 2px; overflow: hidden;">
+                                    <div class="rpd-usage-fill" style="height: 100%; width: ${Math.min(rpdUsage, 100)}%; background-color: ${rpdUsage > 80 ? '#dc3545' : rpdUsage > 60 ? '#ffc107' : '#28a745'}; border-radius: 2px; transition: width 0.3s ease;"></div>
+                                </div>
+                                ` : ''}
+                            </div>
+                            
                             <div class="limits-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                                 <div class="limit-item" style="text-align: center; padding: 10px; background: white; border-radius: 6px;">
                                     <div style="font-size: 12px; color: #666; margin-bottom: 5px;">RPM</div>
@@ -2037,6 +2084,9 @@
                                     <input type="number" value="${limits.RPD || 1000}" 
                                            style="width: 100%; border: 1px solid #ddd; border-radius: 4px; padding: 4px; text-align: center;"
                                            onchange="ui.editModelLimit('${apiKey}', '${modelKey}', 'RPD', this.value)" />
+                                    <div style="font-size: 10px; color: #666; margin-top: 2px;">
+                                        Limite: ${limits.RPD || 1000}
+                                    </div>
                                 </div>
                                 <div class="limit-item" style="text-align: center; padding: 10px; background: white; border-radius: 6px;">
                                     <div style="font-size: 12px; color: #666; margin-bottom: 5px;">TPM</div>
@@ -2105,7 +2155,7 @@
                 document.getElementById('new-model-rpd').value = '1000';
                 document.getElementById('new-model-tpm').value = '50000';
 
-                this.renderModelsList(this.currentApiKey);
+                await this.renderModelsList(this.currentApiKey);
                 await this.renderApiList(); // Aggiorna anche la lista
                 this.addLog(`
             Modello $ {
@@ -2124,7 +2174,7 @@
                 if (confirm(`Eliminare il modello ${modelKey}?`)) {
                     delete this.apiConfig[apiKey].models[modelKey];
                     await this.saveApiConfig();
-                    this.renderModelsList(apiKey);
+                    await this.renderModelsList(apiKey);
                     await this.renderApiList();
                     this.addLog(`Modello ${modelKey} eliminato`, 'info');
                 }
@@ -2201,7 +2251,7 @@
 
             if (this.apiConfig[apiKey].models[newName]) {
                 alert('Un modello con questo nome esiste già');
-                this.renderModelsList(apiKey);
+                await this.renderModelsList(apiKey);
                 return;
             }
 
@@ -2211,7 +2261,7 @@
             delete this.apiConfig[apiKey].models[oldName];
 
             await this.saveApiConfig();
-            this.renderModelsList(apiKey);
+            await this.renderModelsList(apiKey);
             await this.renderApiList();
             this.addLog(`Modello rinominato da "${oldName}" a "${newName}"`, 'info');
         }
@@ -2229,13 +2279,13 @@
 
             if (existingModelWithPriority) {
                 alert(`Errore: Il modello "${existingModelWithPriority[0]}" ha già priorità ${priority}.\nCambia prima la priorità di quel modello.`);
-                this.renderModelsList(apiKey);
+                await this.renderModelsList(apiKey);
                 return;
             }
 
             this.apiConfig[apiKey].models[modelName].priority = priority;
             await this.saveApiConfig();
-            this.renderModelsList(apiKey);
+            await this.renderModelsList(apiKey);
             this.addLog(`Priorità modello "${modelName}" cambiata a ${priority}`, 'info');
         }
 
@@ -2302,7 +2352,7 @@
             document.getElementById('new-model-tpm').value = '50000';
 
             await this.saveApiConfig();
-            this.renderModelsList(this.currentApiKey);
+            await this.renderModelsList(this.currentApiKey);
             await this.renderApiList();
             this.addLog(`Modello "${name}" aggiunto con successo`, 'success');
         }
@@ -2312,7 +2362,7 @@
             if (confirm(`Eliminare il modello "${modelName}"?\n\nQuesta azione non può essere annullata.`)) {
                 delete this.apiConfig[apiKey].models[modelName];
                 await this.saveApiConfig();
-                this.renderModelsList(apiKey);
+                await this.renderModelsList(apiKey);
                 await this.renderApiList();
                 this.addLog(`Modello "${modelName}" eliminato`, 'info');
             }

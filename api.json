@@ -158,6 +158,33 @@
             "tokens_used": 1191,
             "response_time_ms": 2026,
             "output": "```json\n{\n  \"description\": \"Un campo di tulipani in fiore si estende all'infinito, con i fiori che sfumano dal rosa pallido al giallo tenue. Sopra, un cielo drammatico è dipinto con nuvole striate e d"
+          },
+          "1757615433102_q5tanz01j": {
+            "timestamp": 1757615433102,
+            "tokens": 1192,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1192,
+            "response_time_ms": 2014,
+            "output": "```json\n{\n  \"description\": \"Un campo fiorito di margherite bianche e gialle si estende verso l'orizzonte. Sopra, un cielo drammatico con nuvole arancioni e grigie si infittisce mentre il sole tramonta"
+          },
+          "1757615435182_ljqzanv1g": {
+            "timestamp": 1757615435182,
+            "tokens": 1186,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1186,
+            "response_time_ms": 2075,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino verde e un gilet verde acceso indosso, leggings neri e scarpe da ginnastica bianche, sta ballando in un corridoio interno. La persona ha un'es"
+          },
+          "1757615437268_h012ajc3e": {
+            "timestamp": 1757615437268,
+            "tokens": 1177,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1177,
+            "response_time_ms": 2083,
+            "output": "```json\n{\n  \"description\": \"Un campo di tulipani rosa e gialli si estende all'infinito sotto un cielo drammatico al tramonto. Le nuvole sono striate di arancione e oro, con raggi di sole che filtrano "
           }
         }
       },

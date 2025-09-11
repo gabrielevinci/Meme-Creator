@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // API Management
     loadApiConfig: () => ipcRenderer.invoke('load-api-config'),
     saveApiConfig: (config) => ipcRenderer.invoke('save-api-config', config),
+    getApiStats: () => ipcRenderer.invoke('get-api-stats'),
 
     // Font loading
     loadFonts: () => ipcRenderer.invoke('load-fonts'),

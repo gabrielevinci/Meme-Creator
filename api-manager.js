@@ -516,6 +516,96 @@ class ApiManager {
             model.lastFailure = null;
         }
     }
+
+    // Funzioni per gestire il conteggio RPD basato sul fuso orario del Pacifico
+    getPacificTimeDate() {
+        // Ottiene la data corrente nel fuso orario del Pacifico
+        const now = new Date();
+        const pacificTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+        return pacificTime.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    }
+
+    getTodayRequestCount(requests) {
+        if (!requests) return 0;
+        
+        const today = this.getPacificTimeDate();
+        let count = 0;
+        
+        for (const requestId in requests) {
+            const request = requests[requestId];
+            if (request.timestamp) {
+                const requestDate = new Date(request.timestamp);
+                const requestDatePacific = new Date(requestDate.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+                const requestDateStr = requestDatePacific.toISOString().split('T')[0];
+                
+                if (requestDateStr === today) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+
+    getApiStats() {
+        const stats = {};
+        
+        for (const apiKey in this.config) {
+            const api = this.config[apiKey];
+            stats[apiKey] = {
+                alias: api.alias || apiKey,
+                priority: api.priority || 999,
+                enabled: api.enabled !== false,
+                totalRequests: 0,
+                models: {}
+            };
+            
+            for (const modelKey in api.models || {}) {
+                const model = api.models[modelKey];
+                const todayCount = this.getTodayRequestCount(model.requests);
+                const totalRequests = Object.keys(model.requests || {}).length;
+                
+                stats[apiKey].models[modelKey] = {
+                    priority: model.priority || 999,
+                    todayRequests: todayCount,
+                    totalRequests: totalRequests,
+                    limits: model.limits || {},
+                    rpdUsage: model.limits?.RPD ? Math.round((todayCount / model.limits.RPD) * 100) : 0
+                };
+                
+                stats[apiKey].totalRequests += totalRequests;
+            }
+        }
+        
+        return stats;
+    }
+
+    // Pulisce le richieste vecchie (oltre 7 giorni) per mantenere il file api.json pulito
+    cleanOldRequests() {
+        const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+        let cleaned = false;
+        
+        for (const apiKey in this.config) {
+            for (const modelKey in this.config[apiKey].models || {}) {
+                const model = this.config[apiKey].models[modelKey];
+                if (model.requests) {
+                    for (const requestId in model.requests) {
+                        const request = model.requests[requestId];
+                        if (request.timestamp && request.timestamp < sevenDaysAgo) {
+                            delete model.requests[requestId];
+                            cleaned = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (cleaned) {
+            console.log('Pulite richieste vecchie dal database API');
+        }
+        
+        return cleaned;
+    }
 }
 
 module.exports = ApiManager;

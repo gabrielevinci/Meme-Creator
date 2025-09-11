@@ -131,6 +131,33 @@
             "tokens_used": 967,
             "response_time_ms": 2785,
             "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani rosa e gialli si estende verso l'orizzonte, illuminato da un tramonto mozzafiato. Le nuvole nel cielo sono dipinte di arancione e oro, crean"
+          },
+          "1757614907299_7t7zx29d6": {
+            "timestamp": 1757614907299,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 2688,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di margherite bianche e arancioni si estende verso l'orizzonte. Sopra il campo, un cielo drammatico con nuvole striate di arancione e grigio avvolge un tramo"
+          },
+          "1757614909169_241rwe70d": {
+            "timestamp": 1757614909169,
+            "tokens": 1167,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1167,
+            "response_time_ms": 1866,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino verde e un gilet verde acceso sta ballando in un corridoio. Indossa abiti sportivi scuri e scarpe da ginnastica bianche. L'espressione faccial"
+          },
+          "1757614911199_1j7m566on": {
+            "timestamp": 1757614911199,
+            "tokens": 1191,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1191,
+            "response_time_ms": 2026,
+            "output": "```json\n{\n  \"description\": \"Un campo di tulipani in fiore si estende all'infinito, con i fiori che sfumano dal rosa pallido al giallo tenue. Sopra, un cielo drammatico è dipinto con nuvole striate e d"
           }
         }
       },

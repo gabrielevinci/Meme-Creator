@@ -317,6 +317,13 @@ class ContentCreatorApp {
             return this.apiManager.saveConfig(config);
         });
 
+        // Statistiche API con conteggio RPD
+        ipcMain.handle('get-api-stats', () => {
+            // Pulisce prima le richieste vecchie
+            this.apiManager.cleanOldRequests();
+            return this.apiManager.getApiStats();
+        });
+
         // Caricamento font
         ipcMain.handle('load-fonts', async() => {
             const fontPath = path.join(__dirname, 'font');

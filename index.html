@@ -388,6 +388,27 @@
             background: #fff8f8;
         }
         
+        .api-stats {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .rpd-usage-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e9ecef;
+            border-radius: 2px;
+            margin: 4px 0 2px 0;
+            overflow: hidden;
+        }
+        
+        .rpd-usage-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
         .api-status-badge {
             position: absolute;
             top: 10px;
@@ -1787,7 +1808,7 @@
             async openApiManager() {
                 this.elements.apiModal.style.display = 'flex';
                 await this.loadApiConfig();
-                this.renderApiList();
+                await this.renderApiList();
                 this.showWelcomeScreen();
             }
 
@@ -1805,8 +1826,17 @@
                 }
             }
 
-            renderApiList() {
+            async renderApiList() {
                 const apiList = document.getElementById('api-list');
+                
+                // Carica le statistiche API aggiornate
+                let apiStats = {};
+                try {
+                    apiStats = await window.electronAPI.getApiStats();
+                } catch (error) {
+                    console.error('Errore caricamento statistiche API:', error);
+                }
+                
                 const apis = Object.keys(this.apiConfig || {});
 
                 if (apis.length === 0) {
@@ -1823,16 +1853,40 @@
 
                 apis.forEach(apiKey => {
                     const api = this.apiConfig[apiKey];
+                    const stats = apiStats[apiKey] || {};
                     const enabled = api.enabled !== false;
                     const modelCount = Object.keys(api.models || {}).length;
+                    
+                    // Calcola totale richieste di oggi per questa API
+                    let todayApiRequests = 0;
+                    let maxRpdUsage = 0;
+                    
+                    for (const modelKey in stats.models || {}) {
+                        const modelStats = stats.models[modelKey];
+                        todayApiRequests += modelStats.todayRequests || 0;
+                        maxRpdUsage = Math.max(maxRpdUsage, modelStats.rpdUsage || 0);
+                    }
 
                     html += `
                         <div class="api-list-item ${enabled ? 'active' : 'disabled'}" onclick="ui.selectApi('${apiKey}')">
                             <div class="api-status-badge ${enabled ? '' : 'disabled'}"></div>
                             <div style="font-weight: 600; margin-bottom: 5px;">${api.alias || apiKey}</div>
-                            <div style="font-size: 12px; color: #666;">
+                            <div style="font-size: 12px; color: #666; margin-bottom: 5px;">
                                 ID: ${apiKey}<br>
                                 ${modelCount} modelli • Priorità: ${api.priority || 'N/A'}
+                            </div>
+                            <div class="api-stats">
+                                <div style="font-size: 11px; color: #28a745; font-weight: 500;">
+                                    📊 Oggi: ${todayApiRequests} richieste
+                                </div>
+                                ${maxRpdUsage > 0 ? `
+                                <div class="rpd-usage-bar">
+                                    <div class="rpd-usage-fill" style="width: ${Math.min(maxRpdUsage, 100)}%; background-color: ${maxRpdUsage > 80 ? '#dc3545' : maxRpdUsage > 60 ? '#ffc107' : '#28a745'}"></div>
+                                </div>
+                                <div style="font-size: 10px; color: #666;">
+                                    Utilizzo massimo RPD: ${maxRpdUsage}%
+                                </div>
+                                ` : ''}
                             </div>
                         </div>
                     `;
@@ -1887,7 +1941,7 @@
                 };
 
                 await this.saveApiConfig();
-                this.renderApiList();
+                await this.renderApiList();
                 this.selectApi(id);
                 this.addLog(`API ${alias} creata con successo`, 'success');
             }
@@ -2052,7 +2106,7 @@
                 document.getElementById('new-model-tpm').value = '50000';
 
                 this.renderModelsList(this.currentApiKey);
-                this.renderApiList(); // Aggiorna anche la lista
+                await this.renderApiList(); // Aggiorna anche la lista
                 this.addLog(`
             Modello $ {
                 name
@@ -2067,18 +2121,12 @@
             }
 
             async deleteModel(apiKey, modelKey) {
-                if (confirm(`
-            Eliminare il modello $ {
-                modelKey
-            } ? `)) {
+                if (confirm(`Eliminare il modello ${modelKey}?`)) {
                     delete this.apiConfig[apiKey].models[modelKey];
+                    await this.saveApiConfig();
                     this.renderModelsList(apiKey);
-                    this.renderApiList();
-                    this.addLog(`
-            Modello $ {
-                modelKey
-            }
-            eliminato `, 'info');
+                    await this.renderApiList();
+                    this.addLog(`Modello ${modelKey} eliminato`, 'info');
                 }
             }
 
@@ -2099,12 +2147,8 @@
                 this.apiConfig[this.currentApiKey].enabled = enabled;
 
                 await this.saveApiConfig();
-                this.renderApiList();
-                this.addLog(`
-            API $ {
-                alias
-            }
-            aggiornata con successo `, 'success');
+                await this.renderApiList();
+                this.addLog(`API ${alias} aggiornata con successo`, 'success');
             }
 
             cancelEdit() {
@@ -2115,11 +2159,10 @@
                 if (!this.currentApiKey) return;
 
                 const apiName = this.apiConfig[this.currentApiKey].alias;
-                if (confirm(`
-            Eliminare l 'API ${apiName}?\n\nQuesta azione eliminerà anche tutti i modelli configurati.`)) {
-            delete this.apiConfig[this.currentApiKey];
-            await this.saveApiConfig();
-            this.renderApiList();
+                if (confirm(`Eliminare l'API ${apiName}?\n\nQuesta azione eliminerà anche tutti i modelli configurati.`)) {
+                    delete this.apiConfig[this.currentApiKey];
+                    await this.saveApiConfig();
+                    await this.renderApiList();
             this.showWelcomeScreen();
             this.addLog(`API ${apiName} eliminata`, 'info');
         }
@@ -2149,7 +2192,7 @@
             this.apiConfig[this.currentApiKey].enabled = enabled;
 
             await this.saveApiConfig();
-            this.renderApiList();
+            await this.renderApiList();
         }
 
         // Modifica nome modello
@@ -2169,7 +2212,7 @@
 
             await this.saveApiConfig();
             this.renderModelsList(apiKey);
-            this.renderApiList();
+            await this.renderApiList();
             this.addLog(`Modello rinominato da "${oldName}" a "${newName}"`, 'info');
         }
 
@@ -2260,7 +2303,7 @@
 
             await this.saveApiConfig();
             this.renderModelsList(this.currentApiKey);
-            this.renderApiList();
+            await this.renderApiList();
             this.addLog(`Modello "${name}" aggiunto con successo`, 'success');
         }
 
@@ -2270,7 +2313,7 @@
                 delete this.apiConfig[apiKey].models[modelName];
                 await this.saveApiConfig();
                 this.renderModelsList(apiKey);
-                this.renderApiList();
+                await this.renderApiList();
                 this.addLog(`Modello "${modelName}" eliminato`, 'info');
             }
         }

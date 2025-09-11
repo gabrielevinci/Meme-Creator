@@ -5,7 +5,7 @@
     "enabled": true,
     "models": {
       "gemini-2.5-flash-lite": {
-        "priority": 2,
+        "priority": 1,
         "limits": {
           "RPM": 15,
           "RPD": 1000,
@@ -41,17 +41,126 @@
               "output": "```json\n{\n  \"description\": \"Un vasto campo di tulipani color pesca e gialli si estende verso l'orizzonte, illuminato dalla luce dorata di un tramonto mozzafiato. Le nuvole nel cielo sono striate di ar",
               "success": true
             }
+          },
+          "1757611719736_lir5ktbwk": {
+            "timestamp": 1757611719736,
+            "tokens": 1150,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1150,
+            "response_time_ms": 2215,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
+          },
+          "1757611721944_op9ysbo4r": {
+            "timestamp": 1757611721944,
+            "tokens": 1150,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1150,
+            "response_time_ms": 2204,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
+          },
+          "1757611724153_yibl38osl": {
+            "timestamp": 1757611724153,
+            "tokens": 1150,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1150,
+            "response_time_ms": 2204,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
+          },
+          "1757611758227_zmgacuv33": {
+            "timestamp": 1757611758227,
+            "tokens": 1161,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1161,
+            "response_time_ms": 2207,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
+          },
+          "1757611760438_i6vv5rbyk": {
+            "timestamp": 1757611760438,
+            "tokens": 1161,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1161,
+            "response_time_ms": 2207,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
+          },
+          "1757611762651_xkacavvep": {
+            "timestamp": 1757611762651,
+            "tokens": 1161,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1161,
+            "response_time_ms": 2208,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
           }
         }
       },
       "fdiocanr": {
-        "priority": 1,
+        "priority": 2,
         "limits": {
           "RPM": 100,
           "RPD": 1000,
           "TPM": 50000
         },
-        "requests": {}
+        "requests": {
+          "1757611504460_3ky765v6x": {
+            "timestamp": 1757611504460,
+            "tokens": 934,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 934,
+            "response_time_ms": 2207,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
+          },
+          "1757611552872_5buebeitb": {
+            "timestamp": 1757611552872,
+            "tokens": 934,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 934,
+            "response_time_ms": 2214,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
+          },
+          "1757611596870_zjs3840is": {
+            "timestamp": 1757611596870,
+            "tokens": 954,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 954,
+            "response_time_ms": 2213,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
+          },
+          "1757611660628_n6g2mqidw": {
+            "timestamp": 1757611660628,
+            "tokens": 934,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 934,
+            "response_time_ms": 2211,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
+          },
+          "1757611662834_nlxwdbyrv": {
+            "timestamp": 1757611662834,
+            "tokens": 934,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 934,
+            "response_time_ms": 2202,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
+          },
+          "1757611665054_ss4wiff4g": {
+            "timestamp": 1757611665054,
+            "tokens": 934,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 934,
+            "response_time_ms": 2216,
+            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
+          }
+        }
       }
     }
   }

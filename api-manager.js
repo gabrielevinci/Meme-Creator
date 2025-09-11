@@ -150,6 +150,13 @@ class ApiManager {
 
     // Verifica se un modello è disponibile considerando i limiti
     isModelAvailable(apiKey, modelKey, model) {
+        // Prima controlla se il modello è temporaneamente non disponibile
+        if (this.isModelTemporaryUnavailable(apiKey, modelKey)) {
+            const unavailableUntil = new Date(model.temporaryUnavailable?.until).toLocaleString();
+            console.log(`Modello ${apiKey}/${modelKey} temporaneamente non disponibile fino a ${unavailableUntil}`);
+            return false;
+        }
+
         const now = Date.now();
         const requests = model.requests || {};
         const limits = model.limits || {};
@@ -185,9 +192,11 @@ class ApiManager {
     }
 
     // Registra una richiesta per il rate limiting
-    logRequest(apiKey, modelKey, tokensUsed = 0) {
+    logRequest(apiKey, modelKey, requestData = {}) {
         const now = Date.now();
         const requestId = `${now}_${Math.random().toString(36).substr(2, 9)}`;
+        const tokensUsed = requestData.tokens_used || 0;
+        const success = requestData.success !== false; // Default true se non specificato
 
         if (!this.config[apiKey]) {
             throw new Error(`API ${apiKey} non configurata`);
@@ -203,8 +212,19 @@ class ApiManager {
 
         this.config[apiKey].models[modelKey].requests[requestId] = {
             timestamp: now,
-            tokens: tokensUsed
+            tokens: tokensUsed,
+            success: success,
+            ...requestData // Include tutti i dati aggiuntivi
         };
+
+        // Gestisci successi e fallimenti
+        if (success) {
+            this.resetModelFailureCount(apiKey, modelKey);
+            console.log(`✅ Richiesta successful per ${apiKey}/${modelKey}`);
+        } else {
+            this.incrementModelFailureCount(apiKey, modelKey);
+            console.log(`❌ Richiesta fallita per ${apiKey}/${modelKey}`);
+        }
 
         // Pulisci richieste vecchie (più di 1 giorno)
         this.cleanOldRequests(apiKey, modelKey);
@@ -415,6 +435,86 @@ class ApiManager {
 
         this.config[apiKey].priority = newPriority;
         return this.saveConfig(this.config);
+    }
+
+    // Marca un modello come temporaneamente non disponibile
+    markModelAsUnavailable(apiKey, modelKey, duration = 5 * 60 * 1000) { // Default 5 minuti
+        if (!this.config[apiKey] || !this.config[apiKey].models[modelKey]) {
+            return; // Se il modello non esiste, ignora
+        }
+
+        const now = Date.now();
+        if (!this.config[apiKey].models[modelKey].temporaryUnavailable) {
+            this.config[apiKey].models[modelKey].temporaryUnavailable = {};
+        }
+
+        this.config[apiKey].models[modelKey].temporaryUnavailable = {
+            until: now + duration,
+            reason: 'Multiple consecutive failures',
+            markedAt: now
+        };
+
+        console.log(`Modello ${apiKey}/${modelKey} marcato come non disponibile fino a ${new Date(now + duration).toLocaleString()}`);
+    }
+
+    // Verifica se un modello è temporaneamente non disponibile
+    isModelTemporaryUnavailable(apiKey, modelKey) {
+        if (!this.config[apiKey] || !this.config[apiKey].models[modelKey]) {
+            return false;
+        }
+
+        const model = this.config[apiKey].models[modelKey];
+        if (!model.temporaryUnavailable) {
+            return false;
+        }
+
+        const now = Date.now();
+        if (now > model.temporaryUnavailable.until) {
+            // Il periodo di indisponibilità è scaduto, rimuovi il flag
+            delete model.temporaryUnavailable;
+            console.log(`Modello ${apiKey}/${modelKey} è tornato disponibile`);
+            return false;
+        }
+
+        return true;
+    }
+
+    // Conta i fallimenti consecutivi per un modello
+    incrementModelFailureCount(apiKey, modelKey) {
+        if (!this.config[apiKey] || !this.config[apiKey].models[modelKey]) {
+            return;
+        }
+
+        const model = this.config[apiKey].models[modelKey];
+        if (!model.failureCount) {
+            model.failureCount = 0;
+            model.lastFailure = null;
+        }
+
+        model.failureCount++;
+        model.lastFailure = Date.now();
+
+        console.log(`Modello ${apiKey}/${modelKey} - Fallimenti consecutivi: ${model.failureCount}`);
+
+        // Se supera 3 fallimenti consecutivi, marcalo come temporaneamente non disponibile
+        if (model.failureCount >= 3) {
+            this.markModelAsUnavailable(apiKey, modelKey, 10 * 60 * 1000); // 10 minuti
+            model.failureCount = 0; // Reset counter
+        }
+    }
+
+    // Resetta il contatore dei fallimenti dopo un successo
+    resetModelFailureCount(apiKey, modelKey) {
+        if (!this.config[apiKey] || !this.config[apiKey].models[modelKey]) {
+            return;
+        }
+
+        const model = this.config[apiKey].models[modelKey];
+        if (model.failureCount) {
+            console.log(`Modello ${apiKey}/${modelKey} - Reset contatore fallimenti (era ${model.failureCount})`);
+            model.failureCount = 0;
+            model.lastFailure = null;
+        }
     }
 }
 

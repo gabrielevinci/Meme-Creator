@@ -698,8 +698,8 @@
         input:checked+.toggle-slider:before {
             transform: translateX(26px);
         }
-        
         /* Stili per il modal delle API */
+        
         .api-modal {
             display: none;
             position: fixed;
@@ -708,7 +708,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(5px);
         }
         
@@ -720,7 +720,7 @@
             max-width: 1200px;
             height: 90vh;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         
         .modal-header {
@@ -749,7 +749,7 @@
         }
         
         .modal-close:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
         
         .api-dashboard {
@@ -887,7 +887,8 @@
             font-size: 14px;
         }
         
-        .form-field input, .form-field select {
+        .form-field input,
+        .form-field select {
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 6px;
@@ -895,7 +896,8 @@
             transition: all 0.3s ease;
         }
         
-        .form-field input:focus, .form-field select:focus {
+        .form-field input:focus,
+        .form-field select:focus {
             outline: none;
             border-color: #9b59b6;
             box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
@@ -962,8 +964,8 @@
             background: #c0392b;
             transform: translateY(-1px);
         }
-        
         /* Animazioni per notifiche */
+        
         @keyframes slideInRight {
             from {
                 opacity: 0;
@@ -974,8 +976,8 @@
                 transform: translateX(0);
             }
         }
-        
         /* Stile per errori nel log */
+        
         .log-entry.error {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
@@ -1586,7 +1588,7 @@
             handleDashboardError(errorData) {
                 const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
                 this.addLog(`ERRORE: ${errorData.message}`, 'error');
-                
+
                 // Mostra notifica prominente per errori critici
                 this.showErrorNotification('Errore Sistema', errorData.message);
             }
@@ -1595,12 +1597,12 @@
             handleApiError(errorData) {
                 const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
                 this.addLog(`ERRORE API: ${errorData.error}`, 'error');
-                
+
                 // Mostra dettagli specifici per errori API
                 if (errorData.context) {
                     this.addLog(`Contesto: ${errorData.context}`, 'info');
                 }
-                
+
                 this.showErrorNotification('Errore API', errorData.error);
             }
 
@@ -1608,21 +1610,24 @@
             handleProcessingError(errorData) {
                 const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
                 this.addLog(`ERRORE ELABORAZIONE: ${errorData.error}`, 'error');
-                
+
                 if (errorData.phase) {
                     this.addLog(`Fase: ${errorData.phase}`, 'info');
                 }
-                
+
                 this.showErrorNotification('Errore Elaborazione', errorData.error);
-                this.updateProcessingStatus({ phase: 'error', message: errorData.error });
+                this.updateProcessingStatus({
+                    phase: 'error',
+                    message: errorData.error
+                });
             }
 
             // Gestione errori analisi AI
             handleAiAnalysisError(errorData) {
                 const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
                 this.addLog(`ERRORE ANALISI AI [${errorData.video}]: ${errorData.error}`, 'error');
-                
-                this.showErrorNotification('Errore Analisi AI', 
+
+                this.showErrorNotification('Errore Analisi AI',
                     `Errore nell'analisi del video "${errorData.video}": ${errorData.error}`);
             }
 
@@ -1691,9 +1696,9 @@
             }
 
             renderApiManager() {
-                const apis = Object.keys(this.apiConfig || {});
+                    const apis = Object.keys(this.apiConfig || {});
 
-                let html = `
+                    let html = `
                     <div style="margin-bottom: 20px;">
                         <h3>🔌 API Configurate</h3>
                         <p>Gestisci le configurazioni API per l'analisi AI</p>
@@ -1703,25 +1708,25 @@
                     </div>
                 `;
 
-                if (apis.length === 0) {
-                    html += `
+                    if (apis.length === 0) {
+                        html += `
                         <div style="text-align: center; padding: 40px; color: #999;">
                             <p>Nessuna API configurata. Inizia aggiungendo la tua prima API.</p>
                         </div>
                     `;
-                } else {
-                    html += '<div class="api-cards-container">';
+                    } else {
+                        html += '<div class="api-cards-container">';
 
-                    // Ordina le API per priorità
-                    apis.sort((a, b) => (this.apiConfig[a].priority || 999) - (this.apiConfig[b].priority || 999));
+                        // Ordina le API per priorità
+                        apis.sort((a, b) => (this.apiConfig[a].priority || 999) - (this.apiConfig[b].priority || 999));
 
-                    apis.forEach((apiKey, index) => {
-                        const api = this.apiConfig[apiKey];
-                        const modelCount = Object.keys(api.models || {}).length;
-                        const enabled = api.enabled !== false;
-                        const priority = api.priority || index + 1;
+                        apis.forEach((apiKey, index) => {
+                                    const api = this.apiConfig[apiKey];
+                                    const modelCount = Object.keys(api.models || {}).length;
+                                    const enabled = api.enabled !== false;
+                                    const priority = api.priority || index + 1;
 
-                        html += `
+                                    html += `
                             <div class="api-card" style="border: 2px solid ${enabled ? '#27ae60' : '#e74c3c'}; border-radius: 12px; padding: 20px; margin-bottom: 20px; background: ${enabled ? '#f8fff8' : '#fff8f8'};">
                                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                                     <div style="flex: 1;">

@@ -33,9 +33,15 @@ class AiProcessor {
             }
 
             // Ottieni il prossimo modello disponibile
-            const modelInfo = apiManager.getNextAvailableModel();
-            if (!modelInfo) {
-                throw new Error('Nessun modello AI disponibile al momento');
+            let modelInfo = null;
+            try {
+                modelInfo = apiManager.getNextAvailableModel();
+                if (!modelInfo) {
+                    throw new Error('Nessun modello AI disponibile al momento');
+                }
+            } catch (modelError) {
+                console.error('Errore nel recupero del modello:', modelError);
+                throw new Error('Impossibile ottenere un modello AI: ' + modelError.message);
             }
 
             console.log(`Usando modello: ${modelInfo.apiKey}/${modelInfo.modelKey}`);
@@ -73,14 +79,56 @@ class AiProcessor {
         } catch (error) {
             console.error('Errore nell\'analisi AI:', error);
 
-            // Prova con il prossimo modello disponibile se possibile
-            const nextModel = apiManager.getNextAvailableModel();
-            if (nextModel && error.message.includes('rate limit')) {
-                console.log('Tentativo con modello alternativo...');
-                return this.analyzeFrames(framePaths, config, apiManager);
+            // Log dettagliato dell'errore per il debugging
+            const errorDetails = {
+                message: error.message,
+                apiKey: modelInfo?.apiKey || 'Non definito',
+                modelKey: modelInfo?.modelKey || 'Non definito',
+                timestamp: new Date().toISOString()
+            };
+
+            console.error('Dettagli errore API:', JSON.stringify(errorDetails, null, 2));
+
+            // Se l'errore è relativo al modello non trovato, prova il prossimo
+            if (error.message.includes('not found') || 
+                error.message.includes('is not supported') ||
+                error.message.includes('Call ListModels')) {
+                
+                console.log('Modello non supportato, tentativo con modello alternativo...');
+                
+                try {
+                    const nextModel = apiManager.getNextAvailableModel();
+                    if (nextModel && nextModel.apiKey !== modelInfo?.apiKey) {
+                        console.log(`Tentativo con modello alternativo: ${nextModel.apiKey}/${nextModel.modelKey}`);
+                        return this.analyzeFrames(framePaths, config, apiManager);
+                    }
+                } catch (nextError) {
+                    console.error('Errore anche con modello alternativo:', nextError.message);
+                }
             }
 
-            throw error;
+            // Se l'errore è di rate limiting, prova con il prossimo modello
+            if (error.message.includes('rate limit') || error.message.includes('quota')) {
+                console.log('Rate limit raggiunto, tentativo con modello alternativo...');
+                
+                try {
+                    const nextModel = apiManager.getNextAvailableModel();
+                    if (nextModel) {
+                        console.log(`Tentativo con modello alternativo: ${nextModel.apiKey}/${nextModel.modelKey}`);
+                        return this.analyzeFrames(framePaths, config, apiManager);
+                    }
+                } catch (nextError) {
+                    console.error('Errore anche con modello alternativo:', nextError.message);
+                }
+            }
+
+            // Rilancia l'errore con informazioni più dettagliate
+            const enhancedError = new Error(`API Error: ${error.message}`);
+            enhancedError.originalError = error;
+            enhancedError.modelInfo = modelInfo;
+            enhancedError.timestamp = new Date().toISOString();
+            
+            throw enhancedError;
         }
     }
 

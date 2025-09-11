@@ -6,7 +6,26 @@ class ApiManager {
     constructor() {
         this.configPath = path.join(__dirname, 'api.json');
         this.config = {};
-        this.loadConfig();
+        // Inizializza la configurazione sincrona
+        this.initConfig();
+    }
+
+    initConfig() {
+        try {
+            if (fsSync.existsSync(this.configPath)) {
+                const data = fsSync.readFileSync(this.configPath, 'utf8');
+                this.config = JSON.parse(data);
+                console.log('Configurazione API caricata');
+            } else {
+                // Crea configurazione di default
+                this.config = this.getDefaultConfig();
+                fsSync.writeFileSync(this.configPath, JSON.stringify(this.config, null, 2));
+                console.log('Configurazione API di default creata');
+            }
+        } catch (error) {
+            console.error('Errore nel caricamento configurazione API:', error);
+            this.config = this.getDefaultConfig();
+        }
     }
 
     async loadConfig() {
@@ -84,13 +103,29 @@ class ApiManager {
 
     // Ottiene la prossima API/modello disponibile basato sulla priorità
     getNextAvailableModel() {
+        // Verifica che la configurazione sia caricata
+        if (!this.config || Object.keys(this.config).length === 0) {
+            console.error('Configurazione API non caricata o vuota');
+            throw new Error('Configurazione API non disponibile');
+        }
+
         // Ordina le API per priorità (1 = più alta priorità)
         const sortedApis = Object.entries(this.config)
             .filter(([apiKey, api]) => api.enabled !== false)
             .sort(([, a], [, b]) => (a.priority || 999) - (b.priority || 999));
 
+        if (sortedApis.length === 0) {
+            console.error('Nessuna API abilitata trovata nella configurazione');
+            throw new Error('Nessuna API abilitata disponibile');
+        }
+
         for (const [apiKey, api] of sortedApis) {
             const models = Object.entries(api.models || {});
+
+            if (models.length === 0) {
+                console.warn(`API ${apiKey} non ha modelli configurati`);
+                continue;
+            }
 
             // Ordina i modelli per priorità interna (se definita)
             const sortedModels = models.sort(([, a], [, b]) =>
@@ -99,11 +134,12 @@ class ApiManager {
 
             for (const [modelKey, model] of sortedModels) {
                 if (this.isModelAvailable(apiKey, modelKey, model)) {
+                    console.log(`Modello selezionato: ${apiKey}/${modelKey}`);
                     return {
                         apiKey,
                         modelKey,
                         config: model,
-                        alias: api.alias
+                        alias: api.alias || apiKey
                     };
                 }
             }

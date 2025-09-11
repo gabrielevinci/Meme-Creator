@@ -30,6 +30,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     onProgressUpdate: (callback) => ipcRenderer.on('progress-update', callback),
     onAppLog: (callback) => ipcRenderer.on('app-log', callback),
 
+    // Error handling
+    onDashboardError: (callback) => ipcRenderer.on('dashboard-error', callback),
+    onApiError: (callback) => ipcRenderer.on('api-error', callback),
+    onProcessingError: (callback) => ipcRenderer.on('processing-error', callback),
+    onAiAnalysisError: (callback) => ipcRenderer.on('ai-analysis-error', callback),
+
     // Remove listeners
     removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel)
 });

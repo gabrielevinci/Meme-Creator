@@ -66,8 +66,35 @@ class ContentCreatorApp {
 
         console.log(`[${logEntry.timestamp}] [${logEntry.level.toUpperCase()}] [${logEntry.source}] ${logEntry.message}`);
 
+        // Invia sempre il log alla dashboard, anche se la finestra non è ancora pronta
         if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            // Invia sia come app-log che come messaggio nella dashboard
             this.mainWindow.webContents.send('app-log', logEntry);
+            
+            // Per gli errori, invia anche un evento specifico per la dashboard
+            if (level === 'error') {
+                this.mainWindow.webContents.send('dashboard-error', {
+                    timestamp: new Date().toISOString(),
+                    message: message,
+                    source: source
+                });
+            }
+        }
+    }
+
+    // Nuovo metodo specifico per errori API
+    logApiError(error, context = '') {
+        const errorMessage = `${context ? context + ': ' : ''}${error.message || error}`;
+        this.log('error', errorMessage, 'api');
+        
+        // Invia errore specifico per API alla dashboard
+        if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            this.mainWindow.webContents.send('api-error', {
+                timestamp: new Date().toISOString(),
+                error: errorMessage,
+                context: context,
+                type: 'api-error'
+            });
         }
     }
 
@@ -331,10 +358,12 @@ class ContentCreatorApp {
             this.isProcessing = true;
 
             try {
+                this.log('info', 'Avvio elaborazione video...');
                 this.mainWindow.webContents.send('status-update', 'Avvio elaborazione...');
 
                 const result = await this.processVideos(config);
 
+                this.log('success', 'Elaborazione completata con successo');
                 this.mainWindow.webContents.send('log-update', {
                     totalProcessed: result.results ? result.results.length : 0,
                     results: result.results || [],
@@ -343,13 +372,29 @@ class ContentCreatorApp {
 
                 return result;
             } catch (error) {
+                // Log dettagliato dell'errore
+                this.logApiError(error, 'Errore durante l\'elaborazione');
+                
+                // Invia errore alla dashboard
                 this.mainWindow.webContents.send('log-update', {
                     type: 'error',
-                    message: `Errore durante l'elaborazione: ${error.message}`
+                    message: `Errore durante l'elaborazione: ${error.message}`,
+                    error: true,
+                    timestamp: new Date().toISOString()
                 });
+
+                // Invia anche un evento specifico per errori critici
+                this.mainWindow.webContents.send('processing-error', {
+                    error: error.message,
+                    stack: error.stack,
+                    timestamp: new Date().toISOString(),
+                    phase: 'processing'
+                });
+
                 throw error;
             } finally {
                 this.isProcessing = false;
+                this.mainWindow.webContents.send('status-update', { phase: 'idle' });
             }
         });
 
@@ -417,20 +462,48 @@ class ContentCreatorApp {
                 file: result.video
             });
 
-            const analysis = await this.aiProcessor.analyzeFrames(
-                result.frames,
-                config,
-                this.apiManager
-            );
+            try {
+                const analysis = await this.aiProcessor.analyzeFrames(
+                    result.frames,
+                    config,
+                    this.apiManager
+                );
 
-            // Il file viene salvato automaticamente dall'AI processor
-            aiResults.push({ 
-                video: result.video, 
-                analysis: analysis.response,
-                outputFile: analysis.outputFile,
-                modelUsed: analysis.modelUsed,
-                responseTime: analysis.responseTime
-            });
+                // Il file viene salvato automaticamente dall'AI processor
+                aiResults.push({ 
+                    video: result.video, 
+                    analysis: analysis.response,
+                    outputFile: analysis.outputFile,
+                    modelUsed: analysis.modelUsed,
+                    responseTime: analysis.responseTime,
+                    success: true
+                });
+
+                this.log('success', `Analisi AI completata per ${result.video} utilizzando ${analysis.modelUsed}`);
+
+            } catch (error) {
+                // Log specifico per errori API
+                this.logApiError(error, `Analisi AI fallita per ${result.video}`);
+                
+                // Invia errore specifico alla dashboard
+                this.mainWindow.webContents.send('ai-analysis-error', {
+                    video: result.video,
+                    error: error.message,
+                    timestamp: new Date().toISOString(),
+                    phase: 'ai-analysis'
+                });
+
+                // Aggiungi risultato con errore invece di interrompere tutto
+                aiResults.push({
+                    video: result.video,
+                    error: error.message,
+                    success: false,
+                    timestamp: new Date().toISOString()
+                });
+
+                // Continua con il video successivo invece di terminare
+                this.log('info', `Continuando con il video successivo dopo errore su ${result.video}`);
+            }
         }
 
         console.log('Analisi AI completata per tutti i video');

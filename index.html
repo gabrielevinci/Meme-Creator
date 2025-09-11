@@ -963,6 +963,26 @@
             transform: translateY(-1px);
         }
         
+        /* Animazioni per notifiche */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Stile per errori nel log */
+        .log-entry.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border-left: 5px solid #fff;
+            font-weight: 600;
+        }
+        
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -1312,6 +1332,31 @@
                 window.electronAPI.onAppLog((event, logData) => {
                     this.handleAppLog(logData);
                 });
+
+                // Nuovi event listeners per errori API
+                if (window.electronAPI.onDashboardError) {
+                    window.electronAPI.onDashboardError((event, errorData) => {
+                        this.handleDashboardError(errorData);
+                    });
+                }
+
+                if (window.electronAPI.onApiError) {
+                    window.electronAPI.onApiError((event, errorData) => {
+                        this.handleApiError(errorData);
+                    });
+                }
+
+                if (window.electronAPI.onProcessingError) {
+                    window.electronAPI.onProcessingError((event, errorData) => {
+                        this.handleProcessingError(errorData);
+                    });
+                }
+
+                if (window.electronAPI.onAiAnalysisError) {
+                    window.electronAPI.onAiAnalysisError((event, errorData) => {
+                        this.handleAiAnalysisError(errorData);
+                    });
+                }
             }
 
             async loadInitialData() {
@@ -1535,6 +1580,100 @@
                 if (logs.length > 100) {
                     logs[0].remove();
                 }
+            }
+
+            // Gestione errori dashboard
+            handleDashboardError(errorData) {
+                const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
+                this.addLog(`ERRORE: ${errorData.message}`, 'error');
+                
+                // Mostra notifica prominente per errori critici
+                this.showErrorNotification('Errore Sistema', errorData.message);
+            }
+
+            // Gestione errori API specifici
+            handleApiError(errorData) {
+                const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
+                this.addLog(`ERRORE API: ${errorData.error}`, 'error');
+                
+                // Mostra dettagli specifici per errori API
+                if (errorData.context) {
+                    this.addLog(`Contesto: ${errorData.context}`, 'info');
+                }
+                
+                this.showErrorNotification('Errore API', errorData.error);
+            }
+
+            // Gestione errori di elaborazione
+            handleProcessingError(errorData) {
+                const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
+                this.addLog(`ERRORE ELABORAZIONE: ${errorData.error}`, 'error');
+                
+                if (errorData.phase) {
+                    this.addLog(`Fase: ${errorData.phase}`, 'info');
+                }
+                
+                this.showErrorNotification('Errore Elaborazione', errorData.error);
+                this.updateProcessingStatus({ phase: 'error', message: errorData.error });
+            }
+
+            // Gestione errori analisi AI
+            handleAiAnalysisError(errorData) {
+                const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
+                this.addLog(`ERRORE ANALISI AI [${errorData.video}]: ${errorData.error}`, 'error');
+                
+                this.showErrorNotification('Errore Analisi AI', 
+                    `Errore nell'analisi del video "${errorData.video}": ${errorData.error}`);
+            }
+
+            // Mostra notifica di errore prominente
+            showErrorNotification(title, message) {
+                // Crea notifica in-app se non esiste già
+                let errorContainer = document.getElementById('error-notifications');
+                if (!errorContainer) {
+                    errorContainer = document.createElement('div');
+                    errorContainer.id = 'error-notifications';
+                    errorContainer.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 10000;
+                        max-width: 400px;
+                    `;
+                    document.body.appendChild(errorContainer);
+                }
+
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    background: linear-gradient(135deg, #e74c3c, #c0392b);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
+                    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+                    border-left: 5px solid #fff;
+                    animation: slideInRight 0.3s ease-out;
+                `;
+
+                notification.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div style="font-weight: bold; margin-bottom: 5px;">🚨 ${title}</div>
+                            <div style="font-size: 14px; line-height: 1.4;">${message}</div>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: none; border: none; color: white; cursor: pointer; font-size: 18px; padding: 0; margin-left: 10px;">×</button>
+                    </div>
+                `;
+
+                errorContainer.appendChild(notification);
+
+                // Rimuovi automaticamente dopo 10 secondi
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 10000);
             }
 
             async openApiManager() {

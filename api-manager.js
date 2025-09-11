@@ -606,6 +606,24 @@ class ApiManager {
         
         return cleaned;
     }
+
+    // Alias per i metodi con nomi diversi usati in ai-processor.js
+    markModelTemporaryUnavailable(apiKey, modelKey, duration = 5 * 60 * 1000) {
+        return this.markModelAsUnavailable(apiKey, modelKey, duration);
+    }
+
+    clearModelTemporaryUnavailability(apiKey, modelKey) {
+        if (!this.config[apiKey] || !this.config[apiKey].models[modelKey]) {
+            return;
+        }
+
+        const model = this.config[apiKey].models[modelKey];
+        if (model.temporaryUnavailable) {
+            delete model.temporaryUnavailable;
+            console.log(`Rimossa indisponibilità temporanea per ${apiKey}/${modelKey}`);
+            this.saveConfig(this.config);
+        }
+    }
 }
 
 module.exports = ApiManager;

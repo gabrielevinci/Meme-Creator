@@ -1277,8 +1277,7 @@
                                     <span style="color: #27ae60; font-size: 14px;">✅ Auto-save attivo - Le modifiche vengono salvate automaticamente</span>
                                 </div>
                                 <div>
-                                    <button class="cancel-btn" onclick="ui.cancelEdit()">❌ Chiudi</button>
-                                    <button class="btn-small btn-delete" onclick="ui.deleteCurrentApi()" style="margin-left: 10px; padding: 12px 20px;">
+                                    <button class="btn-small btn-delete" onclick="ui.deleteCurrentApi()" style="padding: 12px 20px;">
                                         🗑️ Elimina API
                                     </button>
                                 </div>
@@ -1564,26 +1563,38 @@
             }
 
             addLog(message, type = 'info', source = 'ui') {
-                const timestamp = new Date().toLocaleTimeString();
-                const logEntry = document.createElement('div');
-                logEntry.className = `log-entry ${type}`;
+                try {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const logEntry = document.createElement('div');
+                    logEntry.className = `log-entry ${type}`;
 
-                // Formato dettagliato per debug
-                const sourceLabel = source !== 'ui' ? `[${source.toUpperCase()}] ` : '';
-                logEntry.textContent = `[${timestamp}] ${sourceLabel}${message}`;
+                    // Formato dettagliato per debug
+                    const sourceLabel = source !== 'ui' ? `[${source.toUpperCase()}] ` : '';
+                    logEntry.textContent = `[${timestamp}] ${sourceLabel}${message}`;
 
-                this.elements.logContainer.appendChild(logEntry);
-                this.elements.logContainer.scrollTop = this.elements.logContainer.scrollHeight;
+                    if (this.elements && this.elements.logContainer) {
+                        this.elements.logContainer.appendChild(logEntry);
+                        this.elements.logContainer.scrollTop = this.elements.logContainer.scrollHeight;
 
-                // Mantieni solo gli ultimi 100 log
-                const logs = this.elements.logContainer.querySelectorAll('.log-entry');
-                if (logs.length > 100) {
-                    logs[0].remove();
-                }
+                        // Mantieni solo gli ultimi 100 log
+                        const logs = this.elements.logContainer.querySelectorAll('.log-entry');
+                        if (logs.length > 100) {
+                            logs[0].remove();
+                        }
+                    }
 
-                // Invia anche al main process per il logging centralizzato
-                if (source === 'ui') {
-                    window.electronAPI.log(type, message, 'renderer');
+                    // Invia anche al main process per il logging centralizzato (con protezione da errori)
+                    if (source === 'ui' && window.electronAPI && window.electronAPI.log) {
+                        try {
+                            window.electronAPI.log(type, message, 'renderer');
+                        } catch (electronError) {
+                            // Fallback silenzioso per evitare loop di errori
+                            console.warn('[LOG FALLBACK]', type, message);
+                        }
+                    }
+                } catch (error) {
+                    // Fallback estremo per evitare crash
+                    console.warn('[LOG ERROR]', message, error);
                 }
             }
 
@@ -1607,99 +1618,164 @@
 
             // Gestione errori dashboard
             handleDashboardError(errorData) {
-                const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
-                this.addLog(`ERRORE: ${errorData.message}`, 'error');
+                try {
+                    // Protezione da spam di errori identici
+                    const errorKey = `dashboard_${errorData.message}`;
+                    const now = Date.now();
+                    if (this.lastErrors && this.lastErrors[errorKey] && (now - this.lastErrors[errorKey]) < 1000) {
+                        return; // Ignora errori duplicati entro 1 secondo
+                    }
 
-                // Mostra notifica prominente per errori critici
-                this.showErrorNotification('Errore Sistema', errorData.message);
+                    this.lastErrors = this.lastErrors || {};
+                    this.lastErrors[errorKey] = now;
+
+                    const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
+                    this.addLog(`ERRORE: ${errorData.message}`, 'error');
+
+                    // Mostra notifica prominente per errori critici
+                    this.showErrorNotification('Errore Sistema', errorData.message);
+                } catch (e) {
+                    console.warn('Error in handleDashboardError:', e);
+                }
             }
 
             // Gestione errori API specifici
             handleApiError(errorData) {
-                const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
-                this.addLog(`ERRORE API: ${errorData.error}`, 'error');
+                try {
+                    // Protezione da spam di errori identici
+                    const errorKey = `api_${errorData.error}`;
+                    const now = Date.now();
+                    if (this.lastErrors && this.lastErrors[errorKey] && (now - this.lastErrors[errorKey]) < 1000) {
+                        return; // Ignora errori duplicati entro 1 secondo
+                    }
 
-                // Mostra dettagli specifici per errori API
-                if (errorData.context) {
-                    this.addLog(`Contesto: ${errorData.context}`, 'info');
+                    this.lastErrors = this.lastErrors || {};
+                    this.lastErrors[errorKey] = now;
+
+                    const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
+                    this.addLog(`ERRORE API: ${errorData.error}`, 'error');
+
+                    // Mostra dettagli specifici per errori API
+                    if (errorData.context) {
+                        this.addLog(`Contesto: ${errorData.context}`, 'info');
+                    }
+
+                    this.showErrorNotification('Errore API', errorData.error);
+                } catch (e) {
+                    console.warn('Error in handleApiError:', e);
                 }
-
-                this.showErrorNotification('Errore API', errorData.error);
             }
 
             // Gestione errori di elaborazione
             handleProcessingError(errorData) {
-                const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
-                this.addLog(`ERRORE ELABORAZIONE: ${errorData.error}`, 'error');
+                try {
+                    // Protezione da spam di errori identici
+                    const errorKey = `processing_${errorData.error}`;
+                    const now = Date.now();
+                    if (this.lastErrors && this.lastErrors[errorKey] && (now - this.lastErrors[errorKey]) < 1000) {
+                        return; // Ignora errori duplicati entro 1 secondo
+                    }
 
-                if (errorData.phase) {
-                    this.addLog(`Fase: ${errorData.phase}`, 'info');
+                    this.lastErrors = this.lastErrors || {};
+                    this.lastErrors[errorKey] = now;
+
+                    const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
+                    this.addLog(`ERRORE ELABORAZIONE: ${errorData.error}`, 'error');
+
+                    if (errorData.phase) {
+                        this.addLog(`Fase: ${errorData.phase}`, 'info');
+                    }
+
+                    this.showErrorNotification('Errore Elaborazione', errorData.error);
+                    this.updateProcessingStatus({
+                        phase: 'error',
+                        message: errorData.error
+                    });
+                } catch (e) {
+                    console.warn('Error in handleProcessingError:', e);
                 }
-
-                this.showErrorNotification('Errore Elaborazione', errorData.error);
-                this.updateProcessingStatus({
-                    phase: 'error',
-                    message: errorData.error
-                });
             }
 
             // Gestione errori analisi AI
             handleAiAnalysisError(errorData) {
-                const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
-                this.addLog(`ERRORE ANALISI AI [${errorData.video}]: ${errorData.error}`, 'error');
+                try {
+                    // Protezione da spam di errori identici
+                    const errorKey = `ai_${errorData.video}_${errorData.error}`;
+                    const now = Date.now();
+                    if (this.lastErrors && this.lastErrors[errorKey] && (now - this.lastErrors[errorKey]) < 2000) {
+                        return; // Ignora errori duplicati entro 2 secondi
+                    }
 
-                this.showErrorNotification('Errore Analisi AI',
-                    `Errore nell'analisi del video "${errorData.video}": ${errorData.error}`);
+                    this.lastErrors = this.lastErrors || {};
+                    this.lastErrors[errorKey] = now;
+
+                    const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
+                    this.addLog(`ERRORE ANALISI AI [${errorData.video}]: ${errorData.error}`, 'error');
+
+                    this.showErrorNotification('Errore Analisi AI',
+                        `Errore nell'analisi del video "${errorData.video}": ${errorData.error}`);
+                } catch (e) {
+                    console.warn('Error in handleAiAnalysisError:', e);
+                }
             }
 
             // Mostra notifica di errore prominente
             showErrorNotification(title, message) {
-                // Crea notifica in-app se non esiste già
-                let errorContainer = document.getElementById('error-notifications');
-                if (!errorContainer) {
-                    errorContainer = document.createElement('div');
-                    errorContainer.id = 'error-notifications';
-                    errorContainer.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        z-index: 10000;
-                        max-width: 400px;
-                    `;
-                    document.body.appendChild(errorContainer);
-                }
-
-                const notification = document.createElement('div');
-                notification.style.cssText = `
-                    background: linear-gradient(135deg, #e74c3c, #c0392b);
-                    color: white;
-                    padding: 15px;
-                    border-radius: 8px;
-                    margin-bottom: 10px;
-                    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-                    border-left: 5px solid #fff;
-                    animation: slideInRight 0.3s ease-out;
-                `;
-
-                notification.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                            <div style="font-weight: bold; margin-bottom: 5px;">🚨 ${title}</div>
-                            <div style="font-size: 14px; line-height: 1.4;">${message}</div>
-                        </div>
-                        <button onclick="this.parentElement.parentElement.remove()" 
-                                style="background: none; border: none; color: white; cursor: pointer; font-size: 18px; padding: 0; margin-left: 10px;">×</button>
-                    </div>
-                `;
-
-                errorContainer.appendChild(notification);
-
-                // Rimuovi automaticamente dopo 10 secondi
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.remove();
+                try {
+                    // Crea notifica in-app se non esiste già
+                    let errorContainer = document.getElementById('error-notifications');
+                    if (!errorContainer) {
+                        errorContainer = document.createElement('div');
+                        errorContainer.id = 'error-notifications';
+                        errorContainer.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            z-index: 10000;
+                            max-width: 400px;
+                        `;
+                        document.body.appendChild(errorContainer);
                     }
-                }, 10000);
+
+                    const notification = document.createElement('div');
+                    notification.style.cssText = `
+                        background: linear-gradient(135deg, #e74c3c, #c0392b);
+                        color: white;
+                        padding: 15px;
+                        border-radius: 8px;
+                        margin-bottom: 10px;
+                        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+                        border-left: 5px solid #fff;
+                        animation: slideInRight 0.3s ease-out;
+                    `;
+
+                    notification.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <div style="font-weight: bold; margin-bottom: 5px;">🚨 ${title}</div>
+                                <div style="font-size: 14px; line-height: 1.4;">${message}</div>
+                            </div>
+                            <button onclick="this.parentElement.parentElement.remove()" 
+                                    style="background: none; border: none; color: white; cursor: pointer; font-size: 18px; padding: 0; margin-left: 10px;">×</button>
+                        </div>
+                    `;
+
+                    errorContainer.appendChild(notification);
+
+                    // Auto-rimozione dopo 8 secondi
+                    setTimeout(() => {
+                        try {
+                            if (notification.parentNode) {
+                                notification.remove();
+                            }
+                        } catch (e) {
+                            console.warn('Error removing notification:', e);
+                        }
+                    }, 8000);
+                } catch (error) {
+                    // Fallback estremo per errori di notifica
+                    console.error('[NOTIFICATION ERROR]', title, message, error);
+                }
             }
 
             async openApiManager() {
@@ -1755,8 +1831,8 @@
                                             <span style="color: ${enabled ? '#27ae60' : '#e74c3c'};">${enabled ? '●' : '○'}</span>
                                             ${api.alias || apiKey}
                                         </h4>
-                                        <p style="margin: 5px 0; color: #666; font-size: 14px;">
-                                            ID: <code>${apiKey}</code> • ${modelCount} modelli • Priorità: ${priority}
+                                        <p style="margin: 5px 0; color: #666; font-size: 14px; word-break: break-all; overflow-wrap: break-word;">
+                                            ID: <code style="word-break: break-all; max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${apiKey}">${apiKey}</code> • ${modelCount} modelli • Priorità: ${priority}
                                         </p>
                                     </div>
                                     <div style="display: flex; gap: 8px;">

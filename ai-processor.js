@@ -71,7 +71,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
             });
 
             console.log(`Analisi AI completata in ${responseTime}ms`);
-            
+
             // Salva l'output AI in un file .txt nella cartella OUTPUT
             const outputFileName = this.generateOutputFileName(framePaths[0]);
             const outputPath = path.join(__dirname, 'OUTPUT', outputFileName);
@@ -87,16 +87,63 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
             };
 
         } catch (error) {
-            console.error('Errore nell\'analisi AI:', error);
+            console.error('❌ Errore nell\'analisi AI:', error.message);
 
-            // Prova con il prossimo modello disponibile se possibile
-            const nextModel = apiManager.getNextAvailableModel();
-            if (nextModel && error.message.includes('rate limit')) {
-                console.log('Tentativo con modello alternativo...');
-                return this.analyzeFrames(framePaths, config, apiManager);
+            // Ottieni informazioni del modello corrente per il blacklist
+            let currentModel = null;
+            try {
+                currentModel = apiManager.getNextAvailableModel();
+            } catch (modelError) {
+                // Ignora errori nella lettura del modello
             }
 
-            throw error;
+            // Prova con il prossimo modello disponibile per errori recuperabili
+            const shouldRetryWithDifferentModel = error.message.includes('rate limit') || 
+                                                 error.message.includes('429') || 
+                                                 error.message.includes('server') ||
+                                                 error.message.includes('404') ||
+                                                 error.message.includes('non trovato') ||
+                                                 error.message.includes('not found') ||
+                                                 error.message.includes('401') ||
+                                                 error.message.includes('timeout') ||
+                                                 error.message.includes('ECONNREFUSED');
+
+            if (shouldRetryWithDifferentModel && currentModel) {
+                console.log(`� Marcando temporaneamente il modello ${currentModel.apiKey}/${currentModel.modelKey} come non disponibile`);
+                
+                // Marca il modello corrente come temporaneamente non disponibile
+                apiManager.markModelTemporaryUnavailable(currentModel.apiKey, currentModel.modelKey, 5 * 60 * 1000); // 5 minuti
+
+                try {
+                    const nextModel = apiManager.getNextAvailableModel();
+                    if (nextModel && (nextModel.apiKey !== currentModel.apiKey || nextModel.modelKey !== currentModel.modelKey)) {
+                        console.log(`🔄 Tentativo con modello alternativo: ${nextModel.apiKey}/${nextModel.modelKey}`);
+                        return await this.analyzeFrames(framePaths, config, apiManager);
+                    }
+                } catch (fallbackError) {
+                    console.error('❌ Anche il modello alternativo ha fallito:', fallbackError.message);
+                    
+                    // Se anche il fallback fallisce, ripristina il modello originale
+                    if (currentModel) {
+                        apiManager.clearModelTemporaryUnavailability(currentModel.apiKey, currentModel.modelKey);
+                    }
+                    
+                    throw new Error(`Tutti i modelli disponibili hanno fallito. Ultimo errore: ${fallbackError.message}`);
+                }
+            }
+
+            // Ottieni informazioni del modello per il log degli errori
+            let modelUsed = 'Nessun modello disponibile';
+            if (currentModel) {
+                modelUsed = `${currentModel.apiKey}/${currentModel.modelKey}`;
+            }
+
+            // Aggiungi informazioni di contesto all'errore
+            const contextError = new Error(`Analisi AI fallita: ${error.message}`);
+            contextError.originalError = error;
+            contextError.modelUsed = modelUsed;
+            contextError.framesCount = framePaths.length;
+            throw contextError;
         }
     }
 
@@ -183,6 +230,8 @@ RATIONALE: [Spiegazione della scelta creativa]`
         const { apiKey, modelKey } = modelInfo;
 
         try {
+            console.log(`🚀 Iniziando chiamata API: ${apiKey}/${modelKey}`);
+
             switch (apiKey.toLowerCase()) {
                 case 'openai':
                     return await this.callOpenAI(modelKey, prompt, imageData);
@@ -194,7 +243,23 @@ RATIONALE: [Spiegazione della scelta creativa]`
                     return await this.callGenericAPI(modelInfo, prompt, imageData);
             }
         } catch (error) {
-            console.error(`Errore chiamata API ${apiKey}/${modelKey}:`, error.message);
+            console.error(`❌ Errore chiamata API ${apiKey}/${modelKey}:`, error.message);
+
+            // Aggiungi dettagli specifici al tipo di errore
+            if (error.message.includes('401')) {
+                throw new Error(`API Key non valida per ${apiKey}. Verifica la configurazione.`);
+            } else if (error.message.includes('404')) {
+                throw new Error(`Modello ${modelKey} non trovato per ${apiKey}. Verifica il nome del modello.`);
+            } else if (error.message.includes('429')) {
+                throw new Error(`Limite di richieste superato per ${apiKey}/${modelKey}. Riprova più tardi.`);
+            } else if (error.message.includes('500') || error.message.includes('server')) {
+                throw new Error(`Problemi temporanei del servizio ${apiKey}. Riprova più tardi.`);
+            } else if (error.message.includes('timeout') || error.message.includes('ECONNABORTED')) {
+                throw new Error(`Timeout nella chiamata a ${apiKey}/${modelKey}. La richiesta ha impiegato troppo tempo.`);
+            } else if (error.message.includes('ENOTFOUND') || error.message.includes('ECONNREFUSED')) {
+                throw new Error(`Problemi di connessione con ${apiKey}. Verifica la connessione internet.`);
+            }
+
             throw error;
         }
     }
@@ -258,16 +323,16 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
     }
 
     async callGenericAPI(modelInfo, prompt, imageData) {
-        // Vera implementazione Google AI API
+        // Vera implementazione Google AI API con gestione errori migliorata
         console.log(`Chiamata API generica: ${modelInfo.apiKey}/${modelInfo.modelKey}`);
 
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelInfo.modelKey}:generateContent?key=${modelInfo.apiKey}`;
-        
+
         // Prepara il contenuto per la richiesta
         const parts = [
             { text: prompt }
         ];
-        
+
         // Aggiungi le immagini se presenti
         for (const base64Image of imageData) {
             parts.push({
@@ -288,8 +353,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
                 topP: 1,
                 maxOutputTokens: 4096,
             },
-            safetySettings: [
-                {
+            safetySettings: [{
                     category: "HARM_CATEGORY_HARASSMENT",
                     threshold: "BLOCK_MEDIUM_AND_ABOVE"
                 },
@@ -308,33 +372,95 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
             ]
         };
 
-        try {
-            const response = await axios.post(apiUrl, requestBody, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                timeout: 30000
-            });
+        let lastError = null;
+        const maxRetries = 3;
 
-            if (response.data && response.data.candidates && response.data.candidates[0]) {
-                const content = response.data.candidates[0].content;
-                if (content && content.parts && content.parts[0]) {
-                    return content.parts[0].text;
-                }
-            }
+        // Retry logic con backoff esponenziale
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                console.log(`Tentativo ${attempt}/${maxRetries} per ${modelInfo.apiKey}/${modelInfo.modelKey}`);
 
-            throw new Error('Risposta API non valida o vuota');
-            
-        } catch (error) {
-            if (error.response) {
-                const errorMsg = `HTTP ${error.response.status}: ${error.response.statusText}`;
-                if (error.response.status === 404) {
-                    throw new Error(`models/${modelInfo.modelKey} is not found`);
+                const response = await axios.post(apiUrl, requestBody, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    timeout: 30000
+                });
+
+                if (response.data && response.data.candidates && response.data.candidates[0]) {
+                    const content = response.data.candidates[0].content;
+                    if (content && content.parts && content.parts[0]) {
+                        console.log(`✅ Successo al tentativo ${attempt}`);
+                        return content.parts[0].text;
+                    }
                 }
-                throw new Error(errorMsg);
+
+                throw new Error('Risposta API non valida o vuota');
+
+            } catch (error) {
+                lastError = error;
+
+                let errorMsg = error.message;
+                let shouldRetry = false;
+
+                if (error.response) {
+                    const status = error.response.status;
+                    const statusText = error.response.statusText;
+
+                    switch (status) {
+                        case 400:
+                            errorMsg = `Richiesta malformata (400): Verifica i parametri del modello`;
+                            break;
+                        case 401:
+                            errorMsg = `API Key non valida (401): Controlla la chiave API`;
+                            break;
+                        case 403:
+                            errorMsg = `Accesso negato (403): Verifica i permessi dell'API Key`;
+                            break;
+                        case 404:
+                            errorMsg = `Modello non trovato (404): ${modelInfo.modelKey} non esiste`;
+                            break;
+                        case 429:
+                            errorMsg = `Rate limit superato (429): Troppo richieste`;
+                            shouldRetry = true;
+                            break;
+                        case 500:
+                        case 502:
+                        case 503:
+                        case 504:
+                            errorMsg = `Errore server (${status}): Problemi temporanei del servizio`;
+                            shouldRetry = true;
+                            break;
+                        default:
+                            errorMsg = `HTTP ${status}: ${statusText}`;
+                            shouldRetry = status >= 500; // Retry solo per errori server
+                    }
+
+                } else if (error.code === 'ECONNABORTED') {
+                    errorMsg = `Timeout: La richiesta ha impiegato troppo tempo`;
+                    shouldRetry = true;
+                } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+                    errorMsg = `Problemi di connessione: Verifica la connessione internet`;
+                    shouldRetry = true;
+                }
+
+                console.error(`❌ Tentativo ${attempt} fallito: ${errorMsg}`);
+
+                // Non fare retry se non è un errore temporaneo o se è l'ultimo tentativo
+                if (!shouldRetry || attempt === maxRetries) {
+                    console.error(`🚫 Fallimento definitivo per ${modelInfo.apiKey}/${modelInfo.modelKey}: ${errorMsg}`);
+                    throw new Error(errorMsg);
+                }
+
+                // Backoff esponenziale: 1s, 2s, 4s
+                const waitTime = Math.pow(2, attempt - 1) * 1000;
+                console.log(`⏳ Attesa ${waitTime}ms prima del prossimo tentativo...`);
+                await this.delay(waitTime);
             }
-            throw error;
         }
+
+        // Questo non dovrebbe mai essere raggiunto, ma per sicurezza
+        throw new Error(lastError ? lastError.message || 'Errore sconosciuto dopo tutti i tentativi' : 'Errore sconosciuto dopo tutti i tentativi');
     }
 
     async getImageBase64(imagePath) {

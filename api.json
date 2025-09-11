@@ -95,6 +95,42 @@
             "tokens_used": 1161,
             "response_time_ms": 2208,
             "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
+          },
+          "1757611916536_5lgu3j6zm": {
+            "timestamp": 1757611916536,
+            "tokens": 970,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 970,
+            "response_time_ms": 3504,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano un campo di fiori bianchi e arancioni in primo piano, con una distesa di alberi verdi sullo sfondo. Il tramonto dipinge il cielo con sfumatur"
+          },
+          "1757612003400_ikahzbgl5": {
+            "timestamp": 1757612003400,
+            "tokens": 973,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 973,
+            "response_time_ms": 3287,
+            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di margherite bianche e gialle si estende verso l'orizzonte, baciato dalla luce calda di un tramonto infuocato. Le nuvole, tinte di arancione e grigio, "
+          },
+          "1757612006320_9aktkq2se": {
+            "timestamp": 1757612006320,
+            "tokens": 935,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 935,
+            "response_time_ms": 2915,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino verde, un gilet verde brillante e leggings neri sta ballando in un corridoio. La persona ha i pugni stretti e sembra saltare o muoversi energi"
+          },
+          "1757612009108_yz5x7eb78": {
+            "timestamp": 1757612009108,
+            "tokens": 967,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 967,
+            "response_time_ms": 2785,
+            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani rosa e gialli si estende verso l'orizzonte, illuminato da un tramonto mozzafiato. Le nuvole nel cielo sono dipinte di arancione e oro, crean"
           }
         }
       },

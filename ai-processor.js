@@ -258,20 +258,83 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
     }
 
     async callGenericAPI(modelInfo, prompt, imageData) {
-        // Implementazione generica per API personalizzate
+        // Vera implementazione Google AI API
         console.log(`Chiamata API generica: ${modelInfo.apiKey}/${modelInfo.modelKey}`);
 
-        await this.delay(2200);
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelInfo.modelKey}:generateContent?key=${modelInfo.apiKey}`;
+        
+        // Prepara il contenuto per la richiesta
+        const parts = [
+            { text: prompt }
+        ];
+        
+        // Aggiungi le immagini se presenti
+        for (const base64Image of imageData) {
+            parts.push({
+                inline_data: {
+                    mime_type: "image/jpeg",
+                    data: base64Image
+                }
+            });
+        }
 
-        return `[SIMULAZIONE ${modelInfo.apiKey.toUpperCase()} - ${modelInfo.modelKey}]
+        const requestBody = {
+            contents: [{
+                parts: parts
+            }],
+            generationConfig: {
+                temperature: 0.4,
+                topK: 32,
+                topP: 1,
+                maxOutputTokens: 4096,
+            },
+            safetySettings: [
+                {
+                    category: "HARM_CATEGORY_HARASSMENT",
+                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    category: "HARM_CATEGORY_HATE_SPEECH",
+                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    threshold: "BLOCK_MEDIUM_AND_ABOVE"
+                }
+            ]
+        };
 
-DESCRIZIONE: Analisi completata dell'elemento visivo fornito.
+        try {
+            const response = await axios.post(apiUrl, requestBody, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                timeout: 30000
+            });
 
-ELEMENTI MEME: Identificazione di componenti adatti alla memeficazione.
+            if (response.data && response.data.candidates && response.data.candidates[0]) {
+                const content = response.data.candidates[0].content;
+                if (content && content.parts && content.parts[0]) {
+                    return content.parts[0].text;
+                }
+            }
 
-TESTO SUGGERITO: "Quando il budget è confermato ma le specifiche cambiano"
-
-RATIONALE: Sfruttamento di una dinamica comune nel mondo professionale per creare contenuto riconoscibile e condivisibile.`;
+            throw new Error('Risposta API non valida o vuota');
+            
+        } catch (error) {
+            if (error.response) {
+                const errorMsg = `HTTP ${error.response.status}: ${error.response.statusText}`;
+                if (error.response.status === 404) {
+                    throw new Error(`models/${modelInfo.modelKey} is not found`);
+                }
+                throw new Error(errorMsg);
+            }
+            throw error;
+        }
     }
 
     async getImageBase64(imagePath) {

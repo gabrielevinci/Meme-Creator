@@ -409,8 +409,12 @@ class VideoProcessor {
     }
 
     // Nuovo metodo per processare tutti i video con banner e testo
-    async processVideosWithBanners(statusCallback = null) {
+    async processVideosWithBanners(statusCallback = null, config = null) {
         console.log('🎬 Inizio processamento video con banner e testo');
+
+        if (config) {
+            console.log('📋 Configurazione ricevuta:', config);
+        }
 
         try {
             // Leggi tutti i file di output dell'API AI
@@ -467,9 +471,23 @@ class VideoProcessor {
 
             console.log(`🎯 Trovati ${validVideos.length} video validi da processare`);
 
+            if (validVideos.length === 0) {
+                console.log(`⚠️ ATTENZIONE: Nessun video valido trovato per il processamento banner`);
+                return {
+                    totalFiles: txtFiles.length,
+                    validVideos: 0,
+                    processedVideos: 0,
+                    skippedVideos: 0
+                };
+            }
+
+            console.log(`🎬 === INIZIO PROCESSAMENTO BANNER ===`);
+
             // Processa ogni video valido
             for (let i = 0; i < validVideos.length; i++) {
                 const videoData = validVideos[i];
+
+                console.log(`\n📹 [${i + 1}/${validVideos.length}] Processamento: ${videoData.outputFile}`);
 
                 if (statusCallback) {
                     statusCallback({
@@ -481,15 +499,21 @@ class VideoProcessor {
                 }
 
                 try {
-                    await this.addBannerToVideo(videoData);
+                    const result = await this.addBannerToVideo(videoData, config);
                     processedCount++;
-                    console.log(`✅ Video ${processedCount}/${validVideos.length} processato con successo`);
+                    console.log(`✅ [${i + 1}/${validVideos.length}] COMPLETATO con successo!`);
                 } catch (error) {
-                    console.error(`❌ Errore nel processamento di ${videoData.outputFile}:`, error.message);
+                    console.log(`❌ [${i + 1}/${validVideos.length}] ERRORE nel processamento:`);
+                    console.log(`   📋 Dettagli: ${error.message}`);
                 }
             }
 
-            console.log(`🎉 Processamento completato: ${processedCount}/${validVideos.length} video elaborati`);
+            console.log(`\n🎉 === PROCESSAMENTO COMPLETATO ===`);
+            console.log(`📊 RISULTATI FINALI:`);
+            console.log(`   • Video analizzati: ${txtFiles.length}`);
+            console.log(`   • Video validi (filtrati): ${validVideos.length}`);
+            console.log(`   • Video processati con successo: ${processedCount}`);
+            console.log(`   • Video con errori: ${validVideos.length - processedCount}`);
 
             return {
                 totalFiles: txtFiles.length,
@@ -505,8 +529,16 @@ class VideoProcessor {
     }
 
     // Metodo per aggiungere banner e testo a un singolo video
-    async addBannerToVideo(videoData) {
+    async addBannerToVideo(videoData, config = null) {
         const { outputFile, aiResponse, content } = videoData;
+
+        console.log(`🎬 Processamento video: ${outputFile}`);
+        console.log(`📍 Posizione banner: ${aiResponse.banner_position}`);
+        console.log(`📝 Testo meme: ${aiResponse.meme_text}`);
+
+        if (config) {
+            console.log(`🎨 Font selezionato: ${config.selectedFont || 'default'}`);
+        }
 
         // Estrai il nome del file video originale dal contenuto
         const videoMatch = content.match(/ANALISI AI - (.+?)\.jpg/);
@@ -559,11 +591,23 @@ class VideoProcessor {
         // Crea il filtro per il banner e testo
         const bannerHeight = 450;
         const textColor = 'black';
-        const fontSize = Math.max(24, Math.min(48, width / 20)); // Font size dinamico basato sulla larghezza
+        const fontSize = Math.max(32, Math.min(56, width / 18)); // Font size leggermente più grande
 
-        // Prepara il testo per FFmpeg con gestione delle righe multiple
-        const maxCharsPerLine = Math.floor(width / (fontSize * 0.6)); // Stima caratteri per riga
-        const wrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine);
+        // Determina il font da utilizzare
+        const selectedFont = config?.selectedFont || 'impact.ttf';
+        // Usa un percorso relativo per evitare problemi con spazi e drive letter su Windows
+        const relativeFontPath = `font/${selectedFont}`;
+
+        console.log(`🎨 Utilizzando font: ${selectedFont}`);
+        console.log(`📂 Percorso font relativo: ${relativeFontPath}`);
+
+        // Prepara il testo per FFmpeg con gestione delle righe multiple migliorata
+        const maxCharsPerLine = Math.floor(width / (fontSize * 0.4)); // Stima ancora più conservativa
+        const maxLines = Math.floor(bannerHeight / (fontSize * 1.3)) - 1; // Calcola righe disponibili nel banner
+        const wrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine, maxLines);
+        console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
+        console.log(`📝 Testo wrappato: "${wrappedText}" (max ${maxCharsPerLine} char/riga, max ${maxLines} righe)`);
+
         const escapedText = wrappedText
             .replace(/\\/g, '\\\\')
             .replace(/'/g, "\\'")
@@ -573,28 +617,33 @@ class VideoProcessor {
             .replace(/\[/g, '\\[')
             .replace(/\]/g, '\\]');
 
-        console.log(`📝 Testo preparato: "${wrappedText}" (max ${maxCharsPerLine} char/riga)`);
+        console.log(`📝 Testo escaped per FFmpeg: "${escapedText}"`);
 
         // Calcola il numero di righe per centrare verticalmente
         const numberOfLines = (wrappedText.match(/\\\\n/g) || []).length + 1;
-        const lineHeight = fontSize * 1.2; // Spaziatura tra righe
+        const lineHeight = fontSize * 1.3; // Spaziatura maggiore tra righe
         const totalTextHeight = numberOfLines * lineHeight;
+
+        console.log(`📊 Righe di testo: ${numberOfLines}, Altezza totale: ${totalTextHeight}px`);
 
         let filterComplex;
         if (aiResponse.banner_position === 'bottom') {
             // Banner bianco in basso
             const bannerY = height - bannerHeight;
-            const textY = bannerY + (bannerHeight - totalTextHeight) / 2;
+            const textY = Math.max(bannerY + 20, bannerY + (bannerHeight - totalTextHeight) / 2);
             filterComplex = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill,` +
-                `drawtext=text='${escapedText}':fontcolor=${textColor}:fontsize=${fontSize}:` +
-                `x=(w-text_w)/2:y=${Math.max(bannerY + 10, textY)}[v]`;
+                `drawtext=text='${escapedText}':fontfile='${relativeFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:` +
+                `x=(w-text_w)/2:y=${textY}[v]`;
         } else {
             // Banner bianco in alto
-            const textY = (bannerHeight - totalTextHeight) / 2;
+            const textY = Math.max(20, (bannerHeight - totalTextHeight) / 2);
             filterComplex = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill,` +
-                `drawtext=text='${escapedText}':fontcolor=${textColor}:fontsize=${fontSize}:` +
-                `x=(w-text_w)/2:y=${Math.max(10, textY)}[v]`;
+                `drawtext=text='${escapedText}':fontfile='${relativeFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:` +
+                `x=(w-text_w)/2:y=${textY}[v]`;
         }
+
+        console.log(`🔧 Filtro FFmpeg generato: ${filterComplex}`);
+        console.log(`🚀 Eseguendo processamento video...`);
 
         // Esegui FFmpeg per aggiungere banner e testo
         return new Promise((resolve, reject) => {
@@ -612,14 +661,22 @@ class VideoProcessor {
             let errorOutput = '';
 
             ffmpeg.stderr.on('data', (data) => {
-                errorOutput += data.toString();
+                const output = data.toString();
+                // Filtra solo gli errori critici per ridurre il rumore nel terminal
+                if (output.includes('Error') || output.includes('failed') || output.includes('Invalid argument')) {
+                    errorOutput += output;
+                }
             });
 
             ffmpeg.on('close', (code) => {
                 if (code === 0) {
-                    console.log(`✅ Video con banner salvato: ${path.basename(outputVideoPath)}`);
+                    console.log(`✅ SUCCESSO: Video con banner completato: ${path.basename(outputVideoPath)}`);
                     resolve(outputVideoPath);
                 } else {
+                    console.log(`❌ ERRORE FFmpeg: Comando fallito con codice ${code}`);
+                    if (errorOutput.trim()) {
+                        console.log(`📋 Dettagli errore: ${errorOutput.trim()}`);
+                    }
                     reject(new Error(`FFmpeg failed (code ${code}): ${errorOutput}`));
                 }
             });
@@ -630,8 +687,8 @@ class VideoProcessor {
         });
     }
 
-    // Funzione helper per spezzare testo lungo in più righe
-    wrapText(text, maxCharsPerLine) {
+    // Funzione helper per spezzare testo lungo in più righe con controllo rigoroso
+    wrapText(text, maxCharsPerLine, maxLines = 4) {
         if (text.length <= maxCharsPerLine) {
             return text;
         }
@@ -641,23 +698,52 @@ class VideoProcessor {
         let currentLine = '';
 
         for (const word of words) {
-            // Se aggiungendo la parola superiamo il limite, inizia una nuova riga
-            if ((currentLine + ' ' + word).length > maxCharsPerLine) {
+            // Se abbiamo già raggiunto il numero massimo di righe, interrompi
+            if (lines.length >= maxLines - 1) {
+                // Aggiungi parole rimanenti alla riga corrente fino al limite, poi tronca
+                const remainingSpace = maxCharsPerLine - currentLine.length - 3; // -3 per "..."
+                if (remainingSpace > word.length) {
+                    currentLine = currentLine.length === 0 ? word : currentLine + ' ' + word;
+                } else {
+                    currentLine += '...';
+                    break;
+                }
+                continue;
+            }
+
+            // Controlla se aggiungendo la parola superiamo il limite di caratteri
+            const testLine = currentLine.length === 0 ? word : currentLine + ' ' + word;
+            if (testLine.length > maxCharsPerLine) {
                 if (currentLine.length > 0) {
-                    lines.push(currentLine);
+                    lines.push(currentLine.trim());
                     currentLine = word;
                 } else {
-                    // Parola troppo lunga, la tronchiamo
-                    lines.push(word.substring(0, maxCharsPerLine));
-                    currentLine = '';
+                    // Parola singola troppo lunga, la tronchiamo
+                    if (word.length > maxCharsPerLine - 3) {
+                        lines.push(word.substring(0, maxCharsPerLine - 3) + '...');
+                        currentLine = '';
+                    } else {
+                        currentLine = word;
+                    }
                 }
             } else {
-                currentLine = currentLine.length === 0 ? word : currentLine + ' ' + word;
+                currentLine = testLine;
             }
         }
 
         if (currentLine.length > 0) {
-            lines.push(currentLine);
+            lines.push(currentLine.trim());
+        }
+
+        // Limita il numero di righe
+        if (lines.length > maxLines) {
+            lines = lines.slice(0, maxLines);
+            const lastLine = lines[lines.length - 1];
+            if (lastLine.length > maxCharsPerLine - 3) {
+                lines[lines.length - 1] = lastLine.substring(0, maxCharsPerLine - 3) + '...';
+            } else {
+                lines[lines.length - 1] = lastLine + '...';
+            }
         }
 
         // Unisci le righe con \n per FFmpeg

@@ -532,7 +532,7 @@ class ContentCreatorApp {
                 this.mainWindow.webContents.send('status-update', data);
             };
 
-            bannerResults = await this.videoProcessor.processVideosWithBanners(statusCallback);
+            bannerResults = await this.videoProcessor.processVideosWithBanners(statusCallback, config);
 
             this.log('success', `Processamento banner completato: ${bannerResults.processedVideos}/${bannerResults.validVideos} video elaborati`);
 

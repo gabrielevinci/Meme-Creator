@@ -537,7 +537,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
 
     generateOutputFileName(framePath, originalVideoName = null) {
         let videoBaseName;
-        
+
         if (originalVideoName) {
             // Usa il nome del video originale fornito direttamente
             const VideoProcessor = require('./video-processor');
@@ -553,7 +553,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
                 .replace(/_compressed$/, '')
                 .replace(/_compressed_final$/, '');
         }
-            
+
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
         return `${videoBaseName}_ai_output_${timestamp}.txt`;
     }

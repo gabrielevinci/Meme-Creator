@@ -42,6 +42,36 @@ class VideoProcessor {
         }
     }
 
+    // Nuovo metodo per pulire SOLO la cartella OUTPUT quando si preme Start
+    async cleanOutputDirectoryOnly() {
+        const dir = this.outputDir;
+
+        try {
+            await fs.access(dir);
+            const files = await fs.readdir(dir);
+
+            console.log(`🧹 Pulizia SOLO cartella OUTPUT: ${dir} (${files.length} file)`);
+
+            for (const file of files) {
+                const filePath = path.join(dir, file);
+                try {
+                    await fs.unlink(filePath);
+                } catch (error) {
+                    console.log(`⚠️ Impossibile eliminare ${file}: ${error.message}`);
+                    // Rinomina invece di eliminare se bloccato
+                    const timestamp = Date.now();
+                    const newPath = `${filePath}.old.${timestamp}`;
+                    await fs.rename(filePath, newPath);
+                    console.log(`🔄 File rinominato: ${file} -> ${file}.old.${timestamp}`);
+                }
+            }
+            console.log(`✅ Cartella OUTPUT pulita`);
+        } catch (error) {
+            console.log(`📁 Creazione cartella OUTPUT: ${dir}`);
+            await fs.mkdir(dir, { recursive: true });
+        }
+    }
+
     // Funzione helper per creare nome basato sul video
     generateVideoBasedName(videoName, suffix = '') {
         // Rimuovi estensione e caratteri speciali dal nome video
@@ -145,10 +175,10 @@ class VideoProcessor {
                 const collageName = `${videoBaseName}_collage.jpg`;
                 const collagePath = await this.createCollage(frames, collageName);
 
-                // Pulisci frame singoli
-                for (const frame of frames) {
-                    await fs.unlink(frame).catch(() => {});
-                }
+                // NON eliminare i frame singoli - devono rimanere in temp_frames
+                // for (const frame of frames) {
+                //     await fs.unlink(frame).catch(() => {});
+                // }
 
                 return {
                     frames: [collagePath],
@@ -161,7 +191,7 @@ class VideoProcessor {
                 const timestamp = duration * 0.50;
                 const frameName = `${videoBaseName}_frame_center.jpg`;
                 const framePath = await this.extractSingleFrame(videoPath, timestamp, frameName, videoName);
-                
+
                 return {
                     frames: [framePath],
                     videoBaseName: videoBaseName,

@@ -420,10 +420,10 @@ class ContentCreatorApp {
     async processVideos(config) {
         console.log('Avvio elaborazione con configurazione:', config);
 
-        // Step 0: Pulizia cartelle temp_frames e OUTPUT all'inizio
-        console.log('🧹 Pulizia cartelle prima dell\'elaborazione...');
-        this.mainWindow.webContents.send('status-update', 'Pulizia cartelle...');
-        await this.videoProcessor.cleanAllDirectories();
+        // Step 0: Pulizia SOLO cartella OUTPUT all'inizio (temp_frames NON viene pulita)
+        console.log('🧹 Pulizia cartella OUTPUT prima dell\'elaborazione...');
+        this.mainWindow.webContents.send('status-update', 'Pulizia cartella OUTPUT...');
+        await this.videoProcessor.cleanOutputDirectoryOnly();
 
         // Step 1: Ottieni lista video
         const videos = await this.getInputVideos();
@@ -451,8 +451,8 @@ class ContentCreatorApp {
                     path.join(__dirname, 'INPUT', video),
                     config.useCollage
                 );
-                frameResults.push({ 
-                    video, 
+                frameResults.push({
+                    video,
                     frames: frameResult.frames,
                     videoBaseName: frameResult.videoBaseName,
                     originalVideoName: frameResult.originalVideoName
@@ -460,9 +460,9 @@ class ContentCreatorApp {
             } catch (error) {
                 this.log('error', `Errore nell'estrazione frame per ${video}: ${error.message}`);
                 // Continua con il prossimo video invece di interrompere tutto
-                frameResults.push({ 
-                    video, 
-                    frames: [], 
+                frameResults.push({
+                    video,
+                    frames: [],
                     error: error.message,
                     videoBaseName: null,
                     originalVideoName: video
@@ -490,7 +490,7 @@ class ContentCreatorApp {
                     result.frames,
                     config,
                     this.apiManager,
-                    result.originalVideoName  // Passa il nome del video originale
+                    result.originalVideoName // Passa il nome del video originale
                 );
 
                 // Il file viene salvato automaticamente dall'AI processor

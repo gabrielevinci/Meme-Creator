@@ -1468,6 +1468,19 @@
                     const result = await window.electronAPI.startProcessing(config);
                     this.addLog(result.message, 'success');
 
+                    // Mostra risultati del processamento banner se disponibili
+                    if (result.bannerResults) {
+                        const bannerRes = result.bannerResults;
+                        if (bannerRes.error) {
+                            this.addLog(`⚠️ Processamento banner fallito: ${bannerRes.error}`, 'warning');
+                        } else {
+                            this.addLog(`🎬 Banner processati: ${bannerRes.processedVideos}/${bannerRes.validVideos} video elaborati`, 'success');
+                            if (bannerRes.skippedVideos > 0) {
+                                this.addLog(`📝 Video saltati per errori: ${bannerRes.skippedVideos}`, 'info');
+                            }
+                        }
+                    }
+
                 } catch (error) {
                     this.addLog(`Errore: ${error.message}`, 'error');
                     this.setProcessingState(false);
@@ -1517,6 +1530,9 @@
                         break;
                     case 'ai-analysis':
                         phaseText = 'Analisi AI';
+                        break;
+                    case 'banner-processing':
+                        phaseText = 'Processamento Banner';
                         break;
                     default:
                         phaseText = phase || 'Elaborazione';

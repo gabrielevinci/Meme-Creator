@@ -407,6 +407,221 @@ class VideoProcessor {
             });
         });
     }
+
+    // Nuovo metodo per processare tutti i video con banner e testo
+    async processVideosWithBanners(statusCallback = null) {
+        console.log('🎬 Inizio processamento video con banner e testo');
+        
+        try {
+            // Leggi tutti i file di output dell'API AI
+            const outputFiles = await fs.readdir(this.outputDir);
+            const txtFiles = outputFiles.filter(file => file.endsWith('.txt'));
+            
+            console.log(`📁 Trovati ${txtFiles.length} file di output da processare`);
+            
+            if (statusCallback) {
+                statusCallback({
+                    phase: 'banner-processing',
+                    current: 0,
+                    total: txtFiles.length,
+                    file: 'Analisi file di output...'
+                });
+            }
+            
+            let processedCount = 0;
+            let validVideos = [];
+            
+            // Analizza ogni file di output
+            for (const txtFile of txtFiles) {
+                try {
+                    const txtPath = path.join(this.outputDir, txtFile);
+                    const content = await fs.readFile(txtPath, 'utf8');
+                    
+                    // Estrai il JSON dalla risposta AI
+                    const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
+                    if (!jsonMatch) {
+                        console.log(`⚠️ Nessun JSON trovato in ${txtFile}`);
+                        continue;
+                    }
+                    
+                    const aiResponse = JSON.parse(jsonMatch[1]);
+                    
+                    // Controlla se il video ha superato il filtro
+                    if (aiResponse.matches_filter !== 1) {
+                        console.log(`❌ Video ${txtFile} escluso: non ha superato il filtro (matches_filter: ${aiResponse.matches_filter})`);
+                        continue;
+                    }
+                    
+                    console.log(`✅ Video valido trovato: ${txtFile}`);
+                    validVideos.push({
+                        outputFile: txtFile,
+                        aiResponse: aiResponse,
+                        content: content
+                    });
+                    
+                } catch (parseError) {
+                    console.error(`❌ Errore nel parsing di ${txtFile}:`, parseError.message);
+                    continue;
+                }
+            }
+            
+            console.log(`🎯 Trovati ${validVideos.length} video validi da processare`);
+            
+            // Processa ogni video valido
+            for (let i = 0; i < validVideos.length; i++) {
+                const videoData = validVideos[i];
+                
+                if (statusCallback) {
+                    statusCallback({
+                        phase: 'banner-processing',
+                        current: i + 1,
+                        total: validVideos.length,
+                        file: `Processamento ${videoData.outputFile}`
+                    });
+                }
+                
+                try {
+                    await this.addBannerToVideo(videoData);
+                    processedCount++;
+                    console.log(`✅ Video ${processedCount}/${validVideos.length} processato con successo`);
+                } catch (error) {
+                    console.error(`❌ Errore nel processamento di ${videoData.outputFile}:`, error.message);
+                }
+            }
+            
+            console.log(`🎉 Processamento completato: ${processedCount}/${validVideos.length} video elaborati`);
+            
+            return {
+                totalFiles: txtFiles.length,
+                validVideos: validVideos.length,
+                processedVideos: processedCount,
+                skippedVideos: validVideos.length - processedCount
+            };
+            
+        } catch (error) {
+            console.error('❌ Errore nel processamento video con banner:', error);
+            throw error;
+        }
+    }
+
+    // Metodo per aggiungere banner e testo a un singolo video
+    async addBannerToVideo(videoData) {
+        const { outputFile, aiResponse, content } = videoData;
+        
+        // Estrai il nome del file video originale dal contenuto
+        const videoMatch = content.match(/ANALISI AI - (.+?)\.jpg/);
+        if (!videoMatch) {
+            throw new Error(`Impossibile estrarre il nome del video da ${outputFile}`);
+        }
+        
+        const frameBaseName = videoMatch[1];
+        
+        // Trova il video originale corrispondente
+        const inputDir = path.join(__dirname, 'INPUT');
+        const inputFiles = await fs.readdir(inputDir);
+        const mp4Files = inputFiles.filter(file => file.endsWith('.mp4'));
+        
+        // Prova a trovare il video corrispondente (potrebbe non essere perfettamente corrispondente)
+        let videoFile = null;
+        for (const file of mp4Files) {
+            // Rimuovi estensione per confronto base
+            const baseName = file.replace('.mp4', '');
+            if (frameBaseName.includes(baseName.substring(0, 20)) || baseName.includes(frameBaseName.substring(0, 20))) {
+                videoFile = file;
+                break;
+            }
+        }
+        
+        if (!videoFile) {
+            // Se non troviamo corrispondenza diretta, usa il primo video disponibile per il test
+            console.log(`⚠️ Video originale non trovato per ${frameBaseName}, uso il primo video disponibile`);
+            videoFile = mp4Files[0];
+            if (!videoFile) {
+                throw new Error('Nessun video MP4 trovato nella cartella INPUT');
+            }
+        }
+        
+        const inputVideoPath = path.join(inputDir, videoFile);
+        const outputVideoPath = path.join(__dirname, 'OUTPUT', `meme_${Date.now()}_${videoFile}`);
+        
+        console.log(`🎬 Processamento video: ${videoFile}`);
+        console.log(`📍 Posizione banner: ${aiResponse.banner_position}`);
+        console.log(`📝 Testo meme: ${aiResponse.meme_text}`);
+        
+        // Ottieni informazioni del video
+        const videoInfo = await this.getVideoInfo(inputVideoPath);
+        const videoStream = videoInfo.streams.find(s => s.codec_type === 'video');
+        const width = videoStream.width;
+        const height = videoStream.height;
+        
+        console.log(`📺 Dimensioni video: ${width}x${height}`);
+        
+        // Crea il filtro per il banner e testo
+        const bannerHeight = 450;
+        const textColor = 'black';
+        const fontSize = Math.max(24, Math.min(48, width / 20)); // Font size dinamico basato sulla larghezza
+        
+        // Prepara il testo per FFmpeg (escaping caratteri speciali)
+        const escapedText = aiResponse.meme_text
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, "\\'")
+            .replace(/:/g, '\\:')
+            .replace(/=/g, '\\=')
+            .replace(/,/g, '\\,')
+            .replace(/\[/g, '\\[')
+            .replace(/\]/g, '\\]');
+        
+        let filterComplex;
+        if (aiResponse.banner_position === 'bottom') {
+            // Banner bianco in basso
+            const bannerY = height - bannerHeight;
+            const textY = bannerY + (bannerHeight / 2);
+            filterComplex = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill,` +
+                          `drawtext=text='${escapedText}':fontcolor=${textColor}:fontsize=${fontSize}:` +
+                          `x=(w-text_w)/2:y=${textY}:fontfile=C\\:/Windows/Fonts/arial.ttf:` +
+                          `text_align=center:line_spacing=5[v]`;
+        } else {
+            // Banner bianco in alto
+            const textY = bannerHeight / 2;
+            filterComplex = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill,` +
+                          `drawtext=text='${escapedText}':fontcolor=${textColor}:fontsize=${fontSize}:` +
+                          `x=(w-text_w)/2:y=${textY}:fontfile=C\\:/Windows/Fonts/arial.ttf:` +
+                          `text_align=center:line_spacing=5[v]`;
+        }
+        
+        // Esegui FFmpeg per aggiungere banner e testo
+        return new Promise((resolve, reject) => {
+            const ffmpeg = spawn(this.ffmpegPath, [
+                '-i', inputVideoPath,
+                '-filter_complex', filterComplex,
+                '-map', '[v]',
+                '-map', '0:a?', // Copia audio se presente
+                '-c:v', 'libx264',
+                '-c:a', 'copy',
+                '-y',
+                outputVideoPath
+            ]);
+            
+            let errorOutput = '';
+            
+            ffmpeg.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+            
+            ffmpeg.on('close', (code) => {
+                if (code === 0) {
+                    console.log(`✅ Video con banner salvato: ${path.basename(outputVideoPath)}`);
+                    resolve(outputVideoPath);
+                } else {
+                    reject(new Error(`FFmpeg failed (code ${code}): ${errorOutput}`));
+                }
+            });
+            
+            ffmpeg.on('error', (error) => {
+                reject(new Error(`Errore FFmpeg: ${error.message}`));
+            });
+        });
+    }
 }
 
 module.exports = VideoProcessor;

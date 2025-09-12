@@ -70,7 +70,7 @@ class ContentCreatorApp {
         if (this.mainWindow && !this.mainWindow.isDestroyed()) {
             // Invia sia come app-log che come messaggio nella dashboard
             this.mainWindow.webContents.send('app-log', logEntry);
-            
+
             // Per gli errori, invia anche un evento specifico per la dashboard
             if (level === 'error') {
                 this.mainWindow.webContents.send('dashboard-error', {
@@ -86,7 +86,7 @@ class ContentCreatorApp {
     logApiError(error, context = '') {
         const errorMessage = `${context ? context + ': ' : ''}${error.message || error}`;
         this.log('error', errorMessage, 'api');
-        
+
         // Invia errore specifico per API alla dashboard
         if (this.mainWindow && !this.mainWindow.isDestroyed()) {
             this.mainWindow.webContents.send('api-error', {
@@ -381,7 +381,7 @@ class ContentCreatorApp {
             } catch (error) {
                 // Log dettagliato dell'errore
                 this.logApiError(error, 'Errore durante l\'elaborazione');
-                
+
                 // Invia errore alla dashboard
                 this.mainWindow.webContents.send('log-update', {
                     type: 'error',
@@ -411,6 +411,7 @@ class ContentCreatorApp {
             return true;
         });
 
+        // Handler per processare video con banner e testo
         // Handler per logging dal renderer
         ipcMain.handle('log-message', (event, level, message, source = 'renderer') => {
             this.log(level, message, source);
@@ -477,8 +478,8 @@ class ContentCreatorApp {
                 );
 
                 // Il file viene salvato automaticamente dall'AI processor
-                aiResults.push({ 
-                    video: result.video, 
+                aiResults.push({
+                    video: result.video,
                     analysis: analysis.response,
                     outputFile: analysis.outputFile,
                     modelUsed: analysis.modelUsed,
@@ -491,7 +492,7 @@ class ContentCreatorApp {
             } catch (error) {
                 // Log specifico per errori API
                 this.logApiError(error, `Analisi AI fallita per ${result.video}`);
-                
+
                 // Invia errore specifico alla dashboard
                 this.mainWindow.webContents.send('ai-analysis-error', {
                     video: result.video,
@@ -515,6 +516,38 @@ class ContentCreatorApp {
 
         console.log('Analisi AI completata per tutti i video');
 
+        // Step 4: Processamento automatico banner e testo
+        this.log('info', 'Avvio processamento automatico banner e testo per video validi...');
+        this.mainWindow.webContents.send('status-update', {
+            phase: 'banner-processing',
+            current: 0,
+            total: 0,
+            file: 'Inizializzazione...'
+        });
+
+        let bannerResults = null;
+        try {
+            // Crea callback per gli aggiornamenti di status
+            const statusCallback = (data) => {
+                this.mainWindow.webContents.send('status-update', data);
+            };
+            
+            bannerResults = await this.videoProcessor.processVideosWithBanners(statusCallback);
+            
+            this.log('success', `Processamento banner completato: ${bannerResults.processedVideos}/${bannerResults.validVideos} video elaborati`);
+
+        } catch (bannerError) {
+            this.log('error', `Errore nel processamento banner: ${bannerError.message}`);
+            // Il processamento banner fallito non deve interrompere tutto il processo
+            // I file di analisi AI sono comunque salvati e disponibili
+            bannerResults = { 
+                processedVideos: 0, 
+                validVideos: 0, 
+                totalFiles: 0,
+                error: bannerError.message 
+            };
+        }
+
         // Pulizia finale delle risorse temporanee
         try {
             await this.videoProcessor.cleanup();
@@ -525,8 +558,9 @@ class ContentCreatorApp {
 
         return {
             success: true,
-            message: `Elaborazione completata per ${videos.length} video`,
-            results: aiResults
+            message: `Elaborazione completa terminata: ${videos.length} video analizzati, banner processati automaticamente`,
+            results: aiResults,
+            bannerResults: bannerResults
         };
     }
 

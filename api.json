@@ -851,6 +851,33 @@
             "tokens_used": 1177,
             "response_time_ms": 1305,
             "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani rosa e gialli fioriti, illuminato da un tramonto dorato e nuvoloso. In lontananza, un grande albero solitario si staglia contro il cielo, co"
+          },
+          "1757645449369_j273uc3cw": {
+            "timestamp": 1757645449369,
+            "tokens": 1185,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1185,
+            "response_time_ms": 2233,
+            "output": "```json\n{\n  \"description\": \"Una vasta distesa di fiori bianchi e arancioni riempie il primo piano, estendendosi verso un orizzonte dove il sole tramonta tra colline verdi e alberi. Il cielo è dipinto "
+          },
+          "1757645451575_qqwipa7zu": {
+            "timestamp": 1757645451575,
+            "tokens": 1185,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1185,
+            "response_time_ms": 2201,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino e un gilet verde brillante sta ballando in un corridoio. Nel primo frame, tiene in mano una bevanda e sembra fare un movimento energico. Nei f"
+          },
+          "1757645454516_s6749qr0q": {
+            "timestamp": 1757645454516,
+            "tokens": 1177,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1177,
+            "response_time_ms": 2937,
+            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani dai colori tenui, con sfumature di rosa e giallo, si estende verso l'orizzonte. Sopra, un cielo drammatico è dipinto da nuvole striate e dor"
           }
         }
       },
@@ -918,9 +945,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757642554146,
+          "until": 1757645747126,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757642254146
+          "markedAt": 1757645447126
         }
       }
     }

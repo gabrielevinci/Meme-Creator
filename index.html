@@ -133,6 +133,118 @@
             border-color: #3498db;
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
+        /* Stili per il select personalizzato dei font */
+        .custom-select-container {
+            position: relative;
+        }
+        
+        .custom-select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 20px;
+        }
+        
+        .custom-select:hover {
+            border-color: #3498db;
+        }
+        
+        .custom-select.open {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .select-display {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .select-arrow {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .custom-select.open .select-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #3498db;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .select-options.show {
+            display: block;
+        }
+        
+        .select-option {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .select-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .select-option:last-child {
+            border-bottom: none;
+        }
+        
+        .select-option.selected {
+            background-color: #e8f4fd;
+            color: #2c3e50;
+        }
+
+        /* Mantieni gli stili legacy per compatibilità */
+        .font-select-option {
+            font-size: 16px;
+            padding: 8px 12px;
+        }
+        
+        #font-select option {
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.6;
+            min-height: 24px;
+            font-display: swap;
+        }
+        
+        #font-select option:first-child {
+            font-family: inherit !important;
+            font-style: italic;
+            color: #666;
+        }
+
+        /* Forza il caricamento dei font personalizzati */
+        .font-preview {
+            font-display: swap;
+            font-variant-ligatures: none;
+        }
         
         .button-group {
             display: flex;
@@ -1055,9 +1167,16 @@
 
                 <div class="form-group">
                     <label for="font-select">🎨 Font</label>
-                    <select id="font-select" class="select-field">
-                        <option value="">Caricamento font...</option>
-                    </select>
+                    <div class="custom-select-container">
+                        <div id="font-select" class="custom-select">
+                            <span class="select-display">Caricamento font...</span>
+                            <span class="select-arrow">▼</span>
+                        </div>
+                        <div id="font-options" class="select-options">
+                            <!-- Options will be populated here -->
+                        </div>
+                    </div>
+                    <input type="hidden" id="selected-font" value="">
                 </div>
 
                 <div class="button-group">
@@ -1305,6 +1424,8 @@
                     videoFilter: document.getElementById('video-filter'),
                     collageMode: document.getElementById('collage-mode'),
                     fontSelect: document.getElementById('font-select'),
+                    fontOptions: document.getElementById('font-options'),
+                    selectedFont: document.getElementById('selected-font'),
                     memeStyle: document.getElementById('meme-style'),
                     startBtn: document.getElementById('start-btn'),
                     stopBtn: document.getElementById('stop-btn'),
@@ -1325,6 +1446,17 @@
                 this.elements.startBtn.addEventListener('click', () => this.startProcessing());
                 this.elements.stopBtn.addEventListener('click', () => this.stopProcessing());
                 this.elements.apiBtn.addEventListener('click', () => this.openApiManager());
+
+                // Custom font select
+                this.elements.fontSelect.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleFontDropdown();
+                });
+
+                // Chiudi dropdown quando si clicca fuori
+                document.addEventListener('click', () => {
+                    this.closeFontDropdown();
+                });
 
                 // Modal API
                 this.elements.apiModal.addEventListener('click', (e) => {
@@ -1385,6 +1517,8 @@
                 try {
                     // Carica font
                     const fonts = await window.electronAPI.loadFonts();
+                    console.log('Font caricati:', fonts);
+                    await this.loadFontsIntoCSS(fonts);
                     this.populateFontSelect(fonts);
 
                     // Carica video
@@ -1399,20 +1533,163 @@
                 }
             }
 
+            async loadFontsIntoCSS(fonts) {
+                // Rimuovi eventuali stili font precedenti
+                const existingStyle = document.getElementById('dynamic-fonts');
+                if (existingStyle) {
+                    existingStyle.remove();
+                }
+
+                console.log('Caricamento CSS per font:', fonts);
+
+                // Crea un elemento style per caricare i font
+                const style = document.createElement('style');
+                style.id = 'dynamic-fonts';
+                
+                let cssRules = '';
+                fonts.forEach(font => {
+                    // Rimuovi l'estensione dal nome del font per la famiglia CSS
+                    const fontFamily = font.replace(/\.(ttf|otf|woff|woff2)$/i, '');
+                    cssRules += `
+                        @font-face {
+                            font-family: "${fontFamily}";
+                            src: url("./font/${font}") format("truetype");
+                            font-display: swap;
+                            font-weight: normal;
+                            font-style: normal;
+                        }
+                    `;
+                });
+                
+                style.textContent = cssRules;
+                document.head.appendChild(style);
+
+                console.log('CSS aggiunto:', cssRules);
+
+                // Usa FontFace API per preload se disponibile
+                if ('fonts' in document) {
+                    console.log('FontFace API disponibile, caricamento font...');
+                    const fontPromises = fonts.map(async (font) => {
+                        const fontFamily = font.replace(/\.(ttf|otf|woff|woff2)$/i, '');
+                        try {
+                            const fontFace = new FontFace(fontFamily, `url(./font/${font})`);
+                            const loadedFont = await fontFace.load();
+                            document.fonts.add(loadedFont);
+                            console.log(`Font ${fontFamily} caricato con successo`);
+                        } catch (error) {
+                            console.warn(`Impossibile caricare il font ${fontFamily}:`, error);
+                        }
+                    });
+                    
+                    await Promise.allSettled(fontPromises);
+                    console.log('Fonts nella document.fonts:', Array.from(document.fonts).map(f => f.family));
+                }
+
+                // Aspetta un momento per permettere ai font di caricarsi
+                await new Promise(resolve => setTimeout(resolve, 800));
+            }
+
             populateFontSelect(fonts) {
-                this.elements.fontSelect.innerHTML = '<option value="">Seleziona un font...</option>';
+                const displayElement = this.elements.fontSelect.querySelector('.select-display');
+                displayElement.textContent = 'Seleziona un font...';
+                
+                this.elements.fontOptions.innerHTML = '';
 
                 if (fonts.length === 0) {
-                    this.elements.fontSelect.innerHTML = '<option value="">Nessun font trovato</option>';
+                    displayElement.textContent = 'Nessun font trovato';
                     return;
                 }
 
                 fonts.forEach(font => {
-                    const option = document.createElement('option');
-                    option.value = font;
-                    option.textContent = font;
-                    this.elements.fontSelect.appendChild(option);
+                    const fontFamily = font.replace(/\.(ttf|otf|woff|woff2)$/i, '');
+                    const option = document.createElement('div');
+                    option.className = 'select-option';
+                    option.textContent = `${fontFamily} - ABC abc 123`;
+                    option.style.fontFamily = `"${fontFamily}", Arial, sans-serif`;
+                    option.dataset.value = fontFamily;
+                    
+                    option.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.selectFont(fontFamily, option.textContent);
+                    });
+                    
+                    this.elements.fontOptions.appendChild(option);
                 });
+
+                // Forza il browser a riconoscere i font caricati
+                this.preloadFonts(fonts);
+            }
+
+            selectFont(fontFamily, displayText) {
+                // Aggiorna il campo nascosto
+                this.elements.selectedFont.value = fontFamily;
+                
+                // Aggiorna la visualizzazione
+                const displayElement = this.elements.fontSelect.querySelector('.select-display');
+                displayElement.textContent = displayText;
+                displayElement.style.fontFamily = `"${fontFamily}", Arial, sans-serif`;
+                
+                // Rimuovi selezione precedente
+                this.elements.fontOptions.querySelectorAll('.select-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Aggiungi selezione corrente
+                const selectedOption = this.elements.fontOptions.querySelector(`[data-value="${fontFamily}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('selected');
+                }
+                
+                // Chiudi dropdown
+                this.closeFontDropdown();
+            }
+
+            toggleFontDropdown() {
+                const isOpen = this.elements.fontSelect.classList.contains('open');
+                if (isOpen) {
+                    this.closeFontDropdown();
+                } else {
+                    this.openFontDropdown();
+                }
+            }
+
+            openFontDropdown() {
+                this.elements.fontSelect.classList.add('open');
+                this.elements.fontOptions.classList.add('show');
+            }
+
+            closeFontDropdown() {
+                this.elements.fontSelect.classList.remove('open');
+                this.elements.fontOptions.classList.remove('show');
+            }
+
+            preloadFonts(fonts) {
+                // Crea elementi temporanei invisibili per forzare il caricamento dei font
+                fonts.forEach(font => {
+                    const fontFamily = font.replace(/\.(ttf|otf|woff|woff2)$/i, '');
+                    const testElement = document.createElement('div');
+                    testElement.style.fontFamily = `"${fontFamily}", Arial, sans-serif`;
+                    testElement.style.fontSize = '16px';
+                    testElement.style.visibility = 'hidden';
+                    testElement.style.position = 'absolute';
+                    testElement.style.left = '-9999px';
+                    testElement.textContent = 'ABC abc 123 Font Test';
+                    document.body.appendChild(testElement);
+                    
+                    // Rimuovi dopo un delay più lungo per permettere il caricamento
+                    setTimeout(() => {
+                        if (testElement.parentNode) {
+                            testElement.parentNode.removeChild(testElement);
+                        }
+                    }, 2000);
+                });
+
+                // Forza il repaint dopo un breve delay
+                setTimeout(() => {
+                    this.elements.fontSelect.style.display = 'none';
+                    this.elements.fontSelect.offsetHeight; // trigger reflow
+                    this.elements.fontSelect.style.display = '';
+                }, 1000);
             }
 
             async refreshVideoList() {
@@ -1434,21 +1711,28 @@
             }
 
             async startProcessing() {
-                if (this.isProcessing) return;
+                    if (this.isProcessing) return;
 
-                // Validazioni
-                if (!this.elements.memeType.value.trim()) {
-                    alert('Inserisci la tipologia di meme');
-                    return;
-                }
+                    // Validazioni con messaggi dettagliati
+                    const missingFields = [];
 
-                if (!this.elements.videoFilter.value.trim()) {
-                    alert('Inserisci i criteri per il filtro video');
-                    return;
-                }
+                    if (!this.elements.memeType.value.trim()) {
+                        missingFields.push('📝 Tipologia di meme');
+                    }
 
-                if (!this.elements.memeStyle.value.trim()) {
-                    alert('Inserisci lo stile del meme');
+                    if (!this.elements.videoFilter.value.trim()) {
+                        missingFields.push('🎬 Criteri per il filtro video');
+                    }
+
+                    if (!this.elements.memeStyle.value.trim()) {
+                        missingFields.push('✨ Stile del meme');
+                    }
+
+                if (!this.elements.selectedFont.value) {
+                    missingFields.push('🎨 Font per il testo');
+                }                    if (missingFields.length > 0) {
+                        const message = `⚠️ CAMPI MANCANTI\n\nPer continuare devi compilare:\n\n${missingFields.map(field => `• ${field}`).join('\n')}`;
+                    alert(message);
                     return;
                 }
 
@@ -1458,7 +1742,7 @@
                     videoFilter: this.elements.videoFilter.value.trim(),
                     memeStyle: this.elements.memeStyle.value.trim(),
                     useCollage: this.elements.collageMode.checked,
-                    selectedFont: this.elements.fontSelect.value
+                    selectedFont: this.elements.selectedFont.value
                 };
 
                 try {

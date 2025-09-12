@@ -82,7 +82,7 @@ class VideoProcessor {
             for (const file of tempFiles) {
                 const filePath = path.join(tempDir, file);
                 const stat = await fs.stat(filePath);
-                
+
                 if (stat.isDirectory()) {
                     // Se è una directory, eliminala ricorsivamente
                     await fs.rmdir(filePath, { recursive: true });

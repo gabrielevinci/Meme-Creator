@@ -329,6 +329,33 @@
             "tokens_used": 1006,
             "response_time_ms": 1707,
             "output": "```json\n{\n  \"description\": \"Un vasto campo di tulipani color pesca e gialli si estende fino all'orizzonte, con i fiori che si stagliano contro un cielo drammatico. Le nuvole striate di arancione e oro"
+          },
+          "1757637449045_6bi3v3i0k": {
+            "timestamp": 1757637449045,
+            "tokens": 991,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 991,
+            "response_time_ms": 1323,
+            "output": "```json\n{\n  \"description\": \"Un campo di margherite bianche e gialle si estende fino all'orizzonte, con un bosco verdeggiante sulla sinistra. Il cielo è dominato da nuvole arancioni striate, con il sol"
+          },
+          "1757637450098_hlazwxye0": {
+            "timestamp": 1757637450098,
+            "tokens": 966,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 966,
+            "response_time_ms": 1049,
+            "output": "```json\n{\n  \"description\": \"Una persona indossa un gilet verde brillante sopra una tuta scura e un cappellino verde. Sta saltellando sul posto in un corridoio con illuminazione artificiale e un tavolo"
+          },
+          "1757637451307_42df0meor": {
+            "timestamp": 1757637451307,
+            "tokens": 1012,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1012,
+            "response_time_ms": 1205,
+            "output": "```json\n{\n  \"description\": \"Un campo di tulipani rosa e gialli fioriti si estende verso l'orizzonte sotto un cielo drammatico con nuvole striate di arancione e oro. Un grande albero solitario si erge "
           }
         }
       },

@@ -34,11 +34,11 @@ class VideoProcessor {
         try {
             // Prima prova eliminazione normale
             const files = await fs.readdir(this.tempDir);
-            
+
             for (const file of files) {
                 const filePath = path.join(this.tempDir, file);
                 let deleted = false;
-                
+
                 // Prova 5 volte con delay crescente
                 for (let retry = 0; retry < 5; retry++) {
                     try {
@@ -49,7 +49,7 @@ class VideoProcessor {
                         // Attesa crescente: 100ms, 200ms, 500ms, 1s, 2s
                         const delay = Math.min(100 * Math.pow(2, retry), 2000);
                         await new Promise(resolve => setTimeout(resolve, delay));
-                        
+
                         if (retry === 4) {
                             console.log(`Impossibile eliminare ${file}:`, fileError.message);
                             // Come ultima risorsa, rinomina il file
@@ -411,14 +411,14 @@ class VideoProcessor {
     // Nuovo metodo per processare tutti i video con banner e testo
     async processVideosWithBanners(statusCallback = null) {
         console.log('🎬 Inizio processamento video con banner e testo');
-        
+
         try {
             // Leggi tutti i file di output dell'API AI
             const outputFiles = await fs.readdir(this.outputDir);
             const txtFiles = outputFiles.filter(file => file.endsWith('.txt'));
-            
+
             console.log(`📁 Trovati ${txtFiles.length} file di output da processare`);
-            
+
             if (statusCallback) {
                 statusCallback({
                     phase: 'banner-processing',
@@ -427,50 +427,50 @@ class VideoProcessor {
                     file: 'Analisi file di output...'
                 });
             }
-            
+
             let processedCount = 0;
             let validVideos = [];
-            
+
             // Analizza ogni file di output
             for (const txtFile of txtFiles) {
                 try {
                     const txtPath = path.join(this.outputDir, txtFile);
                     const content = await fs.readFile(txtPath, 'utf8');
-                    
+
                     // Estrai il JSON dalla risposta AI
                     const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
                     if (!jsonMatch) {
                         console.log(`⚠️ Nessun JSON trovato in ${txtFile}`);
                         continue;
                     }
-                    
+
                     const aiResponse = JSON.parse(jsonMatch[1]);
-                    
+
                     // Controlla se il video ha superato il filtro
                     if (aiResponse.matches_filter !== 1) {
                         console.log(`❌ Video ${txtFile} escluso: non ha superato il filtro (matches_filter: ${aiResponse.matches_filter})`);
                         continue;
                     }
-                    
+
                     console.log(`✅ Video valido trovato: ${txtFile}`);
                     validVideos.push({
                         outputFile: txtFile,
                         aiResponse: aiResponse,
                         content: content
                     });
-                    
+
                 } catch (parseError) {
                     console.error(`❌ Errore nel parsing di ${txtFile}:`, parseError.message);
                     continue;
                 }
             }
-            
+
             console.log(`🎯 Trovati ${validVideos.length} video validi da processare`);
-            
+
             // Processa ogni video valido
             for (let i = 0; i < validVideos.length; i++) {
                 const videoData = validVideos[i];
-                
+
                 if (statusCallback) {
                     statusCallback({
                         phase: 'banner-processing',
@@ -479,7 +479,7 @@ class VideoProcessor {
                         file: `Processamento ${videoData.outputFile}`
                     });
                 }
-                
+
                 try {
                     await this.addBannerToVideo(videoData);
                     processedCount++;
@@ -488,16 +488,16 @@ class VideoProcessor {
                     console.error(`❌ Errore nel processamento di ${videoData.outputFile}:`, error.message);
                 }
             }
-            
+
             console.log(`🎉 Processamento completato: ${processedCount}/${validVideos.length} video elaborati`);
-            
+
             return {
                 totalFiles: txtFiles.length,
                 validVideos: validVideos.length,
                 processedVideos: processedCount,
                 skippedVideos: validVideos.length - processedCount
             };
-            
+
         } catch (error) {
             console.error('❌ Errore nel processamento video con banner:', error);
             throw error;
@@ -507,20 +507,20 @@ class VideoProcessor {
     // Metodo per aggiungere banner e testo a un singolo video
     async addBannerToVideo(videoData) {
         const { outputFile, aiResponse, content } = videoData;
-        
+
         // Estrai il nome del file video originale dal contenuto
         const videoMatch = content.match(/ANALISI AI - (.+?)\.jpg/);
         if (!videoMatch) {
             throw new Error(`Impossibile estrarre il nome del video da ${outputFile}`);
         }
-        
+
         const frameBaseName = videoMatch[1];
-        
+
         // Trova il video originale corrispondente
         const inputDir = path.join(__dirname, 'INPUT');
         const inputFiles = await fs.readdir(inputDir);
         const mp4Files = inputFiles.filter(file => file.endsWith('.mp4'));
-        
+
         // Prova a trovare il video corrispondente (potrebbe non essere perfettamente corrispondente)
         let videoFile = null;
         for (const file of mp4Files) {
@@ -531,7 +531,7 @@ class VideoProcessor {
                 break;
             }
         }
-        
+
         if (!videoFile) {
             // Se non troviamo corrispondenza diretta, usa il primo video disponibile per il test
             console.log(`⚠️ Video originale non trovato per ${frameBaseName}, uso il primo video disponibile`);
@@ -540,29 +540,31 @@ class VideoProcessor {
                 throw new Error('Nessun video MP4 trovato nella cartella INPUT');
             }
         }
-        
+
         const inputVideoPath = path.join(inputDir, videoFile);
         const outputVideoPath = path.join(__dirname, 'OUTPUT', `meme_${Date.now()}_${videoFile}`);
-        
+
         console.log(`🎬 Processamento video: ${videoFile}`);
         console.log(`📍 Posizione banner: ${aiResponse.banner_position}`);
         console.log(`📝 Testo meme: ${aiResponse.meme_text}`);
-        
+
         // Ottieni informazioni del video
         const videoInfo = await this.getVideoInfo(inputVideoPath);
         const videoStream = videoInfo.streams.find(s => s.codec_type === 'video');
         const width = videoStream.width;
         const height = videoStream.height;
-        
+
         console.log(`📺 Dimensioni video: ${width}x${height}`);
-        
+
         // Crea il filtro per il banner e testo
         const bannerHeight = 450;
         const textColor = 'black';
         const fontSize = Math.max(24, Math.min(48, width / 20)); // Font size dinamico basato sulla larghezza
-        
-        // Prepara il testo per FFmpeg (escaping caratteri speciali)
-        const escapedText = aiResponse.meme_text
+
+        // Prepara il testo per FFmpeg con gestione delle righe multiple
+        const maxCharsPerLine = Math.floor(width / (fontSize * 0.6)); // Stima caratteri per riga
+        const wrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine);
+        const escapedText = wrappedText
             .replace(/\\/g, '\\\\')
             .replace(/'/g, "\\'")
             .replace(/:/g, '\\:')
@@ -570,25 +572,30 @@ class VideoProcessor {
             .replace(/,/g, '\\,')
             .replace(/\[/g, '\\[')
             .replace(/\]/g, '\\]');
-        
+
+        console.log(`📝 Testo preparato: "${wrappedText}" (max ${maxCharsPerLine} char/riga)`);
+
+        // Calcola il numero di righe per centrare verticalmente
+        const numberOfLines = (wrappedText.match(/\\\\n/g) || []).length + 1;
+        const lineHeight = fontSize * 1.2; // Spaziatura tra righe
+        const totalTextHeight = numberOfLines * lineHeight;
+
         let filterComplex;
         if (aiResponse.banner_position === 'bottom') {
             // Banner bianco in basso
             const bannerY = height - bannerHeight;
-            const textY = bannerY + (bannerHeight / 2);
+            const textY = bannerY + (bannerHeight - totalTextHeight) / 2;
             filterComplex = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill,` +
-                          `drawtext=text='${escapedText}':fontcolor=${textColor}:fontsize=${fontSize}:` +
-                          `x=(w-text_w)/2:y=${textY}:fontfile=C\\:/Windows/Fonts/arial.ttf:` +
-                          `text_align=center:line_spacing=5[v]`;
+                `drawtext=text='${escapedText}':fontcolor=${textColor}:fontsize=${fontSize}:` +
+                `x=(w-text_w)/2:y=${Math.max(bannerY + 10, textY)}[v]`;
         } else {
             // Banner bianco in alto
-            const textY = bannerHeight / 2;
+            const textY = (bannerHeight - totalTextHeight) / 2;
             filterComplex = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill,` +
-                          `drawtext=text='${escapedText}':fontcolor=${textColor}:fontsize=${fontSize}:` +
-                          `x=(w-text_w)/2:y=${textY}:fontfile=C\\:/Windows/Fonts/arial.ttf:` +
-                          `text_align=center:line_spacing=5[v]`;
+                `drawtext=text='${escapedText}':fontcolor=${textColor}:fontsize=${fontSize}:` +
+                `x=(w-text_w)/2:y=${Math.max(10, textY)}[v]`;
         }
-        
+
         // Esegui FFmpeg per aggiungere banner e testo
         return new Promise((resolve, reject) => {
             const ffmpeg = spawn(this.ffmpegPath, [
@@ -601,13 +608,13 @@ class VideoProcessor {
                 '-y',
                 outputVideoPath
             ]);
-            
+
             let errorOutput = '';
-            
+
             ffmpeg.stderr.on('data', (data) => {
                 errorOutput += data.toString();
             });
-            
+
             ffmpeg.on('close', (code) => {
                 if (code === 0) {
                     console.log(`✅ Video con banner salvato: ${path.basename(outputVideoPath)}`);
@@ -616,11 +623,45 @@ class VideoProcessor {
                     reject(new Error(`FFmpeg failed (code ${code}): ${errorOutput}`));
                 }
             });
-            
+
             ffmpeg.on('error', (error) => {
                 reject(new Error(`Errore FFmpeg: ${error.message}`));
             });
         });
+    }
+
+    // Funzione helper per spezzare testo lungo in più righe
+    wrapText(text, maxCharsPerLine) {
+        if (text.length <= maxCharsPerLine) {
+            return text;
+        }
+
+        const words = text.split(' ');
+        let lines = [];
+        let currentLine = '';
+
+        for (const word of words) {
+            // Se aggiungendo la parola superiamo il limite, inizia una nuova riga
+            if ((currentLine + ' ' + word).length > maxCharsPerLine) {
+                if (currentLine.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    // Parola troppo lunga, la tronchiamo
+                    lines.push(word.substring(0, maxCharsPerLine));
+                    currentLine = '';
+                }
+            } else {
+                currentLine = currentLine.length === 0 ? word : currentLine + ' ' + word;
+            }
+        }
+
+        if (currentLine.length > 0) {
+            lines.push(currentLine);
+        }
+
+        // Unisci le righe con \n per FFmpeg
+        return lines.join('\\n');
     }
 }
 

@@ -531,20 +531,20 @@ class ContentCreatorApp {
             const statusCallback = (data) => {
                 this.mainWindow.webContents.send('status-update', data);
             };
-            
+
             bannerResults = await this.videoProcessor.processVideosWithBanners(statusCallback);
-            
+
             this.log('success', `Processamento banner completato: ${bannerResults.processedVideos}/${bannerResults.validVideos} video elaborati`);
 
         } catch (bannerError) {
             this.log('error', `Errore nel processamento banner: ${bannerError.message}`);
             // Il processamento banner fallito non deve interrompere tutto il processo
             // I file di analisi AI sono comunque salvati e disponibili
-            bannerResults = { 
-                processedVideos: 0, 
-                validVideos: 0, 
+            bannerResults = {
+                processedVideos: 0,
+                validVideos: 0,
                 totalFiles: 0,
-                error: bannerError.message 
+                error: bannerError.message
             };
         }
 

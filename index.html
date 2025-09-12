@@ -134,6 +134,7 @@
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
         /* Stili per il select personalizzato dei font */
+        
         .custom-select-container {
             position: relative;
         }
@@ -218,8 +219,8 @@
             background-color: #e8f4fd;
             color: #2c3e50;
         }
-
         /* Mantieni gli stili legacy per compatibilità */
+        
         .font-select-option {
             font-size: 16px;
             padding: 8px 12px;
@@ -239,8 +240,8 @@
             font-style: italic;
             color: #666;
         }
-
         /* Forza il caricamento dei font personalizzati */
+        
         .font-preview {
             font-display: swap;
             font-variant-ligatures: none;
@@ -1545,7 +1546,7 @@
                 // Crea un elemento style per caricare i font
                 const style = document.createElement('style');
                 style.id = 'dynamic-fonts';
-                
+
                 let cssRules = '';
                 fonts.forEach(font => {
                     // Rimuovi l'estensione dal nome del font per la famiglia CSS
@@ -1560,7 +1561,7 @@
                         }
                     `;
                 });
-                
+
                 style.textContent = cssRules;
                 document.head.appendChild(style);
 
@@ -1569,7 +1570,7 @@
                 // Usa FontFace API per preload se disponibile
                 if ('fonts' in document) {
                     console.log('FontFace API disponibile, caricamento font...');
-                    const fontPromises = fonts.map(async (font) => {
+                    const fontPromises = fonts.map(async(font) => {
                         const fontFamily = font.replace(/\.(ttf|otf|woff|woff2)$/i, '');
                         try {
                             const fontFace = new FontFace(fontFamily, `url(./font/${font})`);
@@ -1580,7 +1581,7 @@
                             console.warn(`Impossibile caricare il font ${fontFamily}:`, error);
                         }
                     });
-                    
+
                     await Promise.allSettled(fontPromises);
                     console.log('Fonts nella document.fonts:', Array.from(document.fonts).map(f => f.family));
                 }
@@ -1592,7 +1593,7 @@
             populateFontSelect(fonts) {
                 const displayElement = this.elements.fontSelect.querySelector('.select-display');
                 displayElement.textContent = 'Seleziona un font...';
-                
+
                 this.elements.fontOptions.innerHTML = '';
 
                 if (fonts.length === 0) {
@@ -1607,12 +1608,12 @@
                     option.textContent = `${fontFamily} - ABC abc 123`;
                     option.style.fontFamily = `"${fontFamily}", Arial, sans-serif`;
                     option.dataset.value = fontFamily;
-                    
+
                     option.addEventListener('click', (e) => {
                         e.stopPropagation();
                         this.selectFont(fontFamily, option.textContent);
                     });
-                    
+
                     this.elements.fontOptions.appendChild(option);
                 });
 
@@ -1623,23 +1624,23 @@
             selectFont(fontFamily, displayText) {
                 // Aggiorna il campo nascosto
                 this.elements.selectedFont.value = fontFamily;
-                
+
                 // Aggiorna la visualizzazione
                 const displayElement = this.elements.fontSelect.querySelector('.select-display');
                 displayElement.textContent = displayText;
                 displayElement.style.fontFamily = `"${fontFamily}", Arial, sans-serif`;
-                
+
                 // Rimuovi selezione precedente
                 this.elements.fontOptions.querySelectorAll('.select-option').forEach(opt => {
                     opt.classList.remove('selected');
                 });
-                
+
                 // Aggiungi selezione corrente
                 const selectedOption = this.elements.fontOptions.querySelector(`[data-value="${fontFamily}"]`);
                 if (selectedOption) {
                     selectedOption.classList.add('selected');
                 }
-                
+
                 // Chiudi dropdown
                 this.closeFontDropdown();
             }
@@ -1675,7 +1676,7 @@
                     testElement.style.left = '-9999px';
                     testElement.textContent = 'ABC abc 123 Font Test';
                     document.body.appendChild(testElement);
-                    
+
                     // Rimuovi dopo un delay più lungo per permettere il caricamento
                     setTimeout(() => {
                         if (testElement.parentNode) {
@@ -1728,9 +1729,10 @@
                         missingFields.push('✨ Stile del meme');
                     }
 
-                if (!this.elements.selectedFont.value) {
-                    missingFields.push('🎨 Font per il testo');
-                }                    if (missingFields.length > 0) {
+                    if (!this.elements.selectedFont.value) {
+                        missingFields.push('🎨 Font per il testo');
+                    }
+                    if (missingFields.length > 0) {
                         const message = `⚠️ CAMPI MANCANTI\n\nPer continuare devi compilare:\n\n${missingFields.map(field => `• ${field}`).join('\n')}`;
                     alert(message);
                     return;

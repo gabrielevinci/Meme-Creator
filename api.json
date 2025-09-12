@@ -734,6 +734,60 @@
             "tokens_used": 1180,
             "response_time_ms": 1221,
             "output": "```json\n{\n  \"description\": \"Un vasto campo di tulipani rosa e gialli fioriti si estende fino all'orizzonte. Sopra, un cielo drammatico è illuminato da un tramonto dorato con nuvole stratificate che cr"
+          },
+          "1757641768343_fokep4xfa": {
+            "timestamp": 1757641768343,
+            "tokens": 1178,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1178,
+            "response_time_ms": 1422,
+            "output": "```json\n{\n  \"description\": \"Un campo di margherite bianche e gialle si estende fino all'orizzonte, con un bosco verde scuro sulla sinistra. Il cielo è dominato da nuvole arancioni striate, con un sole"
+          },
+          "1757641769331_bbw2vul7w": {
+            "timestamp": 1757641769331,
+            "tokens": 1160,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1160,
+            "response_time_ms": 984,
+            "output": "```json\n{\n  \"description\": \"Una persona con una visiera verde e un gilet verde acceso su una maglia scura sta ballando in un corridoio. Indossa leggings scuri e scarpe da ginnastica bianche. La person"
+          },
+          "1757641770481_amvcqsvz5": {
+            "timestamp": 1757641770481,
+            "tokens": 1187,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1187,
+            "response_time_ms": 1145,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di tulipani rosa e gialli fioriti si estende all'orizzonte, con un grande albero solitario che fa da sfondo al tramonto. Il cielo è dipinto di sfumature aran"
+          },
+          "1757641945783_xhg92yz34": {
+            "timestamp": 1757641945783,
+            "tokens": 1192,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1192,
+            "response_time_ms": 1488,
+            "output": "```json\n{\n  \"description\": \"Un campo di margherite bianche e gialle si estende verso l'orizzonte, illuminato da un tramonto arancione vibrante. Le nuvole nel cielo sono dense e striate, creando un eff"
+          },
+          "1757641947009_6a8szvd3x": {
+            "timestamp": 1757641947009,
+            "tokens": 1156,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1156,
+            "response_time_ms": 1221,
+            "output": "```json\n{\n  \"description\": \"Una persona con una visiera verde e un gilet verde acceso sta ballando in un corridoio. Indossa leggings neri e scarpe da ginnastica bianche. La persona sembra entusiasta e"
+          },
+          "1757641947971_8pc4eusks": {
+            "timestamp": 1757641947971,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 955,
+            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani rosa e gialli fioriti, illuminato dalla luce dorata del tramonto. Il cielo è adornato da nuvole spettacolari che creano un effetto drammatic"
           }
         }
       },
@@ -801,9 +855,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757641877683,
+          "until": 1757642244283,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757641577683
+          "markedAt": 1757641944283
         }
       }
     }

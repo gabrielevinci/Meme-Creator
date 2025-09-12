@@ -566,14 +566,6 @@ class ContentCreatorApp {
             };
         }
 
-        // Pulizia finale delle risorse temporanee
-        try {
-            await this.videoProcessor.cleanup();
-            this.log('info', 'Pulizia finale delle risorse temporanee completata');
-        } catch (error) {
-            this.log('error', `Errore durante la pulizia finale: ${error.message}`);
-        }
-
         return {
             success: true,
             message: `Elaborazione completa terminata: ${videos.length} video analizzati, banner processati automaticamente`,

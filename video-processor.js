@@ -541,42 +541,91 @@ class VideoProcessor {
         }
 
         // Estrai il nome del file video originale dal contenuto
-        const videoMatch = content.match(/ANALISI AI - (.+?)\.jpg/);
-        if (!videoMatch) {
-            throw new Error(`Impossibile estrarre il nome del video da ${outputFile}`);
-        }
-
-        const frameBaseName = videoMatch[1];
-
-        // Trova il video originale corrispondente
-        const inputDir = path.join(__dirname, 'INPUT');
-        const inputFiles = await fs.readdir(inputDir);
-        const mp4Files = inputFiles.filter(file => file.endsWith('.mp4'));
-
-        // Prova a trovare il video corrispondente (potrebbe non essere perfettamente corrispondente)
-        let videoFile = null;
-        for (const file of mp4Files) {
-            // Rimuovi estensione per confronto base
-            const baseName = file.replace('.mp4', '');
-            if (frameBaseName.includes(baseName.substring(0, 20)) || baseName.includes(frameBaseName.substring(0, 20))) {
-                videoFile = file;
-                break;
+        let originalVideoName = null;
+        
+        // Prima, cerca se c'è un mapping salvato
+        const mappingPath = path.join(__dirname, 'video-mapping.json');
+        try {
+            const mappingContent = await fs.readFile(mappingPath, 'utf8');
+            const mapping = JSON.parse(mappingContent);
+            
+            // Cerca una corrispondenza basata sul nome del file di output
+            for (const [key, value] of Object.entries(mapping)) {
+                if (outputFile.includes(key) || key.includes(outputFile.replace('.txt', ''))) {
+                    originalVideoName = value;
+                    console.log(`🎯 Video trovato tramite mapping: ${originalVideoName}`);
+                    break;
+                }
             }
+        } catch (error) {
+            console.log(`📋 Mapping non trovato o non valido, uso algoritmo di distribuzione`);
         }
-
-        if (!videoFile) {
-            // Se non troviamo corrispondenza diretta, usa il primo video disponibile per il test
-            console.log(`⚠️ Video originale non trovato per ${frameBaseName}, uso il primo video disponibile`);
-            videoFile = mp4Files[0];
-            if (!videoFile) {
+        
+        // Se non troviamo nel mapping, usa l'algoritmo di distribuzione migliorato
+        if (!originalVideoName) {
+            const inputDir = path.join(__dirname, 'INPUT');
+            const inputFiles = await fs.readdir(inputDir);
+            const mp4Files = inputFiles.filter(file => file.endsWith('.mp4')).sort();
+            
+            console.log(`📁 Video disponibili: ${mp4Files.join(', ')}`);
+            
+            if (mp4Files.length === 0) {
                 throw new Error('Nessun video MP4 trovato nella cartella INPUT');
             }
+            
+            if (mp4Files.length === 1) {
+                // Se c'è solo un video, usalo
+                originalVideoName = mp4Files[0];
+                console.log(`🎯 Video singolo selezionato: ${originalVideoName}`);
+            } else {
+                // Usa un approccio sequenziale bilanciato basato sui timestamp 
+                // per garantire distribuzione uniforme tra i video disponibili
+                
+                // Estrai tutti i timestamp dal filename
+                const timestamps = outputFile.match(/\d+/g) || [];
+                
+                if (timestamps.length > 0) {
+                    // Usa il primo timestamp come base per la distribuzione
+                    const primaryTimestamp = parseInt(timestamps[0]);
+                    
+                    // Calcola un indice basato sulla divisione del timestamp per un numero primo
+                    // diverso per ogni video, garantendo distribuzione più uniforme
+                    const primes = [7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+                    let videoIndex = 0;
+                    
+                    // Usa modulo composto per una migliore distribuzione
+                    const seed1 = primaryTimestamp % 1000;
+                    const seed2 = outputFile.length * 17;
+                    const combinedSeed = (seed1 + seed2) % (mp4Files.length * primes[0]);
+                    
+                    videoIndex = combinedSeed % mp4Files.length;
+                    
+                    console.log(`🎯 Video selezionato tramite timestamp ${primaryTimestamp}, seed combinato ${combinedSeed} (indice ${videoIndex}/${mp4Files.length}): ${mp4Files[videoIndex]}`);
+                    originalVideoName = mp4Files[videoIndex];
+                } else {
+                    // Fallback: usa l'indice basato sulla posizione hash del filename
+                    const charSum = outputFile.split('').reduce((sum, char, index) => {
+                        return sum + char.charCodeAt(0) * (index + 1);
+                    }, 0);
+                    
+                    const videoIndex = charSum % mp4Files.length;
+                    console.log(`🎯 Video selezionato tramite fallback hash (indice ${videoIndex}/${mp4Files.length}): ${mp4Files[videoIndex]}`);
+                    originalVideoName = mp4Files[videoIndex];
+                }
+            }
         }
 
-        const inputVideoPath = path.join(inputDir, videoFile);
-        const outputVideoPath = path.join(__dirname, 'OUTPUT', `meme_${Date.now()}_${videoFile}`);
+        // Verifica che il file video esista
+        const inputVideoPath = path.join(__dirname, 'INPUT', originalVideoName);
+        try {
+            await fs.access(inputVideoPath);
+        } catch (error) {
+            throw new Error(`Video non trovato: ${inputVideoPath}`);
+        }
 
-        console.log(`🎬 Processamento video: ${videoFile}`);
+        const outputVideoPath = path.join(__dirname, 'OUTPUT', `meme_${Date.now()}_${originalVideoName}`);
+
+        console.log(`🎬 Processamento video: ${originalVideoName}`);
         console.log(`📍 Posizione banner: ${aiResponse.banner_position}`);
         console.log(`📝 Testo meme: ${aiResponse.meme_text}`);
 
@@ -594,7 +643,7 @@ class VideoProcessor {
         const fontSize = Math.max(32, Math.min(56, width / 18)); // Font size leggermente più grande
 
         // Determina il font da utilizzare
-        const selectedFont = config?.selectedFont || 'impact.ttf';
+        const selectedFont = (config && config.selectedFont) ? config.selectedFont : 'impact.ttf';
         // Usa un percorso relativo per evitare problemi con spazi e drive letter su Windows
         const relativeFontPath = `font/${selectedFont}`;
 
@@ -602,46 +651,41 @@ class VideoProcessor {
         console.log(`📂 Percorso font relativo: ${relativeFontPath}`);
 
         // Prepara il testo per FFmpeg con gestione delle righe multiple migliorata
-        const maxCharsPerLine = Math.floor(width / (fontSize * 0.4)); // Stima ancora più conservativa
-        const maxLines = Math.floor(bannerHeight / (fontSize * 1.3)) - 1; // Calcola righe disponibili nel banner
+        const maxCharsPerLine = Math.floor(width / (fontSize * 0.5)); // Stima più conservativa
+        const maxLines = Math.floor(bannerHeight / (fontSize * 1.5)) - 1; // Più spazio tra righe
         const wrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine, maxLines);
         console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
         console.log(`📝 Testo wrappato: "${wrappedText}" (max ${maxCharsPerLine} char/riga, max ${maxLines} righe)`);
 
-        const escapedText = wrappedText
-            .replace(/\\/g, '\\\\')
-            .replace(/'/g, "\\'")
-            .replace(/:/g, '\\:')
-            .replace(/=/g, '\\=')
-            .replace(/,/g, '\\,')
-            .replace(/\[/g, '\\[')
-            .replace(/\]/g, '\\]');
+        // Per FFmpeg, dividiamo il testo in righe separate e le sovrapponiamo
+        const lines = wrappedText.split('\\n');
+        console.log(`� Numero di righe: ${lines.length}`);
 
-        console.log(`📝 Testo escaped per FFmpeg: "${escapedText}"`);
-
-        // Calcola il numero di righe per centrare verticalmente
-        const numberOfLines = (wrappedText.match(/\\\\n/g) || []).length + 1;
-        const lineHeight = fontSize * 1.3; // Spaziatura maggiore tra righe
-        const totalTextHeight = numberOfLines * lineHeight;
-
-        console.log(`📊 Righe di testo: ${numberOfLines}, Altezza totale: ${totalTextHeight}px`);
-
-        let filterComplex;
+        // Calcola il line height e la posizione di partenza del testo
+        const lineHeight = fontSize * 1.4;
+        const totalTextHeight = lines.length * lineHeight;
+        
+        let textFilters = '';
+        let baseY;
+        
         if (aiResponse.banner_position === 'bottom') {
-            // Banner bianco in basso
             const bannerY = height - bannerHeight;
-            const textY = Math.max(bannerY + 20, bannerY + (bannerHeight - totalTextHeight) / 2);
-            filterComplex = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill,` +
-                `drawtext=text='${escapedText}':fontfile='${relativeFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:` +
-                `x=(w-text_w)/2:y=${textY}[v]`;
+            baseY = bannerY + (bannerHeight - totalTextHeight) / 2;
+            textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill`;
         } else {
-            // Banner bianco in alto
-            const textY = Math.max(20, (bannerHeight - totalTextHeight) / 2);
-            filterComplex = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill,` +
-                `drawtext=text='${escapedText}':fontfile='${relativeFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:` +
-                `x=(w-text_w)/2:y=${textY}[v]`;
+            baseY = (bannerHeight - totalTextHeight) / 2;
+            textFilters = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill`;
         }
 
+        // Aggiungi ogni riga come un filtro drawtext separato
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].replace(/'/g, "\\'").replace(/:/g, '\\:').replace(/=/g, '\\=').replace(/,/g, '\\,').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
+            const yPos = baseY + (i * lineHeight);
+            textFilters += `,drawtext=text='${line}':fontfile='${relativeFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}`;
+        }
+
+        const filterComplex = textFilters + '[v]';
+        
         console.log(`🔧 Filtro FFmpeg generato: ${filterComplex}`);
         console.log(`🚀 Eseguendo processamento video...`);
 
@@ -746,7 +790,7 @@ class VideoProcessor {
             }
         }
 
-        // Unisci le righe con \n per FFmpeg
+        // Unisci le righe con semplice \n (verrà gestito diversamente nel filtro FFmpeg)
         return lines.join('\\n');
     }
 }

@@ -57,6 +57,10 @@ INPUT/*.avi
 INPUT/*.mov
 INPUT/*.mkv
 OUTPUT/*.txt
+OUTPUT/*.mp4
+OUTPUT/*.avi
+OUTPUT/*.mov
+OUTPUT/*.mkv
 OUTPUT/*.json
 
 # But keep the directories with .gitkeep files

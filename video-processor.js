@@ -10,6 +10,48 @@ class VideoProcessor {
         this.ffmpegPath = this.findFFmpegPath();
     }
 
+    // Aggiunto metodo per pulire tutte le cartelle all'inizio
+    async cleanAllDirectories() {
+        const directories = [this.tempDir, this.outputDir];
+        
+        for (const dir of directories) {
+            try {
+                await fs.access(dir);
+                const files = await fs.readdir(dir);
+                
+                console.log(`🧹 Pulizia cartella: ${dir} (${files.length} file)`);
+                
+                for (const file of files) {
+                    const filePath = path.join(dir, file);
+                    try {
+                        await fs.unlink(filePath);
+                    } catch (error) {
+                        console.log(`⚠️ Impossibile eliminare ${file}: ${error.message}`);
+                        // Rinomina invece di eliminare se bloccato
+                        const timestamp = Date.now();
+                        const newPath = `${filePath}.old.${timestamp}`;
+                        await fs.rename(filePath, newPath);
+                        console.log(`🔄 File rinominato: ${file} -> ${file}.old.${timestamp}`);
+                    }
+                }
+                console.log(`✅ Cartella ${path.basename(dir)} pulita`);
+            } catch (error) {
+                console.log(`📁 Creazione cartella: ${dir}`);
+                await fs.mkdir(dir, { recursive: true });
+            }
+        }
+    }
+
+    // Funzione helper per creare nome basato sul video
+    generateVideoBasedName(videoName, suffix = '') {
+        // Rimuovi estensione e caratteri speciali dal nome video
+        const baseName = path.parse(videoName).name
+            .replace(/[^a-zA-Z0-9]/g, '_')
+            .substring(0, 50); // Limita lunghezza
+        
+        return suffix ? `${baseName}_${suffix}` : baseName;
+    }
+
     findFFmpegPath() {
         // Prova diversi percorsi per FFmpeg
         const possiblePaths = [
@@ -71,10 +113,12 @@ class VideoProcessor {
     }
 
     async extractFrames(videoPath, useCollage = false) {
+        const videoName = path.basename(videoPath);
+        const videoBaseName = this.generateVideoBasedName(videoName);
+        
         console.log(`Estrazione frame da: ${videoPath}, Collage: ${useCollage}`);
 
         await this.ensureTempDir();
-        // Rimuovo cleanTempDir() per non eliminare i file durante l'elaborazione
 
         try {
             // Ottieni la durata del video
@@ -92,12 +136,14 @@ class VideoProcessor {
                 ];
 
                 for (let i = 0; i < timestamps.length; i++) {
-                    const framePath = await this.extractSingleFrame(videoPath, timestamps[i], `frame_${i + 1}.jpg`);
+                    const frameName = `${videoBaseName}_frame_${i + 1}.jpg`;
+                    const framePath = await this.extractSingleFrame(videoPath, timestamps[i], frameName, videoName);
                     frames.push(framePath);
                 }
 
                 // Crea collage
-                const collagePath = await this.createCollage(frames);
+                const collageName = `${videoBaseName}_collage.jpg`;
+                const collagePath = await this.createCollage(frames, collageName);
 
                 // Pulisci frame singoli
                 for (const frame of frames) {
@@ -109,7 +155,8 @@ class VideoProcessor {
             } else {
                 // Estrai solo frame centrale (50%)
                 const timestamp = duration * 0.50;
-                const framePath = await this.extractSingleFrame(videoPath, timestamp, 'frame_center.jpg');
+                const frameName = `${videoBaseName}_frame_center.jpg`;
+                const framePath = await this.extractSingleFrame(videoPath, timestamp, frameName, videoName);
                 return [framePath];
             }
 
@@ -117,7 +164,6 @@ class VideoProcessor {
             console.error('Errore nell\'estrazione frame:', error);
             throw error;
         }
-        // Rimuovo il finally che puliva immediatamente le risorse
     }
 
     async getVideoDuration(videoPath) {
@@ -163,12 +209,9 @@ class VideoProcessor {
         });
     }
 
-    async extractSingleFrame(videoPath, timestamp, outputName) {
-        // Crea un nome completamente unico basato su timestamp e random
-        const uniqueTimestamp = Date.now();
-        const randomId = Math.random().toString(36).substr(2, 8);
-        const uniqueName = `${uniqueTimestamp}_${randomId}_${outputName}`;
-        const outputPath = path.join(this.tempDir, uniqueName);
+    async extractSingleFrame(videoPath, timestamp, outputName, originalVideoName) {
+        // Usa il nome basato sul video originale
+        const outputPath = path.join(this.tempDir, outputName);
 
         return new Promise((resolve, reject) => {
             const ffmpeg = spawn(this.ffmpegPath, [
@@ -224,12 +267,12 @@ class VideoProcessor {
         });
     }
 
-    async createCollage(framePaths) {
+    async createCollage(framePaths, outputName = null) {
         console.log('Creazione collage da:', framePaths);
 
-        // Crea nome file unico per evitare conflitti
-        const uniqueId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        const collagePath = path.join(this.tempDir, `collage_${uniqueId}.jpg`);
+        // Usa il nome fornito o genera uno di default
+        const collageName = outputName || `collage_${Date.now()}.jpg`;
+        const collagePath = path.join(this.tempDir, collageName);
 
         try {
             // Carica le immagini
@@ -283,9 +326,8 @@ class VideoProcessor {
     }
 
     async compressImage(imagePath) {
-        // Crea nome file unico per la compressione per evitare conflitti
-        const uniqueId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        const compressedPath = imagePath.replace('.jpg', `_compressed_${uniqueId}.jpg`);
+        // Mantieni la nomenclatura coerente sostituendo solo l'estensione
+        const compressedPath = imagePath.replace('.jpg', '_compressed.jpg');
 
         try {
             await sharp(imagePath)
@@ -307,7 +349,7 @@ class VideoProcessor {
 
             // Se ancora troppo grande, comprimi ulteriormente
             if (sizeKB > 100) {
-                const finalPath = compressedPath.replace('.jpg', '_final.jpg');
+                const finalPath = compressedPath.replace('_compressed.jpg', '_compressed_final.jpg');
                 await sharp(compressedPath)
                     .jpeg({ quality: 60 })
                     .toFile(finalPath);
@@ -417,9 +459,9 @@ class VideoProcessor {
         }
 
         try {
-            // Leggi tutti i file di output dell'API AI
-            const outputFiles = await fs.readdir(this.outputDir);
-            const txtFiles = outputFiles.filter(file => file.endsWith('.txt'));
+            // Leggi tutti i file di output dell'API AI dalla cartella temp_frames
+            const outputFiles = await fs.readdir(this.tempDir);
+            const txtFiles = outputFiles.filter(file => file.endsWith('.txt') && file.includes('_ai_output_'));
 
             console.log(`📁 Trovati ${txtFiles.length} file di output da processare`);
 
@@ -438,7 +480,7 @@ class VideoProcessor {
             // Analizza ogni file di output
             for (const txtFile of txtFiles) {
                 try {
-                    const txtPath = path.join(this.outputDir, txtFile);
+                    const txtPath = path.join(this.tempDir, txtFile);
                     const content = await fs.readFile(txtPath, 'utf8');
 
                     // Estrai il JSON dalla risposta AI
@@ -540,79 +582,40 @@ class VideoProcessor {
             console.log(`🎨 Font selezionato: ${config.selectedFont || 'default'}`);
         }
 
-        // Estrai il nome del file video originale dal contenuto
+        // Estrai il nome del video originale direttamente dal nome del file di output
         let originalVideoName = null;
+
+        // Il nome del file output ora inizia con il nome del video originale
+        const outputBaseName = path.basename(outputFile, '.txt');
         
-        // Prima, cerca se c'è un mapping salvato
-        const mappingPath = path.join(__dirname, 'video-mapping.json');
-        try {
-            const mappingContent = await fs.readFile(mappingPath, 'utf8');
-            const mapping = JSON.parse(mappingContent);
-            
-            // Cerca una corrispondenza basata sul nome del file di output
-            for (const [key, value] of Object.entries(mapping)) {
-                if (outputFile.includes(key) || key.includes(outputFile.replace('.txt', ''))) {
-                    originalVideoName = value;
-                    console.log(`🎯 Video trovato tramite mapping: ${originalVideoName}`);
-                    break;
-                }
+        // Rimuove il suffisso "_ai_output_TIMESTAMP" per ottenere il nome del video
+        const videoBaseName = outputBaseName.replace(/_ai_output_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$/, '');
+        
+        console.log(`🔍 Cercando video corrispondente per: ${videoBaseName}`);
+
+        // Cerca il video corrispondente nella cartella INPUT
+        const inputDir = path.join(__dirname, 'INPUT');
+        const inputFiles = await fs.readdir(inputDir);
+        const mp4Files = inputFiles.filter(file => file.endsWith('.mp4'));
+
+        for (const videoFile of mp4Files) {
+            const videoFileBaseName = this.generateVideoBasedName(videoFile);
+            if (videoFileBaseName === videoBaseName) {
+                originalVideoName = videoFile;
+                console.log(`✅ Video trovato tramite nome: ${originalVideoName}`);
+                break;
             }
-        } catch (error) {
-            console.log(`📋 Mapping non trovato o non valido, uso algoritmo di distribuzione`);
         }
-        
-        // Se non troviamo nel mapping, usa l'algoritmo di distribuzione migliorato
+
         if (!originalVideoName) {
-            const inputDir = path.join(__dirname, 'INPUT');
-            const inputFiles = await fs.readdir(inputDir);
-            const mp4Files = inputFiles.filter(file => file.endsWith('.mp4')).sort();
-            
-            console.log(`📁 Video disponibili: ${mp4Files.join(', ')}`);
-            
-            if (mp4Files.length === 0) {
-                throw new Error('Nessun video MP4 trovato nella cartella INPUT');
-            }
-            
-            if (mp4Files.length === 1) {
-                // Se c'è solo un video, usalo
-                originalVideoName = mp4Files[0];
-                console.log(`🎯 Video singolo selezionato: ${originalVideoName}`);
-            } else {
-                // Usa un approccio sequenziale bilanciato basato sui timestamp 
-                // per garantire distribuzione uniforme tra i video disponibili
-                
-                // Estrai tutti i timestamp dal filename
-                const timestamps = outputFile.match(/\d+/g) || [];
-                
-                if (timestamps.length > 0) {
-                    // Usa il primo timestamp come base per la distribuzione
-                    const primaryTimestamp = parseInt(timestamps[0]);
-                    
-                    // Calcola un indice basato sulla divisione del timestamp per un numero primo
-                    // diverso per ogni video, garantendo distribuzione più uniforme
-                    const primes = [7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
-                    let videoIndex = 0;
-                    
-                    // Usa modulo composto per una migliore distribuzione
-                    const seed1 = primaryTimestamp % 1000;
-                    const seed2 = outputFile.length * 17;
-                    const combinedSeed = (seed1 + seed2) % (mp4Files.length * primes[0]);
-                    
-                    videoIndex = combinedSeed % mp4Files.length;
-                    
-                    console.log(`🎯 Video selezionato tramite timestamp ${primaryTimestamp}, seed combinato ${combinedSeed} (indice ${videoIndex}/${mp4Files.length}): ${mp4Files[videoIndex]}`);
-                    originalVideoName = mp4Files[videoIndex];
-                } else {
-                    // Fallback: usa l'indice basato sulla posizione hash del filename
-                    const charSum = outputFile.split('').reduce((sum, char, index) => {
-                        return sum + char.charCodeAt(0) * (index + 1);
-                    }, 0);
-                    
-                    const videoIndex = charSum % mp4Files.length;
-                    console.log(`🎯 Video selezionato tramite fallback hash (indice ${videoIndex}/${mp4Files.length}): ${mp4Files[videoIndex]}`);
-                    originalVideoName = mp4Files[videoIndex];
-                }
-            }
+            console.log(`⚠️ Video non trovato per ${videoBaseName}, uso primo video disponibile`);
+            originalVideoName = mp4Files[0];
+        }
+
+        console.log(`📁 Video disponibili: ${mp4Files.join(', ')}`);
+
+        if (mp4Files.length === 0) {
+            throw new Error('Nessun video MP4 trovato nella cartella INPUT');
         }
 
         // Verifica che il file video esista
@@ -623,7 +626,9 @@ class VideoProcessor {
             throw new Error(`Video non trovato: ${inputVideoPath}`);
         }
 
-        const outputVideoPath = path.join(__dirname, 'OUTPUT', `meme_${Date.now()}_${originalVideoName}`);
+        // Il video finale va nella cartella OUTPUT con nome basato sul video originale
+        const outputVideoBaseName = this.generateVideoBasedName(originalVideoName);
+        const outputVideoPath = path.join(__dirname, 'OUTPUT', `${outputVideoBaseName}_meme_${Date.now()}.mp4`);
 
         console.log(`🎬 Processamento video: ${originalVideoName}`);
         console.log(`📍 Posizione banner: ${aiResponse.banner_position}`);
@@ -664,10 +669,10 @@ class VideoProcessor {
         // Calcola il line height e la posizione di partenza del testo
         const lineHeight = fontSize * 1.4;
         const totalTextHeight = lines.length * lineHeight;
-        
+
         let textFilters = '';
         let baseY;
-        
+
         if (aiResponse.banner_position === 'bottom') {
             const bannerY = height - bannerHeight;
             baseY = bannerY + (bannerHeight - totalTextHeight) / 2;
@@ -685,7 +690,7 @@ class VideoProcessor {
         }
 
         const filterComplex = textFilters + '[v]';
-        
+
         console.log(`🔧 Filtro FFmpeg generato: ${filterComplex}`);
         console.log(`🚀 Eseguendo processamento video...`);
 

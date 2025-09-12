@@ -421,6 +421,11 @@ class ContentCreatorApp {
     async processVideos(config) {
         console.log('Avvio elaborazione con configurazione:', config);
 
+        // Step 0: Pulizia cartelle temp_frames e OUTPUT all'inizio
+        console.log('🧹 Pulizia cartelle prima dell\'elaborazione...');
+        this.mainWindow.webContents.send('status-update', 'Pulizia cartelle...');
+        await this.videoProcessor.cleanAllDirectories();
+
         // Step 1: Ottieni lista video
         const videos = await this.getInputVideos();
         if (videos.length === 0) {

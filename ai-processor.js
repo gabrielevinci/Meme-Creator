@@ -72,9 +72,9 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
 
             console.log(`Analisi AI completata in ${responseTime}ms`);
 
-            // Salva l'output AI in un file .txt nella cartella OUTPUT
+            // Salva l'output AI in un file .txt nella cartella temp_frames (non più OUTPUT)
             const outputFileName = this.generateOutputFileName(framePaths[0]);
-            const outputPath = path.join(__dirname, 'OUTPUT', outputFileName);
+            const outputPath = path.join(__dirname, 'temp_frames', outputFileName);
             await this.saveAiOutputToFile(outputPath, response, config, framePaths[0]);
 
             console.log(`Output salvato in: ${outputFileName}`);
@@ -536,12 +536,19 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
     }
 
     generateOutputFileName(framePath) {
-        // Estrae il nome del video dal path del frame
-        const baseName = path.basename(framePath);
-        // Rimuove i timestamp e suffissi per ottenere il nome originale del video
-        const videoName = baseName.replace(/^\d+_[a-z0-9]+_/, '').replace(/_compressed\.jpg$/, '').replace(/\.jpg$/, '');
+        // Estrae il nome base del frame che ora corrisponde al video originale
+        const frameBaseName = path.basename(framePath, path.extname(framePath));
+        
+        // Rimuove tutti i suffissi per ottenere il nome del video originale 
+        const videoBaseName = frameBaseName
+            .replace(/_frame_center$/, '')
+            .replace(/_frame_\d+$/, '')
+            .replace(/_collage$/, '')
+            .replace(/_compressed$/, '')  // Rimuove _compressed
+            .replace(/_compressed_final$/, ''); // Rimuove _compressed_final se presente
+            
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-        return `${videoName}_${timestamp}.txt`;
+        return `${videoBaseName}_ai_output_${timestamp}.txt`;
     }
 
     async saveAiOutputToFile(outputPath, aiResponse, config, framePath) {

@@ -150,14 +150,23 @@ class VideoProcessor {
                     await fs.unlink(frame).catch(() => {});
                 }
 
-                return [collagePath];
+                return {
+                    frames: [collagePath],
+                    videoBaseName: videoBaseName,
+                    originalVideoName: videoName
+                };
 
             } else {
                 // Estrai solo frame centrale (50%)
                 const timestamp = duration * 0.50;
                 const frameName = `${videoBaseName}_frame_center.jpg`;
                 const framePath = await this.extractSingleFrame(videoPath, timestamp, frameName, videoName);
-                return [framePath];
+                
+                return {
+                    frames: [framePath],
+                    videoBaseName: videoBaseName,
+                    originalVideoName: videoName
+                };
             }
 
         } catch (error) {
@@ -588,8 +597,10 @@ class VideoProcessor {
         // Il nome del file output ora inizia con il nome del video originale
         const outputBaseName = path.basename(outputFile, '.txt');
 
-        // Rimuove il suffisso "_ai_output_TIMESTAMP" per ottenere il nome del video
-        const videoBaseName = outputBaseName.replace(/_ai_output_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$/, '');
+        // Rimuove il suffisso "_ai_output_TIMESTAMP" e possibili suffissi "_frame_center" per ottenere il nome del video
+        const videoBaseName = outputBaseName
+            .replace(/_ai_output_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$/, '')
+            .replace(/_frame_center$/, ''); // Rimuove anche _frame_center se presente
 
         console.log(`🔍 Cercando video corrispondente per: ${videoBaseName}`);
 

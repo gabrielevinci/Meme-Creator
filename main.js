@@ -447,15 +447,26 @@ class ContentCreatorApp {
             });
 
             try {
-                const frames = await this.videoProcessor.extractFrames(
+                const frameResult = await this.videoProcessor.extractFrames(
                     path.join(__dirname, 'INPUT', video),
                     config.useCollage
                 );
-                frameResults.push({ video, frames });
+                frameResults.push({ 
+                    video, 
+                    frames: frameResult.frames,
+                    videoBaseName: frameResult.videoBaseName,
+                    originalVideoName: frameResult.originalVideoName
+                });
             } catch (error) {
                 this.log('error', `Errore nell'estrazione frame per ${video}: ${error.message}`);
                 // Continua con il prossimo video invece di interrompere tutto
-                frameResults.push({ video, frames: [], error: error.message });
+                frameResults.push({ 
+                    video, 
+                    frames: [], 
+                    error: error.message,
+                    videoBaseName: null,
+                    originalVideoName: video
+                });
             }
         }
 
@@ -478,12 +489,15 @@ class ContentCreatorApp {
                 const analysis = await this.aiProcessor.analyzeFrames(
                     result.frames,
                     config,
-                    this.apiManager
+                    this.apiManager,
+                    result.originalVideoName  // Passa il nome del video originale
                 );
 
                 // Il file viene salvato automaticamente dall'AI processor
                 aiResults.push({
                     video: result.video,
+                    videoBaseName: result.videoBaseName,
+                    originalVideoName: result.originalVideoName,
                     analysis: analysis.response,
                     outputFile: analysis.outputFile,
                     modelUsed: analysis.modelUsed,

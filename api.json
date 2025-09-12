@@ -599,6 +599,60 @@
             "tokens_used": 1186,
             "response_time_ms": 1243,
             "output": "```json\n{\n  \"description\": \"Un campo di tulipani rosa e gialli fioriti si estende all'infinito sotto un cielo drammatico al tramonto. Le nuvole sono illuminate da raggi dorati che filtrano da dietro u"
+          },
+          "1757640582803_1a8nctqpy": {
+            "timestamp": 1757640582803,
+            "tokens": 1185,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1185,
+            "response_time_ms": 1227,
+            "output": "```json\n{\n  \"description\": \"Un campo di margherite bianche e gialle si estende verso l'orizzonte, sotto un cielo drammatico con nuvole arancioni e striate. In lontananza, una linea di alberi verdi del"
+          },
+          "1757640583842_6yb6gmghf": {
+            "timestamp": 1757640583842,
+            "tokens": 1156,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1156,
+            "response_time_ms": 1035,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino verde e un gilet verde brillante sta ballando in un corridoio. Indossa leggings neri e scarpe da ginnastica bianche. La persona ha un'espressi"
+          },
+          "1757640585143_jq62m4a9j": {
+            "timestamp": 1757640585143,
+            "tokens": 1186,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1186,
+            "response_time_ms": 1297,
+            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani rosa e gialli fioriti si estende fino all'orizzonte, con un grande albero solitario in lontananza. Il cielo sopra è un capolavoro di nuvole "
+          },
+          "1757640656476_xduoyiq6o": {
+            "timestamp": 1757640656476,
+            "tokens": 1202,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1202,
+            "response_time_ms": 1513,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di margherite bianche e arancioni si estende fino all'orizzonte, punteggiato da alberi verdi sulla sinistra. Il cielo è dominato da nuvole arancioni e dorate"
+          },
+          "1757640657618_jitd7ce1b": {
+            "timestamp": 1757640657618,
+            "tokens": 1160,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1160,
+            "response_time_ms": 1138,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino verde e un gilet verde acceso sta ballando o saltellando in un corridoio. Indossa leggings scuri e scarpe da ginnastica bianche. L'ambiente è "
+          },
+          "1757640659159_pjqgytpg4": {
+            "timestamp": 1757640659159,
+            "tokens": 1186,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1186,
+            "response_time_ms": 1537,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di tulipani rosa e gialli si estende all'orizzonte, con il sole che tramonta dietro un grande albero solitario. Il cielo è dipinto con nuvole soffici e dorat"
           }
         }
       },
@@ -666,9 +720,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757640237799,
+          "until": 1757640881565,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757639937799
+          "markedAt": 1757640581565
         }
       }
     }

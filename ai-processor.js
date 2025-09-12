@@ -28,7 +28,7 @@ TESTO SUGGERITO: "POV: Hai appena finito la presentazione e il CEO fa una domand
 RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporanei e crea immediata identificazione con l'audience aziendale.`;
     }
 
-    async analyzeFrames(framePaths, config, apiManager) {
+    async analyzeFrames(framePaths, config, apiManager, originalVideoName = null) {
         console.log('Avvio analisi AI per', framePaths.length, 'frame');
 
         try {
@@ -72,8 +72,8 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
 
             console.log(`Analisi AI completata in ${responseTime}ms`);
 
-            // Salva l'output AI in un file .txt nella cartella temp_frames (non più OUTPUT)
-            const outputFileName = this.generateOutputFileName(framePaths[0]);
+            // Salva l'output AI usando il nome del video originale se fornito
+            const outputFileName = this.generateOutputFileName(framePaths[0], originalVideoName);
             const outputPath = path.join(__dirname, 'temp_frames', outputFileName);
             await this.saveAiOutputToFile(outputPath, response, config, framePaths[0]);
 
@@ -535,18 +535,25 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
         return results;
     }
 
-    generateOutputFileName(framePath) {
-        // Estrae il nome base del frame che ora corrisponde al video originale
-        const frameBaseName = path.basename(framePath, path.extname(framePath));
-
-        // Rimuove tutti i suffissi per ottenere il nome del video originale 
-        const videoBaseName = frameBaseName
-            .replace(/_frame_center$/, '')
-            .replace(/_frame_\d+$/, '')
-            .replace(/_collage$/, '')
-            .replace(/_compressed$/, '') // Rimuove _compressed
-            .replace(/_compressed_final$/, ''); // Rimuove _compressed_final se presente
-
+    generateOutputFileName(framePath, originalVideoName = null) {
+        let videoBaseName;
+        
+        if (originalVideoName) {
+            // Usa il nome del video originale fornito direttamente
+            const VideoProcessor = require('./video-processor');
+            const processor = new VideoProcessor();
+            videoBaseName = processor.generateVideoBasedName(originalVideoName);
+        } else {
+            // Fallback: estrae il nome dal path del frame (metodo precedente)
+            const frameBaseName = path.basename(framePath, path.extname(framePath));
+            videoBaseName = frameBaseName
+                .replace(/_frame_center$/, '')
+                .replace(/_frame_\d+$/, '')
+                .replace(/_collage$/, '')
+                .replace(/_compressed$/, '')
+                .replace(/_compressed_final$/, '');
+        }
+            
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
         return `${videoBaseName}_ai_output_${timestamp}.txt`;
     }

@@ -420,9 +420,9 @@ class ContentCreatorApp {
     async processVideos(config) {
         console.log('Avvio elaborazione con configurazione:', config);
 
-        // Step 0: Pulizia SOLO cartella OUTPUT all'inizio (temp_frames NON viene pulita)
-        console.log('🧹 Pulizia cartella OUTPUT prima dell\'elaborazione...');
-        this.mainWindow.webContents.send('status-update', 'Pulizia cartella OUTPUT...');
+        // Step 0: Pulizia cartelle OUTPUT e temp_frames all'inizio
+        console.log('🧹 Pulizia cartelle OUTPUT e temp_frames prima dell\'elaborazione...');
+        this.mainWindow.webContents.send('status-update', 'Pulizia cartelle OUTPUT e temp_frames...');
         await this.videoProcessor.cleanOutputDirectoryOnly();
 
         // Step 1: Ottieni lista video

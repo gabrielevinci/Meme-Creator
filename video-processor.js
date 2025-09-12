@@ -42,18 +42,18 @@ class VideoProcessor {
         }
     }
 
-    // Nuovo metodo per pulire SOLO la cartella OUTPUT quando si preme Start
+    // Nuovo metodo per pulire SOLO la cartella OUTPUT e temp_frames quando si preme Start
     async cleanOutputDirectoryOnly() {
-        const dir = this.outputDir;
-
+        // Pulisci cartella OUTPUT
+        const outputDir = this.outputDir;
         try {
-            await fs.access(dir);
-            const files = await fs.readdir(dir);
+            await fs.access(outputDir);
+            const outputFiles = await fs.readdir(outputDir);
 
-            console.log(`🧹 Pulizia SOLO cartella OUTPUT: ${dir} (${files.length} file)`);
+            console.log(`🧹 Pulizia cartella OUTPUT: ${outputDir} (${outputFiles.length} file)`);
 
-            for (const file of files) {
-                const filePath = path.join(dir, file);
+            for (const file of outputFiles) {
+                const filePath = path.join(outputDir, file);
                 try {
                     await fs.unlink(filePath);
                 } catch (error) {
@@ -67,8 +67,44 @@ class VideoProcessor {
             }
             console.log(`✅ Cartella OUTPUT pulita`);
         } catch (error) {
-            console.log(`📁 Creazione cartella OUTPUT: ${dir}`);
-            await fs.mkdir(dir, { recursive: true });
+            console.log(`📁 Creazione cartella OUTPUT: ${outputDir}`);
+            await fs.mkdir(outputDir, { recursive: true });
+        }
+
+        // Pulisci cartella temp_frames
+        const tempDir = this.tempDir;
+        try {
+            await fs.access(tempDir);
+            const tempFiles = await fs.readdir(tempDir);
+
+            console.log(`🧹 Pulizia cartella temp_frames: ${tempDir} (${tempFiles.length} file)`);
+
+            for (const file of tempFiles) {
+                const filePath = path.join(tempDir, file);
+                const stat = await fs.stat(filePath);
+                
+                if (stat.isDirectory()) {
+                    // Se è una directory, eliminala ricorsivamente
+                    await fs.rmdir(filePath, { recursive: true });
+                    console.log(`📁 Directory eliminata: ${file}`);
+                } else {
+                    // Se è un file, eliminalo
+                    try {
+                        await fs.unlink(filePath);
+                    } catch (error) {
+                        console.log(`⚠️ Impossibile eliminare ${file}: ${error.message}`);
+                        // Rinomina invece di eliminare se bloccato
+                        const timestamp = Date.now();
+                        const newPath = `${filePath}.old.${timestamp}`;
+                        await fs.rename(filePath, newPath);
+                        console.log(`🔄 File rinominato: ${file} -> ${file}.old.${timestamp}`);
+                    }
+                }
+            }
+            console.log(`✅ Cartella temp_frames pulita`);
+        } catch (error) {
+            console.log(`📁 Creazione cartella temp_frames: ${tempDir}`);
+            await fs.mkdir(tempDir, { recursive: true });
         }
     }
 

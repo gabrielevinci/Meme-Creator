@@ -13,14 +13,14 @@ class VideoProcessor {
     // Aggiunto metodo per pulire tutte le cartelle all'inizio
     async cleanAllDirectories() {
         const directories = [this.tempDir, this.outputDir];
-        
+
         for (const dir of directories) {
             try {
                 await fs.access(dir);
                 const files = await fs.readdir(dir);
-                
+
                 console.log(`🧹 Pulizia cartella: ${dir} (${files.length} file)`);
-                
+
                 for (const file of files) {
                     const filePath = path.join(dir, file);
                     try {
@@ -48,7 +48,7 @@ class VideoProcessor {
         const baseName = path.parse(videoName).name
             .replace(/[^a-zA-Z0-9]/g, '_')
             .substring(0, 50); // Limita lunghezza
-        
+
         return suffix ? `${baseName}_${suffix}` : baseName;
     }
 
@@ -115,7 +115,7 @@ class VideoProcessor {
     async extractFrames(videoPath, useCollage = false) {
         const videoName = path.basename(videoPath);
         const videoBaseName = this.generateVideoBasedName(videoName);
-        
+
         console.log(`Estrazione frame da: ${videoPath}, Collage: ${useCollage}`);
 
         await this.ensureTempDir();
@@ -587,10 +587,10 @@ class VideoProcessor {
 
         // Il nome del file output ora inizia con il nome del video originale
         const outputBaseName = path.basename(outputFile, '.txt');
-        
+
         // Rimuove il suffisso "_ai_output_TIMESTAMP" per ottenere il nome del video
         const videoBaseName = outputBaseName.replace(/_ai_output_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$/, '');
-        
+
         console.log(`🔍 Cercando video corrispondente per: ${videoBaseName}`);
 
         // Cerca il video corrispondente nella cartella INPUT

@@ -108,8 +108,7 @@ class ContentCreatorApp {
         // Assicurati che le cartelle necessarie esistano
         await this.ensureDirectories();
 
-        // Pulisci la cartella OUTPUT ad ogni avvio
-        await this.cleanOutputDirectory();
+        // NON pulire le cartelle all'avvio - solo quando viene premuto "Start"
 
         // Inizializza i gestori IPC
         this.setupIpcHandlers();

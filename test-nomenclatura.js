@@ -5,7 +5,7 @@ const path = require('path');
 
 async function testNomenclatureSystem() {
     const videoProcessor = new VideoProcessor();
-    
+
     console.log('🧪 Test del sistema di nomenclatura basato su video...\n');
 
     // Test 1: Pulizia cartelle
@@ -32,20 +32,20 @@ async function testNomenclatureSystem() {
     console.log('3️⃣ Test nomi file che verranno generati:');
     for (const video of testVideos) {
         const baseName = videoProcessor.generateVideoBasedName(video);
-        
+
         // Frame
         const frameName = `${baseName}_frame_center.jpg`;
         console.log(`🖼️ Frame: ${frameName}`);
-        
+
         // AI Output
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
         const aiOutputName = `${baseName}_ai_output_${timestamp}.txt`;
         console.log(`🤖 AI Output: ${aiOutputName}`);
-        
+
         // Video finale
         const finalVideoName = `${baseName}_meme_${Date.now()}.mp4`;
         console.log(`🎬 Video finale: ${finalVideoName}`);
-        
+
         console.log('---');
     }
 
@@ -55,13 +55,13 @@ async function testNomenclatureSystem() {
     const extractedBaseName = sampleAiOutput.replace(/_ai_output_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.txt$/, '');
     console.log(`📄 AI Output: ${sampleAiOutput}`);
     console.log(`🔍 Nome video estratto: ${extractedBaseName}`);
-    
+
     // Trova video corrispondente
     const inputDir = path.join(__dirname, 'INPUT');
     try {
         const inputFiles = await fs.readdir(inputDir);
         const mp4Files = inputFiles.filter(file => file.endsWith('.mp4'));
-        
+
         for (const videoFile of mp4Files) {
             const videoBaseName = videoProcessor.generateVideoBasedName(videoFile);
             if (videoBaseName === extractedBaseName) {
@@ -72,7 +72,7 @@ async function testNomenclatureSystem() {
     } catch (error) {
         console.log('⚠️ Cartella INPUT non accessibile');
     }
-    
+
     console.log('\n🎯 Test nomenclatura completato!');
 }
 

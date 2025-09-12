@@ -98,19 +98,19 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
             }
 
             // Prova con il prossimo modello disponibile per errori recuperabili
-            const shouldRetryWithDifferentModel = error.message.includes('rate limit') || 
-                                                 error.message.includes('429') || 
-                                                 error.message.includes('server') ||
-                                                 error.message.includes('404') ||
-                                                 error.message.includes('non trovato') ||
-                                                 error.message.includes('not found') ||
-                                                 error.message.includes('401') ||
-                                                 error.message.includes('timeout') ||
-                                                 error.message.includes('ECONNREFUSED');
+            const shouldRetryWithDifferentModel = error.message.includes('rate limit') ||
+                error.message.includes('429') ||
+                error.message.includes('server') ||
+                error.message.includes('404') ||
+                error.message.includes('non trovato') ||
+                error.message.includes('not found') ||
+                error.message.includes('401') ||
+                error.message.includes('timeout') ||
+                error.message.includes('ECONNREFUSED');
 
             if (shouldRetryWithDifferentModel && currentModel) {
                 console.log(`� Marcando temporaneamente il modello ${currentModel.apiKey}/${currentModel.modelKey} come non disponibile`);
-                
+
                 // Marca il modello corrente come temporaneamente non disponibile
                 apiManager.markModelTemporaryUnavailable(currentModel.apiKey, currentModel.modelKey, 5 * 60 * 1000); // 5 minuti
 
@@ -122,12 +122,12 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
                     }
                 } catch (fallbackError) {
                     console.error('❌ Anche il modello alternativo ha fallito:', fallbackError.message);
-                    
+
                     // Se anche il fallback fallisce, ripristina il modello originale
                     if (currentModel) {
                         apiManager.clearModelTemporaryUnavailability(currentModel.apiKey, currentModel.modelKey);
                     }
-                    
+
                     throw new Error(`Tutti i modelli disponibili hanno fallito. Ultimo errore: ${fallbackError.message}`);
                 }
             }
@@ -538,15 +538,15 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
     generateOutputFileName(framePath) {
         // Estrae il nome base del frame che ora corrisponde al video originale
         const frameBaseName = path.basename(framePath, path.extname(framePath));
-        
+
         // Rimuove tutti i suffissi per ottenere il nome del video originale 
         const videoBaseName = frameBaseName
             .replace(/_frame_center$/, '')
             .replace(/_frame_\d+$/, '')
             .replace(/_collage$/, '')
-            .replace(/_compressed$/, '')  // Rimuove _compressed
+            .replace(/_compressed$/, '') // Rimuove _compressed
             .replace(/_compressed_final$/, ''); // Rimuove _compressed_final se presente
-            
+
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
         return `${videoBaseName}_ai_output_${timestamp}.txt`;
     }

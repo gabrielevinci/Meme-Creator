@@ -150,6 +150,7 @@ class ContentCreatorApp {
             height: 952,
             minWidth: 800,
             minHeight: 600,
+            resizable: true, // Mantieni resizable ma controlleremo tutto manualmente
             icon: path.join(__dirname, 'icon.ico'),
             webPreferences: {
                 nodeIntegration: false,
@@ -170,36 +171,38 @@ class ContentCreatorApp {
             this.mainWindow = null;
         });
 
-        // Mantieni proporzioni 1400:952 durante il ridimensionamento con controllo rigido
+        // Mantieni proporzioni 1400:952 con controllo ultra-rigido e throttling
+        // Impedisce effettivamente il ridimensionamento dai bordi
+        let resizeTimeout;
         this.mainWindow.on('resize', () => {
             if (!this.mainWindow || this.mainWindow.isDestroyed()) return;
 
+            // Cancella il timeout precedente per un controllo più immediato
+            if (resizeTimeout) {
+                clearTimeout(resizeTimeout);
+            }
+
+            // Applica la correzione immediatamente (senza timeout)
             const [currentWidth, currentHeight] = this.mainWindow.getSize();
             const aspectRatio = 1400 / 952;
-            
-            // Calcola sempre le dimensioni corrette basate sulle proporzioni
-            let newWidth, newHeight;
-            
-            // Determina se l'utente ha trascinato più in larghezza o altezza
-            const widthBasedHeight = Math.round(currentWidth / aspectRatio);
-            const heightBasedWidth = Math.round(currentHeight * aspectRatio);
-            
-            // Scegli la dimensione basata su quale cambiamento è più piccolo (più conservativo)
-            if (Math.abs(widthBasedHeight - currentHeight) <= Math.abs(heightBasedWidth - currentWidth)) {
-                newWidth = currentWidth;
-                newHeight = widthBasedHeight;
-            } else {
-                newWidth = heightBasedWidth;
-                newHeight = currentHeight;
-            }
-            
-            // Applica sempre le proporzioni corrette
-            if (newWidth !== currentWidth || newHeight !== currentHeight) {
-                this.mainWindow.setSize(newWidth, newHeight);
-            }
-        });
 
-        // Apri DevTools in modalità sviluppo
+            // Calcola le dimensioni corrette
+            const correctHeight = Math.round(currentWidth / aspectRatio);
+            const correctWidth = Math.round(currentHeight * aspectRatio);
+
+            // Forza SEMPRE le proporzioni corrette istantaneamente
+            if (Math.abs(correctHeight - currentHeight) <= Math.abs(correctWidth - currentWidth)) {
+                // Se il cambiamento in altezza è minore o uguale, mantieni la larghezza
+                if (correctHeight !== currentHeight) {
+                    this.mainWindow.setSize(currentWidth, correctHeight);
+                }
+            } else {
+                // Altrimenti mantieni l'altezza
+                if (correctWidth !== currentWidth) {
+                    this.mainWindow.setSize(correctWidth, currentHeight);
+                }
+            }
+        }); // Apri DevTools in modalità sviluppo
         if (this.isDev) {
             this.mainWindow.webContents.openDevTools();
         }

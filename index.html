@@ -1091,10 +1091,14 @@
             }
             .left-panel,
             .right-panel {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
+                display: contents; /* Questo fa sì che i figli vengano trattati come se fossero direttamente nel parent */
             }
+            
+            .left-panel > *,
+            .right-panel > * {
+                margin-bottom: 20px;
+            }
+            
             /* Ordine specifico per layout a colonna singola */
             .tipologia-meme {
                 order: 1;

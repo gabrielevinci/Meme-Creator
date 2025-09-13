@@ -118,6 +118,76 @@
             font-weight: normal;
             cursor: pointer;
         }
+
+        /* Stili per i controlli range */
+        .range-input {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+            margin: 8px 0;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .range-input::-webkit-slider-thumb:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .range-input::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .range-value {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* Stili per i controlli margini */
+        .margin-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .margin-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .margin-item label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
         
         .select-field {
             padding: 12px;
@@ -1203,6 +1273,38 @@
                         <option value="title">Ogni Prima Lettera Maiuscola</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="font-size">📐 Dimensione Font (px)</label>
+                    <input type="range" id="font-size" class="range-input" min="20" max="120" value="48" step="2">
+                    <span id="font-size-value" class="range-value">48px</span>
+                </div>
+
+                <div class="form-group">
+                    <label>📏 Margini Testo</label>
+                    <div class="margin-controls">
+                        <div class="margin-item">
+                            <label for="margin-top">↑ Alto</label>
+                            <input type="range" id="margin-top" class="range-input" min="10" max="100" value="30" step="5">
+                            <span id="margin-top-value" class="range-value">30px</span>
+                        </div>
+                        <div class="margin-item">
+                            <label for="margin-bottom">↓ Basso</label>
+                            <input type="range" id="margin-bottom" class="range-input" min="10" max="100" value="30" step="5">
+                            <span id="margin-bottom-value" class="range-value">30px</span>
+                        </div>
+                        <div class="margin-item">
+                            <label for="margin-left">← Sinistra</label>
+                            <input type="range" id="margin-left" class="range-input" min="10" max="150" value="40" step="5">
+                            <span id="margin-left-value" class="range-value">40px</span>
+                        </div>
+                        <div class="margin-item">
+                            <label for="margin-right">→ Destra</label>
+                            <input type="range" id="margin-right" class="range-input" min="10" max="150" value="40" step="5">
+                            <span id="margin-right-value" class="range-value">40px</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="right-panel">
@@ -1467,6 +1569,9 @@
                 this.elements.stopBtn.addEventListener('click', () => this.stopProcessing());
                 this.elements.apiBtn.addEventListener('click', () => this.openApiManager());
 
+                // Controlli dimensione font e margini
+                this.setupRangeInputs();
+
                 // Custom font select
                 this.elements.fontSelect.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1526,6 +1631,32 @@
                         this.handleAiAnalysisError(errorData);
                     });
                 }
+            }
+
+            setupRangeInputs() {
+                // Event listeners per i range input
+                const rangeInputs = [
+                    { id: 'font-size', valueId: 'font-size-value', suffix: 'px' },
+                    { id: 'margin-top', valueId: 'margin-top-value', suffix: 'px' },
+                    { id: 'margin-bottom', valueId: 'margin-bottom-value', suffix: 'px' },
+                    { id: 'margin-left', valueId: 'margin-left-value', suffix: 'px' },
+                    { id: 'margin-right', valueId: 'margin-right-value', suffix: 'px' }
+                ];
+
+                rangeInputs.forEach(({ id, valueId, suffix }) => {
+                    const input = document.getElementById(id);
+                    const valueSpan = document.getElementById(valueId);
+                    
+                    if (input && valueSpan) {
+                        // Aggiorna il valore quando l'utente muove lo slider
+                        input.addEventListener('input', (e) => {
+                            valueSpan.textContent = e.target.value + suffix;
+                        });
+
+                        // Imposta il valore iniziale
+                        valueSpan.textContent = input.value + suffix;
+                    }
+                });
             }
 
             async loadInitialData() {
@@ -1759,7 +1890,12 @@
                     memeStyle: this.elements.memeStyle.value.trim(),
                     useCollage: this.elements.collageMode.checked,
                     selectedFont: this.elements.selectedFont.value,
-                    textFormat: this.elements.textFormat.value
+                    textFormat: this.elements.textFormat.value,
+                    fontSize: parseInt(document.getElementById('font-size').value),
+                    marginTop: parseInt(document.getElementById('margin-top').value),
+                    marginBottom: parseInt(document.getElementById('margin-bottom').value),
+                    marginLeft: parseInt(document.getElementById('margin-left').value),
+                    marginRight: parseInt(document.getElementById('margin-right').value)
                 };
 
                 try {

@@ -2066,6 +2066,114 @@
             "tokens_used": 1169,
             "response_time_ms": 2347,
             "output": "```json\n{\n  \"description\": \"Un trenino di montagne russe di legno bianco sta salendo lungo un ripido pendio, con persone sedute nei vagoni. Sulla destra, una giovane donna con una maglietta grigia gua"
+          },
+          "1757779997248_8s640rlil": {
+            "timestamp": 1757779997248,
+            "tokens": 1199,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1199,
+            "response_time_ms": 2810,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni larghi neri balla con movimenti fluidi delle braccia e del corpo. La scena si svolge in un ambiente interno con una scala su"
+          },
+          "1757780000567_ic9ug23t6": {
+            "timestamp": 1757780000567,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 3306,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una routine di cura della pelle serale. Inizia con una mano che schiuma un detergente, seguita da una mano che sceglie tra vari prodotti per la cura della p"
+          },
+          "1757780002676_9thz45812": {
+            "timestamp": 1757780002676,
+            "tokens": 1230,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1230,
+            "response_time_ms": 2105,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono su una scalinata esterna. Il bambino è in primo piano, vestito con una maglietta marrone e jeans larghi, e sembra fare dei passi"
+          },
+          "1757780925606_hau28tdih": {
+            "timestamp": 1757780925606,
+            "tokens": 1190,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1190,
+            "response_time_ms": 13697,
+            "output": "```json\n{\n  \"description\": \"Una persona con felpa bianca con cappuccio e pantaloni neri larghi esegue una coreografia di danza. I movimenti sono fluidi e ritmici, con un'enfasi sui passi e sui gesti d"
+          },
+          "1757780927630_qucej3hkq": {
+            "timestamp": 1757780927630,
+            "tokens": 1191,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1191,
+            "response_time_ms": 2018,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una mano che tiene una schiuma abbondante, suggerendo una routine di pulizia. Successivamente, vengono mostrati diversi prodotti per la cura della pelle"
+          },
+          "1757780960590_veoldeuiz": {
+            "timestamp": 1757780960590,
+            "tokens": 1242,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1242,
+            "response_time_ms": 32953,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un adulto sono su una scalinata esterna. Il bambino è in primo piano, vestito con una maglietta marrone e jeans larghi, e sembra ballare o fa"
+          },
+          "1757781046269_qk4qs07cw": {
+            "timestamp": 1757781046269,
+            "tokens": 1188,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1188,
+            "response_time_ms": 21088,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni neri larghi esegue una danza ritmica su una scala interna. I movimenti sono fluidi e coordinati, con le braccia che si muovo"
+          },
+          "1757781049167_ro3g5h8ws": {
+            "timestamp": 1757781049167,
+            "tokens": 1208,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1208,
+            "response_time_ms": 2889,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una mano che schiuma abbondantemente un detergente, creando una nuvola di bolle. Successivamente, si vede una mano che seleziona delicatamente una serie"
+          },
+          "1757781050748_0c4mmh637": {
+            "timestamp": 1757781050748,
+            "tokens": 1241,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1241,
+            "response_time_ms": 1576,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono in piedi su una scalinata esterna. Il bambino è in primo piano, vestito con una maglietta marrone e jeans larghi, mentre esegue "
+          },
+          "1757781125644_41kkyg7fi": {
+            "timestamp": 1757781125644,
+            "tokens": 1201,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1201,
+            "response_time_ms": 3163,
+            "output": "```json\n{\n  \"description\": \"Una ragazza con un cappuccio bianco e pantaloni neri larghi esegue una danza in una stanza con scale sullo sfondo. I suoi movimenti sono fluidi e coordinati, con le braccia"
+          },
+          "1757781127308_49hvdclt7": {
+            "timestamp": 1757781127308,
+            "tokens": 1184,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1184,
+            "response_time_ms": 1659,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una routine di cura personale. Inizia con una mano che schiuma abbondantemente un detergente. Successivamente, vengono presentati diversi prodotti per la cu"
+          },
+          "1757781134637_egicism37": {
+            "timestamp": 1757781134637,
+            "tokens": 1227,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1227,
+            "response_time_ms": 7324,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono su una scalinata all'aperto. Il bambino è in primo piano, vestito con una maglietta marrone e jeans larghi, e sembra ballare con"
           }
         }
       },
@@ -2133,9 +2241,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757736929625,
+          "until": 1757781211896,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757736629625
+          "markedAt": 1757780911896
         }
       }
     }

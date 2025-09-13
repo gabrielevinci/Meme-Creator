@@ -876,7 +876,7 @@ class VideoProcessor {
 
         // Calcola area effettiva per il testo basata sui margini utente
         const effectiveWidth = width - marginLeft - marginRight;
-        
+
         // Calcola le metriche del testo con la dimensione specificata dall'utente
         const textMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, userFontSize, config && config.textFormat);
         const avgCharWidth = textMetrics.avgCharWidth;
@@ -904,7 +904,7 @@ class VideoProcessor {
 
         if (processedAiResponse.banner_position === 'bottom') {
             const bannerY = height - bannerHeight;
-            
+
             // Posizione Y del testo: inizio banner + margine superiore specificato dall'utente
             baseY = bannerY + marginTop + (userFontSize * 0.8); // Offset baseline per allineamento font
 

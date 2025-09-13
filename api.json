@@ -1850,6 +1850,33 @@
             "tokens_used": 1182,
             "response_time_ms": 2787,
             "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi scuri e fitti, alcuni dei quali si ergono verso un cielo viola pallido. In primo piano, un cespuglio fiorito con petali bianch"
+          },
+          "1757733979404_c1wugfnro": {
+            "timestamp": 1757733979404,
+            "tokens": 1167,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1167,
+            "response_time_ms": 1946,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato dipinge il cielo con sfumature di arancione e blu. Le onde del mare si infrangono dolcemente sulla riva sabbiosa, creando un'atmosfera di pace e tran"
+          },
+          "1757733981188_kaf2zni70": {
+            "timestamp": 1757733981188,
+            "tokens": 1189,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1189,
+            "response_time_ms": 1780,
+            "output": "```json\n{\n  \"description\": \"Una strada asfaltata bagnata dalla pioggia serpeggia attraverso un paesaggio rurale verdeggiante. Un recinto di legno delimita il prato lussureggiante, dove si ergono diver"
+          },
+          "1757733982969_t7u840uwg": {
+            "timestamp": 1757733982969,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 1772,
+            "output": "```json\n{\n  \"description\": \"Un sentiero nebbioso attraversa un bosco lussureggiante. Alberi alti e scuri si ergono su entrambi i lati, con rami intricati che si estendono verso un cielo viola tenue. I"
           }
         }
       },
@@ -1917,9 +1944,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757733975815,
+          "until": 1757734277446,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757733675815
+          "markedAt": 1757733977446
         }
       }
     }

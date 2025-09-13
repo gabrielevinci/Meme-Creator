@@ -1931,6 +1931,87 @@
             "tokens_used": 1180,
             "response_time_ms": 2468,
             "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi alti e fitti che creano una volta naturale. In primo piano, fiori bianchi e viola sbocciano tra il fogliame scuro, creando un "
+          },
+          "1757735929837_iu14hbltv": {
+            "timestamp": 1757735929837,
+            "tokens": 1172,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1172,
+            "response_time_ms": 6868,
+            "output": "```json\n{\n  \"description\": \"Il video mostra una spiaggia al tramonto. Le onde del mare si infrangono dolcemente sulla riva, creando schiuma bianca. Il cielo sfuma dal blu intenso in alto a un arancion"
+          },
+          "1757735931991_jc92nqook": {
+            "timestamp": 1757735931991,
+            "tokens": 1184,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1184,
+            "response_time_ms": 2148,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale immerso nella nebbia mattutina. Una strada asfaltata bagnata attraversa un prato verde brillante, delimitato da una staccionata in legno. In lontananza,"
+          },
+          "1757735936268_p42knmddw": {
+            "timestamp": 1757735936268,
+            "tokens": 1169,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1169,
+            "response_time_ms": 4272,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo in una foresta. In primo piano, fiori bianchi e viola sbocciano tra il fogliame scuro. Dietro, alberi alti e fitti si stagliano contro un"
+          },
+          "1757736263468_hdise8jo5": {
+            "timestamp": 1757736263468,
+            "tokens": 1185,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1185,
+            "response_time_ms": 1834,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato dipinge il cielo con sfumature di arancione e blu. Le onde del mare si infrangono dolcemente sulla riva sabbiosa, creando un'atmosfera serena e rilas"
+          },
+          "1757736265476_3x0fb3ljm": {
+            "timestamp": 1757736265476,
+            "tokens": 1179,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1179,
+            "response_time_ms": 2002,
+            "output": "```json\n{\n  \"description\": \"Una strada asfaltata bagnata dall'acqua scorre lungo un prato verde lussureggiante, delimitato da una staccionata di legno. In lontananza, si intravedono delle fattorie con"
+          },
+          "1757736267496_4sfhhxal0": {
+            "timestamp": 1757736267496,
+            "tokens": 1189,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1189,
+            "response_time_ms": 2010,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi alti e fitti che creano un'atmosfera cupa e misteriosa. In primo piano, fiori bianchi e viola sbocciano tra il fogliame scuro,"
+          },
+          "1757736504929_tdwgi8qzk": {
+            "timestamp": 1757736504929,
+            "tokens": 1152,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1152,
+            "response_time_ms": 1743,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato sul mare. Le onde dolci lambiscono la riva sabbiosa, mentre il cielo si tinge di sfumature arancioni e blu. La luce calda del sole al tramonto crea u"
+          },
+          "1757736506724_sa81rjjd8": {
+            "timestamp": 1757736506724,
+            "tokens": 1193,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1193,
+            "response_time_ms": 1790,
+            "output": "```json\n{\n  \"description\": \"Un sentiero asfaltato e bagnato dalla pioggia serpeggia lungo un prato verde brillante, delimitato da una staccionata in legno grezzo. Sul prato si ergono diverse case rura"
+          },
+          "1757736511936_dxx7rqs37": {
+            "timestamp": 1757736511936,
+            "tokens": 1179,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1179,
+            "response_time_ms": 5208,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi alti e fitti che creano un'atmosfera quasi surreale. In primo piano, fiori bianchi e viola sbocciano tra il fogliame scuro, co"
           }
         }
       },
@@ -1998,9 +2079,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757735860804,
+          "until": 1757736561623,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757735560804
+          "markedAt": 1757736261623
         }
       }
     }

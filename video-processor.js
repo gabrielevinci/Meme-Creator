@@ -15,18 +15,18 @@ class VideoProcessor {
         // Fattori di correzione basati sui caratteri reali del testo formattato
         let charWidthFactor = 0.55; // Base factor
         let heightFactor = 1.0;
-        
+
         // Analizza la composizione del testo per calcoli più precisi
         const upperCaseCount = (text.match(/[A-Z]/g) || []).length;
         const lowerCaseCount = (text.match(/[a-z]/g) || []).length;
         const digitCount = (text.match(/[0-9]/g) || []).length;
         const spaceCount = (text.match(/\s/g) || []).length;
         const specialCount = text.length - upperCaseCount - lowerCaseCount - digitCount - spaceCount;
-        
+
         // Calcola fattore di larghezza basato sulla composizione reale
         if (upperCaseCount > 0 || lowerCaseCount > 0) {
             const upperRatio = upperCaseCount / (upperCaseCount + lowerCaseCount);
-            
+
             // Maiuscole sono circa 15-20% più larghe delle minuscole
             if (format === 'uppercase' || upperRatio > 0.8) {
                 charWidthFactor = 0.62; // Maiuscole più larghe
@@ -40,19 +40,19 @@ class VideoProcessor {
                 heightFactor = 0.95 + (upperRatio * 0.1);
             }
         }
-        
+
         // Correzione per caratteri speciali (generalmente più stretti)
         if (specialCount > 0) {
             const specialRatio = specialCount / text.length;
             charWidthFactor -= specialRatio * 0.1;
         }
-        
+
         // Correzione per spazi (più stretti)
         if (spaceCount > 0) {
             const spaceRatio = spaceCount / text.length;
             charWidthFactor -= spaceRatio * 0.2;
         }
-        
+
         return {
             avgCharWidth: fontSize * charWidthFactor,
             lineHeight: fontSize * 1.1 * heightFactor,
@@ -63,25 +63,25 @@ class VideoProcessor {
 
     // Metodo per formattare il testo secondo le preferenze utente
     formatText(text, formatType) {
-        if (!text || !formatType || formatType === 'normal') {
-            return text;
-        }
-
-        switch (formatType) {
-            case 'uppercase':
-                return text.toUpperCase();
-            case 'lowercase':
-                return text.toLowerCase();
-            case 'capitalize':
-                return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-            case 'title':
-                return text.replace(/\w\S*/g, (txt) => 
-                    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-                );
-            default:
+            if (!text || !formatType || formatType === 'normal') {
                 return text;
-        }
-    }    // Aggiunto metodo per pulire tutte le cartelle all'inizio
+            }
+
+            switch (formatType) {
+                case 'uppercase':
+                    return text.toUpperCase();
+                case 'lowercase':
+                    return text.toLowerCase();
+                case 'capitalize':
+                    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+                case 'title':
+                    return text.replace(/\w\S*/g, (txt) =>
+                        txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                    );
+                default:
+                    return text;
+            }
+        } // Aggiunto metodo per pulire tutte le cartelle all'inizio
     async cleanAllDirectories() {
         const directories = [this.tempDir, this.outputDir];
 
@@ -851,19 +851,38 @@ class VideoProcessor {
             }
         }
 
-        // Per FFmpeg su Windows, converti i backslash in forward slash e gestisci spazi
-        const escapedFontPath = fontPath.replace(/\\/g, '/').replace(/:/g, '\\:');
+        // CORREZIONE COMPLETA escape font path per FFmpeg
+        const escapedFontPath = fontPath
+            .replace(/\\/g, '/')           // Windows backslash -> forward slash
+            .replace(/'/g, "\\'")          // Escape virgolette singole
+            .replace(/"/g, '\\"')          // Escape virgolette doppie  
+            .replace(/:/g, '\\:')          // Escape due punti (CRITICO per Windows)
+            .replace(/=/g, '\\=')          // Escape uguale
+            .replace(/,/g, '\\,')          // Escape virgola
+            .replace(/;/g, '\\;')          // Escape punto e virgola
+            .replace(/\(/g, '\\(')         // Escape parentesi
+            .replace(/\)/g, '\\)');        // Escape parentesi
 
         console.log(`🎨 Utilizzando font: ${selectedFont}`);
         console.log(`📂 Percorso font assoluto: ${fontPath}`);
         console.log(`📂 Percorso font escaped: ${escapedFontPath}`);
 
         // ALGORITMO ITERATIVO PER TROVARE LA DIMENSIONE OTTIMALE DEL TESTO
-        // Ottimizzato per riempire al massimo il blocco bianco con centratura perfetta
-        const horizontalPadding = 20; // Padding orizzontale per centratura perfetta
-        const verticalPadding = 15; // Padding verticale per centratura perfetta
-        const effectiveWidth = width - (horizontalPadding * 2);
-        const effectiveHeight = bannerHeight - (verticalPadding * 2);
+        // CENTRATURA CORRETTA: Il testo deve utilizzare i margini del video come riferimento
+        const horizontalMargin = 30; // Margine dai bordi laterali del VIDEO
+        const effectiveWidth = width - (horizontalMargin * 2); // Usa larghezza video completa meno margini
+        
+        // Per altezza: spazio disponibile dipende dalla posizione del banner
+        let availableHeight;
+        if (processedAiResponse.banner_position === 'bottom') {
+            // Banner in basso: spazio dal banner al fondo video
+            availableHeight = bannerHeight;
+        } else {
+            // Banner in alto: spazio dall'inizio video al banner
+            availableHeight = bannerHeight;
+        }
+        const verticalMargin = 20; // Margine verticale interno
+        const effectiveHeight = availableHeight - (verticalMargin * 2);
 
         // Dimensioni di partenza e limiti  
         const maxFontSize = Math.min(80, effectiveWidth / 8, effectiveHeight / 2); // Più realistico
@@ -877,13 +896,13 @@ class VideoProcessor {
 
         console.log(`🔍 Ricerca dimensione ottimale: partendo da ${maxFontSize}px fino a ${minFontSize}px`);
         console.log(`📏 Area disponibile: ${effectiveWidth}px (W) x ${effectiveHeight}px (H)`);
-        console.log(`📏 Padding: ${horizontalPadding}px (H) x ${verticalPadding}px (V)`);
-        console.log(`📝 Formato testo: ${config?.textFormat || 'normal'} - "${processedAiResponse.meme_text.substring(0, 50)}..."`);
+        console.log(`📏 Margini: ${horizontalMargin}px (laterali video) x ${verticalMargin}px (verticali)`);
+        console.log(`📝 Formato testo: ${config && config.textFormat || 'normal'} - "${processedAiResponse.meme_text.substring(0, 50)}..."`);
 
         // Algoritmo iterativo: trova la dimensione che riempe meglio il blocco
         for (let testFontSize = maxFontSize; testFontSize >= minFontSize; testFontSize -= fontSizeStep) {
             // CALCOLO METRICHE PRECISE basate sul testo formattato reale
-            const textMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, testFontSize, config?.textFormat);
+            const textMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, testFontSize, config && config.textFormat);
             const avgCharWidth = textMetrics.avgCharWidth;
             const testLineHeight = textMetrics.lineHeight;
 
@@ -907,11 +926,11 @@ class VideoProcessor {
                 // Analizza ogni riga per calcolare la larghezza reale
                 let maxActualLineWidth = 0;
                 for (const line of testLines) {
-                    const lineMetrics = this.calculateTextMetrics(line, testFontSize, config?.textFormat);
+                    const lineMetrics = this.calculateTextMetrics(line, testFontSize, config && config.textFormat);
                     const lineWidth = line.length * lineMetrics.avgCharWidth;
                     maxActualLineWidth = Math.max(maxActualLineWidth, lineWidth);
                 }
-                
+
                 const actualTextWidth = maxActualLineWidth;
                 const actualTextHeight = testLines.length * testLineHeight;
 
@@ -926,7 +945,7 @@ class VideoProcessor {
                     const heightUsage = actualTextHeight / effectiveHeight;
                     const aspectRatio = actualTextWidth / actualTextHeight;
                     const avgUsage = (widthUsage + heightUsage) / 2;
-                    
+
                     // Bonus per testi che utilizzano bene sia larghezza che altezza
                     const balanceBonus = 1 - Math.abs(widthUsage - heightUsage);
 
@@ -955,7 +974,7 @@ class VideoProcessor {
         const lines = bestLines;
 
         // Calcola metriche finali usando lo stesso metodo dell'algoritmo
-        const finalTextMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, adjustedFontSize, config?.textFormat);
+        const finalTextMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, adjustedFontSize, config && config.textFormat);
 
         console.log(`📝 Testo finale: "${wrappedText}"`);
         console.log(`📊 Numero di righe: ${lines.length}`);
@@ -982,31 +1001,53 @@ class VideoProcessor {
 
         if (processedAiResponse.banner_position === 'bottom') {
             const bannerY = height - bannerHeight;
-            // CORREZIONE: Centratura perfetta nel banner bottom - considera che il banner inizia da bannerY
-            baseY = Math.round(bannerY + verticalPadding + topMargin + adjustedFontSize * 0.8);
+
+            // CENTRATURA CORRETTA: Il testo deve essere centrato tra il margine superiore del blocco e il margine inferiore del video
+            // Area disponibile: dal bannerY (inizio blocco) fino a height (fine video)
+            const availableSpaceBottom = height - bannerY; // Altezza dello spazio disponibile
+            const textCenterY = bannerY + (availableSpaceBottom - totalTextHeight) / 2; // Centro dello spazio disponibile
+            baseY = Math.round(textCenterY + adjustedFontSize * 0.8); // Aggiungi offset baseline
+
             textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill`;
-            console.log(`📍 Banner bottom - bannerY: ${bannerY}, topMargin in banner: ${topMargin}, baseY finale: ${baseY}`);
-            console.log(`📍 Debug bottom: bannerY(${bannerY}) + verticalPadding(${verticalPadding}) + topMargin(${topMargin}) + baseline(${Math.round(adjustedFontSize * 0.8)}) = ${baseY}`);
+            console.log(`📍 BANNER BOTTOM - Spazio disponibile: ${availableSpaceBottom}px (da ${bannerY} a ${height})`);
+            console.log(`📍 Centro testo Y: ${textCenterY.toFixed(1)}, baseY finale: ${baseY}`);
+
         } else {
-            // Centratura perfetta nel banner top
-            baseY = Math.round(verticalPadding + topMargin + adjustedFontSize * 0.8);
+            // CENTRATURA CORRETTA: Il testo deve essere centrato tra il margine superiore del video e il margine inferiore del blocco
+            // Area disponibile: da 0 (inizio video) fino a bannerHeight (fine blocco)
+            const availableSpaceTop = bannerHeight; // Altezza dello spazio disponibile
+            const textCenterY = (availableSpaceTop - totalTextHeight) / 2; // Centro dello spazio disponibile
+            baseY = Math.round(textCenterY + adjustedFontSize * 0.8); // Aggiungi offset baseline
+
             textFilters = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill`;
-            console.log(`📍 Banner top - baseY: ${baseY}`);
-            console.log(`📍 Debug top: verticalPadding(${verticalPadding}) + topMargin(${topMargin}) + baseline(${Math.round(adjustedFontSize * 0.8)}) = ${baseY}`);
+            console.log(`📍 BANNER TOP - Spazio disponibile: ${availableSpaceTop}px (da 0 a ${bannerHeight})`);
+            console.log(`📍 Centro testo Y: ${textCenterY.toFixed(1)}, baseY finale: ${baseY}`);
         }
 
         // Aggiungi ogni riga con centratura orizzontale perfetta
         for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].replace(/'/g, "\\'").replace(/:/g, '\\:').replace(/=/g, '\\=').replace(/,/g, '\\,').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
+            // CORREZIONE COMPLETA ESCAPE: gestisce tutti i caratteri speciali FFmpeg
+            const line = lines[i]
+                .replace(/\\/g, '\\\\')  // Backslash prima di tutto
+                .replace(/'/g, "\\'")    // Virgolette singole
+                .replace(/"/g, '\\"')    // Virgolette doppie - CRITICO!
+                .replace(/:/g, '\\:')    // Due punti
+                .replace(/=/g, '\\=')    // Uguale
+                .replace(/,/g, '\\,')    // Virgola
+                .replace(/\[/g, '\\[')   // Parentesi quadre aperte
+                .replace(/\]/g, '\\]')   // Parentesi quadre chiuse
+                .replace(/\(/g, '\\(')   // Parentesi tonde aperte
+                .replace(/\)/g, '\\)')   // Parentesi tonde chiuse
+                .replace(/;/g, '\\;');   // Punto e virgola
 
             // Posizione Y per questa riga
             const yPos = Math.round(baseY + (i * finalLineHeight));
 
-            console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> y=${yPos}`);
+            console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> "${line}" -> y=${yPos}`);
 
-            // Centratura orizzontale perfetta usando FFmpeg
+            // Centratura orizzontale perfetta - USA SOLO virgolette singole per consistenza
             const xPos = '(w-text_w)/2';
-
+            
             textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${adjustedFontSize}:x=${xPos}:y=${yPos}`;
         }
 

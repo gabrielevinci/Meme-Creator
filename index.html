@@ -1766,16 +1766,44 @@
                     if (settings.fontFamily) {
                         console.log('Tentativo di caricare font:', settings.fontFamily);
 
-                        // Seleziona il font salvato - aspetta che le opzioni siano disponibili
-                        const fontOption = document.querySelector(`[data-value="${settings.fontFamily}"]`);
+                        // Prima prova con il nome esatto
+                        let fontOption = document.querySelector(`[data-value="${settings.fontFamily}"]`);
                         console.log('Font option trovata:', fontOption);
 
+                        // Se non trova il font esatto, prova alcune varianti comuni
+                        if (!fontOption) {
+                            const fontVariants = [
+                                settings.fontFamily.toLowerCase(), // "Impact" -> "impact"
+                                settings.fontFamily + 'ed',        // "Impact" -> "Impacted"
+                                settings.fontFamily.toUpperCase(), // "impact" -> "IMPACT"
+                                'impact',                          // Default fallback
+                                'Impacted'                         // Alternative default
+                            ];
+                            
+                            console.log('Tentativo varianti font:', fontVariants);
+                            
+                            for (const variant of fontVariants) {
+                                fontOption = document.querySelector(`[data-value="${variant}"]`);
+                                if (fontOption) {
+                                    console.log(`Font trovato con variante "${variant}":`, fontOption);
+                                    break;
+                                }
+                            }
+                        }
+
                         if (fontOption) {
-                            this.selectFont(settings.fontFamily, fontOption.textContent);
-                            console.log('Font selezionato:', settings.fontFamily);
+                            this.selectFont(fontOption.dataset.value, fontOption.textContent);
+                            console.log('Font selezionato:', fontOption.dataset.value);
                         } else {
                             console.warn('Font option non trovata per:', settings.fontFamily);
                             console.log('Opzioni disponibili:', Array.from(document.querySelectorAll('[data-value]')).map(opt => opt.dataset.value));
+                            
+                            // Fallback su impact se disponibile
+                            const impactOption = document.querySelector(`[data-value="impact"]`);
+                            if (impactOption) {
+                                this.selectFont('impact', impactOption.textContent);
+                                console.log('Utilizzato fallback: impact');
+                            }
                         }
                     }
 
@@ -2003,12 +2031,12 @@
                     videoFilter: this.elements.videoFilter.value.trim(),
                     memeStyle: this.elements.memeStyle.value.trim(),
                     useCollage: this.elements.collageMode.checked,
-                    selectedFont: this.elements.selectedFont.value,
-                    textFormat: this.elements.textFormat.value,
-                    marginTop: parseInt(document.getElementById('margin-top').value),
-                    marginBottom: parseInt(document.getElementById('margin-bottom').value),
-                    marginLeft: parseInt(document.getElementById('margin-left').value),
-                    marginRight: parseInt(document.getElementById('margin-right').value)
+                    selectedFont: this.elements.selectedFont && this.elements.selectedFont.value || 'impact',
+                    textFormat: this.elements.textFormat && this.elements.textFormat.value || 'normal',
+                    marginTop: parseInt(document.getElementById('margin-top') && document.getElementById('margin-top').value || 30),
+                    marginBottom: parseInt(document.getElementById('margin-bottom') && document.getElementById('margin-bottom').value || 30),
+                    marginLeft: parseInt(document.getElementById('margin-left') && document.getElementById('margin-left').value || 40),
+                    marginRight: parseInt(document.getElementById('margin-right') && document.getElementById('margin-right').value || 40)
                 };
 
                 try {

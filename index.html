@@ -346,34 +346,6 @@
             transition: width 0.5s ease;
         }
         
-        .log-container {
-            background: #2c3e50;
-            color: #ecf0f1;
-            border-radius: 8px;
-            padding: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-        
-        .log-entry {
-            margin-bottom: 5px;
-        }
-        
-        .log-entry.error {
-            color: #e74c3c;
-        }
-        
-        .log-entry.success {
-            color: #2ecc71;
-        }
-        
-        .log-entry.info {
-            color: #3498db;
-        }
-        
         .video-list {
             background: #f8f9fa;
             border-radius: 8px;
@@ -1110,19 +1082,40 @@
                 transform: translateX(0);
             }
         }
-        /* Stile per errori nel log */
-        
-        .log-entry.error {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            border-left: 5px solid #fff;
-            font-weight: 600;
-        }
         
         @media (max-width: 1024px) {
             .main-content {
-                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column;
                 gap: 20px;
+            }
+            .left-panel,
+            .right-panel {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            /* Ordine specifico per layout a colonna singola */
+            .tipologia-meme {
+                order: 1;
+            }
+            .filtro-video {
+                order: 2;
+            }
+            .stile-meme {
+                order: 3;
+            }
+            .font-section {
+                order: 4;
+            }
+            .video-input {
+                order: 5;
+            }
+            .button-group {
+                order: 6;
+            }
+            .status-panel {
+                order: 7;
             }
         }
         
@@ -1152,12 +1145,12 @@
 
         <div class="main-content">
             <div class="left-panel">
-                <div class="form-group">
+                <div class="form-group tipologia-meme">
                     <label for="meme-type">📝 Tipologia Meme</label>
                     <textarea id="meme-type" class="input-field textarea-small" placeholder="Descrivi il tipo di meme che vuoi creare..." rows="3"></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group filtro-video">
                     <label for="video-filter">🎯 Filtro Video</label>
                     <textarea id="video-filter" class="input-field textarea-small" placeholder="Specifica criteri per filtrare i contenuti video..." rows="3"></textarea>
                     <div class="checkbox-group">
@@ -1166,7 +1159,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group font-section">
                     <label for="font-select">🎨 Font</label>
                     <div class="custom-select-container">
                         <div id="font-select" class="custom-select">
@@ -1206,22 +1199,15 @@
             </div>
 
             <div class="right-panel">
-                <div class="form-group">
+                <div class="form-group stile-meme">
                     <label for="meme-style">✨ Stile Meme</label>
                     <textarea id="meme-style" class="input-field textarea-large" placeholder="Inserisci esempi dettagliati dello stile di meme desiderato..." rows="15"></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group video-input">
                     <label>📹 Video nella cartella INPUT</label>
                     <div id="video-list" class="video-list">
                         <div class="video-item">Caricamento...</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>📋 Log di Sistema</label>
-                    <div id="log-container" class="log-container">
-                        <div class="log-entry info">Sistema inizializzato e pronto</div>
                     </div>
                 </div>
             </div>
@@ -1436,7 +1422,6 @@
                     progressFill: document.getElementById('progress-fill'),
                     progressText: document.getElementById('progress-text'),
                     videoList: document.getElementById('video-list'),
-                    logContainer: document.getElementById('log-container'),
                     apiModal: document.getElementById('api-modal'),
                     apiContent: document.getElementById('api-content')
                 };
@@ -1483,11 +1468,6 @@
                     this.onProcessingError(error);
                 });
 
-                // Log centralizzato dal main process
-                window.electronAPI.onAppLog((event, logData) => {
-                    this.handleAppLog(logData);
-                });
-
                 // Nuovi event listeners per errori API
                 if (window.electronAPI.onDashboardError) {
                     window.electronAPI.onDashboardError((event, errorData) => {
@@ -1528,9 +1508,9 @@
                     // Carica configurazione API
                     this.apiConfig = await window.electronAPI.loadApiConfig();
 
-                    this.addLog('Dati iniziali caricati con successo', 'success');
+                    console.log('Dati iniziali caricati con successo');
                 } catch (error) {
-                    this.addLog(`Errore nel caricamento dati: ${error.message}`, 'error');
+                    console.error('Errore nel caricamento dati:', error.message);
                 }
             }
 
@@ -1707,7 +1687,7 @@
                             .join('');
                     }
                 } catch (error) {
-                    this.addLog(`Errore nel caricamento video: ${error.message}`, 'error');
+                    console.error('Errore nel caricamento video:', error.message);
                 }
             }
 
@@ -1749,26 +1729,26 @@
 
                 try {
                     this.setProcessingState(true);
-                    this.addLog('Avvio elaborazione...', 'info');
+                    console.log('Avvio elaborazione...');
 
                     const result = await window.electronAPI.startProcessing(config);
-                    this.addLog(result.message, 'success');
+                    console.log(result.message);
 
                     // Mostra risultati del processamento banner se disponibili
                     if (result.bannerResults) {
                         const bannerRes = result.bannerResults;
                         if (bannerRes.error) {
-                            this.addLog(`⚠️ Processamento banner fallito: ${bannerRes.error}`, 'warning');
+                            console.warn('Processamento banner fallito:', bannerRes.error);
                         } else {
-                            this.addLog(`🎬 Banner processati: ${bannerRes.processedVideos}/${bannerRes.validVideos} video elaborati`, 'success');
+                            console.log(`Banner processati: ${bannerRes.processedVideos}/${bannerRes.validVideos} video elaborati`);
                             if (bannerRes.skippedVideos > 0) {
-                                this.addLog(`📝 Video saltati per errori: ${bannerRes.skippedVideos}`, 'info');
+                                console.log(`Video saltati per errori: ${bannerRes.skippedVideos}`);
                             }
                         }
                     }
 
                 } catch (error) {
-                    this.addLog(`Errore: ${error.message}`, 'error');
+                    console.error('Errore:', error.message);
                     this.setProcessingState(false);
                 }
             }
@@ -1777,9 +1757,9 @@
                 try {
                     await window.electronAPI.stopProcessing();
                     this.setProcessingState(false);
-                    this.addLog('Elaborazione interrotta dall\'utente', 'info');
+                    console.log('Elaborazione interrotta dall\'utente');
                 } catch (error) {
-                    this.addLog(`Errore nella terminazione: ${error.message}`, 'error');
+                    console.error('Errore nella terminazione:', error.message);
                 }
             }
 
@@ -1836,7 +1816,7 @@
 
                 // Aggiungi log dettagliato se i valori sono definiti
                 if (file && current !== undefined && total !== undefined) {
-                    this.addLog(`${phaseText}: elaborazione ${file} (${current}/${total})`, 'info');
+                    console.log(`${phaseText}: elaborazione ${file} (${current}/${total})`);
                 }
             }
 
@@ -1844,15 +1824,15 @@
                 this.setProcessingState(false);
 
                 if (data.totalProcessed !== undefined) {
-                    this.addLog(`Elaborazione completata! Processati ${data.totalProcessed} video`, 'success');
+                    console.log(`Elaborazione completata! Processati ${data.totalProcessed} video`);
                 }
 
                 if (data.results && data.results.length !== undefined) {
-                    this.addLog(`Risultati salvati in ${data.results.length} file`, 'success');
+                    console.log(`Risultati salvati in ${data.results.length} file`);
                 }
 
                 if (data.message) {
-                    this.addLog(data.message, 'success');
+                    console.log(data.message);
                 }
 
                 // Aggiorna la lista video se necessario
@@ -1861,61 +1841,7 @@
 
             onProcessingError(error) {
                 this.setProcessingState(false);
-                this.addLog(`Errore durante l'elaborazione: ${error}`, 'error');
-            }
-
-            addLog(message, type = 'info', source = 'ui') {
-                try {
-                    const timestamp = new Date().toLocaleTimeString();
-                    const logEntry = document.createElement('div');
-                    logEntry.className = `log-entry ${type}`;
-
-                    // Formato dettagliato per debug
-                    const sourceLabel = source !== 'ui' ? `[${source.toUpperCase()}] ` : '';
-                    logEntry.textContent = `[${timestamp}] ${sourceLabel}${message}`;
-
-                    if (this.elements && this.elements.logContainer) {
-                        this.elements.logContainer.appendChild(logEntry);
-                        this.elements.logContainer.scrollTop = this.elements.logContainer.scrollHeight;
-
-                        // Mantieni solo gli ultimi 100 log
-                        const logs = this.elements.logContainer.querySelectorAll('.log-entry');
-                        if (logs.length > 100) {
-                            logs[0].remove();
-                        }
-                    }
-
-                    // Invia anche al main process per il logging centralizzato (con protezione da errori)
-                    if (source === 'ui' && window.electronAPI && window.electronAPI.log) {
-                        try {
-                            window.electronAPI.log(type, message, 'renderer');
-                        } catch (electronError) {
-                            // Fallback silenzioso per evitare loop di errori
-                            console.warn('[LOG FALLBACK]', type, message);
-                        }
-                    }
-                } catch (error) {
-                    // Fallback estremo per evitare crash
-                    console.warn('[LOG ERROR]', message, error);
-                }
-            }
-
-            handleAppLog(logData) {
-                const timestamp = new Date(logData.timestamp).toLocaleTimeString();
-                const logEntry = document.createElement('div');
-                logEntry.className = `log-entry ${logData.level}`;
-
-                const sourceLabel = logData.source !== 'ui' ? `[${logData.source.toUpperCase()}] ` : '';
-                logEntry.textContent = `[${timestamp}] ${sourceLabel}${logData.message}`;
-
-                this.elements.logContainer.appendChild(logEntry);
-                this.elements.logContainer.scrollTop = this.elements.logContainer.scrollHeight;
-
-                // Mantieni solo gli ultimi 100 log
-                const logs = this.elements.logContainer.querySelectorAll('.log-entry');
-                if (logs.length > 100) {
-                    logs[0].remove();
-                }
+                console.error('Errore durante l\'elaborazione:', error);
             }
 
             // Gestione errori dashboard
@@ -1931,8 +1857,7 @@
                     this.lastErrors = this.lastErrors || {};
                     this.lastErrors[errorKey] = now;
 
-                    const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
-                    this.addLog(`ERRORE: ${errorData.message}`, 'error');
+                    console.error('ERRORE DASHBOARD:', errorData.message);
 
                     // Mostra notifica prominente per errori critici
                     this.showErrorNotification('Errore Sistema', errorData.message);
@@ -1954,12 +1879,11 @@
                     this.lastErrors = this.lastErrors || {};
                     this.lastErrors[errorKey] = now;
 
-                    const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
-                    this.addLog(`ERRORE API: ${errorData.error}`, 'error');
+                    console.error('ERRORE API:', errorData.error);
 
                     // Mostra dettagli specifici per errori API
                     if (errorData.context) {
-                        this.addLog(`Contesto: ${errorData.context}`, 'info');
+                        console.error('Contesto:', errorData.context);
                     }
 
                     this.showErrorNotification('Errore API', errorData.error);
@@ -1981,11 +1905,10 @@
                     this.lastErrors = this.lastErrors || {};
                     this.lastErrors[errorKey] = now;
 
-                    const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
-                    this.addLog(`ERRORE ELABORAZIONE: ${errorData.error}`, 'error');
+                    console.error('ERRORE ELABORAZIONE:', errorData.error);
 
                     if (errorData.phase) {
-                        this.addLog(`Fase: ${errorData.phase}`, 'info');
+                        console.error('Fase:', errorData.phase);
                     }
 
                     this.showErrorNotification('Errore Elaborazione', errorData.error);
@@ -2011,8 +1934,7 @@
                     this.lastErrors = this.lastErrors || {};
                     this.lastErrors[errorKey] = now;
 
-                    const timestamp = new Date(errorData.timestamp).toLocaleTimeString();
-                    this.addLog(`ERRORE ANALISI AI [${errorData.video}]: ${errorData.error}`, 'error');
+                    console.error(`ERRORE ANALISI AI [${errorData.video}]:`, errorData.error);
 
                     this.showErrorNotification('Errore Analisi AI',
                         `Errore nell'analisi del video "${errorData.video}": ${errorData.error}`);
@@ -2086,7 +2008,7 @@
                     this.renderApiManager();
                     this.elements.apiModal.style.display = 'flex';
                 } catch (error) {
-                    this.addLog(`Errore apertura gestione API: ${error.message}`, 'error');
+                    console.error('Errore apertura gestione API:', error.message);
                 }
             }
 
@@ -2321,7 +2243,7 @@
                 await this.saveApiConfig();
                 await this.renderApiList();
                 this.selectApi(id);
-                this.addLog(`API ${alias} creata con successo`, 'success');
+                console.log(`API ${alias} creata con successo`);
             }
 
             cancelNewApi() {
@@ -2535,17 +2457,7 @@
 
                 await this.renderModelsList(this.currentApiKey);
                 await this.renderApiList(); // Aggiorna anche la lista
-                this.addLog(`
-            Modello $ {
-                name
-            }
-            aggiunto a $ {
-                this.apiConfig[this.currentApiKey].alias
-            }
-            con priorità $ {
-                priority
-            }
-            `, 'success');
+                console.log(`Modello ${name} aggiunto a ${this.apiConfig[this.currentApiKey].alias} con priorità ${priority}`);
             }
 
             async deleteModel(apiKey, modelKey) {
@@ -2554,7 +2466,7 @@
                     await this.saveApiConfig();
                     await this.renderModelsList(apiKey);
                     await this.renderApiList();
-                    this.addLog(`Modello ${modelKey} eliminato`, 'info');
+                    console.log(`Modello ${modelKey} eliminato`);
                 }
             }
 
@@ -2576,7 +2488,7 @@
 
                 await this.saveApiConfig();
                 await this.renderApiList();
-                this.addLog(`API ${alias} aggiornata con successo`, 'success');
+                console.log(`API ${alias} aggiornata con successo`);
             }
 
             cancelEdit() {
@@ -2591,10 +2503,10 @@
                     delete this.apiConfig[this.currentApiKey];
                     await this.saveApiConfig();
                     await this.renderApiList();
-            this.showWelcomeScreen();
-            this.addLog(`API ${apiName} eliminata`, 'info');
-        }
-        }
+                    this.showWelcomeScreen();
+                    console.log(`API ${apiName} eliminata`);
+                }
+            }
 
         async saveApiConfig() {
             try {
@@ -2641,7 +2553,7 @@
             await this.saveApiConfig();
             await this.renderModelsList(apiKey);
             await this.renderApiList();
-            this.addLog(`Modello rinominato da "${oldName}" a "${newName}"`, 'info');
+            console.log(`Modello rinominato da "${oldName}" a "${newName}"`);
         }
 
         // Modifica priorità modello
@@ -2664,7 +2576,7 @@
             this.apiConfig[apiKey].models[modelName].priority = priority;
             await this.saveApiConfig();
             await this.renderModelsList(apiKey);
-            this.addLog(`Priorità modello "${modelName}" cambiata a ${priority}`, 'info');
+            console.log(`Priorità modello "${modelName}" cambiata a ${priority}`);
         }
 
         // Modifica limiti modello
@@ -2674,7 +2586,7 @@
 
             this.apiConfig[apiKey].models[modelName].limits[limitType] = value;
             await this.saveApiConfig();
-            this.addLog(`${limitType} modello "${modelName}" aggiornato a ${value}`, 'info');
+            console.log(`${limitType} modello "${modelName}" aggiornato a ${value}`);
         }
 
         // Modifica modello (modal dettagliato)
@@ -2732,7 +2644,7 @@
             await this.saveApiConfig();
             await this.renderModelsList(this.currentApiKey);
             await this.renderApiList();
-            this.addLog(`Modello "${name}" aggiunto con successo`, 'success');
+            console.log(`Modello "${name}" aggiunto con successo`);
         }
 
         // Elimina modello
@@ -2742,7 +2654,7 @@
                 await this.saveApiConfig();
                 await this.renderModelsList(apiKey);
                 await this.renderApiList();
-                this.addLog(`Modello "${modelName}" eliminato`, 'info');
+                console.log(`Modello "${modelName}" eliminato`);
             }
         }
 

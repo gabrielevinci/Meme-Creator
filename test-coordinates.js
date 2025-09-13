@@ -26,6 +26,6 @@ for (let i = 0; i < lines.length; i++) {
 }
 
 // Verifica che tutti i valori siano interi
-const allInteger = [adjustedLineHeight, baseY, ...Array.from({length: lines.length}, (_, i) => Math.round(baseY + (i * adjustedLineHeight)))].every(val => Number.isInteger(val));
+const allInteger = [adjustedLineHeight, baseY, ...Array.from({ length: lines.length }, (_, i) => Math.round(baseY + (i * adjustedLineHeight)))].every(val => Number.isInteger(val));
 
 console.log(`\n✅ Tutti i valori sono interi: ${allInteger}`);

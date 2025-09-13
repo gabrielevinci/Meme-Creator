@@ -1580,6 +1580,60 @@
             "tokens_used": 1189,
             "response_time_ms": 1835,
             "output": "```json\n{\n  \"description\": \"Una vista panoramica di un paesaggio montano mozzafiato, incorniciato da alberi verdi rigogliosi. In primo piano, un prato erboso di un verde brillante si estende verso un "
+          },
+          "1757728371873_ckj3ua99c": {
+            "timestamp": 1757728371873,
+            "tokens": 1184,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1184,
+            "response_time_ms": 2807,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una spiaggia al tramonto con onde che si infrangono dolcemente sulla riva. Il cielo sfuma da un arancione intenso vicino all'orizzonte a un azzurro ten"
+          },
+          "1757728374094_x4y4j10gv": {
+            "timestamp": 1757728374094,
+            "tokens": 1186,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1186,
+            "response_time_ms": 2211,
+            "output": "```json\n{\n  \"description\": \"Una strada sterrata serpeggia attraverso un prato verde lussureggiante, fiancheggiata da una staccionata in legno. In lontananza, casette di legno sono sparse su dolci coll"
+          },
+          "1757728376109_3lz74jcve": {
+            "timestamp": 1757728376109,
+            "tokens": 1212,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1212,
+            "response_time_ms": 2012,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una progressione attraverso un bosco nebbioso e oscuro. Inizialmente, l'attenzione è sui fiori colorati in primo piano e sugli alberi che si stagliano "
+          },
+          "1757728378471_rer6t11kl": {
+            "timestamp": 1757728378471,
+            "tokens": 1211,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1211,
+            "response_time_ms": 2357,
+            "output": "```json\n{\n  \"description\": \"La scena si apre con un primo piano su un giradischi e delle cuffie appese a un muro, con un disco in vinile come sfondo. Successivamente, l'inquadratura si sposta su una s"
+          },
+          "1757728380103_lslyjdaxm": {
+            "timestamp": 1757728380103,
+            "tokens": 1168,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1168,
+            "response_time_ms": 1628,
+            "output": "```json\n{\n  \"description\": \"La donna è seduta su un divano, con un quadro colorato alle sue spalle. Nei tre frame consecutivi, il suo sguardo si sposta leggermente, passando da una conversazione a un'"
+          },
+          "1757728382667_b3lyqmb2x": {
+            "timestamp": 1757728382667,
+            "tokens": 1208,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1208,
+            "response_time_ms": 2560,
+            "output": "```json\n{\n  \"description\": \"Una vasta distesa di prato verde si estende verso montagne imponenti e innevate, incorniciata da alberi rigogliosi. Il sole splende attraverso un cielo azzurro con nuvole b"
           }
         }
       },

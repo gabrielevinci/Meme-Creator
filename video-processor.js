@@ -726,7 +726,7 @@ class VideoProcessor {
 
         // Determina il font da utilizzare con gestione fallback corretta
         let selectedFont = (config && config.selectedFont) ? config.selectedFont : 'impact.ttf';
-        
+
         // CORREZIONE: Assicurati che il font abbia l'estensione .ttf o .TTF
         if (!selectedFont.toLowerCase().endsWith('.ttf')) {
             // Prima prova con .TTF (maiuscolo) - più comune per i font della cartella
@@ -745,7 +745,7 @@ class VideoProcessor {
                 }
             }
         }
-        
+
         let fontPath = path.join(__dirname, 'font', selectedFont);
 
         // VERIFICA ESISTENZA FONT - CRITICA per garantire font corretto
@@ -755,11 +755,11 @@ class VideoProcessor {
         } catch (error) {
             console.error(`❌ ERRORE: Font non trovato: ${fontPath}`);
             console.error(`🔄 Tentativo fallback su impact.ttf...`);
-            
+
             // Fallback su impact.ttf se il font selezionato non esiste
             selectedFont = 'impact.ttf';
             fontPath = path.join(__dirname, 'font', selectedFont);
-            
+
             try {
                 await fs.access(fontPath, fs.constants.F_OK);
                 console.log(`✅ Font fallback trovato: ${selectedFont}`);
@@ -800,7 +800,7 @@ class VideoProcessor {
         let adjustedFontSize = fontSize;
         const maxLineLength = Math.max(...lines.map(line => line.length));
         const estimatedTextWidth = maxLineLength * avgCharWidth;
-        
+
         if (estimatedTextWidth > effectiveWidth) {
             adjustedFontSize = Math.max(24, Math.floor(effectiveWidth / (maxLineLength * 0.65)));
             console.log(`⚠️ Testo troppo largo (${Math.round(estimatedTextWidth)}px > ${effectiveWidth}px)!`);
@@ -838,16 +838,16 @@ class VideoProcessor {
         // Aggiungi ogni riga come un filtro drawtext separato
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].replace(/'/g, "\\'").replace(/:/g, '\\:').replace(/=/g, '\\=').replace(/,/g, '\\,').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
-            
+
             // CORREZIONE: FFmpeg richiede coordinate intere, non decimali
             const yPos = Math.round(baseY + (i * adjustedLineHeight));
 
             console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> y=${yPos}`);
-            
+
             // CORREZIONE: FFmpeg non supporta max/min nelle coordinate
             // Usiamo centratura semplice - il controllo 15px è fatto sopra riducendo fontSize se necessario
             const xPos = '(w-text_w)/2';
-            
+
             textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${adjustedFontSize}:x=${xPos}:y=${yPos}`;
         }
 
@@ -873,12 +873,12 @@ class VideoProcessor {
 
             ffmpeg.stderr.on('data', (data) => {
                 const output = data.toString();
-                
+
                 // MONITORAGGIO FONT: Rileva problemi specifici con font
                 if (output.includes('Font') || output.includes('font') || output.includes('fontfile')) {
                     console.warn(`⚠️ ATTENZIONE FONT: ${output.trim()}`);
                 }
-                
+
                 // Filtra solo gli errori critici per ridurre il rumore nel terminal
                 if (output.includes('Error') || output.includes('failed') || output.includes('Invalid argument')) {
                     errorOutput += output;

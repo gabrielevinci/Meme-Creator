@@ -147,7 +147,7 @@ class ContentCreatorApp {
     createMainWindow() {
         this.mainWindow = new BrowserWindow({
             width: 1200,
-            height: 800,
+            height: 952,
             minWidth: 800,
             minHeight: 600,
             icon: path.join(__dirname, 'icon.ico'),
@@ -168,6 +168,30 @@ class ContentCreatorApp {
         // Gestione chiusura finestra
         this.mainWindow.on('closed', () => {
             this.mainWindow = null;
+        });
+
+        // Mantieni proporzioni 1200:952 durante il ridimensionamento
+        this.mainWindow.on('resize', () => {
+            if (!this.mainWindow || this.mainWindow.isDestroyed()) return;
+
+            const [currentWidth, currentHeight] = this.mainWindow.getSize();
+            const aspectRatio = 1200 / 952;
+
+            // Calcola le nuove dimensioni mantenendo le proporzioni
+            let newWidth = currentWidth;
+            let newHeight = Math.round(currentWidth / aspectRatio);
+
+            // Se l'altezza calcolata è diversa da quella corrente, aggiusta
+            if (Math.abs(newHeight - currentHeight) > 5) {
+                // Se la finestra è stata ridimensionata in altezza, mantieni l'altezza e calcola la larghezza
+                if (Math.abs(newHeight - currentHeight) > Math.abs(newWidth - (currentHeight * aspectRatio))) {
+                    newHeight = currentHeight;
+                    newWidth = Math.round(currentHeight * aspectRatio);
+                }
+
+                // Applica le nuove dimensioni solo se sono significativamente diverse
+                this.mainWindow.setSize(newWidth, newHeight);
+            }
         });
 
         // Apri DevTools in modalità sviluppo

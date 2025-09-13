@@ -50,12 +50,13 @@
         .main-content {
             padding: 30px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 25px;
             min-height: 600px;
         }
         
         .left-panel,
+        .middle-panel,
         .right-panel {
             display: flex;
             flex-direction: column;
@@ -1090,11 +1091,13 @@
                 gap: 20px;
             }
             .left-panel,
+            .middle-panel,
             .right-panel {
                 display: contents;
                 /* Questo fa sì che i figli vengano trattati come se fossero direttamente nel parent */
             }
             .left-panel>*,
+            .middle-panel>*,
             .right-panel>* {
                 margin-bottom: 20px;
             }
@@ -1110,6 +1113,9 @@
             }
             .font-section {
                 order: 4;
+            }
+            .text-formatting {
+                order: 4.5;
             }
             .video-input {
                 order: 5;
@@ -1182,6 +1188,20 @@
                         </div>
                     </div>
                     <input type="hidden" id="selected-font" value="">
+                </div>
+            </div>
+
+            <!-- NUOVA COLONNA CENTRALE: Controlli Video -->
+            <div class="middle-panel">
+                <div class="form-group text-formatting">
+                    <label for="text-format">📝 Formato Testo Meme</label>
+                    <select id="text-format" class="select-field">
+                        <option value="normal">Mantieni formato originale</option>
+                        <option value="uppercase">TUTTO MAIUSCOLO</option>
+                        <option value="lowercase">tutto minuscolo</option>
+                        <option value="capitalize">Prima Lettera Maiuscola</option>
+                        <option value="title">Ogni Prima Lettera Maiuscola</option>
+                    </select>
                 </div>
             </div>
 
@@ -1426,6 +1446,7 @@
                     fontSelect: document.getElementById('font-select'),
                     fontOptions: document.getElementById('font-options'),
                     selectedFont: document.getElementById('selected-font'),
+                    textFormat: document.getElementById('text-format'),
                     memeStyle: document.getElementById('meme-style'),
                     startBtn: document.getElementById('start-btn'),
                     stopBtn: document.getElementById('stop-btn'),
@@ -1737,7 +1758,8 @@
                     videoFilter: this.elements.videoFilter.value.trim(),
                     memeStyle: this.elements.memeStyle.value.trim(),
                     useCollage: this.elements.collageMode.checked,
-                    selectedFont: this.elements.selectedFont.value
+                    selectedFont: this.elements.selectedFont.value,
+                    textFormat: this.elements.textFormat.value
                 };
 
                 try {

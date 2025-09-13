@@ -10,6 +10,28 @@ class VideoProcessor {
         this.ffmpegPath = this.findFFmpegPath();
     }
 
+    // Metodo per formattare il testo secondo le preferenze utente
+    formatText(text, formatType) {
+        if (!text || !formatType || formatType === 'normal') {
+            return text;
+        }
+
+        switch (formatType) {
+            case 'uppercase':
+                return text.toUpperCase();
+            case 'lowercase':
+                return text.toLowerCase();
+            case 'capitalize':
+                return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+            case 'title':
+                return text.replace(/\w\S*/g, (txt) => 
+                    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                );
+            default:
+                return text;
+        }
+    }
+
     // Aggiunto metodo per pulire tutte le cartelle all'inizio
     async cleanAllDirectories() {
         const directories = [this.tempDir, this.outputDir];
@@ -649,9 +671,21 @@ class VideoProcessor {
     async addBannerToVideo(videoData, config = null) {
         const { outputFile, aiResponse, content } = videoData;
 
+        // Applica la formattazione del testo se specificata nella configurazione
+        let formattedText = aiResponse.meme_text;
+        if (config && config.textFormat) {
+            formattedText = this.formatText(aiResponse.meme_text, config.textFormat);
+            console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
+            console.log(`🔄 Formato applicato: ${config.textFormat}`);
+            console.log(`📝 Testo formattato: "${formattedText}"`);
+        }
+
+        // Crea una copia dell'oggetto aiResponse con il testo formattato
+        const processedAiResponse = { ...aiResponse, meme_text: formattedText };
+
         console.log(`🎬 Processamento video: ${outputFile}`);
-        console.log(`📍 Posizione banner: ${aiResponse.banner_position}`);
-        console.log(`📝 Testo meme: ${aiResponse.meme_text}`);
+        console.log(`📍 Posizione banner: ${processedAiResponse.banner_position}`);
+        console.log(`📝 Testo meme: ${processedAiResponse.meme_text}`);
 
         if (config) {
             console.log(`🎨 Font selezionato: ${config.selectedFont || 'default'}`);
@@ -708,8 +742,8 @@ class VideoProcessor {
         const outputVideoPath = path.join(__dirname, 'OUTPUT', `${outputVideoBaseName}_meme_${Date.now()}.mp4`);
 
         console.log(`🎬 Processamento video: ${originalVideoName}`);
-        console.log(`📍 Posizione banner: ${aiResponse.banner_position}`);
-        console.log(`📝 Testo meme: ${aiResponse.meme_text}`);
+        console.log(`📍 Posizione banner: ${processedAiResponse.banner_position}`);
+        console.log(`📝 Testo meme: ${processedAiResponse.meme_text}`);
 
         // Ottieni informazioni del video
         const videoInfo = await this.getVideoInfo(inputVideoPath);
@@ -813,7 +847,7 @@ class VideoProcessor {
                 if (maxCharsPerLine < 8 || maxLines < 1) continue;
                 
                 // Testa il wrapping con questi parametri
-                const testWrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine, maxLines);
+                const testWrappedText = this.wrapText(processedAiResponse.meme_text, maxCharsPerLine, maxLines);
                 const testLines = testWrappedText.split('\\n');
                 
                 // Calcola dimensioni reali del blocco di testo
@@ -857,7 +891,6 @@ class VideoProcessor {
         const wrappedText = bestWrappedText;
         const lines = bestLines;
         
-        console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
         console.log(`📝 Testo finale: "${wrappedText}"`);
         console.log(`📊 Numero di righe: ${lines.length}`);
         console.log(`📐 Font size finale: ${adjustedFontSize}px`);
@@ -880,17 +913,19 @@ class VideoProcessor {
         let textFilters = '';
         let baseY;
 
-        if (aiResponse.banner_position === 'bottom') {
+        if (processedAiResponse.banner_position === 'bottom') {
             const bannerY = height - bannerHeight;
-            // Centratura perfetta nel banner bottom
+            // CORREZIONE: Centratura perfetta nel banner bottom - considera che il banner inizia da bannerY
             baseY = Math.round(bannerY + verticalPadding + topMargin + adjustedFontSize * 0.8);
             textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill`;
-            console.log(`📍 Banner bottom - bannerY: ${bannerY}, baseY: ${baseY}`);
+            console.log(`📍 Banner bottom - bannerY: ${bannerY}, topMargin in banner: ${topMargin}, baseY finale: ${baseY}`);
+            console.log(`📍 Debug bottom: bannerY(${bannerY}) + verticalPadding(${verticalPadding}) + topMargin(${topMargin}) + baseline(${Math.round(adjustedFontSize * 0.8)}) = ${baseY}`);
         } else {
             // Centratura perfetta nel banner top
             baseY = Math.round(verticalPadding + topMargin + adjustedFontSize * 0.8);
             textFilters = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill`;
             console.log(`📍 Banner top - baseY: ${baseY}`);
+            console.log(`📍 Debug top: verticalPadding(${verticalPadding}) + topMargin(${topMargin}) + baseline(${Math.round(adjustedFontSize * 0.8)}) = ${baseY}`);
         }
 
         // Aggiungi ogni riga con centratura orizzontale perfetta

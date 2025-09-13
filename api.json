@@ -1877,6 +1877,33 @@
             "tokens_used": 1176,
             "response_time_ms": 1772,
             "output": "```json\n{\n  \"description\": \"Un sentiero nebbioso attraversa un bosco lussureggiante. Alberi alti e scuri si ergono su entrambi i lati, con rami intricati che si estendono verso un cielo viola tenue. I"
+          },
+          "1757735024207_kmiejnzj4": {
+            "timestamp": 1757735024207,
+            "tokens": 1186,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1186,
+            "response_time_ms": 1920,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato dipinge il cielo con sfumature arancioni e blu. Le onde del mare si infrangono dolcemente sulla riva sabbiosa, creando un'atmosfera serena e rilassan"
+          },
+          "1757735025747_07xi4zf0q": {
+            "timestamp": 1757735025747,
+            "tokens": 1192,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1192,
+            "response_time_ms": 1535,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale immerso nella nebbia mattutina. Una strada asfaltata e bagnata serpeggia a sinistra, fiancheggiata da un recinto di legno su un prato verde brillante. I"
+          },
+          "1757735027765_9nszd4y56": {
+            "timestamp": 1757735027765,
+            "tokens": 1184,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1184,
+            "response_time_ms": 2009,
+            "output": "```json\n{\n  \"description\": \"Una foresta nebbiosa e misteriosa si apre con alberi alti e fitti, avvolti da una luce soffusa e violacea. In primo piano, un cespuglio di fiori bianchi e viola crea un con"
           }
         }
       },
@@ -1944,9 +1971,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757734277446,
+          "until": 1757735322276,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757733977446
+          "markedAt": 1757735022276
         }
       }
     }

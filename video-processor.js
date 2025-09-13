@@ -905,15 +905,16 @@ class VideoProcessor {
         if (processedAiResponse.banner_position === 'bottom') {
             const bannerY = height - bannerHeight;
 
-            // Posizione Y del testo: inizio banner + margine superiore specificato dall'utente
-            baseY = bannerY + marginTop + (userFontSize * 0.8); // Offset baseline per allineamento font
+            // CORREZIONE: Posizione Y del testo dal margine superiore del banner
+            // La prima riga inizia dal margine superiore specificato + font ascent
+            baseY = bannerY + marginTop + (userFontSize * 0.75); // 0.75 è l'ascent tipico
 
             textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill`;
             console.log(`📍 BANNER BOTTOM - Y: ${bannerY}, altezza: ${bannerHeight}px, baseY testo: ${baseY}`);
 
         } else {
-            // Banner in alto: posizione Y del testo = margine superiore + offset baseline
-            baseY = marginTop + (userFontSize * 0.8);
+            // CORREZIONE: Banner in alto - posizione Y del testo dal margine superiore + font ascent
+            baseY = marginTop + (userFontSize * 0.75);
 
             textFilters = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill`;
             console.log(`📍 BANNER TOP - Y: 0, altezza: ${bannerHeight}px, baseY testo: ${baseY}`);

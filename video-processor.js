@@ -853,15 +853,15 @@ class VideoProcessor {
 
         // CORREZIONE COMPLETA escape font path per FFmpeg
         const escapedFontPath = fontPath
-            .replace(/\\/g, '/')           // Windows backslash -> forward slash
-            .replace(/'/g, "\\'")          // Escape virgolette singole
-            .replace(/"/g, '\\"')          // Escape virgolette doppie  
-            .replace(/:/g, '\\:')          // Escape due punti (CRITICO per Windows)
-            .replace(/=/g, '\\=')          // Escape uguale
-            .replace(/,/g, '\\,')          // Escape virgola
-            .replace(/;/g, '\\;')          // Escape punto e virgola
-            .replace(/\(/g, '\\(')         // Escape parentesi
-            .replace(/\)/g, '\\)');        // Escape parentesi
+            .replace(/\\/g, '/') // Windows backslash -> forward slash
+            .replace(/'/g, "\\'") // Escape virgolette singole
+            .replace(/"/g, '\\"') // Escape virgolette doppie  
+            .replace(/:/g, '\\:') // Escape due punti (CRITICO per Windows)
+            .replace(/=/g, '\\=') // Escape uguale
+            .replace(/,/g, '\\,') // Escape virgola
+            .replace(/;/g, '\\;') // Escape punto e virgola
+            .replace(/\(/g, '\\(') // Escape parentesi
+            .replace(/\)/g, '\\)'); // Escape parentesi
 
         console.log(`🎨 Utilizzando font: ${selectedFont}`);
         console.log(`📂 Percorso font assoluto: ${fontPath}`);
@@ -871,7 +871,7 @@ class VideoProcessor {
         // CENTRATURA CORRETTA: Il testo deve utilizzare i margini del video come riferimento
         const horizontalMargin = 30; // Margine dai bordi laterali del VIDEO
         const effectiveWidth = width - (horizontalMargin * 2); // Usa larghezza video completa meno margini
-        
+
         // Per altezza: spazio disponibile dipende dalla posizione del banner
         let availableHeight;
         if (processedAiResponse.banner_position === 'bottom') {
@@ -1006,11 +1006,14 @@ class VideoProcessor {
             // Area disponibile: dal bannerY (inizio blocco) fino a height (fine video)
             const availableSpaceBottom = height - bannerY; // Altezza dello spazio disponibile
             const textCenterY = bannerY + (availableSpaceBottom - totalTextHeight) / 2; // Centro dello spazio disponibile
-            baseY = Math.round(textCenterY + adjustedFontSize * 0.8); // Aggiungi offset baseline
+            
+            // CORREZIONE: Alza il testo nel banner bottom per migliore posizionamento visivo
+            const visualOffset = -adjustedFontSize * 0.3; // Alza il testo del 30% della dimensione font
+            baseY = Math.round(textCenterY + adjustedFontSize * 0.8 + visualOffset); // Aggiungi offset baseline + correzione visiva
 
             textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill`;
             console.log(`📍 BANNER BOTTOM - Spazio disponibile: ${availableSpaceBottom}px (da ${bannerY} a ${height})`);
-            console.log(`📍 Centro testo Y: ${textCenterY.toFixed(1)}, baseY finale: ${baseY}`);
+            console.log(`📍 Centro testo Y: ${textCenterY.toFixed(1)}, offset visivo: ${visualOffset.toFixed(1)}, baseY finale: ${baseY}`);
 
         } else {
             // CENTRATURA CORRETTA: Il testo deve essere centrato tra il margine superiore del video e il margine inferiore del blocco
@@ -1028,17 +1031,17 @@ class VideoProcessor {
         for (let i = 0; i < lines.length; i++) {
             // CORREZIONE COMPLETA ESCAPE: gestisce tutti i caratteri speciali FFmpeg
             const line = lines[i]
-                .replace(/\\/g, '\\\\')  // Backslash prima di tutto
-                .replace(/'/g, "\\'")    // Virgolette singole
-                .replace(/"/g, '\\"')    // Virgolette doppie - CRITICO!
-                .replace(/:/g, '\\:')    // Due punti
-                .replace(/=/g, '\\=')    // Uguale
-                .replace(/,/g, '\\,')    // Virgola
-                .replace(/\[/g, '\\[')   // Parentesi quadre aperte
-                .replace(/\]/g, '\\]')   // Parentesi quadre chiuse
-                .replace(/\(/g, '\\(')   // Parentesi tonde aperte
-                .replace(/\)/g, '\\)')   // Parentesi tonde chiuse
-                .replace(/;/g, '\\;');   // Punto e virgola
+                .replace(/\\/g, '\\\\') // Backslash prima di tutto
+                .replace(/'/g, "\\'") // Virgolette singole
+                .replace(/"/g, '\\"') // Virgolette doppie - CRITICO!
+                .replace(/:/g, '\\:') // Due punti
+                .replace(/=/g, '\\=') // Uguale
+                .replace(/,/g, '\\,') // Virgola
+                .replace(/\[/g, '\\[') // Parentesi quadre aperte
+                .replace(/\]/g, '\\]') // Parentesi quadre chiuse
+                .replace(/\(/g, '\\(') // Parentesi tonde aperte
+                .replace(/\)/g, '\\)') // Parentesi tonde chiuse
+                .replace(/;/g, '\\;'); // Punto e virgola
 
             // Posizione Y per questa riga
             const yPos = Math.round(baseY + (i * finalLineHeight));
@@ -1047,7 +1050,7 @@ class VideoProcessor {
 
             // Centratura orizzontale perfetta - USA SOLO virgolette singole per consistenza
             const xPos = '(w-text_w)/2';
-            
+
             textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${adjustedFontSize}:x=${xPos}:y=${yPos}`;
         }
 

@@ -726,44 +726,75 @@ class VideoProcessor {
 
         // Determina il font da utilizzare
         const selectedFont = (config && config.selectedFont) ? config.selectedFont : 'impact.ttf';
-        // Usa un percorso relativo per evitare problemi con spazi e drive letter su Windows
-        const relativeFontPath = `font/${selectedFont}`;
+
+        // Usa il percorso assoluto del font per evitare problemi di risoluzione
+        const fontPath = path.join(__dirname, 'font', selectedFont);
+
+        // Per FFmpeg su Windows, converti i backslash in forward slash e gestisci spazi
+        const escapedFontPath = fontPath.replace(/\\/g, '/').replace(/:/g, '\\:');
 
         console.log(`🎨 Utilizzando font: ${selectedFont}`);
-        console.log(`📂 Percorso font relativo: ${relativeFontPath}`);
+        console.log(`📂 Percorso font assoluto: ${fontPath}`);
+        console.log(`📂 Percorso font escaped: ${escapedFontPath}`);
 
         // Prepara il testo per FFmpeg con gestione delle righe multiple migliorata
-        const maxCharsPerLine = Math.floor(width / (fontSize * 0.5)); // Stima più conservativa
-        const maxLines = Math.floor(bannerHeight / (fontSize * 1.5)) - 1; // Più spazio tra righe
+        // Calcola i caratteri per riga basandosi sulla larghezza effettiva del banner (450px)
+        // e una stima più precisa della larghezza media dei caratteri per il font
+        const bannerWidth = 450; // Larghezza fissa del banner
+        const padding = 20; // Padding laterale per evitare che il testo tocchi i bordi
+        const effectiveWidth = bannerWidth - (padding * 2);
+
+        // Stima più accurata basata sul font: caratteri come 'W' sono più larghi di 'i'
+        // Per font come Impact, stima circa 0.6-0.7 del fontSize come larghezza media carattere
+        const avgCharWidth = fontSize * 0.65; // Stima più realistica
+        const maxCharsPerLine = Math.floor(effectiveWidth / avgCharWidth);
+
+        const lineHeight = fontSize * 1.2; // Line height più compatto ma leggibile
+        const maxLines = Math.floor(bannerHeight / lineHeight) - 1; // Spazio per margini
+
         const wrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine, maxLines);
         console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
         console.log(`📝 Testo wrappato: "${wrappedText}" (max ${maxCharsPerLine} char/riga, max ${maxLines} righe)`);
 
         // Per FFmpeg, dividiamo il testo in righe separate e le sovrapponiamo
         const lines = wrappedText.split('\\n');
-        console.log(`� Numero di righe: ${lines.length}`);
+        console.log(`📊 Numero di righe: ${lines.length}`);
 
-        // Calcola il line height e la posizione di partenza del testo
-        const lineHeight = fontSize * 1.4;
+        // Calcola la posizione di partenza del testo per centratura verticale
+        // Consideriamo che il testo di una riga inizia dalla baseline, non dal top
         const totalTextHeight = lines.length * lineHeight;
+
+        console.log(`📐 Altezza banner: ${bannerHeight}px`);
+        console.log(`📐 Altezza totale testo: ${totalTextHeight}px`);
+        console.log(`📐 Line height: ${lineHeight}px`);
+        console.log(`📐 Font size: ${fontSize}px`);
 
         let textFilters = '';
         let baseY;
 
         if (aiResponse.banner_position === 'bottom') {
             const bannerY = height - bannerHeight;
-            baseY = bannerY + (bannerHeight - totalTextHeight) / 2;
+            // Centra verticalmente nel banner bottom, aggiungendo un offset per la baseline del font
+            baseY = bannerY + (bannerHeight - totalTextHeight) / 2 + fontSize * 0.8;
             textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill`;
+            console.log(`📍 Banner bottom - bannerY: ${bannerY}, baseY: ${baseY}`);
         } else {
-            baseY = (bannerHeight - totalTextHeight) / 2;
+            // Centra verticalmente nel banner top, aggiungendo un offset per la baseline del font
+            baseY = (bannerHeight - totalTextHeight) / 2 + fontSize * 0.8;
             textFilters = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill`;
+            console.log(`📍 Banner top - baseY: ${baseY}`);
         }
 
         // Aggiungi ogni riga come un filtro drawtext separato
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].replace(/'/g, "\\'").replace(/:/g, '\\:').replace(/=/g, '\\=').replace(/,/g, '\\,').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
             const yPos = baseY + (i * lineHeight);
-            textFilters += `,drawtext=text='${line}':fontfile='${relativeFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}`;
+
+            console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> y=${yPos}`);
+
+            // Centratura orizzontale: centra il testo nel video intero
+            // FFmpeg calcola automaticamente la larghezza del testo con text_w
+            textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}`;
         }
 
         const filterComplex = textFilters + '[v]';

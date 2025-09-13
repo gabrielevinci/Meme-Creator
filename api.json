@@ -1904,6 +1904,33 @@
             "tokens_used": 1184,
             "response_time_ms": 2009,
             "output": "```json\n{\n  \"description\": \"Una foresta nebbiosa e misteriosa si apre con alberi alti e fitti, avvolti da una luce soffusa e violacea. In primo piano, un cespuglio di fiori bianchi e viola crea un con"
+          },
+          "1757735562255_7d2p19s93": {
+            "timestamp": 1757735562255,
+            "tokens": 1201,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1201,
+            "response_time_ms": 1439,
+            "output": "```json\n{\n  \"description\": \"Il video mostra un tramonto mozzafiato su una spiaggia. Le onde del mare si infrangono dolcemente sulla riva, creando un effetto rilassante. Il cielo sfuma dal blu intenso "
+          },
+          "1757735598468_baugame2w": {
+            "timestamp": 1757735598468,
+            "tokens": 1188,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1188,
+            "response_time_ms": 36202,
+            "output": "```json\n{\n  \"description\": \"Un sentiero asfaltato e bagnato dalla pioggia serpeggia attraverso un paesaggio verdeggiante. Una staccionata in legno delimita un prato lussureggiante dove si ergono alcun"
+          },
+          "1757735600941_0gsyfzksh": {
+            "timestamp": 1757735600941,
+            "tokens": 1180,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1180,
+            "response_time_ms": 2468,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi alti e fitti che creano una volta naturale. In primo piano, fiori bianchi e viola sbocciano tra il fogliame scuro, creando un "
           }
         }
       },
@@ -1971,9 +1998,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757735322276,
+          "until": 1757735860804,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757735022276
+          "markedAt": 1757735560804
         }
       }
     }

@@ -146,7 +146,7 @@ class ContentCreatorApp {
 
     createMainWindow() {
         this.mainWindow = new BrowserWindow({
-            width: 1400,
+            width: 1600,
             height: 952,
             minWidth: 800,
             minHeight: 600,

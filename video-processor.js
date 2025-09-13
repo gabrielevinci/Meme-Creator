@@ -64,16 +64,16 @@ class VideoProcessor {
     // Calcola le dimensioni del blocco bianco in base alla risoluzione del video
     calculateBlockDimensions(videoWidth, videoHeight) {
         const aspectRatio = videoWidth / videoHeight;
-        
+
         // Per video verticali (9:16), usa height = 450px
         // Per altri aspect ratio, scala proporzionalmente
         const referenceAspectRatio = 9 / 16; // 0.5625
         const referenceHeight = 450;
         const referenceWidth = 1080; // Width di riferimento per 9:16
-        
+
         let blockHeight;
         let blockWidth = videoWidth; // Il blocco occupa sempre tutta la larghezza
-        
+
         if (aspectRatio <= referenceAspectRatio * 1.1) {
             // Video verticale o quasi verticale - usa altura di riferimento scalata
             blockHeight = Math.round((referenceHeight * videoWidth) / referenceWidth);
@@ -84,15 +84,15 @@ class VideoProcessor {
             // Video quadrato o leggermente orizzontale
             blockHeight = Math.round(videoHeight * 0.35); // 35% dell'altezza del video
         }
-        
+
         // Limiti minimi e massimi per sicurezza
         const minHeight = Math.max(100, videoHeight * 0.15);
         const maxHeight = Math.min(videoHeight * 0.6, 600);
-        
+
         blockHeight = Math.max(minHeight, Math.min(blockHeight, maxHeight));
-        
+
         console.log(`📐 Dimensioni blocco calcolate - Video: ${videoWidth}x${videoHeight} (AR: ${aspectRatio.toFixed(3)}) -> Blocco: ${blockWidth}x${blockHeight}`);
-        
+
         return {
             width: blockWidth,
             height: blockHeight,
@@ -103,16 +103,16 @@ class VideoProcessor {
     // Calcola l'area disponibile per il testo sottraendo i margini
     calculateAvailableTextArea(blockWidth, blockHeight, margins) {
         const { marginTop = 30, marginBottom = 30, marginLeft = 40, marginRight = 40 } = margins || {};
-        
+
         const availableWidth = blockWidth - marginLeft - marginRight;
         const availableHeight = blockHeight - marginTop - marginBottom;
-        
+
         // Verifiche di sicurezza
         const safeWidth = Math.max(availableWidth, 100); // Minimo 100px di larghezza
         const safeHeight = Math.max(availableHeight, 50); // Minimo 50px di altezza
-        
+
         console.log(`📏 Area testo disponibile - Blocco: ${blockWidth}x${blockHeight}, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight} -> Area: ${safeWidth}x${safeHeight}`);
-        
+
         return {
             width: safeWidth,
             height: safeHeight,
@@ -145,25 +145,25 @@ class VideoProcessor {
         // Ricerca binaria per trovare la dimensione ottimale
         while (maxFontSize - minFontSize > 1) {
             const testFontSize = Math.floor((minFontSize + maxFontSize) / 2);
-            
+
             // Calcola metriche per questa dimensione
             const metrics = this.calculateTextMetrics(text, testFontSize, textFormat);
             const maxCharsPerLine = Math.floor(availableWidth / metrics.avgCharWidth);
-            
+
             if (maxCharsPerLine < 1) {
                 maxFontSize = testFontSize - 1;
                 continue;
             }
-            
+
             // Applica il wrapping
             const wrappedText = this.wrapText(text, maxCharsPerLine, maxLines);
             const lines = wrappedText.split('\\n');
             const totalHeight = lines.length * metrics.lineHeight;
-            
+
             if (totalHeight <= availableHeight && lines.length <= maxLines) {
                 // Il testo entra nell'area - questo è un candidato valido
                 const fillRatio = (totalHeight / availableHeight) * (Math.min(availableWidth, this.getMaxLineWidth(lines, metrics.avgCharWidth)) / availableWidth);
-                
+
                 if (fillRatio > bestFillRatio) {
                     bestFontSize = testFontSize;
                     bestWrappedText = wrappedText;
@@ -171,7 +171,7 @@ class VideoProcessor {
                     bestTotalHeight = totalHeight;
                     bestFillRatio = fillRatio;
                 }
-                
+
                 minFontSize = testFontSize; // Prova con dimensioni più grandi
             } else {
                 maxFontSize = testFontSize - 1; // Dimensione troppo grande
@@ -185,7 +185,7 @@ class VideoProcessor {
             const wrappedText = this.wrapText(text, Math.max(maxCharsPerLine, 1), maxLines);
             const lines = wrappedText.split('\\n');
             const totalHeight = lines.length * metrics.lineHeight;
-            
+
             bestFontSize = minFontSize;
             bestWrappedText = wrappedText;
             bestLines = lines;
@@ -1016,41 +1016,41 @@ class VideoProcessor {
         console.log(`📂 Percorso font escaped: ${escapedFontPath}`);
 
         // DIMENSIONAMENTO AUTOMATICO: Adatta blocco e testo alla risoluzione del video
-        
+
         // Calcola le dimensioni ottimali del blocco bianco in base alla risoluzione
         const blockDimensions = this.calculateBlockDimensions(width, height);
         const blockWidth = blockDimensions.width;
         const blockHeight = blockDimensions.height;
 
-        // Ottieni margini dalla configurazione
-        const marginTop = (config && config.marginTop) ? config.marginTop : 30;
-        const marginBottom = (config && config.marginBottom) ? config.marginBottom : 30;
-        const marginLeft = (config && config.marginLeft) ? config.marginLeft : 40;
-        const marginRight = (config && config.marginRight) ? config.marginRight : 40;
+        // Ottieni margini dalla configurazione (gestisce correttamente il valore 0)
+        const marginTop = (config && config.marginTop !== undefined) ? config.marginTop : 30;
+        const marginBottom = (config && config.marginBottom !== undefined) ? config.marginBottom : 30;
+        const marginLeft = (config && config.marginLeft !== undefined) ? config.marginLeft : 40;
+        const marginRight = (config && config.marginRight !== undefined) ? config.marginRight : 40;
 
         const margins = { marginTop, marginBottom, marginLeft, marginRight };
-        
+
         // Calcola l'area disponibile per il testo
         const textArea = this.calculateAvailableTextArea(blockWidth, blockHeight, margins);
-        
+
         console.log(`🎨 Configurazione - Blocco: ${blockWidth}x${blockHeight}px, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`);
         console.log(`📏 Area testo disponibile: ${textArea.width}x${textArea.height}px`);
 
         // Se l'utente ha specificato una font-size, usala come preferenza ma controlla se entra
         let useAutoResize = true;
         let fontSize, wrappedText, lines, totalTextHeight;
-        
+
         if (config && config.fontSize) {
             const userFontSize = config.fontSize;
             console.log(`👤 Font size specificata dall'utente: ${userFontSize}px - Verifico se entra nell'area...`);
-            
+
             // Testa se la font-size dell'utente entra nell'area
             const testMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, userFontSize, config.textFormat);
             const maxCharsPerLine = Math.floor(textArea.width / testMetrics.avgCharWidth);
             const testWrappedText = this.wrapText(processedAiResponse.meme_text, maxCharsPerLine, 10);
             const testLines = testWrappedText.split('\\n');
             const testTotalHeight = testLines.length * testMetrics.lineHeight;
-            
+
             if (testTotalHeight <= textArea.height && testLines.length <= 10 && maxCharsPerLine > 0) {
                 // La font-size dell'utente entra - usala
                 fontSize = userFontSize;
@@ -1058,28 +1058,28 @@ class VideoProcessor {
                 lines = testLines;
                 totalTextHeight = testTotalHeight;
                 useAutoResize = false;
-                
+
                 console.log(`✅ Font size utente OK: ${userFontSize}px (${lines.length} righe, altezza: ${totalTextHeight.toFixed(1)}px)`);
             } else {
                 console.log(`⚠️ Font size utente troppo grande: ${userFontSize}px -> Uso ridimensionamento automatico`);
             }
         }
-        
+
         if (useAutoResize) {
             // Calcola automaticamente la dimensione ottimale del testo
             const autoSizeResult = this.autoResizeTextForArea(
-                processedAiResponse.meme_text, 
-                textArea.width, 
-                textArea.height, 
-                config && config.textFormat, 
+                processedAiResponse.meme_text,
+                textArea.width,
+                textArea.height,
+                config && config.textFormat,
                 10 // max 10 righe
             );
-            
+
             fontSize = autoSizeResult.fontSize;
             wrappedText = autoSizeResult.wrappedText;
             lines = autoSizeResult.lines;
             totalTextHeight = autoSizeResult.totalHeight;
-            
+
             console.log(`🤖 Dimensionamento automatico: ${fontSize}px (fill ratio: ${(autoSizeResult.fillRatio * 100).toFixed(1)}%)`);
         }
 
@@ -1117,7 +1117,7 @@ class VideoProcessor {
             console.log(`📍 BANNER TOP - Y: 0, altezza: ${blockHeight}px, baseY testo: ${baseY}`);
         }
 
-        // Aggiungi ogni riga con centratura orizzontale perfetta
+        // Aggiungi ogni riga con posizionamento preciso secondo i margini
         for (let i = 0; i < lines.length; i++) {
             // CORREZIONE COMPLETA ESCAPE: gestisce tutti i caratteri speciali FFmpeg
             const line = lines[i]
@@ -1138,8 +1138,11 @@ class VideoProcessor {
 
             console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> "${line}" -> y=${yPos}`);
 
-            // Centratura orizzontale perfetta - USA SOLO virgolette singole per consistenza
-            const xPos = '(w-text_w)/2';
+            // Posizionamento X preciso: allinea al margine sinistro
+            // Il testo deve partire esattamente a marginLeft pixel dal bordo
+            const xPos = marginLeft;
+
+            console.log(`📏 Posizionamento X - Allineato a marginLeft: ${marginLeft}px`);
 
             textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
         }

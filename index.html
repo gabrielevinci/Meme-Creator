@@ -1774,14 +1774,14 @@
                         if (!fontOption) {
                             const fontVariants = [
                                 settings.fontFamily.toLowerCase(), // "Impact" -> "impact"
-                                settings.fontFamily + 'ed',        // "Impact" -> "Impacted"
+                                settings.fontFamily + 'ed', // "Impact" -> "Impacted"
                                 settings.fontFamily.toUpperCase(), // "impact" -> "IMPACT"
-                                'impact',                          // Default fallback
-                                'Impacted'                         // Alternative default
+                                'impact', // Default fallback
+                                'Impacted' // Alternative default
                             ];
-                            
+
                             console.log('Tentativo varianti font:', fontVariants);
-                            
+
                             for (const variant of fontVariants) {
                                 fontOption = document.querySelector(`[data-value="${variant}"]`);
                                 if (fontOption) {
@@ -1797,7 +1797,7 @@
                         } else {
                             console.warn('Font option non trovata per:', settings.fontFamily);
                             console.log('Opzioni disponibili:', Array.from(document.querySelectorAll('[data-value]')).map(opt => opt.dataset.value));
-                            
+
                             // Fallback su impact se disponibile
                             const impactOption = document.querySelector(`[data-value="impact"]`);
                             if (impactOption) {
@@ -2032,12 +2032,25 @@
                     memeStyle: this.elements.memeStyle.value.trim(),
                     useCollage: this.elements.collageMode.checked,
                     selectedFont: this.elements.selectedFont && this.elements.selectedFont.value || 'impact',
-                    textFormat: this.elements.textFormat && this.elements.textFormat.value || 'normal',
-                    marginTop: parseInt(document.getElementById('margin-top') && document.getElementById('margin-top').value || 30),
-                    marginBottom: parseInt(document.getElementById('margin-bottom') && document.getElementById('margin-bottom').value || 30),
-                    marginLeft: parseInt(document.getElementById('margin-left') && document.getElementById('margin-left').value || 40),
-                    marginRight: parseInt(document.getElementById('margin-right') && document.getElementById('margin-right').value || 40)
+                    textFormat: this.elements.textFormat && this.elements.textFormat.value || 'normal'
                 };
+
+                // Gestione sicura dei margini (permette il valore 0)
+                const marginTopEl = document.getElementById('margin-top');
+                const marginBottomEl = document.getElementById('margin-bottom');
+                const marginLeftEl = document.getElementById('margin-left');
+                const marginRightEl = document.getElementById('margin-right');
+                
+                config.marginTop = marginTopEl ? parseInt(marginTopEl.value) : 30;
+                config.marginBottom = marginBottomEl ? parseInt(marginBottomEl.value) : 30;
+                config.marginLeft = marginLeftEl ? parseInt(marginLeftEl.value) : 40;
+                config.marginRight = marginRightEl ? parseInt(marginRightEl.value) : 40;
+                
+                // Gestisce il caso in cui parseInt restituisca NaN
+                if (isNaN(config.marginTop)) config.marginTop = 30;
+                if (isNaN(config.marginBottom)) config.marginBottom = 30;
+                if (isNaN(config.marginLeft)) config.marginLeft = 40;
+                if (isNaN(config.marginRight)) config.marginRight = 40;
 
                 try {
                     this.setProcessingState(true);

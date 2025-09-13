@@ -61,6 +61,153 @@ class VideoProcessor {
         };
     }
 
+    // Calcola le dimensioni del blocco bianco in base alla risoluzione del video
+    calculateBlockDimensions(videoWidth, videoHeight) {
+        const aspectRatio = videoWidth / videoHeight;
+        
+        // Per video verticali (9:16), usa height = 450px
+        // Per altri aspect ratio, scala proporzionalmente
+        const referenceAspectRatio = 9 / 16; // 0.5625
+        const referenceHeight = 450;
+        const referenceWidth = 1080; // Width di riferimento per 9:16
+        
+        let blockHeight;
+        let blockWidth = videoWidth; // Il blocco occupa sempre tutta la larghezza
+        
+        if (aspectRatio <= referenceAspectRatio * 1.1) {
+            // Video verticale o quasi verticale - usa altura di riferimento scalata
+            blockHeight = Math.round((referenceHeight * videoWidth) / referenceWidth);
+        } else if (aspectRatio > 1.5) {
+            // Video orizzontale - altura proporzionale ma non troppo grande
+            blockHeight = Math.round(videoHeight * 0.25); // 25% dell'altezza del video
+        } else {
+            // Video quadrato o leggermente orizzontale
+            blockHeight = Math.round(videoHeight * 0.35); // 35% dell'altezza del video
+        }
+        
+        // Limiti minimi e massimi per sicurezza
+        const minHeight = Math.max(100, videoHeight * 0.15);
+        const maxHeight = Math.min(videoHeight * 0.6, 600);
+        
+        blockHeight = Math.max(minHeight, Math.min(blockHeight, maxHeight));
+        
+        console.log(`📐 Dimensioni blocco calcolate - Video: ${videoWidth}x${videoHeight} (AR: ${aspectRatio.toFixed(3)}) -> Blocco: ${blockWidth}x${blockHeight}`);
+        
+        return {
+            width: blockWidth,
+            height: blockHeight,
+            aspectRatio: aspectRatio
+        };
+    }
+
+    // Calcola l'area disponibile per il testo sottraendo i margini
+    calculateAvailableTextArea(blockWidth, blockHeight, margins) {
+        const { marginTop = 30, marginBottom = 30, marginLeft = 40, marginRight = 40 } = margins || {};
+        
+        const availableWidth = blockWidth - marginLeft - marginRight;
+        const availableHeight = blockHeight - marginTop - marginBottom;
+        
+        // Verifiche di sicurezza
+        const safeWidth = Math.max(availableWidth, 100); // Minimo 100px di larghezza
+        const safeHeight = Math.max(availableHeight, 50); // Minimo 50px di altezza
+        
+        console.log(`📏 Area testo disponibile - Blocco: ${blockWidth}x${blockHeight}, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight} -> Area: ${safeWidth}x${safeHeight}`);
+        
+        return {
+            width: safeWidth,
+            height: safeHeight,
+            effectiveMargins: {
+                top: marginTop,
+                bottom: marginBottom,
+                left: marginLeft,
+                right: marginRight
+            }
+        };
+    }
+
+    // Algoritmo per ridimensionare automaticamente il testo per riempire l'area disponibile
+    autoResizeTextForArea(text, availableWidth, availableHeight, textFormat = 'normal', maxLines = 10) {
+        if (!text || !availableWidth || !availableHeight) {
+            return { fontSize: 48, wrappedText: text || '', lines: [text || ''], totalHeight: 48 };
+        }
+
+        // Parametri di ricerca
+        let minFontSize = 12;
+        let maxFontSize = 200;
+        let bestFontSize = minFontSize;
+        let bestWrappedText = text;
+        let bestLines = [text];
+        let bestTotalHeight = 0;
+        let bestFillRatio = 0;
+
+        console.log(`🔍 Inizio ottimizzazione font size per area ${availableWidth}x${availableHeight} - Testo: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
+
+        // Ricerca binaria per trovare la dimensione ottimale
+        while (maxFontSize - minFontSize > 1) {
+            const testFontSize = Math.floor((minFontSize + maxFontSize) / 2);
+            
+            // Calcola metriche per questa dimensione
+            const metrics = this.calculateTextMetrics(text, testFontSize, textFormat);
+            const maxCharsPerLine = Math.floor(availableWidth / metrics.avgCharWidth);
+            
+            if (maxCharsPerLine < 1) {
+                maxFontSize = testFontSize - 1;
+                continue;
+            }
+            
+            // Applica il wrapping
+            const wrappedText = this.wrapText(text, maxCharsPerLine, maxLines);
+            const lines = wrappedText.split('\\n');
+            const totalHeight = lines.length * metrics.lineHeight;
+            
+            if (totalHeight <= availableHeight && lines.length <= maxLines) {
+                // Il testo entra nell'area - questo è un candidato valido
+                const fillRatio = (totalHeight / availableHeight) * (Math.min(availableWidth, this.getMaxLineWidth(lines, metrics.avgCharWidth)) / availableWidth);
+                
+                if (fillRatio > bestFillRatio) {
+                    bestFontSize = testFontSize;
+                    bestWrappedText = wrappedText;
+                    bestLines = lines;
+                    bestTotalHeight = totalHeight;
+                    bestFillRatio = fillRatio;
+                }
+                
+                minFontSize = testFontSize; // Prova con dimensioni più grandi
+            } else {
+                maxFontSize = testFontSize - 1; // Dimensione troppo grande
+            }
+        }
+
+        // Test finale con minFontSize se non abbiamo trovato nulla
+        if (bestFontSize === 12) {
+            const metrics = this.calculateTextMetrics(text, minFontSize, textFormat);
+            const maxCharsPerLine = Math.floor(availableWidth / metrics.avgCharWidth);
+            const wrappedText = this.wrapText(text, Math.max(maxCharsPerLine, 1), maxLines);
+            const lines = wrappedText.split('\\n');
+            const totalHeight = lines.length * metrics.lineHeight;
+            
+            bestFontSize = minFontSize;
+            bestWrappedText = wrappedText;
+            bestLines = lines;
+            bestTotalHeight = totalHeight;
+        }
+
+        console.log(`✅ Font size ottimizzato: ${bestFontSize}px (righe: ${bestLines.length}, altezza: ${bestTotalHeight.toFixed(1)}px/${availableHeight}px, fill ratio: ${(bestFillRatio * 100).toFixed(1)}%)`);
+
+        return {
+            fontSize: bestFontSize,
+            wrappedText: bestWrappedText,
+            lines: bestLines,
+            totalHeight: bestTotalHeight,
+            fillRatio: bestFillRatio
+        };
+    }
+
+    // Helper per calcolare la larghezza massima tra tutte le righe
+    getMaxLineWidth(lines, avgCharWidth) {
+        return Math.max(...lines.map(line => line.length * avgCharWidth));
+    }
+
     // Metodo per formattare il testo secondo le preferenze utente
     formatText(text, formatType) {
             if (!text || !formatType || formatType === 'normal') {
@@ -720,6 +867,9 @@ class VideoProcessor {
     async addBannerToVideo(videoData, config = null) {
         const { outputFile, aiResponse, content } = videoData;
 
+        console.log(`🎬 Elaborazione video: ${outputFile}`);
+        console.log(`🔧 Config ricevuto:`, config);
+
         // Applica la formattazione del testo se specificata nella configurazione
         let formattedText = aiResponse.meme_text;
         if (config && config.textFormat) {
@@ -865,59 +1015,106 @@ class VideoProcessor {
         console.log(`📂 Percorso font assoluto: ${fontPath}`);
         console.log(`📂 Percorso font escaped: ${escapedFontPath}`);
 
-        // NUOVA LOGICA: Usa le dimensioni specificate dall'utente
-        const userFontSize = (config && config.fontSize) ? config.fontSize : 48;
+        // DIMENSIONAMENTO AUTOMATICO: Adatta blocco e testo alla risoluzione del video
+        
+        // Calcola le dimensioni ottimali del blocco bianco in base alla risoluzione
+        const blockDimensions = this.calculateBlockDimensions(width, height);
+        const blockWidth = blockDimensions.width;
+        const blockHeight = blockDimensions.height;
+
+        // Ottieni margini dalla configurazione
         const marginTop = (config && config.marginTop) ? config.marginTop : 30;
         const marginBottom = (config && config.marginBottom) ? config.marginBottom : 30;
         const marginLeft = (config && config.marginLeft) ? config.marginLeft : 40;
         const marginRight = (config && config.marginRight) ? config.marginRight : 40;
 
-        console.log(`🎨 Configurazione utente - Font: ${userFontSize}px, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`);
+        const margins = { marginTop, marginBottom, marginLeft, marginRight };
+        
+        // Calcola l'area disponibile per il testo
+        const textArea = this.calculateAvailableTextArea(blockWidth, blockHeight, margins);
+        
+        console.log(`🎨 Configurazione - Blocco: ${blockWidth}x${blockHeight}px, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`);
+        console.log(`📏 Area testo disponibile: ${textArea.width}x${textArea.height}px`);
 
-        // Calcola area effettiva per il testo basata sui margini utente
-        const effectiveWidth = width - marginLeft - marginRight;
+        // Se l'utente ha specificato una font-size, usala come preferenza ma controlla se entra
+        let useAutoResize = true;
+        let fontSize, wrappedText, lines, totalTextHeight;
+        
+        if (config && config.fontSize) {
+            const userFontSize = config.fontSize;
+            console.log(`👤 Font size specificata dall'utente: ${userFontSize}px - Verifico se entra nell'area...`);
+            
+            // Testa se la font-size dell'utente entra nell'area
+            const testMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, userFontSize, config.textFormat);
+            const maxCharsPerLine = Math.floor(textArea.width / testMetrics.avgCharWidth);
+            const testWrappedText = this.wrapText(processedAiResponse.meme_text, maxCharsPerLine, 10);
+            const testLines = testWrappedText.split('\\n');
+            const testTotalHeight = testLines.length * testMetrics.lineHeight;
+            
+            if (testTotalHeight <= textArea.height && testLines.length <= 10 && maxCharsPerLine > 0) {
+                // La font-size dell'utente entra - usala
+                fontSize = userFontSize;
+                wrappedText = testWrappedText;
+                lines = testLines;
+                totalTextHeight = testTotalHeight;
+                useAutoResize = false;
+                
+                console.log(`✅ Font size utente OK: ${userFontSize}px (${lines.length} righe, altezza: ${totalTextHeight.toFixed(1)}px)`);
+            } else {
+                console.log(`⚠️ Font size utente troppo grande: ${userFontSize}px -> Uso ridimensionamento automatico`);
+            }
+        }
+        
+        if (useAutoResize) {
+            // Calcola automaticamente la dimensione ottimale del testo
+            const autoSizeResult = this.autoResizeTextForArea(
+                processedAiResponse.meme_text, 
+                textArea.width, 
+                textArea.height, 
+                config && config.textFormat, 
+                10 // max 10 righe
+            );
+            
+            fontSize = autoSizeResult.fontSize;
+            wrappedText = autoSizeResult.wrappedText;
+            lines = autoSizeResult.lines;
+            totalTextHeight = autoSizeResult.totalHeight;
+            
+            console.log(`🤖 Dimensionamento automatico: ${fontSize}px (fill ratio: ${(autoSizeResult.fillRatio * 100).toFixed(1)}%)`);
+        }
 
-        // Calcola le metriche del testo con la dimensione specificata dall'utente
-        const textMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, userFontSize, config && config.textFormat);
-        const avgCharWidth = textMetrics.avgCharWidth;
-        const lineHeight = textMetrics.lineHeight;
+        console.log(`📊 RIEPILOGO DIMENSIONAMENTO:`);
+        console.log(`   📺 Video: ${width}x${height}px`);
+        console.log(`   📐 Blocco: ${blockWidth}x${blockHeight}px`);
+        console.log(`   📏 Area testo: ${textArea.width}x${textArea.height}px`);
+        console.log(`   📝 Font size: ${fontSize}px`);
+        console.log(`   📝 Righe: ${lines.length}`);
+        console.log(`   📝 Altezza testo: ${totalTextHeight.toFixed(1)}px`);
 
-        console.log(`🔬 Metriche testo: CharWidth=${avgCharWidth.toFixed(2)}px, LineHeight=${lineHeight.toFixed(2)}px`);
-
-        // Calcola il wrapping ottimale per la dimensione specificata
-        const maxCharsPerLine = Math.floor(effectiveWidth / avgCharWidth);
-        const wrappedText = this.wrapText(processedAiResponse.meme_text, maxCharsPerLine, 10); // Max 10 righe
-        const lines = wrappedText.split('\\n');
-
-        console.log(`📝 Testo wrappato in ${lines.length} righe, ${maxCharsPerLine} caratteri per riga max`);
-
-        // Calcola altezza totale del blocco di testo
-        const totalTextHeight = lines.length * lineHeight;
-        const bannerHeight = totalTextHeight + marginTop + marginBottom;
-
-        console.log(`� Altezza banner calcolata: ${bannerHeight}px (testo: ${totalTextHeight}px + margini: ${marginTop + marginBottom}px)`);
-        console.log(`📐 Larghezza banner: ${width}px (testo area: ${effectiveWidth}px + margini: ${marginLeft + marginRight}px)`);
+        // Ricalcola line height con la font size finale
+        const finalMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, fontSize, config && config.textFormat);
+        const lineHeight = finalMetrics.lineHeight;
 
         // POSIZIONAMENTO BANNER
         let textFilters = '';
         let baseY;
 
         if (processedAiResponse.banner_position === 'bottom') {
-            const bannerY = height - bannerHeight;
+            const bannerY = height - blockHeight;
 
             // CORREZIONE: Posizione Y del testo dal margine superiore del banner
             // La prima riga inizia dal margine superiore specificato + font ascent
-            baseY = bannerY + marginTop + (userFontSize * 0.75); // 0.75 è l'ascent tipico
+            baseY = bannerY + marginTop + (fontSize * 0.75); // 0.75 è l'ascent tipico
 
-            textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill`;
-            console.log(`📍 BANNER BOTTOM - Y: ${bannerY}, altezza: ${bannerHeight}px, baseY testo: ${baseY}`);
+            textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
+            console.log(`📍 BANNER BOTTOM - Y: ${bannerY}, altezza: ${blockHeight}px, baseY testo: ${baseY}`);
 
         } else {
             // CORREZIONE: Banner in alto - posizione Y del testo dal margine superiore + font ascent
-            baseY = marginTop + (userFontSize * 0.75);
+            baseY = marginTop + (fontSize * 0.75);
 
-            textFilters = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill`;
-            console.log(`📍 BANNER TOP - Y: 0, altezza: ${bannerHeight}px, baseY testo: ${baseY}`);
+            textFilters = `[0:v]drawbox=x=0:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
+            console.log(`📍 BANNER TOP - Y: 0, altezza: ${blockHeight}px, baseY testo: ${baseY}`);
         }
 
         // Aggiungi ogni riga con centratura orizzontale perfetta
@@ -944,15 +1141,15 @@ class VideoProcessor {
             // Centratura orizzontale perfetta - USA SOLO virgolette singole per consistenza
             const xPos = '(w-text_w)/2';
 
-            textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${userFontSize}:x=${xPos}:y=${yPos}`;
+            textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
         }
 
         console.log(`🎯 RIEPILOGO FINALE:`);
         console.log(`   📝 Testo: "${wrappedText}"`);
         console.log(`   📊 Righe: ${lines.length}`);
-        console.log(`   📐 Font size: ${userFontSize}px`);
+        console.log(`   📐 Font size: ${fontSize}px`);
         console.log(`   📐 Line height: ${lineHeight.toFixed(2)}px`);
-        console.log(`   📐 Banner: ${width}x${bannerHeight}px`);
+        console.log(`   📐 Banner: ${blockWidth}x${blockHeight}px`);
         console.log(`   📏 Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`);
         console.log(`   📍 Base Y: ${baseY}`);
 

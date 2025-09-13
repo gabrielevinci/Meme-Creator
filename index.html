@@ -1275,12 +1275,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="font-size">📐 Dimensione Font (px)</label>
-                    <input type="range" id="font-size" class="range-input" min="20" max="120" value="48" step="2">
-                    <span id="font-size-value" class="range-value">48px</span>
-                </div>
-
-                <div class="form-group">
                     <label>📏 Margini Testo</label>
                     <div class="margin-controls">
                         <div class="margin-item">
@@ -1641,10 +1635,6 @@
             setupRangeInputs() {
                 // Event listeners per i range input
                 const rangeInputs = [{
-                    id: 'font-size',
-                    valueId: 'font-size-value',
-                    suffix: 'px'
-                }, {
                     id: 'margin-top',
                     valueId: 'margin-top-value',
                     suffix: 'px'
@@ -1700,9 +1690,9 @@
 
                     // CORREZIONE: Carica impostazioni dopo che i font sono completamente disponibili
                     // Aspetta un momento aggiuntivo per assicurarsi che i font siano nel DOM
-                    setTimeout(async () => {
+                    setTimeout(async() => {
                         await this.loadSettings();
-                    }, 500);
+                    }, 1000); // Aumentato da 500ms a 1000ms
 
                     console.log('Dati iniziali caricati con successo');
                 } catch (error) {
@@ -1774,19 +1764,18 @@
 
                     // Applica le impostazioni ai controlli
                     if (settings.fontFamily) {
-                        // Seleziona il font salvato
+                        console.log('Tentativo di caricare font:', settings.fontFamily);
+
+                        // Seleziona il font salvato - aspetta che le opzioni siano disponibili
                         const fontOption = document.querySelector(`[data-value="${settings.fontFamily}"]`);
+                        console.log('Font option trovata:', fontOption);
+
                         if (fontOption) {
                             this.selectFont(settings.fontFamily, fontOption.textContent);
-                        }
-                    }
-
-                    if (settings.fontSize) {
-                        const fontSizeInput = document.getElementById('font-size');
-                        const fontSizeValue = document.getElementById('font-size-value');
-                        if (fontSizeInput && fontSizeValue) {
-                            fontSizeInput.value = settings.fontSize;
-                            fontSizeValue.textContent = settings.fontSize + 'px';
+                            console.log('Font selezionato:', settings.fontFamily);
+                        } else {
+                            console.warn('Font option non trovata per:', settings.fontFamily);
+                            console.log('Opzioni disponibili:', Array.from(document.querySelectorAll('[data-value]')).map(opt => opt.dataset.value));
                         }
                     }
 
@@ -1842,12 +1831,11 @@
                 try {
                     const settings = {
                         fontFamily: this.elements.selectedFont.textContent.split(' - ')[0] || 'Impact',
-                        fontSize: parseInt(document.getElementById('font-size')?.value || 60),
-                        marginTop: parseInt(document.getElementById('margin-top')?.value || 30),
-                        marginBottom: parseInt(document.getElementById('margin-bottom')?.value || 30),
-                        marginLeft: parseInt(document.getElementById('margin-left')?.value || 40),
-                        marginRight: parseInt(document.getElementById('margin-right')?.value || 40),
-                        textFormat: document.getElementById('text-format')?.value || 'normal'
+                        marginTop: parseInt(document.getElementById('margin-top') && document.getElementById('margin-top').value || 30),
+                        marginBottom: parseInt(document.getElementById('margin-bottom') && document.getElementById('margin-bottom').value || 30),
+                        marginLeft: parseInt(document.getElementById('margin-left') && document.getElementById('margin-left').value || 40),
+                        marginRight: parseInt(document.getElementById('margin-right') && document.getElementById('margin-right').value || 40),
+                        textFormat: document.getElementById('text-format') && document.getElementById('text-format').value || 'normal'
                     };
 
                     console.log('Salvataggio impostazioni:', settings);
@@ -2017,7 +2005,6 @@
                     useCollage: this.elements.collageMode.checked,
                     selectedFont: this.elements.selectedFont.value,
                     textFormat: this.elements.textFormat.value,
-                    fontSize: parseInt(document.getElementById('font-size').value),
                     marginTop: parseInt(document.getElementById('margin-top').value),
                     marginBottom: parseInt(document.getElementById('margin-bottom').value),
                     marginLeft: parseInt(document.getElementById('margin-left').value),

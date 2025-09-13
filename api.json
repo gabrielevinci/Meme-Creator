@@ -2039,6 +2039,33 @@
             "tokens_used": 1194,
             "response_time_ms": 3489,
             "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi alti e fitti che si ergono verso un cielo viola tenue. In primo piano, cespugli con fiori bianchi e viola creano un contrasto "
+          },
+          "1757736725140_byqcwcvz8": {
+            "timestamp": 1757736725140,
+            "tokens": 1178,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1178,
+            "response_time_ms": 2539,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo un ripido pendio roccioso, con una vista mozzafiato su un lago azzurro brillante e montagne boscose sullo sfondo. Il cielo è di un blu"
+          },
+          "1757736727021_3p93tl8x7": {
+            "timestamp": 1757736727021,
+            "tokens": 1168,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1168,
+            "response_time_ms": 1871,
+            "output": "```json\n{\n  \"description\": \"Una scena serale mostra un lago calmo con riflessi scuri di una collina boscosa. La nebbia si adagia dolcemente sulla cima della collina, creando un'atmosfera suggestiva. L"
+          },
+          "1757736729372_64gvqstar": {
+            "timestamp": 1757736729372,
+            "tokens": 1169,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1169,
+            "response_time_ms": 2347,
+            "output": "```json\n{\n  \"description\": \"Un trenino di montagne russe di legno bianco sta salendo lungo un ripido pendio, con persone sedute nei vagoni. Sulla destra, una giovane donna con una maglietta grigia gua"
           }
         }
       },

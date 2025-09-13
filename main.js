@@ -98,6 +98,62 @@ class ContentCreatorApp {
         }
     }
 
+    // Sistema di gestione delle impostazioni
+    getSettingsPath() {
+        return path.join(__dirname, 'settings.json');
+    }
+
+    async loadSettings() {
+        try {
+            const settingsPath = this.getSettingsPath();
+            
+            if (fsSync.existsSync(settingsPath)) {
+                const settingsData = await fs.readFile(settingsPath, 'utf8');
+                const settings = JSON.parse(settingsData);
+                
+                this.log('info', `Impostazioni caricate da: ${settingsPath}`);
+                return settings;
+            } else {
+                // Impostazioni predefinite
+                const defaultSettings = {
+                    fontFamily: 'Impact', // Font predefinito
+                    fontSize: 60,         // Dimensione predefinita
+                    marginTop: 30,        // Margini predefiniti
+                    marginBottom: 30,
+                    marginLeft: 40,
+                    marginRight: 40
+                };
+                
+                this.log('info', 'File impostazioni non trovato, usando valori predefiniti');
+                return defaultSettings;
+            }
+        } catch (error) {
+            this.log('error', `Errore nel caricamento delle impostazioni: ${error.message}`);
+            // Restituisci comunque le impostazioni predefinite
+            return {
+                fontFamily: 'Impact',
+                fontSize: 60,
+                marginTop: 30,
+                marginBottom: 30,
+                marginLeft: 40,
+                marginRight: 40
+            };
+        }
+    }
+
+    async saveSettings(settings) {
+        try {
+            const settingsPath = this.getSettingsPath();
+            await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf8');
+            
+            this.log('info', `Impostazioni salvate in: ${settingsPath}`);
+            return true;
+        } catch (error) {
+            this.log('error', `Errore nel salvataggio delle impostazioni: ${error.message}`);
+            return false;
+        }
+    }
+
     async initialize() {
         this.log('info', 'Inizializzazione Content Creator - 0 Chiacchiere...');
 
@@ -458,6 +514,15 @@ class ContentCreatorApp {
                 console.error('Errore nell\'apertura cartella OUTPUT:', error);
                 return { success: false, error: error.message };
             }
+        });
+
+        // Handler per gestione delle impostazioni
+        ipcMain.handle('load-settings', async () => {
+            return await this.loadSettings();
+        });
+
+        ipcMain.handle('save-settings', async (event, settings) => {
+            return await this.saveSettings(settings);
         });
     }
 

@@ -1669,6 +1669,8 @@
                         // Aggiorna il valore quando l'utente muove lo slider
                         input.addEventListener('input', (e) => {
                             valueSpan.textContent = e.target.value + suffix;
+                            // Salva automaticamente le impostazioni
+                            this.saveSettings();
                         });
 
                         // Imposta il valore iniziale
@@ -1690,6 +1692,9 @@
 
                     // Carica configurazione API
                     this.apiConfig = await window.electronAPI.loadApiConfig();
+
+                    // Carica impostazioni salvate
+                    await this.loadSettings();
 
                     console.log('Dati iniziali caricati con successo');
                 } catch (error) {
@@ -1753,6 +1758,90 @@
                 await new Promise(resolve => setTimeout(resolve, 800));
             }
 
+            // Gestione delle impostazioni
+            async loadSettings() {
+                try {
+                    const settings = await window.electronAPI.loadSettings();
+                    console.log('Impostazioni caricate:', settings);
+                    
+                    // Applica le impostazioni ai controlli
+                    if (settings.fontFamily) {
+                        // Seleziona il font salvato
+                        const fontOption = document.querySelector(`[data-value="${settings.fontFamily}"]`);
+                        if (fontOption) {
+                            this.selectFont(settings.fontFamily, fontOption.textContent);
+                        }
+                    }
+                    
+                    if (settings.fontSize) {
+                        const fontSizeInput = document.getElementById('font-size');
+                        const fontSizeValue = document.getElementById('font-size-value');
+                        if (fontSizeInput && fontSizeValue) {
+                            fontSizeInput.value = settings.fontSize;
+                            fontSizeValue.textContent = settings.fontSize + 'px';
+                        }
+                    }
+                    
+                    if (settings.marginTop !== undefined) {
+                        const marginTopInput = document.getElementById('margin-top');
+                        const marginTopValue = document.getElementById('margin-top-value');
+                        if (marginTopInput && marginTopValue) {
+                            marginTopInput.value = settings.marginTop;
+                            marginTopValue.textContent = settings.marginTop + 'px';
+                        }
+                    }
+                    
+                    if (settings.marginBottom !== undefined) {
+                        const marginBottomInput = document.getElementById('margin-bottom');
+                        const marginBottomValue = document.getElementById('margin-bottom-value');
+                        if (marginBottomInput && marginBottomValue) {
+                            marginBottomInput.value = settings.marginBottom;
+                            marginBottomValue.textContent = settings.marginBottom + 'px';
+                        }
+                    }
+                    
+                    if (settings.marginLeft !== undefined) {
+                        const marginLeftInput = document.getElementById('margin-left');
+                        const marginLeftValue = document.getElementById('margin-left-value');
+                        if (marginLeftInput && marginLeftValue) {
+                            marginLeftInput.value = settings.marginLeft;
+                            marginLeftValue.textContent = settings.marginLeft + 'px';
+                        }
+                    }
+                    
+                    if (settings.marginRight !== undefined) {
+                        const marginRightInput = document.getElementById('margin-right');
+                        const marginRightValue = document.getElementById('margin-right-value');
+                        if (marginRightInput && marginRightValue) {
+                            marginRightInput.value = settings.marginRight;
+                            marginRightValue.textContent = settings.marginRight + 'px';
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error('Errore nel caricamento delle impostazioni:', error);
+                }
+            }
+
+            async saveSettings() {
+                try {
+                    const settings = {
+                        fontFamily: this.elements.selectedFont.textContent.split(' - ')[0] || 'Impact',
+                        fontSize: parseInt(document.getElementById('font-size')?.value || 60),
+                        marginTop: parseInt(document.getElementById('margin-top')?.value || 30),
+                        marginBottom: parseInt(document.getElementById('margin-bottom')?.value || 30),
+                        marginLeft: parseInt(document.getElementById('margin-left')?.value || 40),
+                        marginRight: parseInt(document.getElementById('margin-right')?.value || 40)
+                    };
+                    
+                    console.log('Salvataggio impostazioni:', settings);
+                    await window.electronAPI.saveSettings(settings);
+                    
+                } catch (error) {
+                    console.error('Errore nel salvataggio delle impostazioni:', error);
+                }
+            }
+
             populateFontSelect(fonts) {
                 const displayElement = this.elements.fontSelect.querySelector('.select-display');
                 displayElement.textContent = 'Seleziona un font...';
@@ -1806,6 +1895,9 @@
 
                 // Chiudi dropdown
                 this.closeFontDropdown();
+                
+                // Salva automaticamente le impostazioni
+                this.saveSettings();
             }
 
             toggleFontDropdown() {

@@ -2345,6 +2345,33 @@
             "tokens_used": 1198,
             "response_time_ms": 8169,
             "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e jeans larghi è in piedi in primo piano, con le mani sui fianchi, in una posa dinamica. Dietro di lui, seduto su una scala di pietra, un uomo "
+          },
+          "1757783036139_g9ss2yia5": {
+            "timestamp": 1757783036139,
+            "tokens": 1174,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1174,
+            "response_time_ms": 8812,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni neri larghi esegue una danza in una stanza con scale sullo sfondo. L'azione mostra movimenti fluidi delle braccia e del corp"
+          },
+          "1757783042672_lrgqcpawg": {
+            "timestamp": 1757783042672,
+            "tokens": 1191,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1191,
+            "response_time_ms": 6528,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una mano che schiuma abbondantemente un detergente viso, creando una nuvola soffice. Successivamente, si vede una mano che seleziona dei prodotti di ski"
+          },
+          "1757783048026_valuu58k9": {
+            "timestamp": 1757783048026,
+            "tokens": 1227,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1227,
+            "response_time_ms": 5350,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono su una scalinata all'aperto. Il bambino è in primo piano, mentre l'uomo è seduto più in alto sulla scala. Entrambi indossano abi"
           }
         }
       },
@@ -2412,9 +2439,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757782876763,
+          "until": 1757783327317,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757782576763
+          "markedAt": 1757783027317
         }
       }
     }

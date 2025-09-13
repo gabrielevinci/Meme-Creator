@@ -28,6 +28,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // Logging
     log: (level, message, source) => ipcRenderer.invoke('log-message', level, message, source),
 
+    // Settings management
+    loadSettings: () => ipcRenderer.invoke('load-settings'),
+    saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
+
     // Status updates
     onStatusUpdate: (callback) => ipcRenderer.on('status-update', callback),
     onLogUpdate: (callback) => ipcRenderer.on('log-update', callback),

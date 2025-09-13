@@ -1094,6 +1094,492 @@
             "tokens_used": 1240,
             "response_time_ms": 2747,
             "output": "```json\n{\n  \"description\": \"La scena si apre su un campo verde lussureggiante, con l'erba alta che ondeggia leggermente. Dietro il campo, un lago tranquillo riflette le montagne imponenti che si stagl"
+          },
+          "1757725590563_koi1i1dyx": {
+            "timestamp": 1757725590563,
+            "tokens": 1178,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1178,
+            "response_time_ms": 1573,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato su una spiaggia tranquilla. Le onde del mare lambiscono dolcemente la riva sabbiosa, mentre il cielo si tinge di sfumature calde di arancione e giall"
+          },
+          "1757725592126_17ppj5jdr": {
+            "timestamp": 1757725592126,
+            "tokens": 1189,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1189,
+            "response_time_ms": 1559,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un paesaggio rurale immerso nella nebbia mattutina. Una strada sterrata e bagnata costeggia un prato verde brillante delimitato da una staccionata di legno."
+          },
+          "1757725593788_zqanalnwq": {
+            "timestamp": 1757725593788,
+            "tokens": 1165,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1165,
+            "response_time_ms": 1658,
+            "output": "```json\n{\n  \"description\": \"Un bosco nebbioso e scuro, con alberi alti e fitti che creano un'atmosfera misteriosa. In primo piano, un cespuglio di fiori bianchi e viola illumina leggermente la scena. "
+          },
+          "1757725597637_kr7avx4c5": {
+            "timestamp": 1757725597637,
+            "tokens": 1168,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1168,
+            "response_time_ms": 3845,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una scala interna con gradini scuri e un corrimano metallico. Sulla sinistra, vicino al muro, sono presenti scaffalature metalliche con vari oggetti, tra cu"
+          },
+          "1757725599187_tncz526i4": {
+            "timestamp": 1757725599187,
+            "tokens": 1145,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1145,
+            "response_time_ms": 1545,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con i capelli castani e lentiggini guarda verso l'alto con un'espressione pensierosa. Dietro di lei, appeso al muro, c'è un quadro colorato con un disegno"
+          },
+          "1757725600874_qusgs9o2f": {
+            "timestamp": 1757725600874,
+            "tokens": 1192,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1192,
+            "response_time_ms": 1682,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio montano mozzafiato incorniciato da alberi verdi lussureggianti. Un prato verde brillante occupa la parte inferiore dell'immagine, riflettendo un lago calmo. Le"
+          },
+          "1757725632400_jcedxcrrd": {
+            "timestamp": 1757725632400,
+            "tokens": 1169,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1169,
+            "response_time_ms": 1432,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato dipinge il cielo con sfumature di arancione e blu. Le onde del mare si infrangono dolcemente sulla riva sabbiosa, creando un'atmosfera serena e pacif"
+          },
+          "1757725633986_zryisx2oi": {
+            "timestamp": 1757725633986,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 1581,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale immerso nella nebbia mattutina. Una strada asfaltata bagnata costeggia un prato verde brillante delimitato da una staccionata in legno. In lontananza, s"
+          },
+          "1757725635441_qiabgsxc5": {
+            "timestamp": 1757725635441,
+            "tokens": 1154,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1154,
+            "response_time_ms": 1451,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e boscoso con alberi alti e fitti. In primo piano, fiori bianchi e viola sbocciano tra il fogliame scuro. La luce soffusa e l'atmosfera cupa creano un"
+          },
+          "1757725637219_90m0hv0pg": {
+            "timestamp": 1757725637219,
+            "tokens": 1169,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1169,
+            "response_time_ms": 1774,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una rampa di scale interna con un corrimano metallico. Sulla sinistra, vicino al muro, ci sono scaffalature metalliche piene di oggetti e contenitori. Sulla"
+          },
+          "1757725638653_zz00xwqty": {
+            "timestamp": 1757725638653,
+            "tokens": 1153,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1153,
+            "response_time_ms": 1430,
+            "output": "```json\n{\n  \"description\": \"Una ragazza con i capelli castani e lentiggini guarda verso l'alto con un'espressione pensierosa. Indossa una maglietta bianca. Sopra di lei, appeso al muro, c'è un quadro "
+          },
+          "1757725640746_7qcsdxfjk": {
+            "timestamp": 1757725640746,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 2089,
+            "output": "```json\n{\n  \"description\": \"Un vasto prato verde brillante occupa il primo piano, con fili d'erba che ondeggiano leggermente. Dietro, un lago calmo riflette le montagne imponenti e il cielo azzurro nu"
+          },
+          "1757725673093_y0a77e0lq": {
+            "timestamp": 1757725673093,
+            "tokens": 1169,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1169,
+            "response_time_ms": 1579,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato sul mare, con il cielo che sfuma dal blu tenue all'arancione vibrante. Le onde dolci lambiscono la riva sabbiosa, creando un'atmosfera serena e rilas"
+          },
+          "1757725674625_44g1sr8gj": {
+            "timestamp": 1757725674625,
+            "tokens": 1178,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1178,
+            "response_time_ms": 1527,
+            "output": "```json\n{\n  \"description\": \"Una strada bagnata e asfaltata serpeggia attraverso un paesaggio rurale lussureggiante. Un recinto di legno delimita un prato verde brillante dove si ergono diverse case ru"
+          },
+          "1757725676335_kvc95eheo": {
+            "timestamp": 1757725676335,
+            "tokens": 1182,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1182,
+            "response_time_ms": 1705,
+            "output": "```json\n{\n  \"description\": \"Una scena nebbiosa in una foresta, con alberi alti e fitti che si stagliano contro un cielo viola pallido. In primo piano, un cespuglio fiorito con fiori bianchi e viola ag"
+          },
+          "1757725678135_j3bghfq3k": {
+            "timestamp": 1757725678135,
+            "tokens": 1167,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1167,
+            "response_time_ms": 1797,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una scala interna con gradini scuri e un corrimano in metallo. Sulla sinistra, lungo il muro, ci sono scaffalature metalliche con oggetti vari, tra cui cont"
+          },
+          "1757725679840_90y61w5mp": {
+            "timestamp": 1757725679840,
+            "tokens": 1173,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1173,
+            "response_time_ms": 1700,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con i capelli castani e lentiggini guarda verso l'alto, con un'espressione pensierosa sul viso. Indossa una maglietta bianca. Dietro di lei, appeso al mur"
+          },
+          "1757725681572_lyz89muet": {
+            "timestamp": 1757725681572,
+            "tokens": 1190,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1190,
+            "response_time_ms": 1728,
+            "output": "```json\n{\n  \"description\": \"Un vasto prato verde brillante si estende verso un lago tranquillo, le cui acque riflettono le montagne maestose sullo sfondo. Le cime delle montagne sono avvolte da nuvole"
+          },
+          "1757727244371_ifyvrk66j": {
+            "timestamp": 1757727244371,
+            "tokens": 1224,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1224,
+            "response_time_ms": 2913,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una progressione di un tramonto mozzafiato su una spiaggia. Il primo frame cattura il cielo che sfuma dal blu al giallo-arancio, con le prime onde che "
+          },
+          "1757727246091_72li00sq8": {
+            "timestamp": 1757727246091,
+            "tokens": 1193,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1193,
+            "response_time_ms": 1714,
+            "output": "```json\n{\n  \"description\": \"Una strada sterrata bagnata dall'acqua serpeggia attraverso un paesaggio verdeggiante e collinare. Una staccionata in legno delimita il prato lussureggiante, punteggiato da"
+          },
+          "1757727247798_06ttx3dy5": {
+            "timestamp": 1757727247798,
+            "tokens": 1171,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1171,
+            "response_time_ms": 1703,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi alti e fitti che creano un'atmosfera quasi surreale. In primo piano, fiori bianchi e viola sbocciano tra il fogliame scuro, co"
+          },
+          "1757727250689_08myv6cc2": {
+            "timestamp": 1757727250689,
+            "tokens": 1172,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1172,
+            "response_time_ms": 2887,
+            "output": "```json\n{\n  \"description\": \"Una prospettiva dall'alto verso il basso mostra una rampa di scale interne buie con un corrimano in metallo lucido. Sulla sinistra, vicino a una parete bianca, ci sono scaf"
+          },
+          "1757727252290_lgtad1s8o": {
+            "timestamp": 1757727252290,
+            "tokens": 1177,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1177,
+            "response_time_ms": 1597,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con capelli castani e lentiggini guarda verso l'alto con un'espressione pensierosa. Indossa una maglietta bianca. Sopra di lei, appeso a una parete, c'è u"
+          },
+          "1757727253871_i2es55zg4": {
+            "timestamp": 1757727253871,
+            "tokens": 1160,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1160,
+            "response_time_ms": 1572,
+            "output": "```json\n{\n  \"description\": \"Una vista panoramica mozzafiato di montagne maestose coperte di nuvole e neve, incorniciate da alberi verdi lussureggianti e un prato rigoglioso in primo piano. Un lago cal"
+          },
+          "1757727281930_phffd7v9b": {
+            "timestamp": 1757727281930,
+            "tokens": 1179,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1179,
+            "response_time_ms": 1721,
+            "output": "```json\n{\n  \"description\": \"Il video mostra un tramonto mozzafiato su una spiaggia, con onde che lambiscono dolcemente la riva. Il cielo sfuma da un azzurro tenue a un arancione intenso, creando un'at"
+          },
+          "1757727283582_b188jbt5g": {
+            "timestamp": 1757727283582,
+            "tokens": 1185,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1185,
+            "response_time_ms": 1648,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale avvolto dalla nebbia mattutina. Una strada asfaltata bagnata si snoda lungo un prato verde brillante, delimitato da una staccionata in legno. In lontana"
+          },
+          "1757727285274_66v7xtof8": {
+            "timestamp": 1757727285274,
+            "tokens": 1167,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1167,
+            "response_time_ms": 1688,
+            "output": "```json\n{\n  \"description\": \"Un bosco nebbioso con alberi alti e fitti, i cui rami creano un baldacchino scuro. In primo piano, fiori bianchi e viola sbocciano tra il fogliame verde scuro. La luce soff"
+          },
+          "1757727286717_jx71byr2m": {
+            "timestamp": 1757727286717,
+            "tokens": 1156,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1156,
+            "response_time_ms": 1440,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una rampa di scale interna in un edificio. Sulla sinistra, lungo il muro, ci sono scaffalature metalliche con oggetti vari, tra cui contenitori e scatole. S"
+          },
+          "1757727288093_d0eu37exb": {
+            "timestamp": 1757727288093,
+            "tokens": 1148,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1148,
+            "response_time_ms": 1371,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con i capelli castani e lentiggini guarda verso l'alto, con un'espressione pensierosa. Indossa una maglietta bianca e si trova su un divano color pesca. S"
+          },
+          "1757727289675_qy8137ap9": {
+            "timestamp": 1757727289675,
+            "tokens": 1180,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1180,
+            "response_time_ms": 1579,
+            "output": "```json\n{\n  \"description\": \"Una vista panoramica di un paesaggio montuoso mozzafiato, incorniciato da alberi verdi e rigogliosi. Un prato verde brillante occupa la parte inferiore dell'immagine, rifle"
+          },
+          "1757727311717_h02clez4g": {
+            "timestamp": 1757727311717,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 1536,
+            "output": "```json\n{\n  \"description\": \"Il video mostra un tramonto mozzafiato su una spiaggia. Le onde del mare si infrangono dolcemente sulla riva sabbiosa, mentre il cielo si tinge di sfumature arancioni e blu"
+          },
+          "1757727313253_5rft08uqv": {
+            "timestamp": 1757727313253,
+            "tokens": 1173,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1173,
+            "response_time_ms": 1531,
+            "output": "```json\n{\n  \"description\": \"Una strada asfaltata bagnata dalla pioggia si snoda lungo un prato verde brillante, delimitato da una staccionata in legno. In lontananza, su una collina nebbiosa, si intra"
+          },
+          "1757727315023_iaofkn53a": {
+            "timestamp": 1757727315023,
+            "tokens": 1177,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1177,
+            "response_time_ms": 1765,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi alti e fitti che creano un'atmosfera quasi surreale. In primo piano, fiori di colore bianco e viola sbocciano tra il fogliame "
+          },
+          "1757727316470_zo5fciq7n": {
+            "timestamp": 1757727316470,
+            "tokens": 1164,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1164,
+            "response_time_ms": 1443,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una rampa di scale interna con un corrimano in metallo. Sulla sinistra, vicino al muro, ci sono scaffalature metalliche con oggetti vari, tra cui contenitor"
+          },
+          "1757727318152_1nxgw3vjn": {
+            "timestamp": 1757727318152,
+            "tokens": 1163,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1163,
+            "response_time_ms": 1673,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una giovane donna con capelli castani e lentiggini, che guarda verso l'alto. Indossa una maglietta bianca. Sopra di lei, un quadro colorato con uno sfondo r"
+          },
+          "1757727319809_p75bnoq43": {
+            "timestamp": 1757727319809,
+            "tokens": 1186,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1186,
+            "response_time_ms": 1647,
+            "output": "```json\n{\n  \"description\": \"Una vista panoramica mozzafiato di montagne imponenti e verdi, incorniciata da alberi lussureggianti. Un vasto prato verde brillante occupa la parte inferiore dell'immagine"
+          },
+          "1757727700540_0y10rzty5": {
+            "timestamp": 1757727700540,
+            "tokens": 1182,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1182,
+            "response_time_ms": 1495,
+            "output": "```json\n{\n  \"description\": \"Il video mostra una spiaggia al tramonto. Le onde del mare si infrangono dolcemente sulla riva sabbiosa, mentre il cielo sfuma da un blu tenue a un arancione intenso. La lu"
+          },
+          "1757727702248_1jn4ykzly": {
+            "timestamp": 1757727702248,
+            "tokens": 1186,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1186,
+            "response_time_ms": 1704,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale immerso nella nebbia mattutina. Una strada sterrata serpeggia in primo piano, fiancheggiata da un recinto di legno e da prati verdi lussureggianti. Sull"
+          },
+          "1757727703887_mjrs4gz0y": {
+            "timestamp": 1757727703887,
+            "tokens": 1191,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1191,
+            "response_time_ms": 1634,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo in una foresta, con alberi alti e fitti che si stagliano contro un cielo violaceo. In primo piano, un cespuglio fiorito con petali bianch"
+          },
+          "1757727705219_tpib85fnl": {
+            "timestamp": 1757727705219,
+            "tokens": 1170,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1170,
+            "response_time_ms": 1327,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una rampa di scale interna in un edificio, con pareti bianche e gradini scuri. Sulla sinistra, in un angolo, ci sono scaffalature metalliche con oggetti var"
+          },
+          "1757727706959_8jkhg0e8o": {
+            "timestamp": 1757727706959,
+            "tokens": 1145,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1145,
+            "response_time_ms": 1737,
+            "output": "```json\n{\n  \"description\": \"Un primo piano di una giovane donna con capelli castani e lentiggini, che guarda verso l'alto con un'espressione pensierosa. Indossa una maglietta bianca. Sopra di lei, app"
+          },
+          "1757727708769_jln5c51xj": {
+            "timestamp": 1757727708769,
+            "tokens": 1182,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1182,
+            "response_time_ms": 1800,
+            "output": "```json\n{\n  \"description\": \"Una vista panoramica di montagne maestose ricoperte di neve e foreste lussureggianti. In primo piano, un prato verde brillante si estende verso un lago sereno che riflette "
+          },
+          "1757728164575_wuz7r5895": {
+            "timestamp": 1757728164575,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 2349,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato dipinge il cielo con sfumature di arancione e blu, mentre le onde del mare si infrangono dolcemente sulla riva sabbiosa. La luce calda del sole calan"
+          },
+          "1757728166761_z72xo3x7m": {
+            "timestamp": 1757728166761,
+            "tokens": 1210,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1210,
+            "response_time_ms": 2175,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una strada asfaltata bagnata che costeggia un prato verde brillante delimitato da una staccionata in legno. Sul prato si ergono diverse case rurali in legno"
+          },
+          "1757728168324_mv3mhkt2g": {
+            "timestamp": 1757728168324,
+            "tokens": 1164,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1164,
+            "response_time_ms": 1555,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi alti e fitti che creano un'atmosfera misteriosa. In primo piano, fiori bianchi e viola sbocciano tra il fogliame scuro, aggiun"
+          },
+          "1757728169993_ddgnz2gto": {
+            "timestamp": 1757728169993,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 1664,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una rampa di scale interna, con pareti bianche e gradini scuri. Sulla sinistra, vicino a una parete, sono presenti scaffalature metalliche con vari oggetti "
+          },
+          "1757728172235_kpbsjwo7z": {
+            "timestamp": 1757728172235,
+            "tokens": 1146,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1146,
+            "response_time_ms": 2238,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con i capelli castani e lentiggini guarda verso l'alto, con un'espressione pensierosa. Indossa una maglietta bianca. Dietro di lei, un quadro colorato con"
+          },
+          "1757728175632_p6te0o5vf": {
+            "timestamp": 1757728175632,
+            "tokens": 1191,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1191,
+            "response_time_ms": 3394,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio montano mozzafiato si estende sullo sfondo, con cime innevate che si stagliano contro un cielo azzurro punteggiato da nuvole bianche. In primo piano, un prato "
+          },
+          "1757728258857_r3plllr49": {
+            "timestamp": 1757728258857,
+            "tokens": 1169,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1169,
+            "response_time_ms": 2248,
+            "output": "```json\n{\n  \"description\": \"Un tramonto mozzafiato dipinge il cielo con sfumature arancioni e blu. Le onde del mare si infrangono dolcemente sulla riva sabbiosa, creando un'atmosfera serena e rilassan"
+          },
+          "1757728260479_sl0ohnt8y": {
+            "timestamp": 1757728260479,
+            "tokens": 1176,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1176,
+            "response_time_ms": 1617,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale immerso nella nebbia mattutina. Una strada asfaltata e bagnata costeggia un prato verde brillante delimitato da una staccionata in legno. In lontananza,"
+          },
+          "1757728262017_fs6s17mkw": {
+            "timestamp": 1757728262017,
+            "tokens": 1172,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1172,
+            "response_time_ms": 1529,
+            "output": "```json\n{\n  \"description\": \"Un bosco nebbioso e cupo con alberi alti e fitti. In primo piano, un cespuglio fiorito con fiori bianchi e viola crea un contrasto con l'oscurità circostante. La nebbia dif"
+          },
+          "1757728263556_favxtdhtk": {
+            "timestamp": 1757728263556,
+            "tokens": 1175,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1175,
+            "response_time_ms": 1528,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una rampa di scale interna con un corrimano metallico. Sulla sinistra, vicino al muro, ci sono scaffalature metalliche con vari oggetti e contenitori. Sulla"
+          },
+          "1757728265110_gavnqtl4n": {
+            "timestamp": 1757728265110,
+            "tokens": 1154,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1154,
+            "response_time_ms": 1550,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con i capelli castani e lentiggini sul viso guarda verso l'alto. Indossa una maglietta bianca. Sopra di lei, appeso al muro, c'è un quadro colorato con un"
+          },
+          "1757728266956_17f4vy266": {
+            "timestamp": 1757728266956,
+            "tokens": 1189,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1189,
+            "response_time_ms": 1835,
+            "output": "```json\n{\n  \"description\": \"Una vista panoramica di un paesaggio montano mozzafiato, incorniciato da alberi verdi rigogliosi. In primo piano, un prato erboso di un verde brillante si estende verso un "
           }
         }
       },
@@ -1161,9 +1647,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757725741833,
+          "until": 1757728462214,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757725441833
+          "markedAt": 1757728162214
         }
       }
     }

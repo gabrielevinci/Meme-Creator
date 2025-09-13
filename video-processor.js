@@ -724,11 +724,49 @@ class VideoProcessor {
         const textColor = 'black';
         const fontSize = Math.max(32, Math.min(56, width / 18)); // Font size leggermente più grande
 
-        // Determina il font da utilizzare
-        const selectedFont = (config && config.selectedFont) ? config.selectedFont : 'impact.ttf';
+        // Determina il font da utilizzare con gestione fallback corretta
+        let selectedFont = (config && config.selectedFont) ? config.selectedFont : 'impact.ttf';
+        
+        // CORREZIONE: Assicurati che il font abbia l'estensione .ttf o .TTF
+        if (!selectedFont.toLowerCase().endsWith('.ttf')) {
+            // Prima prova con .TTF (maiuscolo) - più comune per i font della cartella
+            let testFontPath = path.join(__dirname, 'font', selectedFont + '.TTF');
+            try {
+                await fs.access(testFontPath, fs.constants.F_OK);
+                selectedFont = selectedFont + '.TTF';
+            } catch (error) {
+                // Poi prova con .ttf (minuscolo)
+                testFontPath = path.join(__dirname, 'font', selectedFont + '.ttf');
+                try {
+                    await fs.access(testFontPath, fs.constants.F_OK);
+                    selectedFont = selectedFont + '.ttf';
+                } catch (error2) {
+                    // Mantieni il nome originale per il test successivo
+                }
+            }
+        }
+        
+        let fontPath = path.join(__dirname, 'font', selectedFont);
 
-        // Usa il percorso assoluto del font per evitare problemi di risoluzione
-        const fontPath = path.join(__dirname, 'font', selectedFont);
+        // VERIFICA ESISTENZA FONT - CRITICA per garantire font corretto
+        try {
+            await fs.access(fontPath, fs.constants.F_OK);
+            console.log(`✅ Font verificato e trovato: ${selectedFont}`);
+        } catch (error) {
+            console.error(`❌ ERRORE: Font non trovato: ${fontPath}`);
+            console.error(`🔄 Tentativo fallback su impact.ttf...`);
+            
+            // Fallback su impact.ttf se il font selezionato non esiste
+            selectedFont = 'impact.ttf';
+            fontPath = path.join(__dirname, 'font', selectedFont);
+            
+            try {
+                await fs.access(fontPath, fs.constants.F_OK);
+                console.log(`✅ Font fallback trovato: ${selectedFont}`);
+            } catch (fallbackError) {
+                throw new Error(`Font critico non disponibile: né il font originale né impact.ttf trovati nella cartella font/!`);
+            }
+        }
 
         // Per FFmpeg su Windows, converti i backslash in forward slash e gestisci spazi
         const escapedFontPath = fontPath.replace(/\\/g, '/').replace(/:/g, '\\:');
@@ -738,11 +776,9 @@ class VideoProcessor {
         console.log(`📂 Percorso font escaped: ${escapedFontPath}`);
 
         // Prepara il testo per FFmpeg con gestione delle righe multiple migliorata
-        // Calcola i caratteri per riga basandosi sulla larghezza effettiva del banner (450px)
-        // e una stima più precisa della larghezza media dei caratteri per il font
-        const bannerWidth = 450; // Larghezza fissa del banner
-        const padding = 20; // Padding laterale per evitare che il testo tocchi i bordi
-        const effectiveWidth = bannerWidth - (padding * 2);
+        // REQUISITO: il testo deve stare a max 15px dai bordi del video
+        const minDistanceFromBorder = 15; // Distanza minima richiesta dai bordi
+        const effectiveWidth = width - (minDistanceFromBorder * 2); // Usa larghezza video completa - 30px totali
 
         // Stima più accurata basata sul font: caratteri come 'W' sono più larghi di 'i'
         // Per font come Impact, stima circa 0.6-0.7 del fontSize come larghezza media carattere
@@ -760,14 +796,28 @@ class VideoProcessor {
         const lines = wrappedText.split('\\n');
         console.log(`📊 Numero di righe: ${lines.length}`);
 
+        // CONTROLLO DIMENSIONI: Verifica che le righe restino nei 15px dai bordi
+        let adjustedFontSize = fontSize;
+        const maxLineLength = Math.max(...lines.map(line => line.length));
+        const estimatedTextWidth = maxLineLength * avgCharWidth;
+        
+        if (estimatedTextWidth > effectiveWidth) {
+            adjustedFontSize = Math.max(24, Math.floor(effectiveWidth / (maxLineLength * 0.65)));
+            console.log(`⚠️ Testo troppo largo (${Math.round(estimatedTextWidth)}px > ${effectiveWidth}px)!`);
+            console.log(`📏 Font ridotto da ${fontSize}px a ${adjustedFontSize}px per rispettare i 15px dai bordi`);
+        } else {
+            console.log(`✅ Testo entro i limiti: ${Math.round(estimatedTextWidth)}px <= ${effectiveWidth}px`);
+        }
+
         // Calcola la posizione di partenza del testo per centratura verticale
         // Consideriamo che il testo di una riga inizia dalla baseline, non dal top
-        const totalTextHeight = lines.length * lineHeight;
+        const adjustedLineHeight = Math.round(adjustedFontSize * 1.2); // Usa il font size aggiustato, forzando intero
+        const totalTextHeight = lines.length * adjustedLineHeight;
 
         console.log(`📐 Altezza banner: ${bannerHeight}px`);
         console.log(`📐 Altezza totale testo: ${totalTextHeight}px`);
-        console.log(`📐 Line height: ${lineHeight}px`);
-        console.log(`📐 Font size: ${fontSize}px`);
+        console.log(`📐 Line height: ${adjustedLineHeight}px`);
+        console.log(`📐 Font size finale: ${adjustedFontSize}px`);
 
         let textFilters = '';
         let baseY;
@@ -775,12 +825,12 @@ class VideoProcessor {
         if (aiResponse.banner_position === 'bottom') {
             const bannerY = height - bannerHeight;
             // Centra verticalmente nel banner bottom, aggiungendo un offset per la baseline del font
-            baseY = bannerY + (bannerHeight - totalTextHeight) / 2 + fontSize * 0.8;
+            baseY = Math.round(bannerY + (bannerHeight - totalTextHeight) / 2 + adjustedFontSize * 0.8);
             textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${width}:h=${bannerHeight}:color=white:t=fill`;
             console.log(`📍 Banner bottom - bannerY: ${bannerY}, baseY: ${baseY}`);
         } else {
             // Centra verticalmente nel banner top, aggiungendo un offset per la baseline del font
-            baseY = (bannerHeight - totalTextHeight) / 2 + fontSize * 0.8;
+            baseY = Math.round((bannerHeight - totalTextHeight) / 2 + adjustedFontSize * 0.8);
             textFilters = `[0:v]drawbox=x=0:y=0:w=${width}:h=${bannerHeight}:color=white:t=fill`;
             console.log(`📍 Banner top - baseY: ${baseY}`);
         }
@@ -788,13 +838,17 @@ class VideoProcessor {
         // Aggiungi ogni riga come un filtro drawtext separato
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].replace(/'/g, "\\'").replace(/:/g, '\\:').replace(/=/g, '\\=').replace(/,/g, '\\,').replace(/\[/g, '\\[').replace(/\]/g, '\\]');
-            const yPos = baseY + (i * lineHeight);
+            
+            // CORREZIONE: FFmpeg richiede coordinate intere, non decimali
+            const yPos = Math.round(baseY + (i * adjustedLineHeight));
 
             console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> y=${yPos}`);
-
-            // Centratura orizzontale: centra il testo nel video intero
-            // FFmpeg calcola automaticamente la larghezza del testo con text_w
-            textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=(w-text_w)/2:y=${yPos}`;
+            
+            // CORREZIONE: FFmpeg non supporta max/min nelle coordinate
+            // Usiamo centratura semplice - il controllo 15px è fatto sopra riducendo fontSize se necessario
+            const xPos = '(w-text_w)/2';
+            
+            textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${adjustedFontSize}:x=${xPos}:y=${yPos}`;
         }
 
         const filterComplex = textFilters + '[v]';
@@ -819,9 +873,16 @@ class VideoProcessor {
 
             ffmpeg.stderr.on('data', (data) => {
                 const output = data.toString();
+                
+                // MONITORAGGIO FONT: Rileva problemi specifici con font
+                if (output.includes('Font') || output.includes('font') || output.includes('fontfile')) {
+                    console.warn(`⚠️ ATTENZIONE FONT: ${output.trim()}`);
+                }
+                
                 // Filtra solo gli errori critici per ridurre il rumore nel terminal
                 if (output.includes('Error') || output.includes('failed') || output.includes('Invalid argument')) {
                     errorOutput += output;
+                    console.error(`❌ Errore FFmpeg: ${output.trim()}`);
                 }
             });
 

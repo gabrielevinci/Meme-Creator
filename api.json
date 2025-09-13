@@ -2174,6 +2174,60 @@
             "tokens_used": 1227,
             "response_time_ms": 7324,
             "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono su una scalinata all'aperto. Il bambino è in primo piano, vestito con una maglietta marrone e jeans larghi, e sembra ballare con"
+          },
+          "1757781540990_ds16ern8y": {
+            "timestamp": 1757781540990,
+            "tokens": 1196,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1196,
+            "response_time_ms": 2852,
+            "output": "```json\n{\n  \"description\": \"Una ragazza con un cappuccio bianco e pantaloni neri larghi sta ballando. Si muove con gesti ampi delle braccia e un leggero ondeggiamento del corpo, mantenendo un'espressi"
+          },
+          "1757781543427_650n32rhp": {
+            "timestamp": 1757781543427,
+            "tokens": 1169,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1169,
+            "response_time_ms": 2426,
+            "output": "```json\n{\n  \"description\": \"Il video mostra una routine di bellezza serale. Inizia con una mano che schiuma un detergente, seguito da una serie di prodotti per la cura della pelle disposti su una supe"
+          },
+          "1757781547067_qp6vzscmu": {
+            "timestamp": 1757781547067,
+            "tokens": 1215,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1215,
+            "response_time_ms": 3636,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un bambino con una maglietta marrone e jeans larghi sta ballando davanti a una scala di pietra. Dietro di lui, un uomo con una maglietta verd"
+          },
+          "1757781577431_gqc385y8u": {
+            "timestamp": 1757781577431,
+            "tokens": 1193,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1193,
+            "response_time_ms": 3209,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni neri larghi esegue una sequenza di passi di danza. Il movimento è fluido e continuo attraverso i tre frame, con le braccia c"
+          },
+          "1757781580137_xqidpogg0": {
+            "timestamp": 1757781580137,
+            "tokens": 1192,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1192,
+            "response_time_ms": 2694,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una routine di cura della pelle serale. Inizia con una mano che schiuma abbondantemente un detergente. Successivamente, vengono presentati diversi prodotti "
+          },
+          "1757781583883_swy28vlyp": {
+            "timestamp": 1757781583883,
+            "tokens": 1257,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1257,
+            "response_time_ms": 3736,
+            "output": "```json\n{\n  \"description\": \"In un'ambientazione esterna con scale di pietra e vegetazione, un bambino con capelli ricci e un adulto sono protagonisti. Il bambino, vestito con una maglietta marrone e j"
           }
         }
       },
@@ -2241,9 +2295,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757781211896,
+          "until": 1757781838128,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757780911896
+          "markedAt": 1757781538128
         }
       }
     }

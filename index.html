@@ -1091,14 +1091,13 @@
             }
             .left-panel,
             .right-panel {
-                display: contents; /* Questo fa sì che i figli vengano trattati come se fossero direttamente nel parent */
+                display: contents;
+                /* Questo fa sì che i figli vengano trattati come se fossero direttamente nel parent */
             }
-            
-            .left-panel > *,
-            .right-panel > * {
+            .left-panel>*,
+            .right-panel>* {
                 margin-bottom: 20px;
             }
-            
             /* Ordine specifico per layout a colonna singola */
             .tipologia-meme {
                 order: 1;
@@ -1163,6 +1162,11 @@
                     </div>
                 </div>
 
+                <div class="form-group stile-meme">
+                    <label for="meme-style">✨ Stile Meme</label>
+                    <textarea id="meme-style" class="input-field textarea-large" placeholder="Inserisci esempi dettagliati dello stile di meme desiderato..." rows="15"></textarea>
+                </div>
+
                 <div class="form-group font-section">
                     <label for="font-select">🎨 Font</label>
                     <div class="custom-select-container">
@@ -1175,6 +1179,15 @@
                         </div>
                     </div>
                     <input type="hidden" id="selected-font" value="">
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="form-group video-input">
+                    <label>📹 Video nella cartella INPUT</label>
+                    <div id="video-list" class="video-list">
+                        <div class="video-item">Caricamento...</div>
+                    </div>
                 </div>
 
                 <div class="button-group">
@@ -1198,20 +1211,6 @@
                     </div>
                     <div id="progress-text" style="text-align: center; margin-top: 10px; font-size: 14px;">
                         Pronto per l'elaborazione
-                    </div>
-                </div>
-            </div>
-
-            <div class="right-panel">
-                <div class="form-group stile-meme">
-                    <label for="meme-style">✨ Stile Meme</label>
-                    <textarea id="meme-style" class="input-field textarea-large" placeholder="Inserisci esempi dettagliati dello stile di meme desiderato..." rows="15"></textarea>
-                </div>
-
-                <div class="form-group video-input">
-                    <label>📹 Video nella cartella INPUT</label>
-                    <div id="video-list" class="video-list">
-                        <div class="video-item">Caricamento...</div>
                     </div>
                 </div>
             </div>

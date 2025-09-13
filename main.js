@@ -146,7 +146,7 @@ class ContentCreatorApp {
 
     createMainWindow() {
         this.mainWindow = new BrowserWindow({
-            width: 1300,
+            width: 1400,
             height: 952,
             minWidth: 800,
             minHeight: 600,
@@ -173,9 +173,9 @@ class ContentCreatorApp {
         // Mantieni proporzioni 1300:952 durante il ridimensionamento
         this.mainWindow.on('resize', () => {
             if (!this.mainWindow || this.mainWindow.isDestroyed()) return;
-            
+
             const [currentWidth, currentHeight] = this.mainWindow.getSize();
-            const aspectRatio = 1300 / 952;            // Calcola le nuove dimensioni mantenendo le proporzioni
+            const aspectRatio = 1300 / 952; // Calcola le nuove dimensioni mantenendo le proporzioni
             let newWidth = currentWidth;
             let newHeight = Math.round(currentWidth / aspectRatio);
 

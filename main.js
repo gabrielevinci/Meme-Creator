@@ -106,24 +106,24 @@ class ContentCreatorApp {
     async loadSettings() {
         try {
             const settingsPath = this.getSettingsPath();
-            
+
             if (fsSync.existsSync(settingsPath)) {
                 const settingsData = await fs.readFile(settingsPath, 'utf8');
                 const settings = JSON.parse(settingsData);
-                
+
                 this.log('info', `Impostazioni caricate da: ${settingsPath}`);
                 return settings;
             } else {
                 // Impostazioni predefinite
                 const defaultSettings = {
                     fontFamily: 'Impact', // Font predefinito
-                    fontSize: 60,         // Dimensione predefinita
-                    marginTop: 30,        // Margini predefiniti
+                    fontSize: 60, // Dimensione predefinita
+                    marginTop: 30, // Margini predefiniti
                     marginBottom: 30,
                     marginLeft: 40,
                     marginRight: 40
                 };
-                
+
                 this.log('info', 'File impostazioni non trovato, usando valori predefiniti');
                 return defaultSettings;
             }
@@ -136,7 +136,8 @@ class ContentCreatorApp {
                 marginTop: 30,
                 marginBottom: 30,
                 marginLeft: 40,
-                marginRight: 40
+                marginRight: 40,
+                textFormat: 'normal'
             };
         }
     }
@@ -145,7 +146,7 @@ class ContentCreatorApp {
         try {
             const settingsPath = this.getSettingsPath();
             await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf8');
-            
+
             this.log('info', `Impostazioni salvate in: ${settingsPath}`);
             return true;
         } catch (error) {
@@ -517,11 +518,11 @@ class ContentCreatorApp {
         });
 
         // Handler per gestione delle impostazioni
-        ipcMain.handle('load-settings', async () => {
+        ipcMain.handle('load-settings', async() => {
             return await this.loadSettings();
         });
 
-        ipcMain.handle('save-settings', async (event, settings) => {
+        ipcMain.handle('save-settings', async(event, settings) => {
             return await this.saveSettings(settings);
         });
     }

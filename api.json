@@ -2372,6 +2372,105 @@
             "tokens_used": 1227,
             "response_time_ms": 5350,
             "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono su una scalinata all'aperto. Il bambino è in primo piano, mentre l'uomo è seduto più in alto sulla scala. Entrambi indossano abi"
+          },
+          "1757783606500_tyki8y5gp": {
+            "timestamp": 1757783606500,
+            "tokens": 1180,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1180,
+            "response_time_ms": 12076,
+            "output": "```json\n{\n  \"description\": \"Una mano afferra una bottiglia di prodotto per la cura della pelle da una serie di articoli disposti su una superficie chiara. I prodotti includono una bottiglia rosa di La"
+          },
+          "1757783639558_c07f6jyyz": {
+            "timestamp": 1757783639558,
+            "tokens": 1181,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1181,
+            "response_time_ms": 33052,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e jeans larghi sta in piedi con le mani sui fianchi, con un'espressione giocosa. Dietro di lui, un uomo seduto sui gradini, con occhiali da sol"
+          },
+          "1757783772107_gxd1tlgm7": {
+            "timestamp": 1757783772107,
+            "tokens": 1205,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1205,
+            "response_time_ms": 1582,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con una felpa con cappuccio bianca e pantaloni neri larghi balla in un ambiente interno. Ha i capelli lunghi e scuri che le cadono sulle spalle e indossa "
+          },
+          "1757783774186_6010bdshm": {
+            "timestamp": 1757783774186,
+            "tokens": 1161,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1161,
+            "response_time_ms": 2073,
+            "output": "```json\n{\n  \"description\": \"Una mano afferra una bottiglia di profumo da una collezione di prodotti per la cura della pelle disposti su una superficie illuminata. I prodotti includono una bottiglia di"
+          },
+          "1757783775815_z2jxn7j99": {
+            "timestamp": 1757783775815,
+            "tokens": 1191,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1191,
+            "response_time_ms": 1623,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e jeans larghi sta in piedi con le mani sui fianchi, in posa. Dietro di lui, seduto su una scala di pietra, un uomo con occhiali da sole e una "
+          },
+          "1757783840783_7yv63qjfv": {
+            "timestamp": 1757783840783,
+            "tokens": 1201,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1201,
+            "response_time_ms": 1694,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con una felpa bianca con cappuccio e pantaloni neri sta ballando in una stanza. Ha i capelli lunghi e scuri e indossa un cappellino da baseball sotto il c"
+          },
+          "1757783841961_4bg3lgoli": {
+            "timestamp": 1757783841961,
+            "tokens": 1167,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1167,
+            "response_time_ms": 1174,
+            "output": "```json\n{\n  \"description\": \"Una mano afferra una bottiglia di tonico per il viso da un set di prodotti per la cura della pelle disposti su un tavolo. I prodotti includono un tonico Lancôme, un tubo di"
+          },
+          "1757783843429_9qrj77un9": {
+            "timestamp": 1757783843429,
+            "tokens": 1193,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1193,
+            "response_time_ms": 1463,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e jeans larghi sta in piedi con le mani sui fianchi, guardando verso la telecamera. Dietro di lui, seduto su una scalinata di pietra, c'è un uo"
+          },
+          "1757783889964_ur9v8gjlh": {
+            "timestamp": 1757783889964,
+            "tokens": 1181,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1181,
+            "response_time_ms": 1378,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con una felpa bianca con cappuccio e pantaloni neri larghi sta ballando in una stanza. Ha i capelli lunghi e scuri e indossa un cappellino da baseball sot"
+          },
+          "1757783891483_q3hiwk9wf": {
+            "timestamp": 1757783891483,
+            "tokens": 1174,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1174,
+            "response_time_ms": 1514,
+            "output": "```json\n{\n  \"description\": \"Tre flaconi di prodotti per la cura della pelle sono disposti su una superficie bianca. Sulla sinistra c'è un flacone di tonico Lancôme, al centro un tubo di crema Pacific,"
+          },
+          "1757783893730_9ouhr0veu": {
+            "timestamp": 1757783893730,
+            "tokens": 1200,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1200,
+            "response_time_ms": 2241,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e jeans larghi sta in piedi con le mani sui fianchi, con un'espressione giocosa. Dietro di lui, seduto su una scala di pietra, un uomo con occh"
           }
         }
       },
@@ -2439,9 +2538,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757783327317,
+          "until": 1757783894422,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757783027317
+          "markedAt": 1757783594422
         }
       }
     }

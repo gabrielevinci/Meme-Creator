@@ -1572,6 +1572,11 @@
                 // Controlli dimensione font e margini
                 this.setupRangeInputs();
 
+                // Event listener per il text-format
+                this.elements.textFormat.addEventListener('change', () => {
+                    this.saveSettings();
+                });
+
                 // Custom font select
                 this.elements.fontSelect.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1693,8 +1698,11 @@
                     // Carica configurazione API
                     this.apiConfig = await window.electronAPI.loadApiConfig();
 
-                    // Carica impostazioni salvate
-                    await this.loadSettings();
+                    // CORREZIONE: Carica impostazioni dopo che i font sono completamente disponibili
+                    // Aspetta un momento aggiuntivo per assicurarsi che i font siano nel DOM
+                    setTimeout(async () => {
+                        await this.loadSettings();
+                    }, 500);
 
                     console.log('Dati iniziali caricati con successo');
                 } catch (error) {
@@ -1763,7 +1771,7 @@
                 try {
                     const settings = await window.electronAPI.loadSettings();
                     console.log('Impostazioni caricate:', settings);
-                    
+
                     // Applica le impostazioni ai controlli
                     if (settings.fontFamily) {
                         // Seleziona il font salvato
@@ -1772,7 +1780,7 @@
                             this.selectFont(settings.fontFamily, fontOption.textContent);
                         }
                     }
-                    
+
                     if (settings.fontSize) {
                         const fontSizeInput = document.getElementById('font-size');
                         const fontSizeValue = document.getElementById('font-size-value');
@@ -1781,7 +1789,7 @@
                             fontSizeValue.textContent = settings.fontSize + 'px';
                         }
                     }
-                    
+
                     if (settings.marginTop !== undefined) {
                         const marginTopInput = document.getElementById('margin-top');
                         const marginTopValue = document.getElementById('margin-top-value');
@@ -1790,7 +1798,7 @@
                             marginTopValue.textContent = settings.marginTop + 'px';
                         }
                     }
-                    
+
                     if (settings.marginBottom !== undefined) {
                         const marginBottomInput = document.getElementById('margin-bottom');
                         const marginBottomValue = document.getElementById('margin-bottom-value');
@@ -1799,7 +1807,7 @@
                             marginBottomValue.textContent = settings.marginBottom + 'px';
                         }
                     }
-                    
+
                     if (settings.marginLeft !== undefined) {
                         const marginLeftInput = document.getElementById('margin-left');
                         const marginLeftValue = document.getElementById('margin-left-value');
@@ -1808,7 +1816,7 @@
                             marginLeftValue.textContent = settings.marginLeft + 'px';
                         }
                     }
-                    
+
                     if (settings.marginRight !== undefined) {
                         const marginRightInput = document.getElementById('margin-right');
                         const marginRightValue = document.getElementById('margin-right-value');
@@ -1817,7 +1825,14 @@
                             marginRightValue.textContent = settings.marginRight + 'px';
                         }
                     }
-                    
+
+                    if (settings.textFormat) {
+                        const textFormatSelect = document.getElementById('text-format');
+                        if (textFormatSelect) {
+                            textFormatSelect.value = settings.textFormat;
+                        }
+                    }
+
                 } catch (error) {
                     console.error('Errore nel caricamento delle impostazioni:', error);
                 }
@@ -1831,12 +1846,13 @@
                         marginTop: parseInt(document.getElementById('margin-top')?.value || 30),
                         marginBottom: parseInt(document.getElementById('margin-bottom')?.value || 30),
                         marginLeft: parseInt(document.getElementById('margin-left')?.value || 40),
-                        marginRight: parseInt(document.getElementById('margin-right')?.value || 40)
+                        marginRight: parseInt(document.getElementById('margin-right')?.value || 40),
+                        textFormat: document.getElementById('text-format')?.value || 'normal'
                     };
-                    
+
                     console.log('Salvataggio impostazioni:', settings);
                     await window.electronAPI.saveSettings(settings);
-                    
+
                 } catch (error) {
                     console.error('Errore nel salvataggio delle impostazioni:', error);
                 }
@@ -1895,7 +1911,7 @@
 
                 // Chiudi dropdown
                 this.closeFontDropdown();
-                
+
                 // Salva automaticamente le impostazioni
                 this.saveSettings();
             }

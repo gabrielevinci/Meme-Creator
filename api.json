@@ -1796,6 +1796,33 @@
             "tokens_used": 1210,
             "response_time_ms": 1684,
             "output": "```json\n{\n  \"description\": \"Un rigoglioso prato verde occupa la parte inferiore dell'inquadratura, riflettendo la luce del sole. Dietro il prato, un lago calmo riflette le montagne maestose che si erg"
+          },
+          "1757732804626_83l9jpn3b": {
+            "timestamp": 1757732804626,
+            "tokens": 1196,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1196,
+            "response_time_ms": 2305,
+            "output": "```json\n{\n  \"description\": \"Il video mostra un tramonto mozzafiato su una spiaggia. Le onde del mare si infrangono dolcemente sulla riva, mentre il cielo è dipinto di sfumature arancioni, rosa e blu. "
+          },
+          "1757732806647_sc85i976u": {
+            "timestamp": 1757732806647,
+            "tokens": 1207,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1207,
+            "response_time_ms": 2009,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio montano avvolto dalla nebbia, con una strada sterrata a sinistra e un prato verde lussureggiante a destra. Una recinzione in legno delimita il prato, dove si i"
+          },
+          "1757732809052_mjm30reyb": {
+            "timestamp": 1757732809052,
+            "tokens": 1204,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1204,
+            "response_time_ms": 2394,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un bosco immerso nella nebbia, con alberi alti e fitti che creano un'atmosfera cupa e misteriosa. In primo piano, fiori bianchi e viola sbocciano tra il fog"
           }
         }
       },
@@ -1863,9 +1890,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757732043292,
+          "until": 1757733102319,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757731743292
+          "markedAt": 1757732802319
         }
       }
     }

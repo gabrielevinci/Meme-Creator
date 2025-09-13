@@ -775,39 +775,73 @@ class VideoProcessor {
         console.log(`📂 Percorso font assoluto: ${fontPath}`);
         console.log(`📂 Percorso font escaped: ${escapedFontPath}`);
 
-        // Prepara il testo per FFmpeg con gestione delle righe multiple migliorata
-        // REQUISITO: il testo deve stare a max 15px dai bordi del video
+        // ALGORITMO ITERATIVO PER TROVARE LA DIMENSIONE OTTIMALE DEL TESTO
+        // Parte da una dimensione grande e la riduce finché tutto il testo non entra
         const minDistanceFromBorder = 15; // Distanza minima richiesta dai bordi
-        const effectiveWidth = width - (minDistanceFromBorder * 2); // Usa larghezza video completa - 30px totali
-
-        // Stima più accurata basata sul font: caratteri come 'W' sono più larghi di 'i'
-        // Per font come Impact, stima circa 0.6-0.7 del fontSize come larghezza media carattere
-        const avgCharWidth = fontSize * 0.65; // Stima più realistica
-        const maxCharsPerLine = Math.floor(effectiveWidth / avgCharWidth);
-
-        const lineHeight = fontSize * 1.2; // Line height più compatto ma leggibile
-        const maxLines = Math.floor(bannerHeight / lineHeight) - 1; // Spazio per margini
-
-        const wrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine, maxLines);
-        console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
-        console.log(`📝 Testo wrappato: "${wrappedText}" (max ${maxCharsPerLine} char/riga, max ${maxLines} righe)`);
-
-        // Per FFmpeg, dividiamo il testo in righe separate e le sovrapponiamo
-        const lines = wrappedText.split('\\n');
-        console.log(`📊 Numero di righe: ${lines.length}`);
-
-        // CONTROLLO DIMENSIONI: Verifica che le righe restino nei 15px dai bordi
-        let adjustedFontSize = fontSize;
-        const maxLineLength = Math.max(...lines.map(line => line.length));
-        const estimatedTextWidth = maxLineLength * avgCharWidth;
-
-        if (estimatedTextWidth > effectiveWidth) {
-            adjustedFontSize = Math.max(24, Math.floor(effectiveWidth / (maxLineLength * 0.65)));
-            console.log(`⚠️ Testo troppo largo (${Math.round(estimatedTextWidth)}px > ${effectiveWidth}px)!`);
-            console.log(`📏 Font ridotto da ${fontSize}px a ${adjustedFontSize}px per rispettare i 15px dai bordi`);
-        } else {
-            console.log(`✅ Testo entro i limiti: ${Math.round(estimatedTextWidth)}px <= ${effectiveWidth}px`);
+        const effectiveWidth = width - (minDistanceFromBorder * 2);
+        const effectiveHeight = bannerHeight - 30; // Margini verticali
+        
+        // Dimensioni di partenza e limiti  
+        const maxFontSize = Math.min(80, width / 10); // Dimensione massima di partenza
+        const minFontSize = 20; // Dimensione minima accettabile
+        const fontSizeStep = 2; // Incremento per i tentativi
+        
+        let bestFontSize = minFontSize;
+        let bestWrappedText = '';
+        let bestLines = [];
+        
+        console.log(`🔍 Ricerca dimensione ottimale: partendo da ${maxFontSize}px fino a ${minFontSize}px`);
+        
+        // Algoritmo iterativo: prova dimensioni decrescenti finché non trova quella giusta
+        for (let testFontSize = maxFontSize; testFontSize >= minFontSize; testFontSize -= fontSizeStep) {
+            // Calcola parametri per questa dimensione
+            const avgCharWidth = testFontSize * 0.65;
+            const testLineHeight = testFontSize * 1.2;
+            const maxCharsPerLine = Math.floor(effectiveWidth / avgCharWidth);
+            const maxLines = Math.floor(effectiveHeight / testLineHeight);
+            
+            // Prova a wrappare il testo con questi parametri
+            const testWrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine, maxLines);
+            const testLines = testWrappedText.split('\\n');
+            
+            // Calcola le dimensioni reali del testo
+            const maxLineLength = Math.max(...testLines.map(line => line.length));
+            const actualTextWidth = maxLineLength * avgCharWidth;
+            const actualTextHeight = testLines.length * testLineHeight;
+            
+            // Verifica se il testo entra completamente nei margini
+            const fitsWidth = actualTextWidth <= effectiveWidth;
+            const fitsHeight = actualTextHeight <= effectiveHeight;
+            const textIsComplete = !testWrappedText.includes('...'); // Verifica che il testo non sia troncato
+            
+            console.log(`🧪 Test ${testFontSize}px: W=${Math.round(actualTextWidth)}/${effectiveWidth} H=${Math.round(actualTextHeight)}/${effectiveHeight} Lines=${testLines.length}/${maxLines} Complete=${textIsComplete}`);
+            
+            if (fitsWidth && fitsHeight && textIsComplete) {
+                // Questo è il font size migliore trovato finora
+                bestFontSize = testFontSize;
+                bestWrappedText = testWrappedText;
+                bestLines = testLines;
+                
+                console.log(`✅ Dimensione ottimale trovata: ${bestFontSize}px`);
+                break; // Abbiamo trovato la dimensione massima che funziona
+            } else {
+                const issues = [];
+                if (!fitsWidth) issues.push(`larghezza (${Math.round(actualTextWidth)} > ${effectiveWidth})`);
+                if (!fitsHeight) issues.push(`altezza (${Math.round(actualTextHeight)} > ${effectiveHeight})`);
+                if (!textIsComplete) issues.push(`testo troncato`);
+                console.log(`❌ ${testFontSize}px non adatto: ${issues.join(', ')}`);
+            }
         }
+        
+        // Usa i risultati migliori trovati
+        const adjustedFontSize = bestFontSize;
+        const wrappedText = bestWrappedText;
+        const lines = bestLines;
+        
+        console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
+        console.log(`📝 Testo finale: "${wrappedText}"`);
+        console.log(`📊 Numero di righe: ${lines.length}`);
+        console.log(`📐 Font size finale: ${adjustedFontSize}px`);
 
         // Calcola la posizione di partenza del testo per centratura verticale
         // Consideriamo che il testo di una riga inizia dalla baseline, non dal top

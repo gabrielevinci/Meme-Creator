@@ -1823,6 +1823,33 @@
             "tokens_used": 1204,
             "response_time_ms": 2394,
             "output": "```json\n{\n  \"description\": \"La scena mostra un bosco immerso nella nebbia, con alberi alti e fitti che creano un'atmosfera cupa e misteriosa. In primo piano, fiori bianchi e viola sbocciano tra il fog"
+          },
+          "1757733677436_xfinl65su": {
+            "timestamp": 1757733677436,
+            "tokens": 1202,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1202,
+            "response_time_ms": 1610,
+            "output": "```json\n{\n  \"description\": \"Un tramonto infuocato dipinge il cielo con sfumature di arancione e giallo, sfumando in un blu tenue verso l'alto. Le onde del mare lambiscono dolcemente la riva sabbiosa, "
+          },
+          "1757733679228_0y7mfpywa": {
+            "timestamp": 1757733679228,
+            "tokens": 1171,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1171,
+            "response_time_ms": 1788,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale nebbioso con una strada bagnata sulla sinistra e un recinto di legno che costeggia un prato verde brillante. In lontananza, si intravedono delle fattori"
+          },
+          "1757733682020_u95v3vaw3": {
+            "timestamp": 1757733682020,
+            "tokens": 1182,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1182,
+            "response_time_ms": 2787,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio nebbioso e suggestivo con alberi scuri e fitti, alcuni dei quali si ergono verso un cielo viola pallido. In primo piano, un cespuglio fiorito con petali bianch"
           }
         }
       },
@@ -1890,9 +1917,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757733102319,
+          "until": 1757733975815,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757732802319
+          "markedAt": 1757733675815
         }
       }
     }

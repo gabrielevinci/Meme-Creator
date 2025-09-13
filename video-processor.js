@@ -776,10 +776,11 @@ class VideoProcessor {
         console.log(`📂 Percorso font escaped: ${escapedFontPath}`);
 
         // ALGORITMO ITERATIVO PER TROVARE LA DIMENSIONE OTTIMALE DEL TESTO
-        // Parte da una dimensione grande e la riduce finché tutto il testo non entra
+        // Ottimizzato per sfruttare meglio lo spazio orizzontale
         const minDistanceFromBorder = 15; // Distanza minima richiesta dai bordi
+        const bottomMargin = 10; // Margine inferiore del blocco
         const effectiveWidth = width - (minDistanceFromBorder * 2);
-        const effectiveHeight = bannerHeight - 30; // Margini verticali
+        const effectiveHeight = bannerHeight - 30 - bottomMargin; // Margini verticali + margine inferiore
         
         // Dimensioni di partenza e limiti  
         const maxFontSize = Math.min(80, width / 10); // Dimensione massima di partenza
@@ -789,56 +790,73 @@ class VideoProcessor {
         let bestFontSize = minFontSize;
         let bestWrappedText = '';
         let bestLines = [];
+        let bestScore = -1; // Score per valutare la qualità del layout
         
         console.log(`🔍 Ricerca dimensione ottimale: partendo da ${maxFontSize}px fino a ${minFontSize}px`);
+        console.log(`📏 Area disponibile: ${effectiveWidth}px (W) x ${effectiveHeight}px (H)`);
         
         // Algoritmo iterativo: prova dimensioni decrescenti finché non trova quella giusta
         for (let testFontSize = maxFontSize; testFontSize >= minFontSize; testFontSize -= fontSizeStep) {
-            // Calcola parametri per questa dimensione
-            const avgCharWidth = testFontSize * 0.65;
-            const testLineHeight = testFontSize * 1.2;
-            const maxCharsPerLine = Math.floor(effectiveWidth / avgCharWidth);
-            const maxLines = Math.floor(effectiveHeight / testLineHeight);
+            // Calcola parametri per questa dimensione con fattore di utilizzo più aggressivo
+            const avgCharWidth = testFontSize * 0.6; // Più aggressivo per sfruttare meglio lo spazio
+            const testLineHeight = testFontSize * 1.15; // Line height leggermente più compatto
             
-            // Prova a wrappare il testo con questi parametri
-            const testWrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine, maxLines);
-            const testLines = testWrappedText.split('\\n');
+            // Calcola caratteri per linea con più margine di sicurezza per evitare righe troppo corte
+            const baseMaxCharsPerLine = Math.floor(effectiveWidth / avgCharWidth);
             
-            // Calcola le dimensioni reali del testo
-            const maxLineLength = Math.max(...testLines.map(line => line.length));
-            const actualTextWidth = maxLineLength * avgCharWidth;
-            const actualTextHeight = testLines.length * testLineHeight;
-            
-            // Verifica se il testo entra completamente nei margini
-            const fitsWidth = actualTextWidth <= effectiveWidth;
-            const fitsHeight = actualTextHeight <= effectiveHeight;
-            const textIsComplete = !testWrappedText.includes('...'); // Verifica che il testo non sia troncato
-            
-            console.log(`🧪 Test ${testFontSize}px: W=${Math.round(actualTextWidth)}/${effectiveWidth} H=${Math.round(actualTextHeight)}/${effectiveHeight} Lines=${testLines.length}/${maxLines} Complete=${textIsComplete}`);
-            
-            if (fitsWidth && fitsHeight && textIsComplete) {
-                // Questo è il font size migliore trovato finora
-                bestFontSize = testFontSize;
-                bestWrappedText = testWrappedText;
-                bestLines = testLines;
+            // Prova diverse larghezze per trovare il miglior bilanciamento
+            for (let widthMultiplier = 1.0; widthMultiplier >= 0.7; widthMultiplier -= 0.1) {
+                const maxCharsPerLine = Math.floor(baseMaxCharsPerLine * widthMultiplier);
+                const maxLines = Math.floor(effectiveHeight / testLineHeight);
                 
-                console.log(`✅ Dimensione ottimale trovata: ${bestFontSize}px`);
-                break; // Abbiamo trovato la dimensione massima che funziona
-            } else {
-                const issues = [];
-                if (!fitsWidth) issues.push(`larghezza (${Math.round(actualTextWidth)} > ${effectiveWidth})`);
-                if (!fitsHeight) issues.push(`altezza (${Math.round(actualTextHeight)} > ${effectiveHeight})`);
-                if (!textIsComplete) issues.push(`testo troncato`);
-                console.log(`❌ ${testFontSize}px non adatto: ${issues.join(', ')}`);
+                if (maxCharsPerLine < 10 || maxLines < 1) continue; // Valori troppo piccoli
+                
+                // Prova a wrappare il testo con questi parametri
+                const testWrappedText = this.wrapText(aiResponse.meme_text, maxCharsPerLine, maxLines);
+                const testLines = testWrappedText.split('\\n');
+                
+                // Calcola le dimensioni reali del testo
+                const maxLineLength = Math.max(...testLines.map(line => line.length));
+                const actualTextWidth = maxLineLength * avgCharWidth;
+                const actualTextHeight = testLines.length * testLineHeight;
+                
+                // Verifica se il testo entra completamente nei margini
+                const fitsWidth = actualTextWidth <= effectiveWidth;
+                const fitsHeight = actualTextHeight <= effectiveHeight;
+                const textIsComplete = !testWrappedText.includes('...'); // Verifica che il testo non sia troncato
+                
+                if (fitsWidth && fitsHeight && textIsComplete) {
+                    // Calcola un score per valutare la qualità del layout
+                    // Favorisce font più grandi e un buon rapporto larghezza/altezza
+                    const widthUsage = actualTextWidth / effectiveWidth;
+                    const heightUsage = actualTextHeight / effectiveHeight;
+                    const aspectRatio = actualTextWidth / actualTextHeight;
+                    
+                    // Score che favorisce font grandi, buon uso dello spazio e aspect ratio bilanciato
+                    const score = testFontSize * 0.4 + widthUsage * 30 + heightUsage * 20 + Math.min(aspectRatio, 3) * 10;
+                    
+                    console.log(`✅ ${testFontSize}px (w×${widthMultiplier.toFixed(1)}): W=${Math.round(actualTextWidth)}/${effectiveWidth} H=${Math.round(actualTextHeight)}/${effectiveHeight} Lines=${testLines.length} Score=${score.toFixed(1)}`);
+                    
+                    if (score > bestScore) {
+                        bestFontSize = testFontSize;
+                        bestWrappedText = testWrappedText;
+                        bestLines = testLines;
+                        bestScore = score;
+                    }
+                } else {
+                    const issues = [];
+                    if (!fitsWidth) issues.push(`W`);
+                    if (!fitsHeight) issues.push(`H`);
+                    if (!textIsComplete) issues.push(`trunc`);
+                    console.log(`❌ ${testFontSize}px (w×${widthMultiplier.toFixed(1)}): ${issues.join(',')}`);
+                }
             }
         }
         
         // Usa i risultati migliori trovati
         const adjustedFontSize = bestFontSize;
         const wrappedText = bestWrappedText;
-        const lines = bestLines;
-        
-        console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
+        const lines = bestLines;        console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
         console.log(`📝 Testo finale: "${wrappedText}"`);
         console.log(`📊 Numero di righe: ${lines.length}`);
         console.log(`📐 Font size finale: ${adjustedFontSize}px`);

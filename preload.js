@@ -22,6 +22,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     startProcessing: (params) => ipcRenderer.invoke('start-processing', params),
     stopProcessing: () => ipcRenderer.invoke('stop-processing'),
 
+    // File operations
+    openOutputFolder: () => ipcRenderer.invoke('open-output-folder'),
+
     // Logging
     log: (level, message, source) => ipcRenderer.invoke('log-message', level, message, source),
 

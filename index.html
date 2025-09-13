@@ -1114,6 +1114,9 @@
             .video-input {
                 order: 5;
             }
+            .output-folder-option {
+                order: 5.5;
+            }
             .button-group {
                 order: 6;
             }
@@ -1187,6 +1190,13 @@
                     <label>📹 Video nella cartella INPUT</label>
                     <div id="video-list" class="video-list">
                         <div class="video-item">Caricamento...</div>
+                    </div>
+                </div>
+
+                <div class="form-group output-folder-option">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="open-output-folder" checked>
+                        <label for="open-output-folder">📂 Apri cartella OUTPUT al termine del processo</label>
                     </div>
                 </div>
 
@@ -1840,6 +1850,14 @@
 
                 // Aggiorna la lista video se necessario
                 this.refreshVideoList();
+
+                // Apri cartella OUTPUT se il checkbox è selezionato
+                const openOutputFolder = document.getElementById('open-output-folder');
+                if (openOutputFolder && openOutputFolder.checked) {
+                    if (window.electronAPI && window.electronAPI.openOutputFolder) {
+                        window.electronAPI.openOutputFolder();
+                    }
+                }
             }
 
             onProcessingError(error) {

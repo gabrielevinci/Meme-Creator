@@ -170,24 +170,31 @@ class ContentCreatorApp {
             this.mainWindow = null;
         });
 
-        // Mantieni proporzioni 1300:952 durante il ridimensionamento
+        // Mantieni proporzioni 1400:952 durante il ridimensionamento con controllo rigido
         this.mainWindow.on('resize', () => {
             if (!this.mainWindow || this.mainWindow.isDestroyed()) return;
 
             const [currentWidth, currentHeight] = this.mainWindow.getSize();
-            const aspectRatio = 1300 / 952; // Calcola le nuove dimensioni mantenendo le proporzioni
-            let newWidth = currentWidth;
-            let newHeight = Math.round(currentWidth / aspectRatio);
-
-            // Se l'altezza calcolata è diversa da quella corrente, aggiusta
-            if (Math.abs(newHeight - currentHeight) > 5) {
-                // Se la finestra è stata ridimensionata in altezza, mantieni l'altezza e calcola la larghezza
-                if (Math.abs(newHeight - currentHeight) > Math.abs(newWidth - (currentHeight * aspectRatio))) {
-                    newHeight = currentHeight;
-                    newWidth = Math.round(currentHeight * aspectRatio);
-                }
-
-                // Applica le nuove dimensioni solo se sono significativamente diverse
+            const aspectRatio = 1400 / 952;
+            
+            // Calcola sempre le dimensioni corrette basate sulle proporzioni
+            let newWidth, newHeight;
+            
+            // Determina se l'utente ha trascinato più in larghezza o altezza
+            const widthBasedHeight = Math.round(currentWidth / aspectRatio);
+            const heightBasedWidth = Math.round(currentHeight * aspectRatio);
+            
+            // Scegli la dimensione basata su quale cambiamento è più piccolo (più conservativo)
+            if (Math.abs(widthBasedHeight - currentHeight) <= Math.abs(heightBasedWidth - currentWidth)) {
+                newWidth = currentWidth;
+                newHeight = widthBasedHeight;
+            } else {
+                newWidth = heightBasedWidth;
+                newHeight = currentHeight;
+            }
+            
+            // Applica sempre le proporzioni corrette
+            if (newWidth !== currentWidth || newHeight !== currentHeight) {
                 this.mainWindow.setSize(newWidth, newHeight);
             }
         });
@@ -436,6 +443,18 @@ class ContentCreatorApp {
         // Handler per logging dal renderer
         ipcMain.handle('log-message', (event, level, message, source = 'renderer') => {
             this.log(level, message, source);
+        });
+
+        // Handler per aprire cartella OUTPUT
+        ipcMain.handle('open-output-folder', async() => {
+            const outputPath = path.join(__dirname, 'OUTPUT');
+            try {
+                await shell.openPath(outputPath);
+                return { success: true };
+            } catch (error) {
+                console.error('Errore nell\'apertura cartella OUTPUT:', error);
+                return { success: false, error: error.message };
+            }
         });
     }
 

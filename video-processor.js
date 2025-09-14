@@ -1332,7 +1332,7 @@ class VideoProcessor {
                 console.log(`🔒 Testo escaped per FFmpeg: "${escapedLine}"`);
 
                 // Construisci parametri drawtext - usa font parameter se disponibile
-                textFilters += `,drawtext=text="${escapedLine}"${escapedFontPath}:fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
+                textFilters += `,drawtext=text=${escapedLine}${escapedFontPath}:fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
             }
         }
 

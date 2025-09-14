@@ -15,7 +15,7 @@
   "overlayImageEnabled": true,
   "overlayImagePath": "D:\\OneDrive\\EDIT\\VIDEO IN BULK\\blue-sky-with-puffy-white-clouds.jpg",
   "overlayOpacity": 89,
-  "backgroundAudioEnabled": false,
-  "backgroundAudioPath": "",
-  "backgroundAudioVolume": 0
+  "backgroundAudioEnabled": true,
+  "backgroundAudioPath": "D:\\OneDrive\\EDIT\\VIDEO IN BULK\\Rumore bianco per dormire - White noise- Suoni rilassanti per dormire.mp3",
+  "backgroundAudioVolume": -23
 }

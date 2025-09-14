@@ -4982,6 +4982,60 @@
             "tokens_used": 1109,
             "response_time_ms": 1237,
             "output": "```json\n{\n  \"description\": \"Una strada a nastro serpeggia lungo un ripido pendio roccioso ricoperto di vegetazione verde brillante. La strada è fiancheggiata da un parapetto metallico su un lato e una"
+          },
+          "1757870442314_ohzx288l4": {
+            "timestamp": 1757870442314,
+            "tokens": 1321,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1321,
+            "response_time_ms": 1110,
+            "output": "```json\n{\n  \"description\": \"Un adorabile neonato vestito da ape con un costume giallo e nero procede danzante con un'espressione gioiosa. Il costume ha le ali da ape e delle antenne marroni sulle cuff"
+          },
+          "1757870443098_pgq0m3eri": {
+            "timestamp": 1757870443098,
+            "tokens": 1305,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1305,
+            "response_time_ms": 779,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano un paesaggio montuoso al tramonto. La luce dorata illumina le cime delle montagne, mentre una foresta scura e un campo di erba bassa riempion"
+          },
+          "1757870444115_p88b4985z": {
+            "timestamp": 1757870444115,
+            "tokens": 1358,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1358,
+            "response_time_ms": 1011,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un percorso in continua evoluzione, iniziando su un'autostrada con montagne imponenti e nuvole che incombono. Prosegue lungo una tortuosa strada panoramica "
+          },
+          "1757870514872_yz16rh8x5": {
+            "timestamp": 1757870514872,
+            "tokens": 1362,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1362,
+            "response_time_ms": 1837,
+            "output": "```json\n{\n  \"description\": \"Un dolcissimo bambino vestito da ape muove gioiosamente le sue braccia e gambette, irradiando energia positiva. Dagli angoli della sua tutina e intorno a lui si diffondono "
+          },
+          "1757870516092_07ulj67vv": {
+            "timestamp": 1757870516092,
+            "tokens": 1345,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1345,
+            "response_time_ms": 1215,
+            "output": "```json\n{\n  \"description\": \"I tre frame consecutivi mostrano una vasta distesa di un campo verde scuro con bassa vegetazione, che culmina in una linea di alberi scuri. Dietro gli alberi si ergono maes"
+          },
+          "1757870517465_qcnhxa3t6": {
+            "timestamp": 1757870517465,
+            "tokens": 1359,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1359,
+            "response_time_ms": 1367,
+            "output": "```json\n{\n  \"description\": \"Il primo frame mostra una vista da un'autostrada panoramica tra alte montagne verdi sotto un cielo azzurro con nuvole soffici. Il secondo frame continua il viaggio lungo un"
           }
         }
       },

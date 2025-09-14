@@ -11,11 +11,11 @@
   "saturation": 50,
   "gamma": 0,
   "lift": 0,
-  "videoVolume": 0,
-  "overlayImageEnabled": true,
+  "videoVolume": 30,
+  "overlayImageEnabled": false,
   "overlayImagePath": "D:\\OneDrive\\EDIT\\VIDEO IN BULK\\blue-sky-with-puffy-white-clouds.jpg",
-  "overlayOpacity": 89,
-  "backgroundAudioEnabled": true,
+  "overlayOpacity": 15,
+  "backgroundAudioEnabled": false,
   "backgroundAudioPath": "D:\\OneDrive\\EDIT\\VIDEO IN BULK\\Rumore bianco per dormire - White noise- Suoni rilassanti per dormire.mp3",
   "backgroundAudioVolume": -23
 }

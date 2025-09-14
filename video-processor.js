@@ -1433,7 +1433,8 @@ class VideoProcessor {
             // 2. Overlay immagine (se specificato)
             if (needsOverlayImage) {
                 const nextLabel = `[v${stepCounter}]`;
-                const opacity = (config.overlayOpacity / 100).toFixed(2);
+                // CORREZIONE: Inverte l'opacità - 100% slider = opaco, 0% = trasparente
+                const opacity = ((100 - config.overlayOpacity) / 100).toFixed(2);
 
                 // Prepara il path dell'immagine (escapato per FFmpeg)
                 const escapedImagePath = config.overlayImagePath.replace(/\\/g, '/').replace(/:/g, '\\:');
@@ -1480,18 +1481,18 @@ class VideoProcessor {
         // Audio del video originale (con possibile modifica volume)
         if (config && config.videoVolume && config.videoVolume !== 0) {
             const volumeDb = config.videoVolume;
-            const volumeLinear = Math.pow(10, volumeDb / 20).toFixed(3);
-            audioFilters.push(`[0:a]volume=${volumeLinear}[main_audio]`);
-            console.log(`� Volume video: ${volumeDb}db (linear: ${volumeLinear})`);
+            // CORREZIONE: Usa decibel direttamente per evitare crackling
+            audioFilters.push(`[0:a]volume=${volumeDb}dB[main_audio]`);
+            console.log(`🔊 Volume video: ${volumeDb}db`);
         }
 
         // Audio di sottofondo
         if (config && config.backgroundAudioEnabled && config.backgroundAudioPath) {
             audioInputs++; // Input aggiuntivo per l'audio
             const bgVolumeDb = config.backgroundAudioVolume || 0;
-            const bgVolumeLinear = Math.pow(10, bgVolumeDb / 20).toFixed(3);
 
-            audioFilters.push(`[${audioInputs - 1}:a]volume=${bgVolumeLinear}[bg_audio]`);
+            // CORREZIONE: Input corretto per audio di sottofondo (usa audioInputs-1 per l'ultimo input)
+            audioFilters.push(`[${audioInputs - 1}:a]volume=${bgVolumeDb}dB[bg_audio]`);
             console.log(`🎵 Audio sottofondo: ${config.backgroundAudioPath} (volume: ${bgVolumeDb}db)`);
 
             // Mix dei due audio

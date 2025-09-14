@@ -1288,18 +1288,62 @@ class VideoProcessor {
         console.log(`🔧 Filtro FFmpeg generato: ${filterComplex}`);
         console.log(`🚀 Eseguendo processamento video...`);
 
+        // Parametri FFmpeg di base
+        const ffmpegArgs = [
+            '-i', inputVideoPath,
+            '-filter_complex', filterComplex,
+            '-map', '[v]',
+            '-map', '0:a?', // Copia audio se presente
+            '-c:v', 'libx264',
+            '-c:a', 'copy'
+        ];
+
+        // Aggiungi filtro velocità video se specificato nel config
+        if (config && config.videoSpeed && config.videoSpeed !== 1) {
+            console.log(`⚡ Applicazione velocità video: ${config.videoSpeed}x`);
+            
+            // Modifica il filter_complex per includere setpts (per video) e atempo (per audio)
+            let speedFilterComplex = textFilters;
+            
+            // Applica setpts per cambiare la velocità del video
+            speedFilterComplex += `[v_with_text];[v_with_text]setpts=PTS/${config.videoSpeed}[v]`;
+            
+            // Sostituisci il filter_complex originale
+            const filterIndex = ffmpegArgs.indexOf('-filter_complex') + 1;
+            ffmpegArgs[filterIndex] = speedFilterComplex;
+            
+            // Gestione dell'audio: se la velocità è troppo alta/bassa, rimuovi l'audio
+            if (config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
+                // Applica atempo per l'audio (limitato tra 0.5x e 2.0x)
+                const atempoValue = Math.min(Math.max(config.videoSpeed, 0.5), 2.0);
+                console.log(`🔊 Applicazione velocità audio: ${atempoValue}x`);
+                
+                // Modifica la mappatura audio per includere atempo
+                const audioMapIndex = ffmpegArgs.indexOf('0:a?');
+                ffmpegArgs[audioMapIndex] = '0:a';
+                ffmpegArgs[filterIndex] = speedFilterComplex + ';[0:a]atempo=' + atempoValue + '[a]';
+                
+                // Aggiungi mappatura audio processato
+                const mapVIndex = ffmpegArgs.indexOf('[v]');
+                ffmpegArgs.splice(mapVIndex + 1, 0, '-map', '[a]');
+            } else {
+                console.log(`🔇 Velocità ${config.videoSpeed}x troppo estrema per l'audio, audio rimosso`);
+                // Rimuovi completamente l'audio per velocità estreme
+                const audioMapIndex = ffmpegArgs.indexOf('-map') + 2; // Trova -map 0:a?
+                if (ffmpegArgs[audioMapIndex] === '0:a?') {
+                    ffmpegArgs.splice(audioMapIndex - 1, 2); // Rimuovi -map 0:a?
+                }
+            }
+        }
+
+        // Aggiungi i parametri finali
+        ffmpegArgs.push('-y', outputVideoPath);
+
+        console.log(`🎬 Comando FFmpeg completo:`, ffmpegArgs.join(' '));
+
         // Esegui FFmpeg per aggiungere banner e testo
         return new Promise((resolve, reject) => {
-            const ffmpeg = spawn(this.ffmpegPath, [
-                '-i', inputVideoPath,
-                '-filter_complex', filterComplex,
-                '-map', '[v]',
-                '-map', '0:a?', // Copia audio se presente
-                '-c:v', 'libx264',
-                '-c:a', 'copy',
-                '-y',
-                outputVideoPath
-            ]);
+            const ffmpeg = spawn(this.ffmpegPath, ffmpegArgs);
 
             let errorOutput = '';
 

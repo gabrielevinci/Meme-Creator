@@ -15,49 +15,58 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #ffffff;
             min-height: 100vh;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
         }
         
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 100vw;
+            width: 100%;
+            height: 100vh;
+            margin: 0;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            background: #2c3e50;
             color: white;
-            padding: 20px 30px;
+            padding: 15px 20px;
             text-align: center;
+            border-bottom: 1px solid #ecf0f1;
         }
         
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2em;
+            margin-bottom: 5px;
         }
         
         .header p {
-            font-size: 1.1em;
+            font-size: 1em;
             opacity: 0.9;
         }
         
         .main-content {
-            padding: 30px;
+            padding: 20px;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 25px;
-            min-height: 600px;
+            /* Layout colonne: 1=AI, 2=Font/Banner, 3=Parametri Video, 4=Status/Video Lista */
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+            overflow-y: auto;
         }
         
+        /* Colonna 1: AI e Creatività */
         .left-panel,
+        /* Colonna 2: Font e Margini */
         .middle-panel,
-        .right-panel {
+        /* Colonna 3: Parametri Video */
+        .right-panel,
+        /* Colonna 4: Status e Video Lista */
+        .fourth-panel {
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -1488,6 +1497,33 @@
             </div>
 
             <div class="right-panel">
+                <div class="form-group">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.2em; text-align: center;">🎬 Parametri Video</h3>
+                </div>
+
+                <div class="form-group">
+                    <label for="video-speed-slider">⚡ Velocità Video</label>
+                    <div class="slider-container">
+                        <input type="range" id="video-speed-slider" class="range-input" min="0.1" max="10" value="1" step="0.1">
+                        <div class="slider-labels">
+                            <span class="slider-label-left">0.1x (Lento)</span>
+                            <span id="video-speed-value" class="range-value">1.0x</span>
+                            <span class="slider-label-right">10x (Veloce)</span>
+                        </div>
+                    </div>
+                    <small class="help-text">Controlla la velocità di riproduzione dei video elaborati: 0.5 = metà velocità, 2.0 = doppia velocità</small>
+                </div>
+
+                <!-- Spazio per futuri parametri video -->
+                <div class="form-group" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                    <small style="color: #777; font-style: italic; text-align: center; display: block;">
+                        Altri parametri video verranno aggiunti qui...
+                    </small>
+                </div>
+            </div>
+
+            <!-- QUARTA COLONNA: Video Input e Status -->
+            <div class="fourth-panel">
                 <div class="form-group video-input">
                     <label>📹 Video nella cartella INPUT</label>
                     <div id="video-list" class="video-list">
@@ -1852,6 +1888,21 @@
                     temperatureValue.textContent = parseFloat(temperatureSlider.value).toFixed(1);
                 }
 
+                // Gestione speciale per il video speed slider
+                const videoSpeedSlider = document.getElementById('video-speed-slider');
+                const videoSpeedValue = document.getElementById('video-speed-value');
+                
+                if (videoSpeedSlider && videoSpeedValue) {
+                    videoSpeedSlider.addEventListener('input', (e) => {
+                        const value = parseFloat(e.target.value);
+                        videoSpeedValue.textContent = value.toFixed(1) + 'x';
+                        this.saveSettings();
+                    });
+                    
+                    // Imposta il valore iniziale
+                    videoSpeedValue.textContent = parseFloat(videoSpeedSlider.value).toFixed(1) + 'x';
+                }
+
                 rangeInputs.forEach(({
                     id,
                     valueId,
@@ -2067,6 +2118,15 @@
                         }
                     }
 
+                    if (settings.videoSpeed !== undefined) {
+                        const videoSpeedSlider = document.getElementById('video-speed-slider');
+                        const videoSpeedValue = document.getElementById('video-speed-value');
+                        if (videoSpeedSlider && videoSpeedValue) {
+                            videoSpeedSlider.value = settings.videoSpeed;
+                            videoSpeedValue.textContent = parseFloat(settings.videoSpeed).toFixed(1) + 'x';
+                        }
+                    }
+
                     // Aggiorna il preview dashboard dopo aver caricato le impostazioni
                     setTimeout(() => this.updateBannerPreview(), 100);
 
@@ -2084,7 +2144,8 @@
                         marginLeft: parseInt(document.getElementById('margin-left') && document.getElementById('margin-left').value || 40),
                         marginRight: parseInt(document.getElementById('margin-right') && document.getElementById('margin-right').value || 40),
                         textFormat: document.getElementById('text-format') && document.getElementById('text-format').value || 'normal',
-                        temperature: parseFloat(document.getElementById('temperature-slider') && document.getElementById('temperature-slider').value || 1)
+                        temperature: parseFloat(document.getElementById('temperature-slider') && document.getElementById('temperature-slider').value || 1),
+                        videoSpeed: parseFloat(document.getElementById('video-speed-slider') && document.getElementById('video-speed-slider').value || 1)
                     };
 
                     console.log('Salvataggio impostazioni:', settings);
@@ -2327,7 +2388,8 @@
                     useCollage: this.elements.collageMode.checked,
                     selectedFont: this.elements.selectedFont && this.elements.selectedFont.value || 'impact',
                     textFormat: this.elements.textFormat && this.elements.textFormat.value || 'normal',
-                    temperature: parseFloat(document.getElementById('temperature-slider') && document.getElementById('temperature-slider').value || 1)
+                    temperature: parseFloat(document.getElementById('temperature-slider') && document.getElementById('temperature-slider').value || 1),
+                    videoSpeed: parseFloat(document.getElementById('video-speed-slider') && document.getElementById('video-speed-slider').value || 1)
                 };
 
                 // Gestione sicura dei margini (permette il valore 0)

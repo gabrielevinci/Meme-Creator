@@ -1,9 +1,9 @@
 {
   "fontFamily": "Impact",
-  "marginTop": 3,
-  "marginBottom": 8,
-  "marginLeft": 5,
-  "marginRight": 12,
+  "marginTop": 30,
+  "marginBottom": 30,
+  "marginLeft": 40,
+  "marginRight": 40,
   "textFormat": "normal",
   "temperature": 1
 }

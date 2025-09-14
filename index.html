@@ -188,8 +188,8 @@
             margin-bottom: 5px;
             color: #555;
         }
+        /* Stili per il Preview Dashboard - AGGIORNATO */
         
-        /* Stili per il Preview Dashboard */
         .banner-preview-container {
             background: #f8f9fa;
             border-radius: 12px;
@@ -198,52 +198,67 @@
         }
         
         .video-frame {
-            background: #333;
+            background: #2c3e50;
             border-radius: 8px;
             overflow: hidden;
-            width: 100%;
-            height: 200px;
+            width: 320px;
+            height: 240px;
             position: relative;
-            display: flex;
-            flex-direction: column;
+            margin: 0 auto;
+            border: 2px solid #34495e;
         }
         
         .banner-preview {
             background: rgba(255, 255, 255, 0.95);
             border: 2px solid #3498db;
-            position: relative;
+            position: absolute;
+            width: 100%;
+            left: 0;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         
         .banner-preview#banner-top-preview {
-            height: 60px;
+            top: 0;
             border-bottom: 3px solid #e74c3c;
         }
         
         .banner-preview#banner-bottom-preview {
-            height: 60px;
+            bottom: 0;
             border-top: 3px solid #e74c3c;
         }
         
-        .margin-area {
-            background: rgba(52, 152, 219, 0.1);
-            border: 1px dashed #3498db;
-            height: 100%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .text-area-rect {
+            position: absolute;
+            border: 3px solid #e74c3c;
+            background: rgba(231, 76, 60, 0.15);
+            box-shadow: inset 0 0 10px rgba(231, 76, 60, 0.2);
             transition: all 0.3s ease;
+            pointer-events: none;
         }
         
-        .text-area {
-            background: rgba(46, 204, 113, 0.2);
-            color: #27ae60;
+        .text-area-rect::before {
+            content: 'AREA TESTO';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #c0392b;
             font-weight: bold;
-            font-size: 14px;
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: 1px solid #27ae60;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            white-space: nowrap;
+        }
+        
+        .text-area-rect.full-banner::before {
+            content: 'FULL BANNER';
+            color: #27ae60;
+        }
+        
+        .text-area-rect.full-banner {
+            border-color: #27ae60;
+            background: rgba(46, 204, 113, 0.15);
+            box-shadow: inset 0 0 10px rgba(46, 204, 113, 0.2);
         }
         
         .video-content {
@@ -1396,25 +1411,24 @@
                     </div>
                 </div>
 
-                <!-- PREVIEW DASHBOARD VISIVO -->
+                <!-- PREVIEW DASHBOARD VISIVO - AGGIORNATO -->
                 <div class="form-group">
-                    <label>🎬 Preview Banner Positioning</label>
+                    <label>🎬 Preview Area Testo Dinamico</label>
                     <div class="banner-preview-container">
                         <div class="video-frame">
+                            <!-- Banner TOP con area testo dinamica -->
                             <div class="banner-preview" id="banner-top-preview">
-                                <div class="margin-area" id="margin-area-top">
-                                    <div class="text-area">TOP</div>
-                                </div>
+                                <div class="text-area-rect" id="text-area-top"></div>
                             </div>
-                            <div class="video-content">
-                                <div class="video-placeholder">
-                                    📹 Video Content
-                                </div>
+                            
+                            <!-- Spazio video al centro -->
+                            <div class="video-content" style="flex: 1; display: flex; align-items: center; justify-content: center; color: #ecf0f1; font-size: 14px;">
+                                📹 Video Content
                             </div>
+                            
+                            <!-- Banner BOTTOM con area testo dinamica -->
                             <div class="banner-preview" id="banner-bottom-preview">
-                                <div class="margin-area" id="margin-area-bottom">
-                                    <div class="text-area">BOTTOM</div>
-                                </div>
+                                <div class="text-area-rect" id="text-area-bottom"></div>
                             </div>
                         </div>
                         <div class="preview-info">
@@ -1849,11 +1863,11 @@
                 fonts.forEach(font => {
                     // Rimuovi l'estensione dal nome del font per la famiglia CSS
                     const fontFamily = font.replace(/\.(ttf|otf|woff|woff2)$/i, '');
-                    
+
                     // CORREZIONE: Escapare le virgolette nei CSS per font con spazi nel nome
                     const escapedFontPath = font.replace(/"/g, '\\"').replace(/'/g, "\\'");
                     const escapedFontFamily = fontFamily.replace(/"/g, '\\"');
-                    
+
                     cssRules += `
                         @font-face {
                             font-family: "${escapedFontFamily}";
@@ -2121,12 +2135,18 @@
                 }, 1000);
             }
 
-            // DASHBOARD PREVIEW: Aggiorna il preview visivo dei banner e margini
+            // DASHBOARD PREVIEW: Aggiorna il preview visivo dei banner e margini - COMPLETAMENTE RISCRITTA
             updateBannerPreview() {
-                const marginTop = parseInt(document.getElementById('margin-top')?.value || 30);
-                const marginBottom = parseInt(document.getElementById('margin-bottom')?.value || 30);
-                const marginLeft = parseInt(document.getElementById('margin-left')?.value || 40);
-                const marginRight = parseInt(document.getElementById('margin-right')?.value || 40);
+                // Ottieni i valori dai slider in modo sicuro
+                const marginTopEl = document.getElementById('margin-top');
+                const marginBottomEl = document.getElementById('margin-bottom');
+                const marginLeftEl = document.getElementById('margin-left');
+                const marginRightEl = document.getElementById('margin-right');
+
+                const marginTop = marginTopEl ? parseInt(marginTopEl.value) || 0 : 0;
+                const marginBottom = marginBottomEl ? parseInt(marginBottomEl.value) || 0 : 0;
+                const marginLeft = marginLeftEl ? parseInt(marginLeftEl.value) || 0 : 0;
+                const marginRight = marginRightEl ? parseInt(marginRightEl.value) || 0 : 0;
 
                 // Aggiorna il display dei margini
                 const marginDisplay = document.getElementById('margin-display');
@@ -2134,62 +2154,58 @@
                     marginDisplay.textContent = `T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`;
                 }
 
-                // CORREZIONE FONDAMENTALE: Il preview deve riflettere la realtà che il banner è più stretto del video
-                // Simula la logica del video processor per calcolare le dimensioni reali del banner
-                const previewVideoWidth = 300; // Larghezza totale del "video" nel preview
-                const previewVideoHeight = 200; // Altezza totale del "video" nel preview
-                
-                // Il banner è più stretto del video (circa 90% per video verticali)
-                const bannerWidth = Math.round(previewVideoWidth * 0.9); // 270px invece di 300px
-                const bannerHeight = 60;
-                const bannerX = Math.round((previewVideoWidth - bannerWidth) / 2); // Centrato
-                
-                const availableWidth = bannerWidth - marginLeft - marginRight;
-                const availableHeight = bannerHeight - marginTop - marginBottom;
+                // Dimensioni del "video" nel preview
+                const previewVideoWidth = 320;
+                const previewVideoHeight = 240;
 
-                // Controlla se tutti i margini sono zero
+                // Banner copre tutta la larghezza del video (specifiche utente)
+                const bannerWidth = previewVideoWidth;
+                // Altezza proporzionale: 1920 : 450 = previewVideoHeight : bannerHeight
+                const bannerHeight = Math.round((previewVideoHeight * 450) / 1920);
+
+                // Calcola l'area effettiva disponibile per il testo
+                const textAreaWidth = bannerWidth - marginLeft - marginRight;
+                const textAreaHeight = bannerHeight - marginTop - marginBottom;
+
+                // Controlla se tutti i margini sono zero (modalità full banner)
                 const allMarginsZero = marginTop === 0 && marginBottom === 0 && marginLeft === 0 && marginRight === 0;
-                const safeWidth = allMarginsZero ? availableWidth : Math.max(availableWidth, 100);
-                const safeHeight = allMarginsZero ? availableHeight : Math.max(availableHeight, 50);
 
                 // Aggiorna il display dell'area testo
                 const textAreaDisplay = document.getElementById('text-area-display');
                 if (textAreaDisplay) {
-                    textAreaDisplay.textContent = `${safeWidth}×${safeHeight}px`;
+                    textAreaDisplay.textContent = `${textAreaWidth}×${textAreaHeight}px`;
                 }
 
-                // Applica gli stili ai margin-area per visualizzare i margini
-                ['top', 'bottom'].forEach(position => {
-                    const marginArea = document.getElementById(`margin-area-${position}`);
-                    if (marginArea) {
-                        marginArea.style.paddingTop = `${marginTop}px`;
-                        marginArea.style.paddingBottom = `${marginBottom}px`;
-                        marginArea.style.paddingLeft = `${marginLeft}px`;
-                        marginArea.style.paddingRight = `${marginRight}px`;
+                // AGGIORNA I BANNER PREVIEW
+                const topBanner = document.getElementById('banner-top-preview');
+                const bottomBanner = document.getElementById('banner-bottom-preview');
+                
+                if (topBanner && bottomBanner) {
+                    // I banner coprono sempre tutta la larghezza
+                    topBanner.style.height = `${bannerHeight}px`;
+                    bottomBanner.style.height = `${bannerHeight}px`;
+                }
 
-                        // Cambia colore se margini = 0 (full block)
+                // AGGIORNA LE AREE TESTO DINAMICHE
+                ['top', 'bottom'].forEach(position => {
+                    const textAreaRect = document.getElementById(`text-area-${position}`);
+                    if (textAreaRect) {
+                        // Posiziona il rettangolo dell'area testo considerando i margini
+                        textAreaRect.style.left = `${marginLeft}px`;
+                        textAreaRect.style.top = `${marginTop}px`;
+                        textAreaRect.style.width = `${Math.max(textAreaWidth, 20)}px`;
+                        textAreaRect.style.height = `${Math.max(textAreaHeight, 15)}px`;
+
+                        // Cambia stile se è modalità full banner (tutti margini = 0)
                         if (allMarginsZero) {
-                            marginArea.style.background = 'rgba(231, 76, 60, 0.1)';
-                            marginArea.style.borderColor = '#e74c3c';
+                            textAreaRect.classList.add('full-banner');
                         } else {
-                            marginArea.style.background = 'rgba(52, 152, 219, 0.1)';
-                            marginArea.style.borderColor = '#3498db';
+                            textAreaRect.classList.remove('full-banner');
                         }
                     }
                 });
 
-                // CORREZIONE FONDAMENTALE: Aggiorna la visualizzazione dei banner per mostrarli centrati e più stretti
-                ['top', 'bottom'].forEach(position => {
-                    const bannerPreview = document.getElementById(`banner-${position}-preview`);
-                    if (bannerPreview) {
-                        // Simula il banner centrato nel video
-                        bannerPreview.style.width = `${bannerWidth}px`;
-                        bannerPreview.style.marginLeft = `${bannerX}px`;
-                        bannerPreview.style.marginRight = `${bannerX}px`;
-                    }
-                });
-
-                console.log(`🎬 Preview aggiornato: banner ${bannerWidth}px @ X=${bannerX}, margini T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}, area ${safeWidth}×${safeHeight}px`);
+                console.log(`🎬 Preview aggiornato: banner ${bannerWidth}px, altezza ${bannerHeight}px, margini T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}, area testo ${textAreaWidth}×${textAreaHeight}px`);
             }
 
             async refreshVideoList() {

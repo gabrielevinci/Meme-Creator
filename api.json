@@ -3821,6 +3821,33 @@
             "tokens_used": 1192,
             "response_time_ms": 1178,
             "output": "```json\n{\n  \"description\": \"Un uomo e un bambino si trovano su una scalinata all'aperto. Il bambino, con capelli ricci e un maglietta marrone, balla con entusiasmo in primo piano, muovendo le braccia "
+          },
+          "1757814883904_nkzmrkyun": {
+            "timestamp": 1757814883904,
+            "tokens": 1167,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1167,
+            "response_time_ms": 1338,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni neri sta ballando con movimenti fluidi e ritmici. La scena si svolge in un ambiente interno con una scala sullo sfondo. La p"
+          },
+          "1757814884884_xv5soib5k": {
+            "timestamp": 1757814884884,
+            "tokens": 1175,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1175,
+            "response_time_ms": 974,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una mano che schiuma abbondantemente un prodotto, probabilmente sapone o detergente, sotto un getto d'acqua. Successivamente, l'inquadratura si sposta s"
+          },
+          "1757814886059_75sowpgcx": {
+            "timestamp": 1757814886059,
+            "tokens": 1187,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1187,
+            "response_time_ms": 1170,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un adulto sono su una scalinata di pietra. Il bambino, vestito con una maglietta marrone e jeans larghi, si muove con espressioni giocose e p"
           }
         }
       },
@@ -3888,9 +3915,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757813186407,
+          "until": 1757815182555,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757812886407
+          "markedAt": 1757814882555
         }
       }
     }

@@ -116,14 +116,14 @@ class VideoProcessor {
     }
 
     // Algoritmo per ridimensionare automaticamente il testo per riempire l'area disponibile
-    autoResizeTextForArea(text, availableWidth, availableHeight, textFormat = 'normal', maxLines = 10) {
+    autoResizeTextForArea(text, availableWidth, availableHeight, textFormat = 'normal', maxLines = 10, maxAllowedFontSize = 100) {
         if (!text || !availableWidth || !availableHeight) {
             return { fontSize: 48, wrappedText: text || '', lines: [text || ''], totalHeight: 48 };
         }
 
         // Parametri di ricerca
         let minFontSize = 12;
-        let maxFontSize = 200;
+        let maxFontSize = maxAllowedFontSize; // Usa il parametro come limite superiore
         let bestFontSize = minFontSize;
         let bestWrappedText = text;
         let bestLines = [text];
@@ -1080,7 +1080,7 @@ class VideoProcessor {
 
         // Se l'utente ha specificato una font-size, usala come preferenza ma controlla se entra
         let useAutoResize = true;
-        let fontSize, wrappedText, lines, totalTextHeight;
+        let fontSize, wrappedText, lines, totalTextHeight, lineHeight; // AGGIUNTO lineHeight qui per evitare conflitti
 
         if (config && config.fontSize) {
             const userFontSize = config.fontSize;
@@ -1135,7 +1135,7 @@ class VideoProcessor {
 
         // Ricalcola line height con la font size finale
         const finalMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, fontSize, config && config.textFormat);
-        const lineHeight = finalMetrics.lineHeight;
+        lineHeight = finalMetrics.lineHeight; // RIMOSSA la dichiarazione const per evitare conflitti
 
         // POSIZIONAMENTO BANNER
         let textFilters = '';
@@ -1144,17 +1144,17 @@ class VideoProcessor {
         if (processedAiResponse.banner_position === 'bottom') {
             const bannerY = height - blockHeight;
 
-            // CORREZIONE: Posizione Y del testo dal margine superiore del banner
-            // La prima riga inizia dal margine superiore specificato + font ascent
-            baseY = bannerY + marginTop + (fontSize * 0.75); // 0.75 è l'ascent tipico
+            // CORREZIONE FINALE: Il testo deve iniziare dal margine superiore + ascent del font
+            // L'ascent è la parte del carattere sopra la baseline (~75% del fontSize)
+            baseY = bannerY + marginTop + (fontSize * 0.8); // 0.8 è un valore più accurato per l'ascent
 
             // CORREZIONE FONDAMENTALE: Usa bannerX per centrare il banner nel video
             textFilters = `[0:v]drawbox=x=${bannerX}:y=${bannerY}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
             console.log(`📍 BANNER BOTTOM - X: ${bannerX}, Y: ${bannerY}, size: ${blockWidth}x${blockHeight}px, baseY testo: ${baseY}`);
 
         } else {
-            // CORREZIONE: Banner in alto - posizione Y del testo dal margine superiore + font ascent
-            baseY = marginTop + (fontSize * 0.75);
+            // CORREZIONE FINALE: Banner in alto - testo inizia da marginTop + ascent per rispettare il margine
+            baseY = marginTop + (fontSize * 0.8); // 0.8 per l'ascent, più accurato
 
             // CORREZIONE FONDAMENTALE: Usa bannerX per centrare il banner nel video
             textFilters = `[0:v]drawbox=x=${bannerX}:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
@@ -1162,76 +1162,116 @@ class VideoProcessor {
         }
 
         // Aggiungi ogni riga con posizionamento preciso secondo i margini
-        for (let i = 0; i < lines.length; i++) {
-            // CORREZIONE COMPLETA ESCAPE: gestisce tutti i caratteri speciali FFmpeg
-            const line = lines[i]
-                .replace(/\\/g, '\\\\') // Backslash prima di tutto
-                .replace(/'/g, "\\'") // Virgolette singole
-                .replace(/"/g, '\\"') // Virgolette doppie - CRITICO!
-                .replace(/:/g, '\\:') // Due punti
-                .replace(/=/g, '\\=') // Uguale
-                .replace(/,/g, '\\,') // Virgola
-                .replace(/\[/g, '\\[') // Parentesi quadre aperte
-                .replace(/\]/g, '\\]') // Parentesi quadre chiuse
-                .replace(/\(/g, '\\(') // Parentesi tonde aperte
-                .replace(/\)/g, '\\)') // Parentesi tonde chiuse
-                .replace(/;/g, '\\;'); // Punto e virgola
+        // LOOP con gestione dinamica del font size
+        let validPositioning = false;
+        let attemptCount = 0;
+        const maxAttempts = 10;
 
-            // Posizione Y per questa riga usando il lineHeight calcolato
-            const yPos = Math.round(baseY + (i * lineHeight));
-
-            // BOUNDARY CHECK: Verifica che la riga non esca dai limiti del banner
-            const bannerBottomY = (processedAiResponse.banner_position === 'bottom') ? height : blockHeight;
-            const bannerTopY = (processedAiResponse.banner_position === 'bottom') ? height - blockHeight : 0;
-            const maxAllowedY = bannerBottomY - marginBottom;
-            const minAllowedY = bannerTopY + marginTop;
-
-            if (yPos < minAllowedY || yPos > maxAllowedY) {
-                console.warn(`⚠️ OVERFLOW RILEVATO! Riga ${i + 1} a Y=${yPos} eccede i limiti del banner [${minAllowedY}-${maxAllowedY}]`);
-
-                // Se il testo eccede, prova a ridurre il font size e ricomincia
-                if (fontSize > 12) {
-                    console.log(`🔄 Tentativo di riduzione font size da ${fontSize}px a ${fontSize-2}px`);
-                    fontSize = fontSize - 2;
-                    lineHeight = fontSize * 1.2;
-
-                    // Ricalcola il baseY con il nuovo font size
-                    if (processedAiResponse.banner_position === 'bottom') {
-                        const bannerY = height - blockHeight;
-                        baseY = bannerY + marginTop + (fontSize * 0.75);
-                    } else {
-                        baseY = marginTop + (fontSize * 0.75);
-                    }
-
-                    console.log(`📐 Nuovo font size: ${fontSize}px, lineHeight: ${lineHeight}px, baseY: ${baseY}`);
-
-                    // Riavvia il loop con i nuovi valori
-                    textFilters = processedAiResponse.banner_position === 'bottom' ?
-                        `[0:v]drawbox=x=${bannerX}:y=${height - blockHeight}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill` :
-                        `[0:v]drawbox=x=${bannerX}:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
-
-                    i = -1; // Ricomincia il loop
-                    continue;
-                } else {
-                    console.error(`❌ IMPOSSIBILE ADATTARE: Font troppo piccolo (${fontSize}px). Il testo non può essere adattato nei margini specificati.`);
-                    break;
-                }
-            }
-
-            console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> "${line}" -> y=${yPos} ✅`);
-
-            // CORREZIONE: Posizionamento X del testo con banner a tutta larghezza
-            // Ora il banner copre tutta la larghezza del video, quindi bannerX = 0
-            const availableTextWidth = textArea.width;
-            const textAreaStartX = marginLeft; // Il testo inizia dal margine sinistro (bannerX = 0)
+        while (!validPositioning && attemptCount < maxAttempts) {
+            attemptCount++;
+            validPositioning = true; // Assume che andrà bene
             
-            // Centra il testo nell'area disponibile del banner
-            const xPos = `${textAreaStartX}+((${availableTextWidth}-text_w)/2)`;
+            console.log(`\n🔄 Tentativo ${attemptCount}: font ${fontSize}px, ${lines.length} righe`);
 
-            console.log(`📏 Posizionamento X - Banner a tutta larghezza, margine ${marginLeft}, area ${availableTextWidth}px`);            // Applica escape al testo per FFmpeg
-            const escapedLine = this.escapeTextForFFmpeg(line);
+            for (let i = 0; i < lines.length; i++) {
+                // CORREZIONE COMPLETA ESCAPE: gestisce tutti i caratteri speciali FFmpeg
+                const line = lines[i]
+                    .replace(/\\/g, '\\\\') // Backslash prima di tutto
+                    .replace(/'/g, "\\'") // Virgolette singole
+                    .replace(/"/g, '\\"') // Virgolette doppie - CRITICO!
+                    .replace(/:/g, '\\:') // Due punti
+                    .replace(/=/g, '\\=') // Uguale
+                    .replace(/,/g, '\\,') // Virgola
+                    .replace(/\[/g, '\\[') // Parentesi quadre aperte
+                    .replace(/\]/g, '\\]') // Parentesi quadre chiuse
+                    .replace(/\(/g, '\\(') // Parentesi tonde aperte
+                    .replace(/\)/g, '\\)') // Parentesi tonde chiuse
+                    .replace(/;/g, '\\;'); // Punto e virgola
 
-            textFilters += `,drawtext=text='${escapedLine}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
+                // Posizione Y per questa riga usando il lineHeight calcolato
+                const yPos = Math.round(baseY + (i * lineHeight));
+
+                // BOUNDARY CHECK CORRETTO: Verifica che la riga non esca dai limiti del banner
+                const bannerTopY = (processedAiResponse.banner_position === 'bottom') ? height - blockHeight : 0;
+                const bannerBottomY = (processedAiResponse.banner_position === 'bottom') ? height : blockHeight;
+                
+                // Limiti effettivi considerando i margini
+                const minAllowedY = bannerTopY + marginTop;
+                const maxAllowedY = bannerBottomY - marginBottom - fontSize; // Sottrai fontSize per evitare che il testo esca dal banner
+
+                if (yPos < minAllowedY || yPos > maxAllowedY) {
+                    console.warn(`⚠️ OVERFLOW RILEVATO! Riga ${i + 1} a Y=${yPos} eccede i limiti del banner [${minAllowedY}-${maxAllowedY}]`);
+                    
+                    // Se il testo eccede e possiamo ridurre il font, fallo
+                    if (fontSize > 12) {
+                        console.log(`🔄 Tentativo di riduzione font size da ${fontSize}px a ${fontSize-2}px`);
+                        
+                        // Riduci font size
+                        const newFontSize = fontSize - 2;
+                        const newLineHeight = newFontSize * 1.2;
+                        fontSize = newFontSize;
+                        lineHeight = newLineHeight;
+
+                        // Ricalcola il testo con la nuova font size
+                        const newAutoSizeResult = this.autoResizeTextForArea(
+                            processedAiResponse.meme_text,
+                            textArea.width,
+                            textArea.height,
+                            config && config.textFormat,
+                            10,
+                            fontSize // Usa il nuovo fontSize come massimo
+                        );
+
+                        // Aggiorna tutte le variabili
+                        wrappedText = newAutoSizeResult.wrappedText;
+                        lines = newAutoSizeResult.lines;
+                        totalTextHeight = newAutoSizeResult.totalHeight;
+
+                        // Ricalcola il baseY con il nuovo font size
+                        if (processedAiResponse.banner_position === 'bottom') {
+                            const bannerY = height - blockHeight;
+                            baseY = bannerY + marginTop + (fontSize * 0.8);
+                        } else {
+                            baseY = marginTop + (fontSize * 0.8);
+                        }
+
+                        console.log(`📐 Nuovo font size: ${fontSize}px, lineHeight: ${lineHeight}px, baseY: ${baseY}, righe: ${lines.length}`);
+
+                        // Reset del banner box
+                        textFilters = processedAiResponse.banner_position === 'bottom' ?
+                            `[0:v]drawbox=x=${bannerX}:y=${height - blockHeight}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill` :
+                            `[0:v]drawbox=x=${bannerX}:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
+
+                        validPositioning = false; // Riprova con i nuovi valori
+                        break; // Esci dal loop delle righe per ricominciare
+                    } else {
+                        console.error(`❌ IMPOSSIBILE ADATTARE: Font troppo piccolo (${fontSize}px). Il testo non può essere adattato nei margini specificati.`);
+                        validPositioning = true; // Forza l'uscita, accetta l'overflow
+                        break;
+                    }
+                }
+
+                // Se arriviamo qui, la riga è posizionata correttamente
+                console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> "${line}" -> y=${yPos} ✅`);
+
+                // CORREZIONE CRITICA: Posizionamento X del testo
+                const availableTextWidth = blockWidth - marginLeft - marginRight;
+                const textAreaStartX = bannerX + marginLeft;
+                const xPos = `${textAreaStartX}+((${availableTextWidth}-text_w)/2)`;
+
+                console.log(`📏 Posizionamento X - Banner X=${bannerX}, width=${blockWidth}, margine L=${marginLeft}R=${marginRight}, area testo=${availableTextWidth}px, startX=${textAreaStartX}`);
+
+                // Applica escape al testo per FFmpeg
+                const escapedLine = this.escapeTextForFFmpeg(line);
+
+                textFilters += `,drawtext=text='${escapedLine}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
+            }
+        }
+
+        if (!validPositioning) {
+            console.error(`❌ FALLIMENTO: Impossibile posizionare il testo dopo ${maxAttempts} tentativi`);
+        } else {
+            console.log(`✅ Posizionamento completato in ${attemptCount} tentativo/i`);
         }
 
         console.log(`🎯 RIEPILOGO FINALE:`);

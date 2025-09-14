@@ -3848,6 +3848,60 @@
             "tokens_used": 1187,
             "response_time_ms": 1170,
             "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un adulto sono su una scalinata di pietra. Il bambino, vestito con una maglietta marrone e jeans larghi, si muove con espressioni giocose e p"
+          },
+          "1757815758706_djt5s2gqg": {
+            "timestamp": 1757815758706,
+            "tokens": 1158,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1158,
+            "response_time_ms": 1013,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni larghi neri esegue una coreografia di danza. I movimenti sono fluidi e coinvolgono tutto il corpo, con le braccia che si muo"
+          },
+          "1757815759990_oweqc43ob": {
+            "timestamp": 1757815759990,
+            "tokens": 1161,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1161,
+            "response_time_ms": 1277,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una mano che schiuma abbondantemente del sapone, creando una nuvola di bolle. Successivamente, l'inquadratura si sposta su una serie di prodotti per la "
+          },
+          "1757815761156_teg5rjjdi": {
+            "timestamp": 1757815761156,
+            "tokens": 1203,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1203,
+            "response_time_ms": 1161,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e una maglietta marrone e jeans larghi balla in primo piano, con un uomo seduto sui gradini di una scala di pietra dietro di lui. L'uomo, vesti"
+          },
+          "1757816242964_3t4k88ytw": {
+            "timestamp": 1757816242964,
+            "tokens": 1222,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1222,
+            "response_time_ms": 1309,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con un cappuccio bianco e pantaloni neri larghi esegue una danza ritmica in un ambiente interno. I suoi movimenti sono fluidi e coordinati, con le braccia"
+          },
+          "1757816243899_d7ils6p1b": {
+            "timestamp": 1757816243899,
+            "tokens": 1171,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1171,
+            "response_time_ms": 929,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una mano che manipola abbondante schiuma, suggerendo una routine di pulizia o un momento di relax. Successivamente, l'attenzione si sposta su una serie "
+          },
+          "1757816244909_50s3qbujq": {
+            "timestamp": 1757816244909,
+            "tokens": 1156,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1156,
+            "response_time_ms": 1003,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono in piedi e seduti su una scala esterna con alberi e un muro di mattoni sullo sfondo. Il bambino balla con entusiasmo, mentre l'u"
           }
         }
       },
@@ -3915,9 +3969,9 @@
           }
         },
         "temporaryUnavailable": {
-          "until": 1757815182555,
+          "until": 1757816541644,
           "reason": "Multiple consecutive failures",
-          "markedAt": 1757814882555
+          "markedAt": 1757816241644
         }
       }
     }

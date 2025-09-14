@@ -1511,6 +1511,21 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="block-height">📐 Altezza Blocco Bianco</label>
+                    <div class="slider-container">
+                        <input type="range" id="block-height" class="range-input" min="200" max="800" value="450" step="10">
+                        <div class="slider-labels">
+                            <span class="slider-label-left">200px</span>
+                            <span id="block-height-value" class="slider-value">450px</span>
+                            <span class="slider-label-right">800px</span>
+                        </div>
+                    </div>
+                    <div class="help-text">
+                        <small>💡 Controlla l'altezza del banner bianco per video di altezza 1920px. Altri formati verranno scalati proporzionalmente.</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label>📏 Margini Testo</label>
                     <div class="margin-controls">
                         <div class="margin-item">
@@ -2063,6 +2078,10 @@
                     id: 'margin-right',
                     valueId: 'margin-right-value',
                     suffix: 'px'
+                }, {
+                    id: 'block-height',
+                    valueId: 'block-height-value',
+                    suffix: 'px'
                 }];
 
                 // Gestione speciale per il temperature slider
@@ -2450,6 +2469,15 @@
                         }
                     }
 
+                    if (settings.blockHeight !== undefined) {
+                        const blockHeightInput = document.getElementById('block-height');
+                        const blockHeightValue = document.getElementById('block-height-value');
+                        if (blockHeightInput && blockHeightValue) {
+                            blockHeightInput.value = settings.blockHeight;
+                            blockHeightValue.textContent = settings.blockHeight + 'px';
+                        }
+                    }
+
                     if (settings.textFormat) {
                         const textFormatSelect = document.getElementById('text-format');
                         if (textFormatSelect) {
@@ -2601,6 +2629,7 @@
                         marginBottom: parseInt(document.getElementById('margin-bottom') && document.getElementById('margin-bottom').value || 30),
                         marginLeft: parseInt(document.getElementById('margin-left') && document.getElementById('margin-left').value || 40),
                         marginRight: parseInt(document.getElementById('margin-right') && document.getElementById('margin-right').value || 40),
+                        blockHeight: parseInt(document.getElementById('block-height') && document.getElementById('block-height').value || 450),
                         textFormat: document.getElementById('text-format') && document.getElementById('text-format').value || 'normal',
                         temperature: parseFloat(document.getElementById('temperature-slider') && document.getElementById('temperature-slider').value || 1),
                         videoSpeed: parseFloat(document.getElementById('video-speed-slider') && document.getElementById('video-speed-slider').value || 1),
@@ -2757,8 +2786,11 @@
 
                 // Banner copre tutta la larghezza del video (specifiche utente)
                 const bannerWidth = previewVideoWidth;
-                // Altezza proporzionale: 1920 : 450 = previewVideoHeight : bannerHeight
-                const bannerHeight = Math.round((previewVideoHeight * 450) / 1920);
+                
+                // Altezza proporzionale usando il valore dall'interfaccia utente
+                const blockHeightEl = document.getElementById('block-height');
+                const userBlockHeight = blockHeightEl ? parseInt(blockHeightEl.value) : 450;
+                const bannerHeight = Math.round((previewVideoHeight * userBlockHeight) / 1920);
 
                 // Calcola l'area effettiva disponibile per il testo
                 const textAreaWidth = bannerWidth - marginLeft - marginRight;
@@ -2890,6 +2922,11 @@
                 if (isNaN(config.marginBottom)) config.marginBottom = 30;
                 if (isNaN(config.marginLeft)) config.marginLeft = 40;
                 if (isNaN(config.marginRight)) config.marginRight = 40;
+
+                // Gestione sicura dell'altezza del blocco
+                const blockHeightEl = document.getElementById('block-height');
+                config.blockHeight = blockHeightEl ? parseInt(blockHeightEl.value) : 450;
+                if (isNaN(config.blockHeight) || config.blockHeight < 200) config.blockHeight = 450;
 
                 try {
                     this.setProcessingState(true);

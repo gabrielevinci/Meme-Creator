@@ -63,24 +63,27 @@ class VideoProcessor {
     }
 
     // Calcola le dimensioni del blocco bianco in base alla risoluzione del video
-    calculateBlockDimensions(videoWidth, videoHeight) {
+    calculateBlockDimensions(videoWidth, videoHeight, customBlockHeight = null) {
             // CORREZIONE SECONDO SPECIFICHE UTENTE:
             // 1. Larghezza banner = larghezza video (nessun spazio laterale)
-            // 2. Altezza banner proporzionale: 1920 : 450 = lunghezza_video : x
+            // 2. Altezza banner proporzionale: 1920 : customBlockHeight = lunghezza_video : x
             // 3. La "lunghezza video" nella proporzione è l'altezza del video
 
             const blockWidth = videoWidth; // Banner copre tutta la larghezza del video
 
-            // Calcola l'altezza proporzionale usando la formula: 1920 : 450 = videoHeight : blockHeight
-            // Risolviamo per blockHeight: blockHeight = (videoHeight * 450) / 1920
-            const referenceHeight = 450;
+            // Usa l'altezza personalizzata dall'utente o il default 450
+            const referenceHeight = customBlockHeight || 450;
             const referenceVideoHeight = 1920;
+            
+            // Calcola l'altezza proporzionale usando la formula: 1920 : referenceHeight = videoHeight : blockHeight
+            // Risolviamo per blockHeight: blockHeight = (videoHeight * referenceHeight) / 1920
             const blockHeight = Math.round((videoHeight * referenceHeight) / referenceVideoHeight);
 
             console.log(`📐 Calcolo banner proporzionale:`);
             console.log(`   Formula: ${referenceVideoHeight} : ${referenceHeight} = ${videoHeight} : ${blockHeight}`);
             console.log(`   Video: ${videoWidth}×${videoHeight}`);
             console.log(`   Banner: ${blockWidth}×${blockHeight} (copre tutta la larghezza)`);
+            console.log(`   Altezza di riferimento: ${referenceHeight}px (da utente: ${customBlockHeight ? 'SI' : 'NO'})`);
 
             return {
                 width: blockWidth,
@@ -1310,7 +1313,7 @@ class VideoProcessor {
         // DIMENSIONAMENTO AUTOMATICO: Adatta blocco e testo alla risoluzione del video
 
         // Calcola le dimensioni ottimali del blocco bianco in base alla risoluzione
-        const blockDimensions = this.calculateBlockDimensions(width, height);
+        const blockDimensions = this.calculateBlockDimensions(width, height, config?.blockHeight);
         const blockWidth = blockDimensions.width;
         const blockHeight = blockDimensions.height;
         const bannerX = blockDimensions.x; // AGGIUNTO: posizione X del banner
@@ -1675,7 +1678,15 @@ class VideoProcessor {
             currentLabel = textLabel;
             stepCounter++;
 
-            // 4. Velocità video (sempre per ultimo se presente)
+            // 4. CORREZIONE BORDINO BIANCO: Forza il ridimensionamento alle dimensioni originali
+            // Questo assicura che eventuali piccole variazioni di dimensioni dai filtri precedenti vengano corrette
+            const resizeLabel = `[v${stepCounter}]`;
+            videoFilters.push(`${currentLabel}scale=${width}:${height}:force_original_aspect_ratio=disable${resizeLabel}`);
+            currentLabel = resizeLabel;
+            stepCounter++;
+            console.log(`📐 Aggiunto ridimensionamento forzato: ${width}x${height}px per eliminare bordini`);
+
+            // 5. Velocità video (sempre per ultimo se presente)
             if (needsVideoSpeed) {
                 const finalLabel = '[v]';
                 videoFilters.push(`${currentLabel}setpts=PTS/${config.videoSpeed}${finalLabel}`);
@@ -1683,7 +1694,7 @@ class VideoProcessor {
             } else {
                 // Rinomina il label finale
                 const lastFilter = videoFilters[videoFilters.length - 1];
-                videoFilters[videoFilters.length - 1] = lastFilter.replace(textLabel, '[v]');
+                videoFilters[videoFilters.length - 1] = lastFilter.replace(resizeLabel, '[v]');
             }
 
         } else {

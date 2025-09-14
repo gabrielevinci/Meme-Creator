@@ -1439,7 +1439,8 @@ class VideoProcessor {
                 const escapedImagePath = config.overlayImagePath.replace(/\\/g, '/').replace(/:/g, '\\:');
 
                 videoFilters.push(`[1:v]scale=${width}:${height}[scaled_overlay]`);
-                videoFilters.push(`${currentLabel}[scaled_overlay]blend=all_mode=soft_light:all_opacity=${opacity}${nextLabel}`);
+                // Usa blend con un modo compatibile e sintassi corretta
+                videoFilters.push(`${currentLabel}[scaled_overlay]blend=all_mode=normal:all_opacity=${opacity}${nextLabel}`);
                 currentLabel = nextLabel;
                 stepCounter++;
                 console.log(`�️ Aggiunto overlay immagine: ${config.overlayImagePath} (opacità: ${config.overlayOpacity}%)`);

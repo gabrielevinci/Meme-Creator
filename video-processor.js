@@ -1656,7 +1656,34 @@ class VideoProcessor {
                 console.log(`🌅 Aggiunto filtro lift: ${config.lift} (curves value: ${liftValue})`);
             }
 
-            // 2. Overlay immagine (se specificato)
+            // 2. Zoom video (se specificato) - PRIMA dell'overlay e del testo
+            if (needsVideoZoom) {
+                const nextLabel = `[v${stepCounter}]`;
+                const zoomFactor = config.videoZoom;
+                
+                if (zoomFactor > 1) {
+                    // Zoom in: scala il video e poi croppalo al centro per mantenere le dimensioni originali
+                    const scaledWidth = Math.round(width * zoomFactor);
+                    const scaledHeight = Math.round(height * zoomFactor);
+                    const cropX = Math.round((scaledWidth - width) / 2);
+                    const cropY = Math.round((scaledHeight - height) / 2);
+                    
+                    videoFilters.push(`${currentLabel}scale=${scaledWidth}:${scaledHeight},crop=${width}:${height}:${cropX}:${cropY}${nextLabel}`);
+                    console.log(`🔍 Aggiunto zoom in: ${zoomFactor}x (scala ${scaledWidth}x${scaledHeight} -> crop ${width}x${height})`);
+                } else if (zoomFactor < 1) {
+                    // Zoom out: scala il video più piccolo e aggiunge padding nero per mantenere le dimensioni originali
+                    const scaledWidth = Math.round(width * zoomFactor);
+                    const scaledHeight = Math.round(height * zoomFactor);
+                    
+                    videoFilters.push(`${currentLabel}scale=${scaledWidth}:${scaledHeight},pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black${nextLabel}`);
+                    console.log(`🔍 Aggiunto zoom out: ${zoomFactor}x (scala ${scaledWidth}x${scaledHeight} -> pad ${width}x${height})`);
+                }
+                
+                currentLabel = nextLabel;
+                stepCounter++;
+            }
+
+            // 3. Overlay immagine (se specificato)
             if (needsOverlayImage) {
                 const nextLabel = `[v${stepCounter}]`;
                 // CORREZIONE: Inverte l'opacità - 100% slider = opaco, 0% = trasparente
@@ -1674,38 +1701,11 @@ class VideoProcessor {
                 console.log(`🖼️ Aggiunto overlay immagine [${overlayInputIndex}]: ${config.overlayImagePath} (opacità: ${config.overlayOpacity}%)`);
             }
 
-            // 3. Aggiungi il testo e il banner bianco
+            // 4. Aggiungi il testo e il banner bianco
             const textLabel = `[v${stepCounter}]`;
             videoFilters.push(`${currentLabel}${textFilters.replace('[0:v]', '')}${textLabel}`);
             currentLabel = textLabel;
             stepCounter++;
-
-            // 4. Zoom video (se specificato)
-            if (needsVideoZoom) {
-                const zoomLabel = `[v${stepCounter}]`;
-                const zoomFactor = config.videoZoom;
-                
-                if (zoomFactor > 1) {
-                    // Zoom in: scala il video e poi croppalo al centro per mantenere le dimensioni originali
-                    const scaledWidth = Math.round(width * zoomFactor);
-                    const scaledHeight = Math.round(height * zoomFactor);
-                    const cropX = Math.round((scaledWidth - width) / 2);
-                    const cropY = Math.round((scaledHeight - height) / 2);
-                    
-                    videoFilters.push(`${currentLabel}scale=${scaledWidth}:${scaledHeight},crop=${width}:${height}:${cropX}:${cropY}${zoomLabel}`);
-                    console.log(`🔍 Aggiunto zoom in: ${zoomFactor}x (scala ${scaledWidth}x${scaledHeight} -> crop ${width}x${height})`);
-                } else if (zoomFactor < 1) {
-                    // Zoom out: scala il video più piccolo e aggiunge padding nero per mantenere le dimensioni originali
-                    const scaledWidth = Math.round(width * zoomFactor);
-                    const scaledHeight = Math.round(height * zoomFactor);
-                    
-                    videoFilters.push(`${currentLabel}scale=${scaledWidth}:${scaledHeight},pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black${zoomLabel}`);
-                    console.log(`🔍 Aggiunto zoom out: ${zoomFactor}x (scala ${scaledWidth}x${scaledHeight} -> pad ${width}x${height})`);
-                }
-                
-                currentLabel = zoomLabel;
-                stepCounter++;
-            }
 
             // 5. CORREZIONE BORDINO BIANCO: Forza il ridimensionamento alle dimensioni originali
             // Questo assicura che eventuali piccole variazioni di dimensioni dai filtri precedenti vengano corrette

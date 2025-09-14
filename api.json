@@ -6413,6 +6413,60 @@
             "tokens_used": 1122,
             "response_time_ms": 827,
             "output": "```json\n{\n  \"description\": \"Un primo piano di una mano che tiene un flacone giallo chiaro di 'sundae', una schiuma per il corpo alla vaniglia. Lo sfondo è composto da piastrelle bianche da doccia. Il "
+          },
+          "1757893261977_8pgugamse": {
+            "timestamp": 1757893261977,
+            "tokens": 1106,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1106,
+            "response_time_ms": 2791,
+            "output": "```json\n{\n  \"description\": \"Un ruscello scorre tra rocce coperte di muschio e felci rigogliose in una foresta lussureggiante. L'acqua è chiara e frizzante, mentre le foglie verdi scuro creano un'atmos"
+          },
+          "1757893264303_wr1ik3lwz": {
+            "timestamp": 1757893264303,
+            "tokens": 1135,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1135,
+            "response_time_ms": 2319,
+            "output": "```json\n{\n  \"description\": \"Un tramonto infuocato dipinge il cielo con sfumature di arancione e giallo intenso sopra una strada a più corsie. Diverse auto percorrono la strada, alcune visibili in lont"
+          },
+          "1757893267570_jbitjcrc1": {
+            "timestamp": 1757893267570,
+            "tokens": 1108,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1108,
+            "response_time_ms": 3260,
+            "output": "```json\n{\n  \"description\": \"Una veduta aerea notturna di un paesaggio urbano illuminato. Grattacieli alti punteggiano lo skyline scuro, con le loro finestre incandescenti che creano un vivido contrast"
+          },
+          "1757893268619_s41igkx21": {
+            "timestamp": 1757893268619,
+            "tokens": 1119,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1119,
+            "response_time_ms": 1044,
+            "output": "```json\n{\n  \"description\": \"Una calma pozza d'acqua riflette maestose montagne illuminate dal sole al tramonto. Sulla riva sono presenti rocce e un ciuffo d'erba, mentre sullo sfondo si intravedono co"
+          },
+          "1757893269660_sx02yqqna": {
+            "timestamp": 1757893269660,
+            "tokens": 1146,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1146,
+            "response_time_ms": 1035,
+            "output": "```json\n{\n  \"description\": \"Una vista aerea mozzafiato rivela una scogliera imponente che si tuffa in acque cristalline di un turchese vibrante. Una piccola spiaggia sabbiosa è incastonata tra le rocc"
+          },
+          "1757893270492_02lumacjq": {
+            "timestamp": 1757893270492,
+            "tokens": 1108,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1108,
+            "response_time_ms": 826,
+            "output": "```json\n{\n  \"description\": \"Una mano tiene una bottiglia cilindrica di colore giallo chiaro con il marchio \\\"sundae\\\" e la scritta \\\"Very Vanilla\\\" sulla parte inferiore. La bottiglia è in una stanza "
           }
         }
       },

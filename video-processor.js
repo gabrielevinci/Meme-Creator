@@ -1569,6 +1569,32 @@ class VideoProcessor {
         const needsOverlayImage = config && config.overlayImageEnabled && config.overlayImagePath;
         const needsVideoSpeed = config && config.videoSpeed && config.videoSpeed !== 1;
 
+        // IMPORTANTE: Calcola gli indici degli input SUBITO per usarli nei filtri
+        let overlayInputIndex = -1;
+        let audioInputIndex = -1;
+        let backgroundAudioInputIndex = -1;
+        
+        // Calcola gli indici in base agli input che saranno aggiunti
+        let inputCounter = 1; // [0] è sempre il video principale
+
+        if (needsOverlayImage) {
+            overlayInputIndex = inputCounter;
+            inputCounter++;
+        }
+
+        // Determina se useremo audio preprocessato o tradizionale
+        const preprocessedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir);
+        
+        if (preprocessedAudioPath) {
+            audioInputIndex = inputCounter;
+            inputCounter++;
+        } else if (config && config.backgroundAudioEnabled && config.backgroundAudioPath) {
+            backgroundAudioInputIndex = inputCounter;
+            inputCounter++;
+        }
+
+        console.log(`📋 Indici input calcolati: overlay=${overlayInputIndex}, audio=${audioInputIndex}, bgAudio=${backgroundAudioInputIndex}`);
+
         videoProcessingNeeded = needsContrast || needsSaturation || needsGamma || needsLift || needsOverlayImage || needsVideoSpeed;
 
         console.log(`🎨 Analisi filtri video necessari:`, {
@@ -1634,14 +1660,13 @@ class VideoProcessor {
                 // Prepara il path dell'immagine (escapato per FFmpeg)
                 const escapedImagePath = config.overlayImagePath.replace(/\\/g, '/').replace(/:/g, '\\:');
 
-                videoFilters.push(`[1:v]scale=${width}:${height}[scaled_overlay]`);
+                // USA L'INDICE CORRETTO dell'overlay image
+                videoFilters.push(`[${overlayInputIndex}:v]scale=${width}:${height}[scaled_overlay]`);
                 // Usa blend con un modo compatibile e sintassi corretta
                 videoFilters.push(`${currentLabel}[scaled_overlay]blend=all_mode=normal:all_opacity=${opacity}${nextLabel}`);
                 currentLabel = nextLabel;
                 stepCounter++;
-                console.log(`�️ Aggiunto overlay immagine: ${config.overlayImagePath} (opacità: ${config.overlayOpacity}%)`);
-
-                // Bisognerà aggiungere il file immagine come input aggiuntivo
+                console.log(`🖼️ Aggiunto overlay immagine [${overlayInputIndex}]: ${config.overlayImagePath} (opacità: ${config.overlayOpacity}%)`);
             }
 
             // 3. Aggiungi il testo e il banner bianco
@@ -1675,18 +1700,14 @@ class VideoProcessor {
 
         console.log(`🎵 === AVVIO PREPROCESSING AUDIO OTTIMIZZATO ===`);
 
-        // STEP 1: Preprocessa l'audio con SOX (molto più veloce)
-        const preprocessedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir);
-
+        // STEP 1: Audio già preprocessato in precedenza - usa il risultato
         let finalAudioLabel = null;
-        let audioInputs = 1;
         const audioFilters = [];
 
         if (preprocessedAudioPath) {
             // Audio già processato con SOX - usa il file processato
             console.log(`✅ Utilizzo audio preprocessato con SOX: ${path.basename(preprocessedAudioPath)}`);
-            audioInputs++; // Il file audio preprocessato sarà un input aggiuntivo
-            finalAudioLabel = `[${audioInputs - 1}:a]`; // Riferimento diretto al file preprocessato
+            finalAudioLabel = `[${audioInputIndex}:a]`; // Riferimento diretto al file preprocessato
         } else {
             // Nessuna modifica audio necessaria - usa approccio tradizionale FFmpeg
             console.log(`📋 Audio non modificato - uso streaming FFmpeg tradizionale`);
@@ -1709,17 +1730,17 @@ class VideoProcessor {
                     console.log(`🔊 Fallback FFmpeg volume: ${volumeDb}dB`);
                 }
 
-                if (hasBackgroundAudio) {
-                    audioInputs++;
+                if (hasBackgroundAudio && backgroundAudioInputIndex !== -1) {
                     const bgVolumeDb = config.backgroundAudioVolume || 0;
                     const bgLabel = `[bg${stepCounter}]`;
                     const mixLabel = `[a${stepCounter}]`;
 
-                    audioFilters.push(`[${audioInputs - 1}:a]volume=${bgVolumeDb}dB${bgLabel}`);
+                    // USA L'INDICE CORRETTO del background audio
+                    audioFilters.push(`[${backgroundAudioInputIndex}:a]volume=${bgVolumeDb}dB${bgLabel}`);
                     audioFilters.push(`${currentLabel}${bgLabel}amix=inputs=2:duration=first:dropout_transition=0${mixLabel}`);
                     currentLabel = mixLabel;
                     stepCounter++;
-                    console.log(`🎵 Fallback FFmpeg mix: ${bgVolumeDb}dB`);
+                    console.log(`🎵 Fallback FFmpeg mix [${backgroundAudioInputIndex}]: ${bgVolumeDb}dB`);
                 }
 
                 if (hasSpeedChange && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
@@ -1745,20 +1766,21 @@ class VideoProcessor {
         // Parametri FFmpeg di base
         const ffmpegArgs = ['-i', inputVideoPath];
 
-        // Input aggiuntivi OTTIMIZZATI
+        // Input aggiuntivi OTTIMIZZATI - USA GLI INDICI CALCOLATI
         if (needsOverlayImage) {
             ffmpegArgs.push('-i', config.overlayImagePath);
+            console.log(`🖼️ Input overlay image [${overlayInputIndex}]: ${config.overlayImagePath}`);
         }
 
         // NUOVO: Audio preprocessato con SOX (molto più efficiente)
         if (preprocessedAudioPath) {
             ffmpegArgs.push('-i', preprocessedAudioPath);
-            console.log(`📤 Input audio preprocessato: ${path.basename(preprocessedAudioPath)}`);
+            console.log(`📤 Input audio preprocessato [${audioInputIndex}]: ${path.basename(preprocessedAudioPath)}`);
         } else {
             // Fallback: audio tradizionale (solo se preprocessing fallisce)
             if (config && config.backgroundAudioEnabled && config.backgroundAudioPath) {
                 ffmpegArgs.push('-i', config.backgroundAudioPath);
-                console.log(`📤 Input audio tradizionale: ${path.basename(config.backgroundAudioPath)}`);
+                console.log(`📤 Input audio tradizionale [${backgroundAudioInputIndex}]: ${path.basename(config.backgroundAudioPath)}`);
             }
         }
 

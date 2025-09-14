@@ -1571,6 +1571,7 @@ class VideoProcessor {
         const needsLift = config && config.lift !== undefined && config.lift !== 0;
         const needsOverlayImage = config && config.overlayImageEnabled && config.overlayImagePath;
         const needsVideoSpeed = config && config.videoSpeed && config.videoSpeed !== 1;
+        const needsVideoZoom = config && config.videoZoom !== undefined && config.videoZoom !== 1;
 
         // IMPORTANTE: Calcola gli indici degli input SUBITO per usarli nei filtri
         let overlayInputIndex = -1;
@@ -1598,7 +1599,7 @@ class VideoProcessor {
 
         console.log(`📋 Indici input calcolati: overlay=${overlayInputIndex}, audio=${audioInputIndex}, bgAudio=${backgroundAudioInputIndex}`);
 
-        videoProcessingNeeded = needsContrast || needsSaturation || needsGamma || needsLift || needsOverlayImage || needsVideoSpeed;
+        videoProcessingNeeded = needsContrast || needsSaturation || needsGamma || needsLift || needsOverlayImage || needsVideoSpeed || needsVideoZoom;
 
         console.log(`🎨 Analisi filtri video necessari:`, {
             contrast: needsContrast ? config.contrast : 'skip',
@@ -1606,7 +1607,8 @@ class VideoProcessor {
             gamma: needsGamma ? config.gamma : 'skip',
             lift: needsLift ? config.lift : 'skip',
             overlayImage: needsOverlayImage ? 'enabled' : 'skip',
-            videoSpeed: needsVideoSpeed ? config.videoSpeed + 'x' : 'skip'
+            videoSpeed: needsVideoSpeed ? config.videoSpeed + 'x' : 'skip',
+            videoZoom: needsVideoZoom ? config.videoZoom + 'x' : 'skip'
         });
 
         if (videoProcessingNeeded) {
@@ -1678,7 +1680,34 @@ class VideoProcessor {
             currentLabel = textLabel;
             stepCounter++;
 
-            // 4. CORREZIONE BORDINO BIANCO: Forza il ridimensionamento alle dimensioni originali
+            // 4. Zoom video (se specificato)
+            if (needsVideoZoom) {
+                const zoomLabel = `[v${stepCounter}]`;
+                const zoomFactor = config.videoZoom;
+                
+                if (zoomFactor > 1) {
+                    // Zoom in: scala il video e poi croppalo al centro per mantenere le dimensioni originali
+                    const scaledWidth = Math.round(width * zoomFactor);
+                    const scaledHeight = Math.round(height * zoomFactor);
+                    const cropX = Math.round((scaledWidth - width) / 2);
+                    const cropY = Math.round((scaledHeight - height) / 2);
+                    
+                    videoFilters.push(`${currentLabel}scale=${scaledWidth}:${scaledHeight},crop=${width}:${height}:${cropX}:${cropY}${zoomLabel}`);
+                    console.log(`🔍 Aggiunto zoom in: ${zoomFactor}x (scala ${scaledWidth}x${scaledHeight} -> crop ${width}x${height})`);
+                } else if (zoomFactor < 1) {
+                    // Zoom out: scala il video più piccolo e aggiunge padding nero per mantenere le dimensioni originali
+                    const scaledWidth = Math.round(width * zoomFactor);
+                    const scaledHeight = Math.round(height * zoomFactor);
+                    
+                    videoFilters.push(`${currentLabel}scale=${scaledWidth}:${scaledHeight},pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black${zoomLabel}`);
+                    console.log(`🔍 Aggiunto zoom out: ${zoomFactor}x (scala ${scaledWidth}x${scaledHeight} -> pad ${width}x${height})`);
+                }
+                
+                currentLabel = zoomLabel;
+                stepCounter++;
+            }
+
+            // 5. CORREZIONE BORDINO BIANCO: Forza il ridimensionamento alle dimensioni originali
             // Questo assicura che eventuali piccole variazioni di dimensioni dai filtri precedenti vengano corrette
             const resizeLabel = `[v${stepCounter}]`;
             videoFilters.push(`${currentLabel}scale=${width}:${height}:force_original_aspect_ratio=disable${resizeLabel}`);
@@ -1686,7 +1715,7 @@ class VideoProcessor {
             stepCounter++;
             console.log(`📐 Aggiunto ridimensionamento forzato: ${width}x${height}px per eliminare bordini`);
 
-            // 5. Velocità video (sempre per ultimo se presente)
+            // 6. Velocità video (sempre per ultimo se presente)
             if (needsVideoSpeed) {
                 const finalLabel = '[v]';
                 videoFilters.push(`${currentLabel}setpts=PTS/${config.videoSpeed}${finalLabel}`);

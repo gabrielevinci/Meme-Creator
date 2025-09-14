@@ -72,7 +72,20 @@ class VideoProcessor {
         const referenceWidth = 1080; // Width di riferimento per 9:16
 
         let blockHeight;
-        let blockWidth = videoWidth; // Il blocco occupa sempre tutta la larghezza
+        // CORREZIONE FONDAMENTALE: Il banner NON copre tutta la larghezza del video
+        // Deve essere più stretto e centrato, tipicamente 85-90% della larghezza del video
+        let blockWidth;
+        
+        if (aspectRatio <= referenceAspectRatio * 1.1) {
+            // Video verticale (9:16) - banner più stretto per estetica migliore
+            blockWidth = Math.round(videoWidth * 0.9); // 90% della larghezza
+        } else if (aspectRatio > 1.5) {
+            // Video orizzontale - banner può essere più largo
+            blockWidth = Math.round(videoWidth * 0.85); // 85% della larghezza
+        } else {
+            // Video quadrato - larghezza intermedia
+            blockWidth = Math.round(videoWidth * 0.88); // 88% della larghezza
+        }
 
         if (aspectRatio <= referenceAspectRatio * 1.1) {
             // Video verticale o quasi verticale - usa altura di riferimento scalata
@@ -91,11 +104,15 @@ class VideoProcessor {
 
         blockHeight = Math.max(minHeight, Math.min(blockHeight, maxHeight));
 
-        console.log(`📐 Dimensioni blocco calcolate - Video: ${videoWidth}x${videoHeight} (AR: ${aspectRatio.toFixed(3)}) -> Blocco: ${blockWidth}x${blockHeight}`);
+        // CALCOLA POSIZIONE X PER CENTRARE IL BANNER NEL VIDEO
+        const bannerX = Math.round((videoWidth - blockWidth) / 2);
+
+        console.log(`📐 Dimensioni blocco calcolate - Video: ${videoWidth}x${videoHeight} (AR: ${aspectRatio.toFixed(3)}) -> Blocco: ${blockWidth}x${blockHeight} @ X=${bannerX}`);
 
         return {
             width: blockWidth,
             height: blockHeight,
+            x: bannerX, // AGGIUNTO: posizione X per centrare il banner
             aspectRatio: aspectRatio
         };
     }
@@ -1075,6 +1092,7 @@ class VideoProcessor {
         const blockDimensions = this.calculateBlockDimensions(width, height);
         const blockWidth = blockDimensions.width;
         const blockHeight = blockDimensions.height;
+        const bannerX = blockDimensions.x; // AGGIUNTO: posizione X del banner
 
         // Ottieni margini dalla configurazione (gestisce correttamente il valore 0)
         const marginTop = (config && config.marginTop !== undefined) ? config.marginTop : 30;
@@ -1087,7 +1105,7 @@ class VideoProcessor {
         // Calcola l'area disponibile per il testo
         const textArea = this.calculateAvailableTextArea(blockWidth, blockHeight, margins);
 
-        console.log(`🎨 Configurazione - Blocco: ${blockWidth}x${blockHeight}px, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`);
+        console.log(`🎨 Configurazione - Blocco: ${blockWidth}x${blockHeight}px @ X=${bannerX}, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`);
         console.log(`📏 Area testo disponibile: ${textArea.width}x${textArea.height}px`);
 
         // Se l'utente ha specificato una font-size, usala come preferenza ma controlla se entra
@@ -1160,15 +1178,17 @@ class VideoProcessor {
             // La prima riga inizia dal margine superiore specificato + font ascent
             baseY = bannerY + marginTop + (fontSize * 0.75); // 0.75 è l'ascent tipico
 
-            textFilters = `[0:v]drawbox=x=0:y=${bannerY}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
-            console.log(`📍 BANNER BOTTOM - Y: ${bannerY}, altezza: ${blockHeight}px, baseY testo: ${baseY}`);
+            // CORREZIONE FONDAMENTALE: Usa bannerX per centrare il banner nel video
+            textFilters = `[0:v]drawbox=x=${bannerX}:y=${bannerY}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
+            console.log(`📍 BANNER BOTTOM - X: ${bannerX}, Y: ${bannerY}, size: ${blockWidth}x${blockHeight}px, baseY testo: ${baseY}`);
 
         } else {
             // CORREZIONE: Banner in alto - posizione Y del testo dal margine superiore + font ascent
             baseY = marginTop + (fontSize * 0.75);
 
-            textFilters = `[0:v]drawbox=x=0:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
-            console.log(`📍 BANNER TOP - Y: 0, altezza: ${blockHeight}px, baseY testo: ${baseY}`);
+            // CORREZIONE FONDAMENTALE: Usa bannerX per centrare il banner nel video
+            textFilters = `[0:v]drawbox=x=${bannerX}:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
+            console.log(`📍 BANNER TOP - X: ${bannerX}, Y: 0, size: ${blockWidth}x${blockHeight}px, baseY testo: ${baseY}`);
         }
 
         // Aggiungi ogni riga con posizionamento preciso secondo i margini
@@ -1217,8 +1237,8 @@ class VideoProcessor {
                     
                     // Riavvia il loop con i nuovi valori
                     textFilters = processedAiResponse.banner_position === 'bottom' ? 
-                        `[0:v]drawbox=x=0:y=${height - blockHeight}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill` :
-                        `[0:v]drawbox=x=0:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
+                        `[0:v]drawbox=x=${bannerX}:y=${height - blockHeight}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill` :
+                        `[0:v]drawbox=x=${bannerX}:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
                     
                     i = -1; // Ricomincia il loop
                     continue;
@@ -1230,17 +1250,15 @@ class VideoProcessor {
 
             console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> "${line}" -> y=${yPos} ✅`);
 
-            // Posizionamento X centrato: centra ogni riga all'interno dell'area disponibile
-            // Formula: marginLeft + (areaDisponibile - larghezzaTesto) / 2
-            // Usiamo la formula FFmpeg per centrare ma limitando all'area disponibile
+            // CORREZIONE FONDAMENTALE: Posizionamento X del testo relativo al banner centrato
+            // Il testo deve essere posizionato all'interno del banner, non all'interno del video
             const availableTextWidth = textArea.width;
-            const centerAreaStart = marginLeft;
-            const centerAreaEnd = marginLeft + availableTextWidth;
+            const textAreaStartX = bannerX + marginLeft; // Posizione assoluta dell'area testo nel video
+            
+            // Centra il testo nell'area disponibile del banner
+            const xPos = `${textAreaStartX}+((${availableTextWidth}-text_w)/2)`;
 
-            // Centra il testo nell'area disponibile (non in tutto il banner)
-            const xPos = `${centerAreaStart}+((${availableTextWidth}-text_w)/2)`;
-
-            console.log(`📏 Posizionamento X - Centrato nell'area: margine ${marginLeft}px + area ${availableTextWidth}px`);
+            console.log(`📏 Posizionamento X - Banner@${bannerX} + margine${marginLeft} = ${textAreaStartX}, area ${availableTextWidth}px`);
 
             // Applica escape al testo per FFmpeg
             const escapedLine = this.escapeTextForFFmpeg(line);

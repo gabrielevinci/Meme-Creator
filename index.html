@@ -2134,9 +2134,16 @@
                     marginDisplay.textContent = `T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`;
                 }
 
-                // Calcola area testo disponibile (basata sulla formula del video processor)
-                const bannerWidth = 300; // Dimensione fissa per il preview
+                // CORREZIONE FONDAMENTALE: Il preview deve riflettere la realtà che il banner è più stretto del video
+                // Simula la logica del video processor per calcolare le dimensioni reali del banner
+                const previewVideoWidth = 300; // Larghezza totale del "video" nel preview
+                const previewVideoHeight = 200; // Altezza totale del "video" nel preview
+                
+                // Il banner è più stretto del video (circa 90% per video verticali)
+                const bannerWidth = Math.round(previewVideoWidth * 0.9); // 270px invece di 300px
                 const bannerHeight = 60;
+                const bannerX = Math.round((previewVideoWidth - bannerWidth) / 2); // Centrato
+                
                 const availableWidth = bannerWidth - marginLeft - marginRight;
                 const availableHeight = bannerHeight - marginTop - marginBottom;
 
@@ -2171,7 +2178,18 @@
                     }
                 });
 
-                console.log(`🎬 Preview aggiornato: margini T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}, area ${safeWidth}×${safeHeight}px`);
+                // CORREZIONE FONDAMENTALE: Aggiorna la visualizzazione dei banner per mostrarli centrati e più stretti
+                ['top', 'bottom'].forEach(position => {
+                    const bannerPreview = document.getElementById(`banner-${position}-preview`);
+                    if (bannerPreview) {
+                        // Simula il banner centrato nel video
+                        bannerPreview.style.width = `${bannerWidth}px`;
+                        bannerPreview.style.marginLeft = `${bannerX}px`;
+                        bannerPreview.style.marginRight = `${bannerX}px`;
+                    }
+                });
+
+                console.log(`🎬 Preview aggiornato: banner ${bannerWidth}px @ X=${bannerX}, margini T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}, area ${safeWidth}×${safeHeight}px`);
             }
 
             async refreshVideoList() {

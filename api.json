@@ -4280,6 +4280,60 @@
             "tokens_used": 1134,
             "response_time_ms": 1151,
             "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo un fianco di una scogliera a picco, con un lago azzurro brillante che si estende all'orizzonte. La vegetazione lussureggiante ricopre "
+          },
+          "1757824994139_tupkzp048": {
+            "timestamp": 1757824994139,
+            "tokens": 1143,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1143,
+            "response_time_ms": 1276,
+            "output": "```json\n{\n  \"description\": \"Un bambino adorabile indossa un costume da ape giallo brillante, completo di antenne e ali traslucide. Il bambino sorride raggiante mentre un sentiero di sentieri scintilla"
+          },
+          "1757824995271_qc01ejzm4": {
+            "timestamp": 1757824995271,
+            "tokens": 1138,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1138,
+            "response_time_ms": 1127,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di erba verdeggiante e bassa si estende verso un gruppo di imponenti montagne sullo sfondo. Il cielo sopra è di un blu limpido e vibrante. L'illuminazione su"
+          },
+          "1757824996515_ljl4ou0pc": {
+            "timestamp": 1757824996515,
+            "tokens": 1156,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1156,
+            "response_time_ms": 1239,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo un ripido fianco della montagna offrendo una vista mozzafiato su un lago di un blu turchese intenso. La vegetazione lussureggiante ric"
+          },
+          "1757825293400_8ta5mwp06": {
+            "timestamp": 1757825293400,
+            "tokens": 1148,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1148,
+            "response_time_ms": 1421,
+            "output": "```json\n{\n  \"description\": \"Un bambino vestito da ape cammina in un giardino fiorito. Luci scintillanti e cuori stilizzati aleggiano nell'aria, creando un'atmosfera magica e incantevole. La scena è lu"
+          },
+          "1757825294536_3cypt15re": {
+            "timestamp": 1757825294536,
+            "tokens": 1143,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1143,
+            "response_time_ms": 1129,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di vegetazione bassa e verde si estende in primo piano, con una fila di alberi scuri in lontananza. Dietro gli alberi si ergono imponenti montagne rocciose, "
+          },
+          "1757825295949_lju1lhmwf": {
+            "timestamp": 1757825295949,
+            "tokens": 1135,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1135,
+            "response_time_ms": 1407,
+            "output": "```json\n{\n  \"description\": \"Una strada serpeggiante costeggia un ripido pendio roccioso coperto di vegetazione lussureggiante. Sulla destra, un lago di un blu vibrante si estende fino a montagne nebbi"
           }
         }
       },

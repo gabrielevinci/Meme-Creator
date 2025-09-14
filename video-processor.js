@@ -256,11 +256,10 @@ class VideoProcessor {
 
         console.log(`🧹 [DEBUG] PULITO: "${cleaned}"`);
 
-        // STEP 2: Escape caratteri speciali FFmpeg
+        // STEP 2: Escape caratteri speciali FFmpeg (SENZA VIRGOLETTE)
         let escaped = cleaned
             .replace(/\\/g, '\\\\')   // Backslash PRIMA
-            .replace(/'/g, "\\'")     // Apostrofi
-            .replace(/"/g, '\\"')     // Virgolette
+            .replace(/'/g, "\\'")     // Solo apostrofi 
             .replace(/:/g, '\\:')     // Due punti
             .replace(/\[/g, '\\[')    // Parentesi quadre
             .replace(/\]/g, '\\]')    
@@ -1088,14 +1087,14 @@ class VideoProcessor {
         if (fontNeedsCopy) {
             console.log(`⚠️ Font path contiene spazi/caratteri complessi: ${fontPath}`);
             
-            // Crea un nome file semplice per il font
+            // Crea un nome file semplice per il font (SENZA SPAZI nel path)
             const fs = require('fs');
             const path = require('path');
-            const fontName = path.basename(fontPath);
-            const tempFontPath = path.join(__dirname, `temp_${fontName}`);
+            const fontName = path.basename(fontPath).replace(/\s+/g, '_'); // Rimuovi spazi
+            const tempFontPath = `temp_${fontName}`;  // Path relativo
             
             try {
-                // Copia il font nella directory principale
+                // Copia il font nella directory principale con path relativo
                 fs.copyFileSync(fontPath, tempFontPath);
                 workingFontPath = tempFontPath;
                 console.log(`📋 Font copiato temporaneamente in: ${workingFontPath}`);
@@ -1108,11 +1107,14 @@ class VideoProcessor {
         
         // Prepara il percorso font per FFmpeg
         let escapedFontPath = '';
-        // WORKAROUND: Rimosso fontfile temporaneamente per problemi Windows
-        // if (workingFontPath) {
-        //     escapedFontPath = `:fontfile=${workingFontPath.replace(/\\/g, '/')}`;
-        // }
-        console.log('🎨 Utilizzo font di sistema per compatibilità FFmpeg Windows');
+        if (workingFontPath) {
+            // Usa forward slashes per compatibilità FFmpeg (SENZA virgolette)
+            const normalizedPath = workingFontPath.replace(/\\/g, '/');
+            escapedFontPath = `:fontfile=${normalizedPath}`;
+            console.log(`🎨 Font file configurato: ${normalizedPath}`);
+        } else {
+            console.log('🎨 Utilizzo font di sistema per compatibilità FFmpeg Windows');
+        }
         
         console.log(`🎨 Utilizzando font: ${selectedFont}`);
         console.log(`📂 Font path per FFmpeg: ${workingFontPath || 'Font di sistema'}`);
@@ -1176,7 +1178,8 @@ class VideoProcessor {
                 textArea.width,
                 textArea.height,
                 config && config.textFormat,
-                10 // max 10 righe
+                10, // max 10 righe
+                150 // aumentato limite massimo font size da 100 a 150px
             );
 
             fontSize = autoSizeResult.fontSize;
@@ -1281,7 +1284,7 @@ class VideoProcessor {
                             textArea.height,
                             config && config.textFormat,
                             10,
-                            fontSize // Usa il nuovo fontSize come massimo
+                            150 // aumentato limite massimo font size
                         );
 
                         // Aggiorna tutte le variabili

@@ -22,11 +22,19 @@ Devi analizzare se il contenuto dei tre frame corrisponde al filtro specificato 
 
 ## 3. POSIZIONAMENTO BANNER
 
-Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) analizzando:
-- **Soggetti principali**: Dove si trovano nell'inquadratura
-- **Azione centrale**: Quale area è più importante per la comprensione
-- **Spazi liberi**: Dove il testo non interferirebbe con l'elemento visivo chiave
-- **Regola**: Scegli la posizione che **meno ostruisce** il soggetto/azione principale
+Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) analizzando attentamente i frame.
+
+### Regole di Posizionamento:
+- Se i **soggetti principali sono centrali** → posiziona `"top"`.  
+- Se i **soggetti partono dalla parte bassa fino a metà del frame** → posiziona `"top"`.  
+- Se i **soggetti principali occupano la parte alta** e la zona bassa appare libera o statica → posiziona `"bottom"`.  
+- Se i soggetti sono distribuiti in più aree, scegli la posizione che **libera di più spazio visivo** e garantisce leggibilità.  
+- **Mai sovrapporre testo al volto o all’azione principale.**
+
+### Criteri da considerare:
+1. **Soggetti principali**: dove si trovano nell’inquadratura (alto, basso, centro).  
+2. **Azione centrale**: quale zona del frame è cruciale per capire la scena.  
+3. **Spazi liberi**: scegli l’area più statica o vuota per il testo.  
 
 ## 4. CREAZIONE MEME COERENTE
 
@@ -52,7 +60,7 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
 
 2. **`"matches_filter"`**: Inserisci `1` se l'azione principale corrisponde al filtro `{{CONTENT_FILTER}}`, altrimenti `0`.
 
-3. **`"banner_position"`**: Specifica `"top"` o `"bottom"`, scegliendo la posizione che meno ostruisce il soggetto/azione principale.
+3. **`"banner_position"`**: Specifica `"top"` o `"bottom"`, seguendo le regole di posizionamento descritte.
 
 4. **`"meme_text"`**: 
    - Se `"matches_filter" = 1`: genera il **meme perfetto** che deve:
@@ -77,4 +85,3 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
   "banner_position": "top",
   "meme_text": "Il tuo meme perfetto qui..."
 }
-```

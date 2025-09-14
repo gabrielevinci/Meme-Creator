@@ -5,7 +5,7 @@
     "enabled": true,
     "models": {
       "gemini-2.5-flash-lite": {
-        "priority": 2,
+        "priority": 1,
         "limits": {
           "RPM": 15,
           "RPD": 1000,
@@ -3902,11 +3902,119 @@
             "tokens_used": 1156,
             "response_time_ms": 1003,
             "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono in piedi e seduti su una scala esterna con alberi e un muro di mattoni sullo sfondo. Il bambino balla con entusiasmo, mentre l'u"
+          },
+          "1757817882532_vt4n9f9gx": {
+            "timestamp": 1757817882532,
+            "tokens": 1154,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1154,
+            "response_time_ms": 1424,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni neri larghi sta ballando con movimenti delle braccia e del corpo. La scena si svolge in un ambiente interno con una scala su"
+          },
+          "1757817883633_qi0pskrbg": {
+            "timestamp": 1757817883633,
+            "tokens": 1166,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1166,
+            "response_time_ms": 1095,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una mano che tiene una grande quantità di schiuma in un ambiente umido, probabilmente una doccia. Successivamente, l'inquadratura si sposta su una serie"
+          },
+          "1757817885214_p7v1flfe7": {
+            "timestamp": 1757817885214,
+            "tokens": 1206,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1206,
+            "response_time_ms": 1574,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e un uomo sono in piedi e seduti su una scalinata di pietra all'aperto. Il bambino indossa una maglietta marrone e jeans larghi, mentre l'uomo "
+          },
+          "1757819576322_eip6uref4": {
+            "timestamp": 1757819576322,
+            "tokens": 1085,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1085,
+            "response_time_ms": 1504,
+            "output": "```json\n{\n  \"description\": \"Un frame dall'inizio di una scena in cui una persona si lava all'altezza di parte della coscia o dell'anca in uno shader scuro o nero nei frame intermedi mentre una singola"
+          },
+          "1757819577807_bmajdpe5i": {
+            "timestamp": 1757819577807,
+            "tokens": 1159,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1159,
+            "response_time_ms": 1481,
+            "output": "```json\n{\n  \"description\": \"Screenshot mostra quattro flaconi di cosmetici per la pelle sulla gambetta appositmente allestitta dell'obiettivo del trumone. Sulla sinistra c'è un tonico Lancome sul palc"
+          },
+          "1757819579457_z29v9ffy8": {
+            "timestamp": 1757819579457,
+            "tokens": 1139,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1139,
+            "response_time_ms": 1645,
+            "output": "```json\n{\n  \"description\": \"La scena cattura un passo di danza energico di un bambino e il divertimento coinvolgente del lui balla su una scalinata in pietra.  Il figlio mostra pose grintose mentre lo"
+          },
+          "1757819601424_y4tcgp2sy": {
+            "timestamp": 1757819601424,
+            "tokens": 1124,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1124,
+            "response_time_ms": 1080,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna vestita con una felpa bianca con cappuccio e pantaloni neri larghi è ripresa mentre balla all'interno di un ambiente domestico con una scala sullo sfondo."
+          },
+          "1757819602251_8z0dslqxg": {
+            "timestamp": 1757819602251,
+            "tokens": 1110,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1110,
+            "response_time_ms": 823,
+            "output": "```json\n{\n  \"description\": \"Una pila di prodotti skincare da donna è disposta su una superficie che riflette la luce calda di una lampada. Sulla sinistra svetta alta una bottiglia rosa di Tonique Conf"
+          },
+          "1757819603052_cplz7xihb": {
+            "timestamp": 1757819603052,
+            "tokens": 1095,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1095,
+            "response_time_ms": 796,
+            "output": "```json\n{\n  \"description\": \"Un bambino con capelli ricci e jeans larghi è in posizione di ballo mentre un uomo seduto sulle scale lo osserva. Entrambi indossano magliette e jeans in un contesto all'ap"
+          },
+          "1757819630005_pev4nam9c": {
+            "timestamp": 1757819630005,
+            "tokens": 1097,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1097,
+            "response_time_ms": 765,
+            "output": "```json\n{\n  \"description\": \"Una donna con una felpa bianca con cappuccio e pantaloni neri sta ballando. Si trova in una stanza con una scala sulla sinistra e un divano sullo sfondo. Le sue braccia son"
+          },
+          "1757819630872_5q73k4ufh": {
+            "timestamp": 1757819630872,
+            "tokens": 1123,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1123,
+            "response_time_ms": 861,
+            "output": "```json\n{\n  \"description\": \"Una mano sta prendendo una bottiglia di profumo da una selezione di prodotti per la cura della pelle disposti su una superficie lucida. Ci sono tre prodotti principali in p"
+          },
+          "1757819631854_qewbzhrx3": {
+            "timestamp": 1757819631854,
+            "tokens": 1142,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1142,
+            "response_time_ms": 975,
+            "output": "```json\n{\n  \"description\": \"Una bambina con capelli ricci e jeans larghi è in posa con le mani sui fianchi su una pavimentazione grigia, mentre un uomo seduto sulle scale di pietra sullo sfondo gestic"
           }
         }
       },
       "fdiocanr": {
-        "priority": 1,
+        "priority": 2,
         "limits": {
           "RPM": 100,
           "RPD": 1000,

@@ -58,7 +58,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
 
             // Effettua la chiamata AI
             const startTime = Date.now();
-            const response = await this.callAiApi(modelInfo, finalPrompt, imageData);
+            const response = await this.callAiApi(modelInfo, finalPrompt, imageData, config);
             const responseTime = Date.now() - startTime;
 
             // Registra la richiesta
@@ -226,7 +226,7 @@ RATIONALE: [Spiegazione della scelta creativa]`
         return processedTemplate;
     }
 
-    async callAiApi(modelInfo, prompt, imageData) {
+    async callAiApi(modelInfo, prompt, imageData, config = {}) {
         const { apiKey, modelKey } = modelInfo;
 
         try {
@@ -240,7 +240,7 @@ RATIONALE: [Spiegazione della scelta creativa]`
                 case 'google':
                     return await this.callGoogleAI(modelKey, prompt, imageData);
                 default:
-                    return await this.callGenericAPI(modelInfo, prompt, imageData);
+                    return await this.callGenericAPI(modelInfo, prompt, imageData, config);
             }
         } catch (error) {
             console.error(`❌ Errore chiamata API ${apiKey}/${modelKey}:`, error.message);
@@ -322,7 +322,7 @@ TESTO SUGGERITO: "POV: Hai appena finito la presentazione e il CEO fa una domand
 RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporanei e crea immediata identificazione con l'audience aziendale.`;
     }
 
-    async callGenericAPI(modelInfo, prompt, imageData) {
+    async callGenericAPI(modelInfo, prompt, imageData, config = {}) {
         // Vera implementazione Google AI API con gestione errori migliorata
         console.log(`Chiamata API generica: ${modelInfo.apiKey}/${modelInfo.modelKey}`);
 
@@ -343,12 +343,16 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
             });
         }
 
+        // Usa la temperature dal config, con fallback a 1.0
+        const temperature = config.temperature !== undefined ? config.temperature : 1.0;
+        console.log(`🎲 Temperature utilizzata: ${temperature}`);
+        
         const requestBody = {
             contents: [{
                 parts: parts
             }],
             generationConfig: {
-                temperature: 0.4,
+                temperature: temperature,
                 topK: 32,
                 topP: 1,
                 maxOutputTokens: 4096,
@@ -489,7 +493,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
             const mockImageData = ["iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="]; // 1x1 pixel trasparente
 
             const modelInfo = { apiKey, modelKey };
-            const response = await this.callAiApi(modelInfo, testPrompt, mockImageData);
+            const response = await this.callAiApi(modelInfo, testPrompt, mockImageData, {});
 
             return {
                 success: true,

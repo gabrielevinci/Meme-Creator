@@ -4010,6 +4010,33 @@
             "tokens_used": 1142,
             "response_time_ms": 975,
             "output": "```json\n{\n  \"description\": \"Una bambina con capelli ricci e jeans larghi è in posa con le mani sui fianchi su una pavimentazione grigia, mentre un uomo seduto sulle scale di pietra sullo sfondo gestic"
+          },
+          "1757821192278_40dew02sh": {
+            "timestamp": 1757821192278,
+            "tokens": 1149,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1149,
+            "response_time_ms": 1645,
+            "output": "```json\n{\n  \"description\": \"Un adorabile bambino vestito con un costume da ape gialla sorride felice mentre si trova in un ambiente naturale con uno sfondo sfocato di fiori e fogliame. Particelle lumi"
+          },
+          "1757821193527_g0m7f2y3f": {
+            "timestamp": 1757821193527,
+            "tokens": 1150,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1150,
+            "response_time_ms": 1245,
+            "output": "```json\n{\n  \"description\": \"Una vista panoramica di maestose montagne incorniciate da un cielo blu intenso e limpido.  La luce dorata del tramonto o dell'alba accarezza le cime delle montagne, creando"
+          },
+          "1757821194628_mz3vd8b39": {
+            "timestamp": 1757821194628,
+            "tokens": 1118,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1118,
+            "response_time_ms": 1095,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo il fianco di una scogliera ripida e verdeggiante. A destra, un vasto lago blu turchese sfuma verso altre montagne ondulate all'orizzon"
           }
         }
       },

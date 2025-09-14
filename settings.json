@@ -1,10 +1,10 @@
 {
   "fontFamily": "Impact",
-  "marginTop": 30,
-  "marginBottom": 30,
-  "marginLeft": 40,
-  "marginRight": 40,
-  "textFormat": "normal",
-  "temperature": 1,
-  "videoSpeed": 1
+  "marginTop": 5,
+  "marginBottom": 9,
+  "marginLeft": 6,
+  "marginRight": 12,
+  "textFormat": "uppercase",
+  "temperature": 1.1,
+  "videoSpeed": 2.6
 }

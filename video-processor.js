@@ -107,9 +107,12 @@ class VideoProcessor {
         const availableWidth = blockWidth - marginLeft - marginRight;
         const availableHeight = blockHeight - marginTop - marginBottom;
 
-        // Verifiche di sicurezza
-        const safeWidth = Math.max(availableWidth, 100); // Minimo 100px di larghezza
-        const safeHeight = Math.max(availableHeight, 50); // Minimo 50px di altezza
+        // Verifiche di sicurezza: applica limiti minimi solo se non tutti i margini sono 0
+        // Se tutti i margini sono 0, l'utente vuole utilizzare tutto il blocco
+        const allMarginsZero = marginTop === 0 && marginBottom === 0 && marginLeft === 0 && marginRight === 0;
+        
+        const safeWidth = allMarginsZero ? availableWidth : Math.max(availableWidth, 100);
+        const safeHeight = allMarginsZero ? availableHeight : Math.max(availableHeight, 50);
 
         console.log(`📏 Area testo disponibile - Blocco: ${blockWidth}x${blockHeight}, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight} -> Area: ${safeWidth}x${safeHeight}`);
 

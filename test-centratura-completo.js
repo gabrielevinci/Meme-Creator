@@ -37,7 +37,7 @@ async function testCenteredTextProcessing() {
     console.log(`   📏 Margini: T${mockConfig.marginTop} B${mockConfig.marginBottom} L${mockConfig.marginLeft} R${mockConfig.marginRight}`);
 
     console.log('\n🔄 Simulazione calcoli area e centratura...');
-    
+
     // Calcola area disponibile
     const blockWidth = 720;
     const blockHeight = 300;
@@ -47,22 +47,22 @@ async function testCenteredTextProcessing() {
         marginLeft: mockConfig.marginLeft,
         marginRight: mockConfig.marginRight
     };
-    
+
     const textArea = processor.calculateAvailableTextArea(blockWidth, blockHeight, margins);
-    
+
     console.log(`\n📊 RISULTATI CALCOLI:`);
     console.log(`   📐 Banner: ${blockWidth}x${blockHeight}px`);
     console.log(`   📏 Area testo: ${textArea.width}x${textArea.height}px`);
     console.log(`   📍 Area X: da ${mockConfig.marginLeft}px a ${mockConfig.marginLeft + textArea.width}px`);
-    
+
     // Simula la formula di centratura che verrà usata in FFmpeg
     const centerFormula = `${mockConfig.marginLeft}+((${textArea.width}-text_w)/2)`;
     console.log(`   🎨 Formula centratura FFmpeg: x=${centerFormula}`);
-    
+
     // Esempio di come apparirà nel filtro FFmpeg
     console.log(`\n🎬 ESEMPIO OUTPUT FFMPEG:`);
     console.log(`   drawtext=text='ESEMPIO RIGA':fontfile='path/font.ttf':fontcolor=black:fontsize=48:x=${centerFormula}:y=1050`);
-    
+
     console.log(`\n✅ VERIFICA CENTRATURA:`);
     console.log(`   ✓ Il testo rispetta l'hitbox area (${textArea.width}x${textArea.height}px)`);
     console.log(`   ✓ Ogni riga è centrata individualmente nell'area disponibile`);

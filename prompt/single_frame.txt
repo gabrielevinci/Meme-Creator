@@ -41,9 +41,6 @@ Se il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusio
 3. **OBIETTIVO**: Integra l'obiettivo specificato: **{{BUSINESS_THEME}}**
 4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo
 
-### Esempi di Stile da Seguire:
-{{STYLE_EXAMPLES}}
-
 ## ISTRUZIONI TECNICHE
 
 ### Formato di Risposta
@@ -63,6 +60,8 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
      - Seguire lo **stile linguistico** degli esempi forniti
      - Essere **coerente con l'obiettivo**: "{{BUSINESS_THEME}}"
      - **COLLEGARE** in modo intelligente il contenuto visivo con l'obiettivo
+     - NON USARE CARATTERI SPECIALI O EMOJI
+     - SCRIVI L'INTERO MEME ALL'INTERNO DELLA STESSA RIGA SENZA FRASI SU DUE RIGHE
    - Se `"matches_filter" = 0`: lascia stringa vuota `""`
 
 ### Regola Fondamentale

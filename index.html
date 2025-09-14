@@ -189,6 +189,102 @@
             color: #555;
         }
         
+        /* Stili per il Preview Dashboard */
+        .banner-preview-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        
+        .video-frame {
+            background: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            height: 200px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .banner-preview {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #3498db;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .banner-preview#banner-top-preview {
+            height: 60px;
+            border-bottom: 3px solid #e74c3c;
+        }
+        
+        .banner-preview#banner-bottom-preview {
+            height: 60px;
+            border-top: 3px solid #e74c3c;
+        }
+        
+        .margin-area {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px dashed #3498db;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .text-area {
+            background: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #27ae60;
+        }
+        
+        .video-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #95a5a6;
+        }
+        
+        .video-placeholder {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .preview-info {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 12px;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            margin-right: 8px;
+        }
+        
+        .info-item span:last-child {
+            color: #3498db;
+            font-weight: 500;
+        }
+        
         .select-field {
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -1299,6 +1395,40 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- PREVIEW DASHBOARD VISIVO -->
+                <div class="form-group">
+                    <label>🎬 Preview Banner Positioning</label>
+                    <div class="banner-preview-container">
+                        <div class="video-frame">
+                            <div class="banner-preview" id="banner-top-preview">
+                                <div class="margin-area" id="margin-area-top">
+                                    <div class="text-area">TOP</div>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <div class="video-placeholder">
+                                    📹 Video Content
+                                </div>
+                            </div>
+                            <div class="banner-preview" id="banner-bottom-preview">
+                                <div class="margin-area" id="margin-area-bottom">
+                                    <div class="text-area">BOTTOM</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-info">
+                            <div class="info-item">
+                                <span class="info-label">Margini:</span>
+                                <span id="margin-display">T30 B30 L40 R40</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Area Testo:</span>
+                                <span id="text-area-display">Calcolando...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="right-panel">
@@ -1664,6 +1794,8 @@
                         // Aggiorna il valore quando l'utente muove lo slider
                         input.addEventListener('input', (e) => {
                             valueSpan.textContent = e.target.value + suffix;
+                            // Aggiorna il preview dashboard
+                            this.updateBannerPreview();
                             // Salva automaticamente le impostazioni
                             this.saveSettings();
                         });
@@ -1717,10 +1849,15 @@
                 fonts.forEach(font => {
                     // Rimuovi l'estensione dal nome del font per la famiglia CSS
                     const fontFamily = font.replace(/\.(ttf|otf|woff|woff2)$/i, '');
+                    
+                    // CORREZIONE: Escapare le virgolette nei CSS per font con spazi nel nome
+                    const escapedFontPath = font.replace(/"/g, '\\"').replace(/'/g, "\\'");
+                    const escapedFontFamily = fontFamily.replace(/"/g, '\\"');
+                    
                     cssRules += `
                         @font-face {
-                            font-family: "${fontFamily}";
-                            src: url("./font/${font}") format("truetype");
+                            font-family: "${escapedFontFamily}";
+                            src: url("./font/${escapedFontPath}") format("truetype");
                             font-display: swap;
                             font-weight: normal;
                             font-style: normal;
@@ -1739,17 +1876,18 @@
                     const fontPromises = fonts.map(async(font) => {
                         const fontFamily = font.replace(/\.(ttf|otf|woff|woff2)$/i, '');
                         try {
-                            const fontFace = new FontFace(fontFamily, `url(./font/${font})`);
+                            // CORREZIONE: Gestire font con spazi nei nomi
+                            const fontFace = new FontFace(`"${fontFamily}"`, `url("./font/${font}")`);
                             const loadedFont = await fontFace.load();
                             document.fonts.add(loadedFont);
-                            console.log(`Font ${fontFamily} caricato con successo`);
+                            console.log(`✅ Font ${fontFamily} caricato con successo`);
                         } catch (error) {
-                            console.warn(`Impossibile caricare il font ${fontFamily}:`, error);
+                            console.warn(`❌ Impossibile caricare il font ${fontFamily}:`, error);
                         }
                     });
 
                     await Promise.allSettled(fontPromises);
-                    console.log('Fonts nella document.fonts:', Array.from(document.fonts).map(f => f.family));
+                    console.log('🎨 Fonts nella document.fonts:', Array.from(document.fonts).map(f => f.family));
                 }
 
                 // Aspetta un momento per permettere ai font di caricarsi
@@ -1849,6 +1987,9 @@
                             textFormatSelect.value = settings.textFormat;
                         }
                     }
+
+                    // Aggiorna il preview dashboard dopo aver caricato le impostazioni
+                    setTimeout(() => this.updateBannerPreview(), 100);
 
                 } catch (error) {
                     console.error('Errore nel caricamento delle impostazioni:', error);
@@ -1978,6 +2119,59 @@
                     this.elements.fontSelect.offsetHeight; // trigger reflow
                     this.elements.fontSelect.style.display = '';
                 }, 1000);
+            }
+
+            // DASHBOARD PREVIEW: Aggiorna il preview visivo dei banner e margini
+            updateBannerPreview() {
+                const marginTop = parseInt(document.getElementById('margin-top')?.value || 30);
+                const marginBottom = parseInt(document.getElementById('margin-bottom')?.value || 30);
+                const marginLeft = parseInt(document.getElementById('margin-left')?.value || 40);
+                const marginRight = parseInt(document.getElementById('margin-right')?.value || 40);
+
+                // Aggiorna il display dei margini
+                const marginDisplay = document.getElementById('margin-display');
+                if (marginDisplay) {
+                    marginDisplay.textContent = `T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`;
+                }
+
+                // Calcola area testo disponibile (basata sulla formula del video processor)
+                const bannerWidth = 300; // Dimensione fissa per il preview
+                const bannerHeight = 60;
+                const availableWidth = bannerWidth - marginLeft - marginRight;
+                const availableHeight = bannerHeight - marginTop - marginBottom;
+
+                // Controlla se tutti i margini sono zero
+                const allMarginsZero = marginTop === 0 && marginBottom === 0 && marginLeft === 0 && marginRight === 0;
+                const safeWidth = allMarginsZero ? availableWidth : Math.max(availableWidth, 100);
+                const safeHeight = allMarginsZero ? availableHeight : Math.max(availableHeight, 50);
+
+                // Aggiorna il display dell'area testo
+                const textAreaDisplay = document.getElementById('text-area-display');
+                if (textAreaDisplay) {
+                    textAreaDisplay.textContent = `${safeWidth}×${safeHeight}px`;
+                }
+
+                // Applica gli stili ai margin-area per visualizzare i margini
+                ['top', 'bottom'].forEach(position => {
+                    const marginArea = document.getElementById(`margin-area-${position}`);
+                    if (marginArea) {
+                        marginArea.style.paddingTop = `${marginTop}px`;
+                        marginArea.style.paddingBottom = `${marginBottom}px`;
+                        marginArea.style.paddingLeft = `${marginLeft}px`;
+                        marginArea.style.paddingRight = `${marginRight}px`;
+
+                        // Cambia colore se margini = 0 (full block)
+                        if (allMarginsZero) {
+                            marginArea.style.background = 'rgba(231, 76, 60, 0.1)';
+                            marginArea.style.borderColor = '#e74c3c';
+                        } else {
+                            marginArea.style.background = 'rgba(52, 152, 219, 0.1)';
+                            marginArea.style.borderColor = '#3498db';
+                        }
+                    }
+                });
+
+                console.log(`🎬 Preview aggiornato: margini T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}, area ${safeWidth}×${safeHeight}px`);
             }
 
             async refreshVideoList() {

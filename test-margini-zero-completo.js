@@ -9,8 +9,7 @@ console.log('🧪 === TEST COMPLETO MARGINI A 0 ===\n');
 const processor = new VideoProcessor();
 
 // Test con diversi scenari
-const testCases = [
-    {
+const testCases = [{
         name: "Margini tutti a 0 - Blocco standard",
         blockWidth: 720,
         blockHeight: 300,
@@ -40,21 +39,21 @@ testCases.forEach((testCase, index) => {
     console.log(`📋 TEST ${index + 1}: ${testCase.name}`);
     console.log(`   📐 Blocco: ${testCase.blockWidth}x${testCase.blockHeight}px`);
     console.log(`   📏 Margini: T${testCase.margins.marginTop} B${testCase.margins.marginBottom} L${testCase.margins.marginLeft} R${testCase.margins.marginRight}`);
-    
+
     const textArea = processor.calculateAvailableTextArea(
-        testCase.blockWidth, 
-        testCase.blockHeight, 
+        testCase.blockWidth,
+        testCase.blockHeight,
         testCase.margins
     );
-    
+
     const expectedWidth = testCase.blockWidth - testCase.margins.marginLeft - testCase.margins.marginRight;
     const expectedHeight = testCase.blockHeight - testCase.margins.marginTop - testCase.margins.marginBottom;
-    
+
     const allMarginsZero = Object.values(testCase.margins).every(margin => margin === 0);
-    
+
     console.log(`   🎯 Area testo: ${textArea.width}x${textArea.height}px`);
     console.log(`   📊 Utilizzo: ${(textArea.width/testCase.blockWidth*100).toFixed(1)}% x ${(textArea.height/testCase.blockHeight*100).toFixed(1)}%`);
-    
+
     if (allMarginsZero) {
         if (textArea.width === testCase.blockWidth && textArea.height === testCase.blockHeight) {
             console.log(`   ✅ CORRETTO: Margini a 0 = area completa del blocco`);
@@ -68,7 +67,7 @@ testCases.forEach((testCase, index) => {
             console.log(`   ❌ ERRORE: Limiti di sicurezza non applicati`);
         }
     }
-    
+
     console.log('');
 });
 

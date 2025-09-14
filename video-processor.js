@@ -110,7 +110,7 @@ class VideoProcessor {
         // Verifiche di sicurezza: applica limiti minimi solo se non tutti i margini sono 0
         // Se tutti i margini sono 0, l'utente vuole utilizzare tutto il blocco
         const allMarginsZero = marginTop === 0 && marginBottom === 0 && marginLeft === 0 && marginRight === 0;
-        
+
         const safeWidth = allMarginsZero ? availableWidth : Math.max(availableWidth, 100);
         const safeHeight = allMarginsZero ? availableHeight : Math.max(availableHeight, 50);
 
@@ -209,6 +209,54 @@ class VideoProcessor {
     // Helper per calcolare la larghezza massima tra tutte le righe
     getMaxLineWidth(lines, avgCharWidth) {
         return Math.max(...lines.map(line => line.length * avgCharWidth));
+    }
+
+    // Metodo per sanificare il testo dall'output API
+    sanitizeText(text) {
+        if (!text) return text;
+
+        console.log(`🔧 Sanificazione testo originale: "${text}"`);
+
+        // Converte i caratteri \n letterali in veri caratteri di nuova riga
+        let sanitized = text.replace(/\\n/g, '\n');
+
+        // Rimuove eventuali doppie nuove righe eccessive (max 2 consecutive)
+        sanitized = sanitized.replace(/\n{3,}/g, '\n\n');
+
+        // Rimuove spazi inutili attorno alle nuove righe
+        sanitized = sanitized.replace(/\s*\n\s*/g, '\n');
+
+        // Trim finale per rimuovere spazi all'inizio e alla fine
+        sanitized = sanitized.trim();
+
+        console.log(`✅ Testo sanificato: "${sanitized}"`);
+
+        return sanitized;
+    }
+
+    // Metodo per fare l'escape del testo per FFmpeg drawtext
+    escapeTextForFFmpeg(text) {
+        if (!text) return text;
+
+        // Escape dei caratteri speciali per FFmpeg drawtext
+        let escaped = text
+            // Escape delle virgolette singole (sostituisce con unicode)
+            .replace(/'/g, '\\u0027')
+            // Escape delle virgolette doppie
+            .replace(/"/g, '\\u0022')
+            // Escape dei due punti
+            .replace(/:/g, '\\:')
+            // Escape delle barre inverse
+            .replace(/\\/g, '\\\\')
+            // Escape delle parentesi quadre
+            .replace(/\[/g, '\\[')
+            .replace(/\]/g, '\\]')
+            // Mantiene le emoji come sono (UTF-8)
+            // FFmpeg moderni supportano UTF-8
+
+        console.log(`🔒 Testo escaped per FFmpeg: "${escaped}"`);
+
+        return escaped;
     }
 
     // Metodo per formattare il testo secondo le preferenze utente
@@ -873,10 +921,13 @@ class VideoProcessor {
         console.log(`🎬 Elaborazione video: ${outputFile}`);
         console.log(`🔧 Config ricevuto:`, config);
 
-        // Applica la formattazione del testo se specificata nella configurazione
-        let formattedText = aiResponse.meme_text;
+        // Prima sanifica il testo per gestire \n e altri caratteri di escape
+        let sanitizedText = this.sanitizeText(aiResponse.meme_text);
+
+        // Poi applica la formattazione del testo se specificata nella configurazione
+        let formattedText = sanitizedText;
         if (config && config.textFormat) {
-            formattedText = this.formatText(aiResponse.meme_text, config.textFormat);
+            formattedText = this.formatText(sanitizedText, config.textFormat);
             console.log(`📝 Testo originale: "${aiResponse.meme_text}"`);
             console.log(`🔄 Formato applicato: ${config.textFormat}`);
             console.log(`📝 Testo formattato: "${formattedText}"`);
@@ -1139,7 +1190,45 @@ class VideoProcessor {
             // Posizione Y per questa riga usando il lineHeight calcolato
             const yPos = Math.round(baseY + (i * lineHeight));
 
-            console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> "${line}" -> y=${yPos}`);
+            // BOUNDARY CHECK: Verifica che la riga non esca dai limiti del banner
+            const bannerBottomY = (processedAiResponse.banner_position === 'bottom') ? height : blockHeight;
+            const bannerTopY = (processedAiResponse.banner_position === 'bottom') ? height - blockHeight : 0;
+            const maxAllowedY = bannerBottomY - marginBottom;
+            const minAllowedY = bannerTopY + marginTop;
+            
+            if (yPos < minAllowedY || yPos > maxAllowedY) {
+                console.warn(`⚠️ OVERFLOW RILEVATO! Riga ${i + 1} a Y=${yPos} eccede i limiti del banner [${minAllowedY}-${maxAllowedY}]`);
+                
+                // Se il testo eccede, prova a ridurre il font size e ricomincia
+                if (fontSize > 12) {
+                    console.log(`🔄 Tentativo di riduzione font size da ${fontSize}px a ${fontSize-2}px`);
+                    fontSize = fontSize - 2;
+                    lineHeight = fontSize * 1.2;
+                    
+                    // Ricalcola il baseY con il nuovo font size
+                    if (processedAiResponse.banner_position === 'bottom') {
+                        const bannerY = height - blockHeight;
+                        baseY = bannerY + marginTop + (fontSize * 0.75);
+                    } else {
+                        baseY = marginTop + (fontSize * 0.75);
+                    }
+                    
+                    console.log(`📐 Nuovo font size: ${fontSize}px, lineHeight: ${lineHeight}px, baseY: ${baseY}`);
+                    
+                    // Riavvia il loop con i nuovi valori
+                    textFilters = processedAiResponse.banner_position === 'bottom' ? 
+                        `[0:v]drawbox=x=0:y=${height - blockHeight}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill` :
+                        `[0:v]drawbox=x=0:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
+                    
+                    i = -1; // Ricomincia il loop
+                    continue;
+                } else {
+                    console.error(`❌ IMPOSSIBILE ADATTARE: Font troppo piccolo (${fontSize}px). Il testo non può essere adattato nei margini specificati.`);
+                    break;
+                }
+            }
+
+            console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> "${line}" -> y=${yPos} ✅`);
 
             // Posizionamento X centrato: centra ogni riga all'interno dell'area disponibile
             // Formula: marginLeft + (areaDisponibile - larghezzaTesto) / 2
@@ -1147,13 +1236,16 @@ class VideoProcessor {
             const availableTextWidth = textArea.width;
             const centerAreaStart = marginLeft;
             const centerAreaEnd = marginLeft + availableTextWidth;
-            
+
             // Centra il testo nell'area disponibile (non in tutto il banner)
             const xPos = `${centerAreaStart}+((${availableTextWidth}-text_w)/2)`;
 
             console.log(`📏 Posizionamento X - Centrato nell'area: margine ${marginLeft}px + area ${availableTextWidth}px`);
 
-            textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
+            // Applica escape al testo per FFmpeg
+            const escapedLine = this.escapeTextForFFmpeg(line);
+
+            textFilters += `,drawtext=text='${escapedLine}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
         }
 
         console.log(`🎯 RIEPILOGO FINALE:`);

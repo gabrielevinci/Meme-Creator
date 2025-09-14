@@ -58,14 +58,17 @@
             flex: 1;
             overflow-y: auto;
         }
-        
         /* Colonna 1: AI e Creatività */
+        
         .left-panel,
         /* Colonna 2: Font e Margini */
+        
         .middle-panel,
         /* Colonna 3: Parametri Video */
+        
         .right-panel,
         /* Colonna 4: Status e Video Lista */
+        
         .fourth-panel {
             display: flex;
             flex-direction: column;
@@ -177,12 +180,12 @@
             font-weight: 600;
             margin-left: 8px;
         }
-
         /* Stili per slider temperature */
+        
         .slider-container {
             margin-top: 10px;
         }
-
+        
         .slider-labels {
             display: flex;
             justify-content: space-between;
@@ -190,13 +193,13 @@
             margin-top: 5px;
             font-size: 12px;
         }
-
+        
         .slider-label-left,
         .slider-label-right {
             color: #666;
             font-weight: 500;
         }
-
+        
         .help-text {
             display: block;
             margin-top: 8px;
@@ -205,7 +208,6 @@
             font-style: italic;
             line-height: 1.3;
         }
-
         /* Stili per i controlli margini */
         
         .margin-controls {
@@ -253,7 +255,7 @@
             width: 100%;
             left: 0;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
         
         .banner-preview#banner-top-preview {
@@ -284,7 +286,7 @@
             color: #c0392b;
             font-weight: bold;
             font-size: 12px;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
             white-space: nowrap;
         }
         
@@ -1362,7 +1364,6 @@
             content: "Nessun file selezionato";
             color: #999;
         }
-
         /* Animazioni per notifiche */
         
         @keyframes slideInRight {
@@ -1544,12 +1545,12 @@
                             <div class="banner-preview" id="banner-top-preview">
                                 <div class="text-area-rect" id="text-area-top"></div>
                             </div>
-                            
+
                             <!-- Spazio video al centro -->
                             <div class="video-content" style="flex: 1; display: flex; align-items: center; justify-content: center; color: #ecf0f1; font-size: 14px;">
                                 📹 Video Content
                             </div>
-                            
+
                             <!-- Banner BOTTOM con area testo dinamica -->
                             <div class="banner-preview" id="banner-bottom-preview">
                                 <div class="text-area-rect" id="text-area-bottom"></div>
@@ -1951,7 +1952,7 @@
                 // Variabili per i percorsi dei file
                 this.overlayImagePath = '';
                 this.backgroundAudioPath = '';
-                
+
                 this.initializeElements();
                 this.setupEventListeners();
                 this.loadInitialData();
@@ -2078,13 +2079,13 @@
                 // Gestione speciale per il temperature slider
                 const temperatureSlider = document.getElementById('temperature-slider');
                 const temperatureValue = document.getElementById('temperature-value');
-                
+
                 if (temperatureSlider && temperatureValue) {
                     temperatureSlider.addEventListener('input', (e) => {
                         temperatureValue.textContent = parseFloat(e.target.value).toFixed(1);
                         this.saveSettings();
                     });
-                    
+
                     // Imposta il valore iniziale
                     temperatureValue.textContent = parseFloat(temperatureSlider.value).toFixed(1);
                 }
@@ -2092,14 +2093,14 @@
                 // Gestione speciale per il video speed slider
                 const videoSpeedSlider = document.getElementById('video-speed-slider');
                 const videoSpeedValue = document.getElementById('video-speed-value');
-                
+
                 if (videoSpeedSlider && videoSpeedValue) {
                     videoSpeedSlider.addEventListener('input', (e) => {
                         const value = parseFloat(e.target.value);
                         videoSpeedValue.textContent = value.toFixed(1) + 'x';
                         this.saveSettings();
                     });
-                    
+
                     // Imposta il valore iniziale
                     videoSpeedValue.textContent = parseFloat(videoSpeedSlider.value).toFixed(1) + 'x';
                 }
@@ -2219,10 +2220,10 @@
                     overlayImageEnabled.addEventListener('change', (e) => {
                         const isEnabled = e.target.checked;
                         overlayImageControls.style.display = isEnabled ? 'block' : 'none';
-                        
+
                         if (overlayImageSelect) overlayImageSelect.disabled = !isEnabled;
                         if (overlayImageOpacitySlider) overlayImageOpacitySlider.disabled = !isEnabled;
-                        
+
                         this.saveSettings();
                     });
                 }
@@ -2237,10 +2238,10 @@
                     bgAudioEnabled.addEventListener('change', (e) => {
                         const isEnabled = e.target.checked;
                         bgAudioControls.style.display = isEnabled ? 'block' : 'none';
-                        
+
                         if (bgAudioSelect) bgAudioSelect.disabled = !isEnabled;
                         if (bgAudioVolSlider) bgAudioVolSlider.disabled = !isEnabled;
-                        
+
                         this.saveSettings();
                     });
                 }
@@ -2253,7 +2254,7 @@
                 // Button per selezionare immagine overlay
                 const overlayImageSelect = document.getElementById('overlay-image-select');
                 if (overlayImageSelect) {
-                    overlayImageSelect.addEventListener('click', async () => {
+                    overlayImageSelect.addEventListener('click', async() => {
                         try {
                             const result = await window.electronAPI.selectFile(['jpg', 'jpeg', 'png', 'bmp', 'gif']);
                             if (result) {
@@ -2270,7 +2271,7 @@
                 // Button per selezionare audio di sottofondo
                 const bgAudioSelect = document.getElementById('background-audio-select');
                 if (bgAudioSelect) {
-                    bgAudioSelect.addEventListener('click', async () => {
+                    bgAudioSelect.addEventListener('click', async() => {
                         try {
                             const result = await window.electronAPI.selectFile(['mp3', 'wav', 'aac', 'flac', 'm4a']);
                             if (result) {
@@ -2536,7 +2537,7 @@
                         const overlayControls = document.getElementById('overlay-image-controls');
                         const overlaySelect = document.getElementById('overlay-image-select');
                         const overlayOpacitySlider = document.getElementById('overlay-opacity-slider');
-                        
+
                         if (overlayEnabled) {
                             overlayEnabled.checked = settings.overlayImageEnabled;
                             if (overlayControls) {
@@ -2568,7 +2569,7 @@
                         const bgAudioControls = document.getElementById('background-audio-controls');
                         const bgAudioSelect = document.getElementById('background-audio-select');
                         const bgAudioVolumeSlider = document.getElementById('background-audio-volume-slider');
-                        
+
                         if (bgAudioEnabled) {
                             bgAudioEnabled.checked = settings.backgroundAudioEnabled;
                             if (bgAudioControls) {
@@ -2786,7 +2787,7 @@
                 // AGGIORNA I BANNER PREVIEW
                 const topBanner = document.getElementById('banner-top-preview');
                 const bottomBanner = document.getElementById('banner-bottom-preview');
-                
+
                 if (topBanner && bottomBanner) {
                     // I banner coprono sempre tutta la larghezza
                     topBanner.style.height = `${bannerHeight}px`;

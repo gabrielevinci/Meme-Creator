@@ -535,8 +535,7 @@ class ContentCreatorApp {
             };
 
             if (filters.length > 0) {
-                options.filters = [
-                    {
+                options.filters = [{
                         name: 'File Supportati',
                         extensions: filters
                     },
@@ -548,7 +547,7 @@ class ContentCreatorApp {
             }
 
             const result = await dialog.showOpenDialog(this.mainWindow, options);
-            
+
             if (!result.canceled && result.filePaths.length > 0) {
                 const filePath = result.filePaths[0];
                 const fileName = path.basename(filePath);
@@ -557,7 +556,7 @@ class ContentCreatorApp {
                     name: fileName
                 };
             }
-            
+
             return null;
         });
     }

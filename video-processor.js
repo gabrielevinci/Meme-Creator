@@ -1420,28 +1420,30 @@ class VideoProcessor {
 
             if (needsLift) {
                 const nextLabel = `[v${stepCounter}]`;
-                // FFmpeg lift/shadows range
-                const liftValue = config.lift.toFixed(2);
-                videoFilters.push(`${currentLabel}eq=shadows=${liftValue}${nextLabel}`);
+                // Per il lift usiamo il filtro curves che supporta il controllo delle ombre
+                // Mappiamo il range -1/+1 a un valore utilizzabile per curves
+                // Il lift regola principalmente i neri/ombre
+                const liftValue = (0.3 + config.lift * 0.3).toFixed(3); // Da 0.0 a 0.6
+                videoFilters.push(`${currentLabel}curves=all='0/${liftValue} 1/1'${nextLabel}`);
                 currentLabel = nextLabel;
                 stepCounter++;
-                console.log(`🌅 Aggiunto filtro lift: ${config.lift}`);
+                console.log(`🌅 Aggiunto filtro lift: ${config.lift} (curves value: ${liftValue})`);
             }
 
             // 2. Overlay immagine (se specificato)
             if (needsOverlayImage) {
                 const nextLabel = `[v${stepCounter}]`;
                 const opacity = (config.overlayOpacity / 100).toFixed(2);
-                
+
                 // Prepara il path dell'immagine (escapato per FFmpeg)
                 const escapedImagePath = config.overlayImagePath.replace(/\\/g, '/').replace(/:/g, '\\:');
-                
+
                 videoFilters.push(`[1:v]scale=${width}:${height}[scaled_overlay]`);
                 videoFilters.push(`${currentLabel}[scaled_overlay]blend=all_mode=soft_light:all_opacity=${opacity}${nextLabel}`);
                 currentLabel = nextLabel;
                 stepCounter++;
                 console.log(`�️ Aggiunto overlay immagine: ${config.overlayImagePath} (opacità: ${config.overlayOpacity}%)`);
-                
+
                 // Bisognerà aggiungere il file immagine come input aggiuntivo
             }
 
@@ -1487,10 +1489,10 @@ class VideoProcessor {
             audioInputs++; // Input aggiuntivo per l'audio
             const bgVolumeDb = config.backgroundAudioVolume || 0;
             const bgVolumeLinear = Math.pow(10, bgVolumeDb / 20).toFixed(3);
-            
+
             audioFilters.push(`[${audioInputs - 1}:a]volume=${bgVolumeLinear}[bg_audio]`);
             console.log(`🎵 Audio sottofondo: ${config.backgroundAudioPath} (volume: ${bgVolumeDb}db)`);
-            
+
             // Mix dei due audio
             if (config.videoVolume && config.videoVolume !== 0) {
                 audioFilters.push(`[main_audio][bg_audio]amix=inputs=2:duration=first[mixed_audio]`);
@@ -1503,7 +1505,7 @@ class VideoProcessor {
         let finalAudioLabel = null;
         if (needsVideoSpeed && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
             const atempoValue = Math.min(Math.max(config.videoSpeed, 0.5), 2.0);
-            
+
             if (audioFilters.length > 0) {
                 const lastAudioFilter = audioFilters[audioFilters.length - 1];
                 const currentAudioLabel = lastAudioFilter.includes('[mixed_audio]') ? '[mixed_audio]' : '[bg_audio]';

@@ -1,8 +1,8 @@
 {
   "fontFamily": "Impact",
-  "marginTop": 9,
-  "marginBottom": 29,
-  "marginLeft": 19,
-  "marginRight": 27,
+  "marginTop": 0,
+  "marginBottom": 15,
+  "marginLeft": 7,
+  "marginRight": 9,
   "textFormat": "uppercase"
 }

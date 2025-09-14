@@ -1138,11 +1138,17 @@ class VideoProcessor {
 
             console.log(`📝 Riga ${i + 1}: "${lines[i]}" -> "${line}" -> y=${yPos}`);
 
-            // Posizionamento X preciso: allinea al margine sinistro
-            // Il testo deve partire esattamente a marginLeft pixel dal bordo
-            const xPos = marginLeft;
+            // Posizionamento X centrato: centra ogni riga all'interno dell'area disponibile
+            // Formula: marginLeft + (areaDisponibile - larghezzaTesto) / 2
+            // Usiamo la formula FFmpeg per centrare ma limitando all'area disponibile
+            const availableTextWidth = textArea.width;
+            const centerAreaStart = marginLeft;
+            const centerAreaEnd = marginLeft + availableTextWidth;
+            
+            // Centra il testo nell'area disponibile (non in tutto il banner)
+            const xPos = `${centerAreaStart}+((${availableTextWidth}-text_w)/2)`;
 
-            console.log(`📏 Posizionamento X - Allineato a marginLeft: ${marginLeft}px`);
+            console.log(`📏 Posizionamento X - Centrato nell'area: margine ${marginLeft}px + area ${availableTextWidth}px`);
 
             textFilters += `,drawtext=text='${line}':fontfile='${escapedFontPath}':fontcolor=${textColor}:fontsize=${fontSize}:x=${xPos}:y=${yPos}`;
         }

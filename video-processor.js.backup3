@@ -225,65 +225,85 @@ class VideoProcessor {
     escapeTextForFFmpeg(text) {
         if (!text) return text;
 
-        console.log(`🔧 [DEBUG] INPUT: "${text}"`);
+        console.log(`🔧 [DEBUG] Testo ORIGINALE: "${text}"`);
+        console.log(`🔍 [DEBUG] Ricerca caratteri problematici:`);
         
-        // STEP 1: Pulizia caratteri UTF-8 corrotti
-        let cleaned = text
-            .replace(/Ôé¼/g, 'EUR')   // Euro corrotto
-            .replace(/├î/g, 'i')      // î corrotto (dall'errore utente)
-            .replace(/├ê/g, 'e')      // ê corrotto (dall'errore utente)  
-            .replace(/├¿/g, 'e')      // è corrotto
-            .replace(/├╣/g, 'u')      // ù corrotto
-            .replace(/├Ç/g, 'a')      // à corrotto
-            .replace(/├á/g, 'a')      
-            .replace(/├í/g, 'i')      
-            .replace(/├©/g, 'e')      
-            .replace(/├ù/g, 'u')      
-            .replace(/├â/g, 'a')      
-            .replace(/├ç/g, 'c')      
-            .replace(/├ñ/g, 'n')      
-            .replace(/├ô/g, 'o')      
-            .replace(/├«/g, 'e')      
-            .replace(/├¼/g, 'u')      
-            .replace(/├¬/g, 'i')      
-            .replace(/├┤/g, 'o')      
-            .replace(/├³/g, 'o')      
-            .replace(/├¡/g, 'i')      
-            .replace(/├¢/g, 'a')      
-            .replace(/€/g, 'EUR')     
-            .replace(/£/g, 'GBP')     
-            .replace(/©/g, '(C)');    
-
-        console.log(`🧹 [DEBUG] PULITO: "${cleaned}"`);
-
-        // STEP 2: Escape caratteri speciali FFmpeg
-        let escaped = cleaned
-            .replace(/\\/g, '\\\\')   // Backslash PRIMA
-            .replace(/'/g, "\\'")     // Apostrofi
-            .replace(/"/g, '\\"')     // Virgolette
-            .replace(/:/g, '\\:')     // Due punti
-            .replace(/\[/g, '\\[')    // Parentesi quadre
-            .replace(/\]/g, '\\]')    
-            .replace(/;/g, '\\;')     // Punto e virgola
-            .replace(/,/g, '\\,');    // Virgola
-            
-        console.log(`🔒 [DEBUG] OUTPUT: "${escaped}"`);
+        // DEBUG: Lista completa caratteri UTF-8 problematici
+        const problematicChars = ['├', '╣', '¿', 'Ô', 'é', '¼', 'î', 'ê', 'Ç', 'á', 'í', '©', 'ù', 'â', 'ç', 'ñ', 'ô', '«', '¬', '┤', '³', '¡', '¢'];
+        let foundProblems = [];
         
-        // Verifica finale
-        const stillProblematic = ['├î', '├ê', '├¿', '├╣', 'Ôé¼'];
-        let hasIssues = false;
-        
-        stillProblematic.forEach(chars => {
-            if (escaped.includes(chars)) {
-                console.log(`❌ ERRORE: "${chars}" ancora presente!`);
-                hasIssues = true;
+        problematicChars.forEach(char => {
+            if (text.includes(char)) {
+                foundProblems.push(char);
+                console.log(`   ❌ CARATTERE PROBLEMATICO: "${char}" trovato in "${text}"`);
             }
         });
         
-        if (!hasIssues) {
-            console.log(`✅ [SUCCESS] Testo pulito per FFmpeg`);
+        if (foundProblems.length === 0) {
+            console.log(`   ✅ Nessun carattere UTF-8 problematico trovato`);
         }
-        
+
+        // FASE 1: PULIZIA TOTALE CARATTERI UTF-8 CORROTTI
+        let cleanedText = text
+            // Euro corrotto - PRIORITÀ MASSIMA
+            .replace(/Ôé¼/g, 'EUR')   
+            .replace(/€/g, 'EUR')      
+            .replace(/ôé¼/g, 'EUR')   
+            .replace(/Ôé€/g, 'EUR')   
+            
+            // CARATTERI CRITICI DALL'ERRORE UTENTE
+            .replace(/├î/g, 'i')       // "COS├î" nell'errore -> "COSi" 
+            .replace(/├ê/g, 'e')       // "BASSO ├ê" nell'errore -> "BASSO e"
+            
+            // Escape delle virgolette doppie (dobbiamo fare escape solo di queste)
+            .replace(/"/g, '\\"')
+            
+            // Escape dei due punti (causano problemi in FFmpeg)
+            .replace(/:/g, '\\:')
+            
+            // Escape delle barre inverse
+            .replace(/\\/g, '\\\\')
+            
+            // Escape delle parentesi quadre (usate per referenze in FFmpeg)
+            .replace(/\[/g, '\\[')
+            .replace(/\]/g, '\\]')
+            
+            // Escape dei caratteri che possono rompere la sintassi FFmpeg
+            .replace(/;/g, '\\;')
+            .replace(/,/g, '\\,')
+            
+            // GESTIONE PROFESSIONALE CARATTERI SPECIALI EUROPEI
+            // Caratteri Euro corrotti (PRIORITÀ MASSIMA)
+            .replace(/Ôé¼/g, 'EUR')   // Euro corrotto principale
+            .replace(/€/g, 'EUR')      // Euro normale -> EUR
+            .replace(/ôé¼/g, 'EUR')   // Euro corrotto minuscolo
+            .replace(/Ôé€/g, 'EUR')   // Euro corrotto variante
+            
+            // CORREZIONE CRITICA: Caratteri accentati corrotti UTF-8 più comuni
+            .replace(/├á/g, 'a')       // à corrotto
+            .replace(/├í/g, 'i')       // í corrotto  
+            .replace(/├©/g, 'e')       // é corrotto
+            .replace(/├¿/g, 'e')       // è corrotto (CRITICO - visto negli errori)
+            .replace(/├ù/g, 'u')       // ù corrotto
+            .replace(/├Ç/g, 'a')       // à corrotto (variante)
+            .replace(/├â/g, 'a')       // à corrotto (variante 2)
+            .replace(/├ê/g, 'e')       // è corrotto (variante)
+            .replace(/├ç/g, 'c')       // ç corrotto
+            .replace(/├ñ/g, 'n')       // ñ corrotto
+            .replace(/├ô/g, 'o')       // ô corrotto
+            .replace(/├«/g, 'e')       // ë corrotto
+            .replace(/├¼/g, 'u')       // ü corrotto
+            .replace(/├╣/g, 'u')       // ù corrotto (CRITICO - visto negli errori)
+            
+            // Altri caratteri monetari
+            .replace(/£/g, 'GBP') // Sterlina -> GBP  
+            .replace(/¥/g, 'YEN') // Yen -> YEN
+            .replace(/©/g, '(C)') // Copyright -> (C)
+            .replace(/®/g, '(R)') // Registered -> (R)
+            .replace(/™/g, '(TM)') // Trademark -> (TM)
+            
+        console.log(`🔒 Testo escaped per FFmpeg: "${escaped}"`);
+
         return escaped;
     }
 

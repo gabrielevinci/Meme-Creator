@@ -1290,6 +1290,79 @@
             background: #c0392b;
             transform: translateY(-1px);
         }
+        /* Stili per controlli checkbox e nested */
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .checkbox-label {
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .nested-controls {
+            margin-left: 30px;
+            padding-left: 15px;
+            border-left: 3px solid #3498db;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 0 8px 8px 0;
+            padding-top: 15px;
+            padding-bottom: 10px;
+            padding-right: 15px;
+            margin-top: 10px;
+        }
+        
+        .secondary-button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .secondary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .secondary-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .file-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #555;
+            font-style: italic;
+            min-height: 20px;
+        }
+        
+        .file-info:empty::before {
+            content: "Nessun file selezionato";
+            color: #999;
+        }
+
         /* Animazioni per notifiche */
         
         @keyframes slideInRight {
@@ -1514,10 +1587,134 @@
                     <small class="help-text">Controlla la velocità di riproduzione dei video elaborati: 0.5 = metà velocità, 2.0 = doppia velocità</small>
                 </div>
 
+                <!-- Contrasto -->
+                <div class="form-group">
+                    <label for="contrast-slider">🎨 Contrasto</label>
+                    <div class="slider-container">
+                        <input type="range" id="contrast-slider" class="range-input" min="0" max="2" value="1" step="0.1">
+                        <div class="slider-labels">
+                            <span class="slider-label-left">0 (Min)</span>
+                            <span id="contrast-value" class="range-value">1.0</span>
+                            <span class="slider-label-right">2 (Max)</span>
+                        </div>
+                    </div>
+                    <small class="help-text">Controlla il contrasto del video: 1.0 = normale, valori superiori aumentano il contrasto</small>
+                </div>
+
+                <!-- Saturazione -->
+                <div class="form-group">
+                    <label for="saturation-slider">🌈 Saturazione</label>
+                    <div class="slider-container">
+                        <input type="range" id="saturation-slider" class="range-input" min="0" max="100" value="50" step="1">
+                        <div class="slider-labels">
+                            <span class="slider-label-left">0 (B/N)</span>
+                            <span id="saturation-value" class="range-value">50</span>
+                            <span class="slider-label-right">100 (Max)</span>
+                        </div>
+                    </div>
+                    <small class="help-text">Controlla la saturazione colori: 50 = normale, 0 = bianco e nero, 100 = colori molto saturi</small>
+                </div>
+
+                <!-- Gamma -->
+                <div class="form-group">
+                    <label for="gamma-slider">🔆 Gamma</label>
+                    <div class="slider-container">
+                        <input type="range" id="gamma-slider" class="range-input" min="-1" max="1" value="0" step="0.1">
+                        <div class="slider-labels">
+                            <span class="slider-label-left">-1 (Scuro)</span>
+                            <span id="gamma-value" class="range-value">0.0</span>
+                            <span class="slider-label-right">+1 (Chiaro)</span>
+                        </div>
+                    </div>
+                    <small class="help-text">Regola la correzione gamma: 0 = normale, valori negativi scuriscono, positivi schiariscono</small>
+                </div>
+
+                <!-- Lift -->
+                <div class="form-group">
+                    <label for="lift-slider">🌅 Lift</label>
+                    <div class="slider-container">
+                        <input type="range" id="lift-slider" class="range-input" min="-1" max="1" value="0" step="0.1">
+                        <div class="slider-labels">
+                            <span class="slider-label-left">-1 (Scuro)</span>
+                            <span id="lift-value" class="range-value">0.0</span>
+                            <span class="slider-label-right">+1 (Chiaro)</span>
+                        </div>
+                    </div>
+                    <small class="help-text">Regola il lift (neri): 0 = normale, valori negativi scuriscono i neri, positivi li schiariscono</small>
+                </div>
+
+                <!-- Sovrapponi immagine -->
+                <div class="form-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="overlay-image-enabled" class="checkbox-input">
+                        <label for="overlay-image-enabled" class="checkbox-label">🖼️ Sovrapponi Immagine</label>
+                    </div>
+                    <div id="overlay-image-controls" class="nested-controls" style="display: none;">
+                        <div class="form-group">
+                            <button type="button" id="overlay-image-select" class="secondary-button" disabled>
+                                📁 Seleziona Immagine
+                            </button>
+                            <div id="overlay-image-filename" class="file-info"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="overlay-opacity-slider">Opacità Sovrapposizione</label>
+                            <div class="slider-container">
+                                <input type="range" id="overlay-opacity-slider" class="range-input" min="0" max="100" value="50" step="1" disabled>
+                                <div class="slider-labels">
+                                    <span class="slider-label-left">0%</span>
+                                    <span id="overlay-opacity-value" class="range-value">50%</span>
+                                    <span class="slider-label-right">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aumenta volume video -->
+                <div class="form-group">
+                    <label for="video-volume-slider">🔊 Volume Video</label>
+                    <div class="slider-container">
+                        <input type="range" id="video-volume-slider" class="range-input" min="-100" max="30" value="0" step="1">
+                        <div class="slider-labels">
+                            <span class="slider-label-left">-100db (Muto)</span>
+                            <span id="video-volume-value" class="range-value">0db</span>
+                            <span class="slider-label-right">+30db (Max)</span>
+                        </div>
+                    </div>
+                    <small class="help-text">Controlla il volume della traccia audio originale: 0db = normale</small>
+                </div>
+
+                <!-- Audio bianco -->
+                <div class="form-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="background-audio-enabled" class="checkbox-input">
+                        <label for="background-audio-enabled" class="checkbox-label">🎵 Audio di Sottofondo</label>
+                    </div>
+                    <div id="background-audio-controls" class="nested-controls" style="display: none;">
+                        <div class="form-group">
+                            <button type="button" id="background-audio-select" class="secondary-button" disabled>
+                                📁 Seleziona Audio
+                            </button>
+                            <div id="background-audio-filename" class="file-info"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="background-audio-volume-slider">Volume Audio di Sottofondo</label>
+                            <div class="slider-container">
+                                <input type="range" id="background-audio-volume-slider" class="range-input" min="-100" max="30" value="0" step="1" disabled>
+                                <div class="slider-labels">
+                                    <span class="slider-label-left">-100db (Muto)</span>
+                                    <span id="background-audio-volume-value" class="range-value">0db</span>
+                                    <span class="slider-label-right">+30db (Max)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Spazio per futuri parametri video -->
                 <div class="form-group" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
                     <small style="color: #777; font-style: italic; text-align: center; display: block;">
-                        Altri parametri video verranno aggiunti qui...
+                        Tutti i parametri video sono ora configurabili sopra...
                     </small>
                 </div>
             </div>
@@ -1751,6 +1948,10 @@
             constructor() {
                 this.isProcessing = false;
                 this.apiConfig = null;
+                // Variabili per i percorsi dei file
+                this.overlayImagePath = '';
+                this.backgroundAudioPath = '';
+                
                 this.initializeElements();
                 this.setupEventListeners();
                 this.loadInitialData();
@@ -1903,6 +2104,9 @@
                     videoSpeedValue.textContent = parseFloat(videoSpeedSlider.value).toFixed(1) + 'x';
                 }
 
+                // Gestione controlli per i nuovi parametri video
+                this.setupVideoParametersControls();
+
                 rangeInputs.forEach(({
                     id,
                     valueId,
@@ -1925,6 +2129,160 @@
                         valueSpan.textContent = input.value + suffix;
                     }
                 });
+            }
+
+            setupVideoParametersControls() {
+                // Setup per Contrasto
+                const contrastSlider = document.getElementById('contrast-slider');
+                const contrastValue = document.getElementById('contrast-value');
+                if (contrastSlider && contrastValue) {
+                    contrastSlider.addEventListener('input', (e) => {
+                        contrastValue.textContent = parseFloat(e.target.value).toFixed(1);
+                        this.saveSettings();
+                    });
+                    contrastValue.textContent = parseFloat(contrastSlider.value).toFixed(1);
+                }
+
+                // Setup per Saturazione
+                const saturationSlider = document.getElementById('saturation-slider');
+                const saturationValue = document.getElementById('saturation-value');
+                if (saturationSlider && saturationValue) {
+                    saturationSlider.addEventListener('input', (e) => {
+                        saturationValue.textContent = e.target.value;
+                        this.saveSettings();
+                    });
+                    saturationValue.textContent = saturationSlider.value;
+                }
+
+                // Setup per Gamma
+                const gammaSlider = document.getElementById('gamma-slider');
+                const gammaValue = document.getElementById('gamma-value');
+                if (gammaSlider && gammaValue) {
+                    gammaSlider.addEventListener('input', (e) => {
+                        gammaValue.textContent = parseFloat(e.target.value).toFixed(1);
+                        this.saveSettings();
+                    });
+                    gammaValue.textContent = parseFloat(gammaSlider.value).toFixed(1);
+                }
+
+                // Setup per Lift
+                const liftSlider = document.getElementById('lift-slider');
+                const liftValue = document.getElementById('lift-value');
+                if (liftSlider && liftValue) {
+                    liftSlider.addEventListener('input', (e) => {
+                        liftValue.textContent = parseFloat(e.target.value).toFixed(1);
+                        this.saveSettings();
+                    });
+                    liftValue.textContent = parseFloat(liftSlider.value).toFixed(1);
+                }
+
+                // Setup per Volume Video
+                const videoVolumeSlider = document.getElementById('video-volume-slider');
+                const videoVolumeValue = document.getElementById('video-volume-value');
+                if (videoVolumeSlider && videoVolumeValue) {
+                    videoVolumeSlider.addEventListener('input', (e) => {
+                        videoVolumeValue.textContent = e.target.value + 'db';
+                        this.saveSettings();
+                    });
+                    videoVolumeValue.textContent = videoVolumeSlider.value + 'db';
+                }
+
+                // Setup per Volume Audio di Sottofondo
+                const bgAudioVolumeSlider = document.getElementById('background-audio-volume-slider');
+                const bgAudioVolumeValue = document.getElementById('background-audio-volume-value');
+                if (bgAudioVolumeSlider && bgAudioVolumeValue) {
+                    bgAudioVolumeSlider.addEventListener('input', (e) => {
+                        bgAudioVolumeValue.textContent = e.target.value + 'db';
+                        this.saveSettings();
+                    });
+                    bgAudioVolumeValue.textContent = bgAudioVolumeSlider.value + 'db';
+                }
+
+                // Setup per Overlay Opacity
+                const overlayOpacitySlider = document.getElementById('overlay-opacity-slider');
+                const overlayOpacityValue = document.getElementById('overlay-opacity-value');
+                if (overlayOpacitySlider && overlayOpacityValue) {
+                    overlayOpacitySlider.addEventListener('input', (e) => {
+                        overlayOpacityValue.textContent = e.target.value + '%';
+                        this.saveSettings();
+                    });
+                    overlayOpacityValue.textContent = overlayOpacitySlider.value + '%';
+                }
+
+                // Setup per Checkbox Overlay Image
+                const overlayImageEnabled = document.getElementById('overlay-image-enabled');
+                const overlayImageControls = document.getElementById('overlay-image-controls');
+                const overlayImageSelect = document.getElementById('overlay-image-select');
+                const overlayImageOpacitySlider = document.getElementById('overlay-opacity-slider');
+
+                if (overlayImageEnabled && overlayImageControls) {
+                    overlayImageEnabled.addEventListener('change', (e) => {
+                        const isEnabled = e.target.checked;
+                        overlayImageControls.style.display = isEnabled ? 'block' : 'none';
+                        
+                        if (overlayImageSelect) overlayImageSelect.disabled = !isEnabled;
+                        if (overlayImageOpacitySlider) overlayImageOpacitySlider.disabled = !isEnabled;
+                        
+                        this.saveSettings();
+                    });
+                }
+
+                // Setup per Checkbox Background Audio
+                const bgAudioEnabled = document.getElementById('background-audio-enabled');
+                const bgAudioControls = document.getElementById('background-audio-controls');
+                const bgAudioSelect = document.getElementById('background-audio-select');
+                const bgAudioVolSlider = document.getElementById('background-audio-volume-slider');
+
+                if (bgAudioEnabled && bgAudioControls) {
+                    bgAudioEnabled.addEventListener('change', (e) => {
+                        const isEnabled = e.target.checked;
+                        bgAudioControls.style.display = isEnabled ? 'block' : 'none';
+                        
+                        if (bgAudioSelect) bgAudioSelect.disabled = !isEnabled;
+                        if (bgAudioVolSlider) bgAudioVolSlider.disabled = !isEnabled;
+                        
+                        this.saveSettings();
+                    });
+                }
+
+                // Setup per file selection buttons
+                this.setupFileSelectionButtons();
+            }
+
+            setupFileSelectionButtons() {
+                // Button per selezionare immagine overlay
+                const overlayImageSelect = document.getElementById('overlay-image-select');
+                if (overlayImageSelect) {
+                    overlayImageSelect.addEventListener('click', async () => {
+                        try {
+                            const result = await window.electronAPI.selectFile(['jpg', 'jpeg', 'png', 'bmp', 'gif']);
+                            if (result) {
+                                document.getElementById('overlay-image-filename').textContent = result.name;
+                                this.overlayImagePath = result.path;
+                                this.saveSettings();
+                            }
+                        } catch (error) {
+                            console.error('Errore nella selezione immagine:', error);
+                        }
+                    });
+                }
+
+                // Button per selezionare audio di sottofondo
+                const bgAudioSelect = document.getElementById('background-audio-select');
+                if (bgAudioSelect) {
+                    bgAudioSelect.addEventListener('click', async () => {
+                        try {
+                            const result = await window.electronAPI.selectFile(['mp3', 'wav', 'aac', 'flac', 'm4a']);
+                            if (result) {
+                                document.getElementById('background-audio-filename').textContent = result.name;
+                                this.backgroundAudioPath = result.path;
+                                this.saveSettings();
+                            }
+                        } catch (error) {
+                            console.error('Errore nella selezione audio:', error);
+                        }
+                    });
+                }
             }
 
             async loadInitialData() {
@@ -2127,6 +2485,116 @@
                         }
                     }
 
+                    // Caricamento nuovi parametri video
+                    if (settings.contrast !== undefined) {
+                        const contrastSlider = document.getElementById('contrast-slider');
+                        const contrastValue = document.getElementById('contrast-value');
+                        if (contrastSlider && contrastValue) {
+                            contrastSlider.value = settings.contrast;
+                            contrastValue.textContent = parseFloat(settings.contrast).toFixed(1);
+                        }
+                    }
+
+                    if (settings.saturation !== undefined) {
+                        const saturationSlider = document.getElementById('saturation-slider');
+                        const saturationValue = document.getElementById('saturation-value');
+                        if (saturationSlider && saturationValue) {
+                            saturationSlider.value = settings.saturation;
+                            saturationValue.textContent = settings.saturation;
+                        }
+                    }
+
+                    if (settings.gamma !== undefined) {
+                        const gammaSlider = document.getElementById('gamma-slider');
+                        const gammaValue = document.getElementById('gamma-value');
+                        if (gammaSlider && gammaValue) {
+                            gammaSlider.value = settings.gamma;
+                            gammaValue.textContent = parseFloat(settings.gamma).toFixed(1);
+                        }
+                    }
+
+                    if (settings.lift !== undefined) {
+                        const liftSlider = document.getElementById('lift-slider');
+                        const liftValue = document.getElementById('lift-value');
+                        if (liftSlider && liftValue) {
+                            liftSlider.value = settings.lift;
+                            liftValue.textContent = parseFloat(settings.lift).toFixed(1);
+                        }
+                    }
+
+                    if (settings.videoVolume !== undefined) {
+                        const videoVolumeSlider = document.getElementById('video-volume-slider');
+                        const videoVolumeValue = document.getElementById('video-volume-value');
+                        if (videoVolumeSlider && videoVolumeValue) {
+                            videoVolumeSlider.value = settings.videoVolume;
+                            videoVolumeValue.textContent = settings.videoVolume + 'db';
+                        }
+                    }
+
+                    if (settings.overlayImageEnabled !== undefined) {
+                        const overlayEnabled = document.getElementById('overlay-image-enabled');
+                        const overlayControls = document.getElementById('overlay-image-controls');
+                        const overlaySelect = document.getElementById('overlay-image-select');
+                        const overlayOpacitySlider = document.getElementById('overlay-opacity-slider');
+                        
+                        if (overlayEnabled) {
+                            overlayEnabled.checked = settings.overlayImageEnabled;
+                            if (overlayControls) {
+                                overlayControls.style.display = settings.overlayImageEnabled ? 'block' : 'none';
+                            }
+                            if (overlaySelect) overlaySelect.disabled = !settings.overlayImageEnabled;
+                            if (overlayOpacitySlider) overlayOpacitySlider.disabled = !settings.overlayImageEnabled;
+                        }
+
+                        if (settings.overlayImagePath) {
+                            this.overlayImagePath = settings.overlayImagePath;
+                            const filename = settings.overlayImagePath.split('/').pop() || settings.overlayImagePath.split('\\').pop();
+                            const filenameEl = document.getElementById('overlay-image-filename');
+                            if (filenameEl) filenameEl.textContent = filename;
+                        }
+                    }
+
+                    if (settings.overlayOpacity !== undefined) {
+                        const overlayOpacitySlider = document.getElementById('overlay-opacity-slider');
+                        const overlayOpacityValue = document.getElementById('overlay-opacity-value');
+                        if (overlayOpacitySlider && overlayOpacityValue) {
+                            overlayOpacitySlider.value = settings.overlayOpacity;
+                            overlayOpacityValue.textContent = settings.overlayOpacity + '%';
+                        }
+                    }
+
+                    if (settings.backgroundAudioEnabled !== undefined) {
+                        const bgAudioEnabled = document.getElementById('background-audio-enabled');
+                        const bgAudioControls = document.getElementById('background-audio-controls');
+                        const bgAudioSelect = document.getElementById('background-audio-select');
+                        const bgAudioVolumeSlider = document.getElementById('background-audio-volume-slider');
+                        
+                        if (bgAudioEnabled) {
+                            bgAudioEnabled.checked = settings.backgroundAudioEnabled;
+                            if (bgAudioControls) {
+                                bgAudioControls.style.display = settings.backgroundAudioEnabled ? 'block' : 'none';
+                            }
+                            if (bgAudioSelect) bgAudioSelect.disabled = !settings.backgroundAudioEnabled;
+                            if (bgAudioVolumeSlider) bgAudioVolumeSlider.disabled = !settings.backgroundAudioEnabled;
+                        }
+
+                        if (settings.backgroundAudioPath) {
+                            this.backgroundAudioPath = settings.backgroundAudioPath;
+                            const filename = settings.backgroundAudioPath.split('/').pop() || settings.backgroundAudioPath.split('\\').pop();
+                            const filenameEl = document.getElementById('background-audio-filename');
+                            if (filenameEl) filenameEl.textContent = filename;
+                        }
+                    }
+
+                    if (settings.backgroundAudioVolume !== undefined) {
+                        const bgAudioVolumeSlider = document.getElementById('background-audio-volume-slider');
+                        const bgAudioVolumeValue = document.getElementById('background-audio-volume-value');
+                        if (bgAudioVolumeSlider && bgAudioVolumeValue) {
+                            bgAudioVolumeSlider.value = settings.backgroundAudioVolume;
+                            bgAudioVolumeValue.textContent = settings.backgroundAudioVolume + 'db';
+                        }
+                    }
+
                     // Aggiorna il preview dashboard dopo aver caricato le impostazioni
                     setTimeout(() => this.updateBannerPreview(), 100);
 
@@ -2145,7 +2613,19 @@
                         marginRight: parseInt(document.getElementById('margin-right') && document.getElementById('margin-right').value || 40),
                         textFormat: document.getElementById('text-format') && document.getElementById('text-format').value || 'normal',
                         temperature: parseFloat(document.getElementById('temperature-slider') && document.getElementById('temperature-slider').value || 1),
-                        videoSpeed: parseFloat(document.getElementById('video-speed-slider') && document.getElementById('video-speed-slider').value || 1)
+                        videoSpeed: parseFloat(document.getElementById('video-speed-slider') && document.getElementById('video-speed-slider').value || 1),
+                        // Nuovi parametri video
+                        contrast: parseFloat(document.getElementById('contrast-slider') && document.getElementById('contrast-slider').value || 1),
+                        saturation: parseInt(document.getElementById('saturation-slider') && document.getElementById('saturation-slider').value || 50),
+                        gamma: parseFloat(document.getElementById('gamma-slider') && document.getElementById('gamma-slider').value || 0),
+                        lift: parseFloat(document.getElementById('lift-slider') && document.getElementById('lift-slider').value || 0),
+                        videoVolume: parseInt(document.getElementById('video-volume-slider') && document.getElementById('video-volume-slider').value || 0),
+                        overlayImageEnabled: document.getElementById('overlay-image-enabled') && document.getElementById('overlay-image-enabled').checked || false,
+                        overlayImagePath: this.overlayImagePath || '',
+                        overlayOpacity: parseInt(document.getElementById('overlay-opacity-slider') && document.getElementById('overlay-opacity-slider').value || 50),
+                        backgroundAudioEnabled: document.getElementById('background-audio-enabled') && document.getElementById('background-audio-enabled').checked || false,
+                        backgroundAudioPath: this.backgroundAudioPath || '',
+                        backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0)
                     };
 
                     console.log('Salvataggio impostazioni:', settings);
@@ -2389,7 +2869,19 @@
                     selectedFont: this.elements.selectedFont && this.elements.selectedFont.value || 'impact',
                     textFormat: this.elements.textFormat && this.elements.textFormat.value || 'normal',
                     temperature: parseFloat(document.getElementById('temperature-slider') && document.getElementById('temperature-slider').value || 1),
-                    videoSpeed: parseFloat(document.getElementById('video-speed-slider') && document.getElementById('video-speed-slider').value || 1)
+                    videoSpeed: parseFloat(document.getElementById('video-speed-slider') && document.getElementById('video-speed-slider').value || 1),
+                    // Nuovi parametri video
+                    contrast: parseFloat(document.getElementById('contrast-slider') && document.getElementById('contrast-slider').value || 1),
+                    saturation: parseInt(document.getElementById('saturation-slider') && document.getElementById('saturation-slider').value || 50),
+                    gamma: parseFloat(document.getElementById('gamma-slider') && document.getElementById('gamma-slider').value || 0),
+                    lift: parseFloat(document.getElementById('lift-slider') && document.getElementById('lift-slider').value || 0),
+                    videoVolume: parseInt(document.getElementById('video-volume-slider') && document.getElementById('video-volume-slider').value || 0),
+                    overlayImageEnabled: document.getElementById('overlay-image-enabled') && document.getElementById('overlay-image-enabled').checked || false,
+                    overlayImagePath: this.overlayImagePath || '',
+                    overlayOpacity: parseInt(document.getElementById('overlay-opacity-slider') && document.getElementById('overlay-opacity-slider').value || 50),
+                    backgroundAudioEnabled: document.getElementById('background-audio-enabled') && document.getElementById('background-audio-enabled').checked || false,
+                    backgroundAudioPath: this.backgroundAudioPath || '',
+                    backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0)
                 };
 
                 // Gestione sicura dei margini (permette il valore 0)

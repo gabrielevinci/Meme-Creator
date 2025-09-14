@@ -1,10 +1,21 @@
 {
   "fontFamily": "Impact",
-  "marginTop": 0,
-  "marginBottom": 0,
-  "marginLeft": 0,
-  "marginRight": 0,
+  "marginTop": 2,
+  "marginBottom": 8,
+  "marginLeft": 4,
+  "marginRight": 11,
   "textFormat": "uppercase",
   "temperature": 1,
-  "videoSpeed": 1
+  "videoSpeed": 2,
+  "contrast": 1,
+  "saturation": 50,
+  "gamma": 0,
+  "lift": 1,
+  "videoVolume": 0,
+  "overlayImageEnabled": false,
+  "overlayImagePath": "",
+  "overlayOpacity": 50,
+  "backgroundAudioEnabled": true,
+  "backgroundAudioPath": "",
+  "backgroundAudioVolume": 0
 }

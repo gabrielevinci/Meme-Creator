@@ -32,6 +32,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     loadSettings: () => ipcRenderer.invoke('load-settings'),
     saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
 
+    // File selection
+    selectFile: (filters) => ipcRenderer.invoke('select-file', filters),
+
     // Status updates
     onStatusUpdate: (callback) => ipcRenderer.on('status-update', callback),
     onLogUpdate: (callback) => ipcRenderer.on('log-update', callback),

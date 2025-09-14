@@ -525,6 +525,41 @@ class ContentCreatorApp {
         ipcMain.handle('save-settings', async(event, settings) => {
             return await this.saveSettings(settings);
         });
+
+        // File selection handler
+        ipcMain.handle('select-file', async(event, filters = []) => {
+            const options = {
+                title: 'Seleziona File',
+                buttonLabel: 'Seleziona',
+                properties: ['openFile']
+            };
+
+            if (filters.length > 0) {
+                options.filters = [
+                    {
+                        name: 'File Supportati',
+                        extensions: filters
+                    },
+                    {
+                        name: 'Tutti i File',
+                        extensions: ['*']
+                    }
+                ];
+            }
+
+            const result = await dialog.showOpenDialog(this.mainWindow, options);
+            
+            if (!result.canceled && result.filePaths.length > 0) {
+                const filePath = result.filePaths[0];
+                const fileName = path.basename(filePath);
+                return {
+                    path: filePath,
+                    name: fileName
+                };
+            }
+            
+            return null;
+        });
     }
 
     async processVideos(config) {

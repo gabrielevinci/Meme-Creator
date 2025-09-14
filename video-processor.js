@@ -1361,59 +1361,209 @@ class VideoProcessor {
 
         // COSTRUZIONE CORRETTA DEL FILTRO COMPLEX
         let filterComplex;
+        let videoProcessingNeeded = false;
 
-        // Aggiungi filtro velocità video se specificato nel config
-        if (config && config.videoSpeed && config.videoSpeed !== 1) {
-            console.log(`⚡ Applicazione velocità video: ${config.videoSpeed}x`);
+        // Array per i filtri video in sequenza
+        let videoFilters = [];
 
-            // Filtro con velocità: [0:v] -> [v_with_text] -> [v]
-            filterComplex = textFilters + '[v_with_text];[v_with_text]setpts=PTS/' + config.videoSpeed + '[v]';
+        // Controllo se è necessaria l'elaborazione video
+        const needsContrast = config && config.contrast !== undefined && config.contrast !== 1;
+        const needsSaturation = config && config.saturation !== undefined && config.saturation !== 50;
+        const needsGamma = config && config.gamma !== undefined && config.gamma !== 0;
+        const needsLift = config && config.lift !== undefined && config.lift !== 0;
+        const needsOverlayImage = config && config.overlayImageEnabled && config.overlayImagePath;
+        const needsVideoSpeed = config && config.videoSpeed && config.videoSpeed !== 1;
 
-            // Gestione dell'audio: se la velocità è troppo alta/bassa, rimuovi l'audio
-            if (config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
-                // Applica atempo per l'audio (limitato tra 0.5x e 2.0x)
-                const atempoValue = Math.min(Math.max(config.videoSpeed, 0.5), 2.0);
-                console.log(`🔊 Applicazione velocità audio: ${atempoValue}x`);
+        videoProcessingNeeded = needsContrast || needsSaturation || needsGamma || needsLift || needsOverlayImage || needsVideoSpeed;
 
-                // Aggiungi processamento audio
-                filterComplex += ';[0:a]atempo=' + atempoValue + '[a]';
-            } else {
-                console.log(`🔇 Velocità ${config.videoSpeed}x troppo estrema per l'audio, audio rimosso`);
+        console.log(`🎨 Analisi filtri video necessari:`, {
+            contrast: needsContrast ? config.contrast : 'skip',
+            saturation: needsSaturation ? config.saturation : 'skip',
+            gamma: needsGamma ? config.gamma : 'skip',
+            lift: needsLift ? config.lift : 'skip',
+            overlayImage: needsOverlayImage ? 'enabled' : 'skip',
+            videoSpeed: needsVideoSpeed ? config.videoSpeed + 'x' : 'skip'
+        });
+
+        if (videoProcessingNeeded) {
+            let currentLabel = '[0:v]';
+            let stepCounter = 0;
+
+            // 1. Filtri di correzione colore
+            if (needsContrast) {
+                const nextLabel = `[v${stepCounter}]`;
+                videoFilters.push(`${currentLabel}eq=contrast=${config.contrast}${nextLabel}`);
+                currentLabel = nextLabel;
+                stepCounter++;
+                console.log(`🎨 Aggiunto filtro contrasto: ${config.contrast}`);
             }
+
+            if (needsSaturation) {
+                const nextLabel = `[v${stepCounter}]`;
+                // Converte il range 0-100 in 0-2 per FFmpeg
+                const satValue = (config.saturation / 50).toFixed(2);
+                videoFilters.push(`${currentLabel}eq=saturation=${satValue}${nextLabel}`);
+                currentLabel = nextLabel;
+                stepCounter++;
+                console.log(`🌈 Aggiunto filtro saturazione: ${config.saturation} (FFmpeg: ${satValue})`);
+            }
+
+            if (needsGamma) {
+                const nextLabel = `[v${stepCounter}]`;
+                // FFmpeg gamma range: 0.1-10 (1=normale), convertiamo da -1/+1
+                const gammaValue = (1 + config.gamma).toFixed(2);
+                videoFilters.push(`${currentLabel}eq=gamma=${gammaValue}${nextLabel}`);
+                currentLabel = nextLabel;
+                stepCounter++;
+                console.log(`🔆 Aggiunto filtro gamma: ${config.gamma} (FFmpeg: ${gammaValue})`);
+            }
+
+            if (needsLift) {
+                const nextLabel = `[v${stepCounter}]`;
+                // FFmpeg lift/shadows range
+                const liftValue = config.lift.toFixed(2);
+                videoFilters.push(`${currentLabel}eq=shadows=${liftValue}${nextLabel}`);
+                currentLabel = nextLabel;
+                stepCounter++;
+                console.log(`🌅 Aggiunto filtro lift: ${config.lift}`);
+            }
+
+            // 2. Overlay immagine (se specificato)
+            if (needsOverlayImage) {
+                const nextLabel = `[v${stepCounter}]`;
+                const opacity = (config.overlayOpacity / 100).toFixed(2);
+                
+                // Prepara il path dell'immagine (escapato per FFmpeg)
+                const escapedImagePath = config.overlayImagePath.replace(/\\/g, '/').replace(/:/g, '\\:');
+                
+                videoFilters.push(`[1:v]scale=${width}:${height}[scaled_overlay]`);
+                videoFilters.push(`${currentLabel}[scaled_overlay]blend=all_mode=soft_light:all_opacity=${opacity}${nextLabel}`);
+                currentLabel = nextLabel;
+                stepCounter++;
+                console.log(`�️ Aggiunto overlay immagine: ${config.overlayImagePath} (opacità: ${config.overlayOpacity}%)`);
+                
+                // Bisognerà aggiungere il file immagine come input aggiuntivo
+            }
+
+            // 3. Aggiungi il testo e il banner bianco
+            const textLabel = `[v${stepCounter}]`;
+            videoFilters.push(`${currentLabel}${textFilters.replace('[0:v]', '')}${textLabel}`);
+            currentLabel = textLabel;
+            stepCounter++;
+
+            // 4. Velocità video (sempre per ultimo se presente)
+            if (needsVideoSpeed) {
+                const finalLabel = '[v]';
+                videoFilters.push(`${currentLabel}setpts=PTS/${config.videoSpeed}${finalLabel}`);
+                console.log(`⚡ Aggiunta velocità video: ${config.videoSpeed}x`);
+            } else {
+                // Rinomina il label finale
+                const lastFilter = videoFilters[videoFilters.length - 1];
+                videoFilters[videoFilters.length - 1] = lastFilter.replace(textLabel, '[v]');
+            }
+
         } else {
-            // Filtro normale senza velocità: [0:v] -> [v]
-            filterComplex = textFilters + '[v]';
+            // Nessun filtro video necessario, solo il testo
+            videoFilters.push(textFilters + '[v]');
+        }
+
+        // Costruisci il filtro complex finale
+        filterComplex = videoFilters.join(';');
+
+        // Gestione audio
+        const audioFilters = [];
+        let audioInputs = 1; // Input principale
+
+        // Audio del video originale (con possibile modifica volume)
+        if (config && config.videoVolume && config.videoVolume !== 0) {
+            const volumeDb = config.videoVolume;
+            const volumeLinear = Math.pow(10, volumeDb / 20).toFixed(3);
+            audioFilters.push(`[0:a]volume=${volumeLinear}[main_audio]`);
+            console.log(`� Volume video: ${volumeDb}db (linear: ${volumeLinear})`);
+        }
+
+        // Audio di sottofondo
+        if (config && config.backgroundAudioEnabled && config.backgroundAudioPath) {
+            audioInputs++; // Input aggiuntivo per l'audio
+            const bgVolumeDb = config.backgroundAudioVolume || 0;
+            const bgVolumeLinear = Math.pow(10, bgVolumeDb / 20).toFixed(3);
+            
+            audioFilters.push(`[${audioInputs - 1}:a]volume=${bgVolumeLinear}[bg_audio]`);
+            console.log(`🎵 Audio sottofondo: ${config.backgroundAudioPath} (volume: ${bgVolumeDb}db)`);
+            
+            // Mix dei due audio
+            if (config.videoVolume && config.videoVolume !== 0) {
+                audioFilters.push(`[main_audio][bg_audio]amix=inputs=2:duration=first[mixed_audio]`);
+            } else {
+                audioFilters.push(`[0:a][bg_audio]amix=inputs=2:duration=first[mixed_audio]`);
+            }
+        }
+
+        // Gestione velocità audio
+        let finalAudioLabel = null;
+        if (needsVideoSpeed && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
+            const atempoValue = Math.min(Math.max(config.videoSpeed, 0.5), 2.0);
+            
+            if (audioFilters.length > 0) {
+                const lastAudioFilter = audioFilters[audioFilters.length - 1];
+                const currentAudioLabel = lastAudioFilter.includes('[mixed_audio]') ? '[mixed_audio]' : '[bg_audio]';
+                audioFilters.push(`${currentAudioLabel}atempo=${atempoValue}[a]`);
+            } else if (config.videoVolume && config.videoVolume !== 0) {
+                audioFilters.push(`[main_audio]atempo=${atempoValue}[a]`);
+            } else {
+                audioFilters.push(`[0:a]atempo=${atempoValue}[a]`);
+            }
+            finalAudioLabel = '[a]';
+            console.log(`🔊 Velocità audio: ${atempoValue}x`);
+        } else if (audioFilters.length > 0) {
+            // Se abbiamo filtri audio ma non velocità, usa l'ultimo output
+            const lastFilter = audioFilters[audioFilters.length - 1];
+            if (lastFilter.includes('[mixed_audio]')) {
+                finalAudioLabel = '[mixed_audio]';
+            } else if (lastFilter.includes('[main_audio]')) {
+                finalAudioLabel = '[main_audio]';
+            } else if (lastFilter.includes('[bg_audio]')) {
+                finalAudioLabel = '[bg_audio]';
+            }
+        }
+
+        // Combina filtri video e audio
+        if (audioFilters.length > 0) {
+            filterComplex += ';' + audioFilters.join(';');
         }
 
         console.log(`🔧 Filtro FFmpeg generato: ${filterComplex}`);
         console.log(`🚀 Eseguendo processamento video...`);
 
         // Parametri FFmpeg di base
-        const ffmpegArgs = [
-            '-i', inputVideoPath,
-            '-filter_complex', filterComplex
-        ];
+        const ffmpegArgs = ['-i', inputVideoPath];
 
-        // Aggiungi mappature
+        // Input aggiuntivi
+        if (needsOverlayImage) {
+            ffmpegArgs.push('-i', config.overlayImagePath);
+        }
+        if (config && config.backgroundAudioEnabled && config.backgroundAudioPath) {
+            ffmpegArgs.push('-i', config.backgroundAudioPath);
+        }
+
+        // Filtri
+        ffmpegArgs.push('-filter_complex', filterComplex);
+
+        // Mappature
         ffmpegArgs.push('-map', '[v]');
 
-        // Aggiungi mappatura audio condizionale
-        let audioCodec = 'copy'; // Default per audio non processato
-
-        if (config && config.videoSpeed && config.videoSpeed !== 1) {
-            if (config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
-                // Audio processato con atempo - serve re-encoding
-                ffmpegArgs.push('-map', '[a]');
-                audioCodec = 'aac'; // Non possiamo copiare audio filtrato
-                console.log(`🔧 Audio codec impostato su 'aac' per supportare filtering (velocità ${config.videoSpeed}x)`);
-            }
-            // Se velocità estrema, non mappare audio (rimosso)
+        if (finalAudioLabel) {
+            ffmpegArgs.push('-map', finalAudioLabel);
+        } else if (needsVideoSpeed && (config.videoSpeed < 0.5 || config.videoSpeed > 2.0)) {
+            // Velocità estrema, salta audio
+            console.log(`🔇 Audio rimosso per velocità estrema: ${config.videoSpeed}x`);
         } else {
-            // Velocità normale, copia audio originale se presente
+            // Audio normale
             ffmpegArgs.push('-map', '0:a?');
         }
 
         // Codec
+        let audioCodec = finalAudioLabel ? 'aac' : 'copy';
         ffmpegArgs.push('-c:v', 'libx264', '-c:a', audioCodec);
 
         // Aggiungi i parametri finali

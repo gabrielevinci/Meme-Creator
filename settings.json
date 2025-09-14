@@ -1,9 +1,9 @@
 {
   "fontFamily": "Impact",
-  "marginTop": 18,
-  "marginBottom": 26,
-  "marginLeft": 33,
-  "marginRight": 39,
+  "marginTop": 30,
+  "marginBottom": 30,
+  "marginLeft": 40,
+  "marginRight": 40,
   "textFormat": "normal",
   "temperature": 1,
   "videoSpeed": 1,
@@ -11,11 +11,11 @@
   "saturation": 50,
   "gamma": 0,
   "lift": 0,
-  "videoVolume": 4,
+  "videoVolume": 0,
   "overlayImageEnabled": false,
   "overlayImagePath": "",
   "overlayOpacity": 50,
-  "backgroundAudioEnabled": true,
-  "backgroundAudioPath": "D:\\OneDrive\\EDIT\\VIDEO IN BULK\\Rumore bianco per dormire - White noise- Suoni rilassanti per dormire.mp3",
+  "backgroundAudioEnabled": false,
+  "backgroundAudioPath": "",
   "backgroundAudioVolume": 0
 }

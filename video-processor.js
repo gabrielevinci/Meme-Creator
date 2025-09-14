@@ -92,8 +92,15 @@ class VideoProcessor {
     calculateAvailableTextArea(blockWidth, blockHeight, margins) {
         const { marginTop = 30, marginBottom = 30, marginLeft = 40, marginRight = 40 } = margins || {};
 
+        console.log(`🔍 DEBUGGING MARGINI:`);
+        console.log(`   📦 Blocco originale: ${blockWidth}x${blockHeight}px`);
+        console.log(`   📏 Margini ricevuti: T=${marginTop}, B=${marginBottom}, L=${marginLeft}, R=${marginRight}`);
+
         const availableWidth = blockWidth - marginLeft - marginRight;
         const availableHeight = blockHeight - marginTop - marginBottom;
+
+        console.log(`   ➖ Calcolo larghezza: ${blockWidth} - ${marginLeft} - ${marginRight} = ${availableWidth}px`);
+        console.log(`   ➖ Calcolo altezza: ${blockHeight} - ${marginTop} - ${marginBottom} = ${availableHeight}px`);
 
         // Verifiche di sicurezza: applica limiti minimi solo se non tutti i margini sono 0
         // Se tutti i margini sono 0, l'utente vuole utilizzare tutto il blocco
@@ -102,7 +109,7 @@ class VideoProcessor {
         const safeWidth = allMarginsZero ? availableWidth : Math.max(availableWidth, 100);
         const safeHeight = allMarginsZero ? availableHeight : Math.max(availableHeight, 50);
 
-        console.log(`📏 Area testo disponibile - Blocco: ${blockWidth}x${blockHeight}, Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight} -> Area: ${safeWidth}x${safeHeight}`);
+        console.log(`   ✅ Area testo FINALE: ${safeWidth}x${safeHeight}px (tutti margini zero: ${allMarginsZero})`);
 
         return {
             width: safeWidth,
@@ -793,7 +800,7 @@ class VideoProcessor {
     // Metodo OTTIMIZZATO per preprocessare l'audio con SOX (molto più veloce di FFmpeg)
     async preprocessAudioWithSox(config, inputVideoPath, tempDir) {
         console.log(`🎵 Preprocessing audio con SOX - MODALITÀ VELOCE`);
-        
+
         let finalAudioPath = null;
 
         // Determina se servono modifiche audio
@@ -864,15 +871,15 @@ class VideoProcessor {
         return new Promise((resolve, reject) => {
             const ffmpeg = spawn(this.ffmpegPath, [
                 '-i', inputVideoPath,
-                '-vn',                    // No video
-                '-acodec', 'pcm_s16le',   // Audio non compresso per elaborazione veloce
-                '-ar', '44100',           // Sample rate standard
-                '-ac', '2',               // Stereo
+                '-vn', // No video
+                '-acodec', 'pcm_s16le', // Audio non compresso per elaborazione veloce
+                '-ar', '44100', // Sample rate standard
+                '-ac', '2', // Stereo
                 '-y', outputAudioPath
             ]);
 
             let errorOutput = '';
-            
+
             ffmpeg.stderr.on('data', (data) => {
                 const output = data.toString();
                 if (output.includes('Error') || output.includes('failed')) {
@@ -898,19 +905,19 @@ class VideoProcessor {
     async adjustVolumeWithSox(inputPath, outputPath, volumeDb) {
         return new Promise((resolve, reject) => {
             const job = sox();
-            
+
             job.input(inputPath)
-               .output(outputPath)
-               .audioFilter('vol', volumeDb + 'dB')  // Applica volume in dB
-               .run((err, stdout, stderr) => {
-                   if (err) {
-                       console.error(`SOX volume error: ${err.message}`);
-                       reject(err);
-                   } else {
-                       console.log(`✅ SOX volume adjustment completato: ${volumeDb}dB`);
-                       resolve(outputPath);
-                   }
-               });
+                .output(outputPath)
+                .audioFilter('vol', volumeDb + 'dB') // Applica volume in dB
+                .run((err, stdout, stderr) => {
+                    if (err) {
+                        console.error(`SOX volume error: ${err.message}`);
+                        reject(err);
+                    } else {
+                        console.log(`✅ SOX volume adjustment completato: ${volumeDb}dB`);
+                        resolve(outputPath);
+                    }
+                });
         });
     }
 
@@ -918,19 +925,19 @@ class VideoProcessor {
     async mixAudioWithSox(mainAudioPath, bgAudioPath, outputPath) {
         return new Promise((resolve, reject) => {
             const job = sox();
-            
-            job.input([mainAudioPath, bgAudioPath])  // Input multipli
-               .output(outputPath)
-               .audioFilter('mix')  // Mix automatico
-               .run((err, stdout, stderr) => {
-                   if (err) {
-                       console.error(`SOX mix error: ${err.message}`);
-                       reject(err);
-                   } else {
-                       console.log(`✅ SOX audio mix completato`);
-                       resolve(outputPath);
-                   }
-               });
+
+            job.input([mainAudioPath, bgAudioPath]) // Input multipli
+                .output(outputPath)
+                .audioFilter('mix') // Mix automatico
+                .run((err, stdout, stderr) => {
+                    if (err) {
+                        console.error(`SOX mix error: ${err.message}`);
+                        reject(err);
+                    } else {
+                        console.log(`✅ SOX audio mix completato`);
+                        resolve(outputPath);
+                    }
+                });
         });
     }
 
@@ -938,19 +945,19 @@ class VideoProcessor {
     async changeSpeedWithSox(inputPath, outputPath, speedFactor) {
         return new Promise((resolve, reject) => {
             const job = sox();
-            
+
             job.input(inputPath)
-               .output(outputPath)
-               .audioFilter('speed', speedFactor)  // Cambio velocità
-               .run((err, stdout, stderr) => {
-                   if (err) {
-                       console.error(`SOX speed error: ${err.message}`);
-                       reject(err);
-                   } else {
-                       console.log(`✅ SOX speed change completato: ${speedFactor}x`);
-                       resolve(outputPath);
-                   }
-               });
+                .output(outputPath)
+                .audioFilter('speed', speedFactor) // Cambio velocità
+                .run((err, stdout, stderr) => {
+                    if (err) {
+                        console.error(`SOX speed error: ${err.message}`);
+                        reject(err);
+                    } else {
+                        console.log(`✅ SOX speed change completato: ${speedFactor}x`);
+                        resolve(outputPath);
+                    }
+                });
         });
     }
 
@@ -1314,6 +1321,14 @@ class VideoProcessor {
         const marginLeft = (config && config.marginLeft !== undefined) ? config.marginLeft : 40;
         const marginRight = (config && config.marginRight !== undefined) ? config.marginRight : 40;
 
+        console.log(`🔧 MARGINI DA CONFIG:`, {
+            marginTop: config?.marginTop,
+            marginBottom: config?.marginBottom, 
+            marginLeft: config?.marginLeft,
+            marginRight: config?.marginRight
+        });
+        console.log(`🔧 MARGINI FINALI UTILIZZATI: T=${marginTop}, B=${marginBottom}, L=${marginLeft}, R=${marginRight}`);
+
         const margins = { marginTop, marginBottom, marginLeft, marginRight };
 
         // Calcola l'area disponibile per il testo
@@ -1657,16 +1672,16 @@ class VideoProcessor {
         // ==========================================
         // GESTIONE AUDIO SUPER-OTTIMIZZATA CON SOX
         // ==========================================
-        
+
         console.log(`🎵 === AVVIO PREPROCESSING AUDIO OTTIMIZZATO ===`);
-        
+
         // STEP 1: Preprocessa l'audio con SOX (molto più veloce)
         const preprocessedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir);
-        
+
         let finalAudioLabel = null;
         let audioInputs = 1;
         const audioFilters = [];
-        
+
         if (preprocessedAudioPath) {
             // Audio già processato con SOX - usa il file processato
             console.log(`✅ Utilizzo audio preprocessato con SOX: ${path.basename(preprocessedAudioPath)}`);
@@ -1675,11 +1690,11 @@ class VideoProcessor {
         } else {
             // Nessuna modifica audio necessaria - usa approccio tradizionale FFmpeg
             console.log(`📋 Audio non modificato - uso streaming FFmpeg tradizionale`);
-            
+
             const hasVolumeChange = config && config.videoVolume && config.videoVolume !== 0;
             const hasBackgroundAudio = config && config.backgroundAudioEnabled && config.backgroundAudioPath;
             const hasSpeedChange = config && config.videoSpeed && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0;
-            
+
             // Fallback solo se necessario (dovrebbe essere rarissimo)
             if (hasVolumeChange || hasBackgroundAudio || hasSpeedChange) {
                 let currentLabel = '[0:a]';
@@ -1734,7 +1749,7 @@ class VideoProcessor {
         if (needsOverlayImage) {
             ffmpegArgs.push('-i', config.overlayImagePath);
         }
-        
+
         // NUOVO: Audio preprocessato con SOX (molto più efficiente)
         if (preprocessedAudioPath) {
             ffmpegArgs.push('-i', preprocessedAudioPath);
@@ -1768,21 +1783,21 @@ class VideoProcessor {
         if (finalAudioLabel) {
             // Audio modificato - usa codec efficiente con qualità bilanciata
             ffmpegArgs.push(
-                '-c:v', 'libx264', 
-                '-preset', 'fast',        // Encoding più veloce
-                '-crf', '23',            // Qualità bilanciata
-                '-c:a', 'aac', 
-                '-b:a', '128k',          // Bitrate audio fisso per consistenza
-                '-ar', '44100',          // Sample rate standard
-                '-ac', '2'               // Stereo
+                '-c:v', 'libx264',
+                '-preset', 'fast', // Encoding più veloce
+                '-crf', '23', // Qualità bilanciata
+                '-c:a', 'aac',
+                '-b:a', '128k', // Bitrate audio fisso per consistenza
+                '-ar', '44100', // Sample rate standard
+                '-ac', '2' // Stereo
             );
         } else {
             // Audio non modificato - copia stream per massima velocità
             ffmpegArgs.push(
-                '-c:v', 'libx264', 
+                '-c:v', 'libx264',
                 '-preset', 'fast',
                 '-crf', '23',
-                '-c:a', 'copy'           // Copia audio originale senza ricodifica
+                '-c:a', 'copy' // Copia audio originale senza ricodifica
             );
         }
 

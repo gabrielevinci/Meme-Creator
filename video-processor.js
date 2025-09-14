@@ -2,6 +2,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs').promises;
 const sharp = require('sharp');
+const sox = require('sox');
 
 class VideoProcessor {
     constructor() {
@@ -785,6 +786,185 @@ class VideoProcessor {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    // ===============================
+    // METODI AUDIO OTTIMIZZATI CON SOX
+    // ===============================
+
+    // Metodo OTTIMIZZATO per preprocessare l'audio con SOX (molto più veloce di FFmpeg)
+    async preprocessAudioWithSox(config, inputVideoPath, tempDir) {
+        console.log(`🎵 Preprocessing audio con SOX - MODALITÀ VELOCE`);
+        
+        let finalAudioPath = null;
+
+        // Determina se servono modifiche audio
+        const hasVolumeChange = config && config.videoVolume && config.videoVolume !== 0;
+        const hasBackgroundAudio = config && config.backgroundAudioEnabled && config.backgroundAudioPath;
+        const hasSpeedChange = config && config.videoSpeed && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0;
+
+        if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange) {
+            console.log(`📋 Nessuna modifica audio necessaria - skip preprocessing`);
+            return null; // Usa audio originale
+        }
+
+        try {
+            // 1. ESTRAZIONE AUDIO ORIGINALE VELOCE
+            const originalAudioPath = path.join(tempDir, 'original_audio.wav');
+            await this.extractAudioFast(inputVideoPath, originalAudioPath);
+            console.log(`📤 Audio originale estratto: ${originalAudioPath}`);
+
+            let processedAudioPath = originalAudioPath;
+
+            // 2. MODIFICA VOLUME PRINCIPALE CON SOX (molto più veloce)
+            if (hasVolumeChange) {
+                const volumeAudioPath = path.join(tempDir, 'volume_adjusted.wav');
+                await this.adjustVolumeWithSox(processedAudioPath, volumeAudioPath, config.videoVolume);
+                processedAudioPath = volumeAudioPath;
+                console.log(`🔊 Volume regolato con SOX: ${config.videoVolume}dB`);
+            }
+
+            // 3. MIX CON AUDIO DI SOTTOFONDO (se presente)
+            if (hasBackgroundAudio) {
+                const bgProcessedPath = path.join(tempDir, 'bg_processed.wav');
+                const mixedAudioPath = path.join(tempDir, 'mixed_audio.wav');
+
+                // Prima regola il volume del background audio
+                if (config.backgroundAudioVolume && config.backgroundAudioVolume !== 0) {
+                    await this.adjustVolumeWithSox(config.backgroundAudioPath, bgProcessedPath, config.backgroundAudioVolume);
+                } else {
+                    // Copia il file senza modifiche
+                    await this.copyAudioFile(config.backgroundAudioPath, bgProcessedPath);
+                }
+
+                // Poi mixa i due audio con SOX (molto più efficiente)
+                await this.mixAudioWithSox(processedAudioPath, bgProcessedPath, mixedAudioPath);
+                processedAudioPath = mixedAudioPath;
+                console.log(`🎵 Audio mixati con SOX`);
+            }
+
+            // 4. VELOCITÀ AUDIO (con sox se possibile)
+            if (hasSpeedChange) {
+                const speedAudioPath = path.join(tempDir, 'speed_adjusted.wav');
+                await this.changeSpeedWithSox(processedAudioPath, speedAudioPath, config.videoSpeed);
+                processedAudioPath = speedAudioPath;
+                console.log(`⚡ Velocità audio regolata con SOX: ${config.videoSpeed}x`);
+            }
+
+            console.log(`✅ Audio preprocessing completato: ${processedAudioPath}`);
+            return processedAudioPath;
+
+        } catch (error) {
+            console.error(`❌ Errore nel preprocessing audio con SOX: ${error.message}`);
+            console.log(`🔄 Fallback su elaborazione FFmpeg tradizionale`);
+            return null;
+        }
+    }
+
+    // Estrazione audio veloce con FFmpeg ottimizzato
+    async extractAudioFast(inputVideoPath, outputAudioPath) {
+        return new Promise((resolve, reject) => {
+            const ffmpeg = spawn(this.ffmpegPath, [
+                '-i', inputVideoPath,
+                '-vn',                    // No video
+                '-acodec', 'pcm_s16le',   // Audio non compresso per elaborazione veloce
+                '-ar', '44100',           // Sample rate standard
+                '-ac', '2',               // Stereo
+                '-y', outputAudioPath
+            ]);
+
+            let errorOutput = '';
+            
+            ffmpeg.stderr.on('data', (data) => {
+                const output = data.toString();
+                if (output.includes('Error') || output.includes('failed')) {
+                    errorOutput += output;
+                }
+            });
+
+            ffmpeg.on('close', (code) => {
+                if (code === 0) {
+                    resolve(outputAudioPath);
+                } else {
+                    reject(new Error(`Estrazione audio fallita: ${errorOutput}`));
+                }
+            });
+
+            ffmpeg.on('error', (error) => {
+                reject(new Error(`FFmpeg error: ${error.message}`));
+            });
+        });
+    }
+
+    // Regolazione volume con SOX (molto più veloce di FFmpeg)
+    async adjustVolumeWithSox(inputPath, outputPath, volumeDb) {
+        return new Promise((resolve, reject) => {
+            const job = sox();
+            
+            job.input(inputPath)
+               .output(outputPath)
+               .audioFilter('vol', volumeDb + 'dB')  // Applica volume in dB
+               .run((err, stdout, stderr) => {
+                   if (err) {
+                       console.error(`SOX volume error: ${err.message}`);
+                       reject(err);
+                   } else {
+                       console.log(`✅ SOX volume adjustment completato: ${volumeDb}dB`);
+                       resolve(outputPath);
+                   }
+               });
+        });
+    }
+
+    // Mix audio con SOX (molto più efficiente di FFmpeg)
+    async mixAudioWithSox(mainAudioPath, bgAudioPath, outputPath) {
+        return new Promise((resolve, reject) => {
+            const job = sox();
+            
+            job.input([mainAudioPath, bgAudioPath])  // Input multipli
+               .output(outputPath)
+               .audioFilter('mix')  // Mix automatico
+               .run((err, stdout, stderr) => {
+                   if (err) {
+                       console.error(`SOX mix error: ${err.message}`);
+                       reject(err);
+                   } else {
+                       console.log(`✅ SOX audio mix completato`);
+                       resolve(outputPath);
+                   }
+               });
+        });
+    }
+
+    // Cambio velocità con SOX
+    async changeSpeedWithSox(inputPath, outputPath, speedFactor) {
+        return new Promise((resolve, reject) => {
+            const job = sox();
+            
+            job.input(inputPath)
+               .output(outputPath)
+               .audioFilter('speed', speedFactor)  // Cambio velocità
+               .run((err, stdout, stderr) => {
+                   if (err) {
+                       console.error(`SOX speed error: ${err.message}`);
+                       reject(err);
+                   } else {
+                       console.log(`✅ SOX speed change completato: ${speedFactor}x`);
+                       resolve(outputPath);
+                   }
+               });
+        });
+    }
+
+    // Copia file audio senza modifiche
+    async copyAudioFile(inputPath, outputPath) {
+        try {
+            await fs.copyFile(inputPath, outputPath);
+            console.log(`📋 File audio copiato: ${path.basename(outputPath)}`);
+            return outputPath;
+        } catch (error) {
+            throw new Error(`Errore nella copia del file audio: ${error.message}`);
+        }
+    }
+
     // Metodo per ottenere informazioni dettagliate del video
     async getVideoInfo(videoPath) {
         return new Promise((resolve, reject) => {
@@ -1474,60 +1654,68 @@ class VideoProcessor {
         // Costruisci il filtro complex finale
         filterComplex = videoFilters.join(';');
 
-        // Gestione audio
-        const audioFilters = [];
-        let audioInputs = 1; // Input principale
-
-        // Audio del video originale (con possibile modifica volume)
-        if (config && config.videoVolume && config.videoVolume !== 0) {
-            const volumeDb = config.videoVolume;
-            // CORREZIONE: Usa decibel direttamente per evitare crackling
-            audioFilters.push(`[0:a]volume=${volumeDb}dB[main_audio]`);
-            console.log(`🔊 Volume video: ${volumeDb}db`);
-        }
-
-        // Audio di sottofondo
-        if (config && config.backgroundAudioEnabled && config.backgroundAudioPath) {
-            audioInputs++; // Input aggiuntivo per l'audio
-            const bgVolumeDb = config.backgroundAudioVolume || 0;
-
-            // CORREZIONE: Input corretto per audio di sottofondo (usa audioInputs-1 per l'ultimo input)
-            audioFilters.push(`[${audioInputs - 1}:a]volume=${bgVolumeDb}dB[bg_audio]`);
-            console.log(`🎵 Audio sottofondo: ${config.backgroundAudioPath} (volume: ${bgVolumeDb}db)`);
-
-            // Mix dei due audio
-            if (config.videoVolume && config.videoVolume !== 0) {
-                audioFilters.push(`[main_audio][bg_audio]amix=inputs=2:duration=first[mixed_audio]`);
-            } else {
-                audioFilters.push(`[0:a][bg_audio]amix=inputs=2:duration=first[mixed_audio]`);
-            }
-        }
-
-        // Gestione velocità audio
+        // ==========================================
+        // GESTIONE AUDIO SUPER-OTTIMIZZATA CON SOX
+        // ==========================================
+        
+        console.log(`🎵 === AVVIO PREPROCESSING AUDIO OTTIMIZZATO ===`);
+        
+        // STEP 1: Preprocessa l'audio con SOX (molto più veloce)
+        const preprocessedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir);
+        
         let finalAudioLabel = null;
-        if (needsVideoSpeed && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
-            const atempoValue = Math.min(Math.max(config.videoSpeed, 0.5), 2.0);
+        let audioInputs = 1;
+        const audioFilters = [];
+        
+        if (preprocessedAudioPath) {
+            // Audio già processato con SOX - usa il file processato
+            console.log(`✅ Utilizzo audio preprocessato con SOX: ${path.basename(preprocessedAudioPath)}`);
+            audioInputs++; // Il file audio preprocessato sarà un input aggiuntivo
+            finalAudioLabel = `[${audioInputs - 1}:a]`; // Riferimento diretto al file preprocessato
+        } else {
+            // Nessuna modifica audio necessaria - usa approccio tradizionale FFmpeg
+            console.log(`📋 Audio non modificato - uso streaming FFmpeg tradizionale`);
+            
+            const hasVolumeChange = config && config.videoVolume && config.videoVolume !== 0;
+            const hasBackgroundAudio = config && config.backgroundAudioEnabled && config.backgroundAudioPath;
+            const hasSpeedChange = config && config.videoSpeed && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0;
+            
+            // Fallback solo se necessario (dovrebbe essere rarissimo)
+            if (hasVolumeChange || hasBackgroundAudio || hasSpeedChange) {
+                let currentLabel = '[0:a]';
+                let stepCounter = 0;
 
-            if (audioFilters.length > 0) {
-                const lastAudioFilter = audioFilters[audioFilters.length - 1];
-                const currentAudioLabel = lastAudioFilter.includes('[mixed_audio]') ? '[mixed_audio]' : '[bg_audio]';
-                audioFilters.push(`${currentAudioLabel}atempo=${atempoValue}[a]`);
-            } else if (config.videoVolume && config.videoVolume !== 0) {
-                audioFilters.push(`[main_audio]atempo=${atempoValue}[a]`);
-            } else {
-                audioFilters.push(`[0:a]atempo=${atempoValue}[a]`);
-            }
-            finalAudioLabel = '[a]';
-            console.log(`🔊 Velocità audio: ${atempoValue}x`);
-        } else if (audioFilters.length > 0) {
-            // Se abbiamo filtri audio ma non velocità, usa l'ultimo output
-            const lastFilter = audioFilters[audioFilters.length - 1];
-            if (lastFilter.includes('[mixed_audio]')) {
-                finalAudioLabel = '[mixed_audio]';
-            } else if (lastFilter.includes('[main_audio]')) {
-                finalAudioLabel = '[main_audio]';
-            } else if (lastFilter.includes('[bg_audio]')) {
-                finalAudioLabel = '[bg_audio]';
+                if (hasVolumeChange) {
+                    const volumeDb = config.videoVolume;
+                    const nextLabel = `[a${stepCounter}]`;
+                    audioFilters.push(`${currentLabel}volume=${volumeDb}dB${nextLabel}`);
+                    currentLabel = nextLabel;
+                    stepCounter++;
+                    console.log(`🔊 Fallback FFmpeg volume: ${volumeDb}dB`);
+                }
+
+                if (hasBackgroundAudio) {
+                    audioInputs++;
+                    const bgVolumeDb = config.backgroundAudioVolume || 0;
+                    const bgLabel = `[bg${stepCounter}]`;
+                    const mixLabel = `[a${stepCounter}]`;
+
+                    audioFilters.push(`[${audioInputs - 1}:a]volume=${bgVolumeDb}dB${bgLabel}`);
+                    audioFilters.push(`${currentLabel}${bgLabel}amix=inputs=2:duration=first:dropout_transition=0${mixLabel}`);
+                    currentLabel = mixLabel;
+                    stepCounter++;
+                    console.log(`🎵 Fallback FFmpeg mix: ${bgVolumeDb}dB`);
+                }
+
+                if (hasSpeedChange && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
+                    const atempoValue = Math.min(Math.max(config.videoSpeed, 0.5), 2.0);
+                    const speedLabel = `[a]`;
+                    audioFilters.push(`${currentLabel}atempo=${atempoValue}${speedLabel}`);
+                    finalAudioLabel = '[a]';
+                    console.log(`⚡ Fallback FFmpeg speed: ${atempoValue}x`);
+                } else {
+                    finalAudioLabel = currentLabel;
+                }
             }
         }
 
@@ -1542,33 +1730,61 @@ class VideoProcessor {
         // Parametri FFmpeg di base
         const ffmpegArgs = ['-i', inputVideoPath];
 
-        // Input aggiuntivi
+        // Input aggiuntivi OTTIMIZZATI
         if (needsOverlayImage) {
             ffmpegArgs.push('-i', config.overlayImagePath);
         }
-        if (config && config.backgroundAudioEnabled && config.backgroundAudioPath) {
-            ffmpegArgs.push('-i', config.backgroundAudioPath);
+        
+        // NUOVO: Audio preprocessato con SOX (molto più efficiente)
+        if (preprocessedAudioPath) {
+            ffmpegArgs.push('-i', preprocessedAudioPath);
+            console.log(`📤 Input audio preprocessato: ${path.basename(preprocessedAudioPath)}`);
+        } else {
+            // Fallback: audio tradizionale (solo se preprocessing fallisce)
+            if (config && config.backgroundAudioEnabled && config.backgroundAudioPath) {
+                ffmpegArgs.push('-i', config.backgroundAudioPath);
+                console.log(`📤 Input audio tradizionale: ${path.basename(config.backgroundAudioPath)}`);
+            }
         }
 
         // Filtri
         ffmpegArgs.push('-filter_complex', filterComplex);
 
-        // Mappature
+        // Mappature OTTIMIZZATE
         ffmpegArgs.push('-map', '[v]');
 
+        // Gestione audio ottimizzata
         if (finalAudioLabel) {
             ffmpegArgs.push('-map', finalAudioLabel);
         } else if (needsVideoSpeed && (config.videoSpeed < 0.5 || config.videoSpeed > 2.0)) {
-            // Velocità estrema, salta audio
+            // Velocità estrema, salta audio per evitare problemi
             console.log(`🔇 Audio rimosso per velocità estrema: ${config.videoSpeed}x`);
         } else {
-            // Audio normale
+            // Audio normale senza modifiche
             ffmpegArgs.push('-map', '0:a?');
         }
 
-        // Codec
-        let audioCodec = finalAudioLabel ? 'aac' : 'copy';
-        ffmpegArgs.push('-c:v', 'libx264', '-c:a', audioCodec);
+        // Codec OTTIMIZZATI per performance
+        if (finalAudioLabel) {
+            // Audio modificato - usa codec efficiente con qualità bilanciata
+            ffmpegArgs.push(
+                '-c:v', 'libx264', 
+                '-preset', 'fast',        // Encoding più veloce
+                '-crf', '23',            // Qualità bilanciata
+                '-c:a', 'aac', 
+                '-b:a', '128k',          // Bitrate audio fisso per consistenza
+                '-ar', '44100',          // Sample rate standard
+                '-ac', '2'               // Stereo
+            );
+        } else {
+            // Audio non modificato - copia stream per massima velocità
+            ffmpegArgs.push(
+                '-c:v', 'libx264', 
+                '-preset', 'fast',
+                '-crf', '23',
+                '-c:a', 'copy'           // Copia audio originale senza ricodifica
+            );
+        }
 
         // Aggiungi i parametri finali
         ffmpegArgs.push('-y', outputVideoPath);

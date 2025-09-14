@@ -5252,6 +5252,357 @@
             "tokens_used": 1359,
             "response_time_ms": 1356,
             "output": "```json\n{\n  \"description\": \"La scena presenta un viaggio panoramico attraverso paesaggi montani. Inizialmente, si vede una strada autostradale che serpeggia tra imponenti montagne verdi e nuvole maest"
+          },
+          "1757873595887_8yxp1dsx2": {
+            "timestamp": 1757873595887,
+            "tokens": 1107,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1107,
+            "response_time_ms": 1312,
+            "output": "```json\n{\n  \"description\": \"Un tenero neonato vestito con un costume da ape sorride felicemente mentre cammina all'aperto. La scena è illuminata da luci scintillanti e cuoricini fluttuanti, creando un"
+          },
+          "1757873596812_tlj5f369q": {
+            "timestamp": 1757873596812,
+            "tokens": 1108,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1108,
+            "response_time_ms": 916,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio montano mozzafiato è illuminato dai raggi dorati del sole al tramonto, con cime frastagliate che si stagliano contro un cielo azzurro limpido. In primo piano s"
+          },
+          "1757873597912_sfo9yqbir": {
+            "timestamp": 1757873597912,
+            "tokens": 1114,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1114,
+            "response_time_ms": 1091,
+            "output": "```json\n{\n  \"description\": \"Una strada asfaltata sinuosa corre lungo un ripido pendio roccioso coperto di vegetazione lussureggiante e alberi verdi. La strada ha guardrail argentati e strisce bianche "
+          },
+          "1757874105636_3t8899y8i": {
+            "timestamp": 1757874105636,
+            "tokens": 1113,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1113,
+            "response_time_ms": 1798,
+            "output": "```json\n{\n  \"description\": \"Un bambino adorabile indossa un costume da ape giallo brillante, con antenne e ali. È in piedi in un ambiente naturale con fiori e sfocatura, circondato da particelle lumin"
+          },
+          "1757874106519_ggsjujw6m": {
+            "timestamp": 1757874106519,
+            "tokens": 1081,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1081,
+            "response_time_ms": 875,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo erboso si estende verso una foresta densa, stagliata contro uno sfondo di imponenti montagne il cui profilo è illuminato dai colori caldi del tramonto. Sopra"
+          },
+          "1757874107491_ci7cbh6kh": {
+            "timestamp": 1757874107491,
+            "tokens": 1105,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1105,
+            "response_time_ms": 963,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo il bordo di un'alta scogliera ricoperta di vegetazione lussureggiante. Sulla destra si estende un vasto lago di un blu intenso, circon"
+          },
+          "1757874167679_fvf3kwffi": {
+            "timestamp": 1757874167679,
+            "tokens": 1328,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1328,
+            "response_time_ms": 1384,
+            "output": "```json\n{\n  \"description\": \"Un dolce neonato vestito da ape solare è in piedi in un prato fiorito, con le mani alzate in un gesto di gioia. In ogni fotogramma, il bambino si muove gioiosamente, con sc"
+          },
+          "1757874168819_pekg6t3n3": {
+            "timestamp": 1757874168819,
+            "tokens": 1351,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1351,
+            "response_time_ms": 1135,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una vista panoramica delle montagne del Grand Teton al tramonto. La luce calda del sole illumina le cime delle montagne, creando un contrasto suggestiv"
+          },
+          "1757874169986_jg5yb9933": {
+            "timestamp": 1757874169986,
+            "tokens": 1323,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1323,
+            "response_time_ms": 1161,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un viaggio panoramico attraverso paesaggi montani e lacustri mozzafiato. Inizia su un'autostrada con montagne nebbiose in lontananza, poi la strada si snoda"
+          },
+          "1757874329995_f2vdwptpu": {
+            "timestamp": 1757874329995,
+            "tokens": 1336,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1336,
+            "response_time_ms": 1442,
+            "output": "```json\n{\n  \"description\": \"Un adorabile bambino indossa un costume da ape completa di ali e antenne, muovendosi gioiosamente tra fiori e luci scintillanti. La sua espressione è di pura felicità mentr"
+          },
+          "1757874330941_z9d5ctwhx": {
+            "timestamp": 1757874330941,
+            "tokens": 1354,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1354,
+            "response_time_ms": 941,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un paesaggio montano al tramonto, con le cime illuminate da una luce dorata e calda. Davanti alle montagne, si estende una vasta pianura ricoperta da una ve"
+          },
+          "1757874331883_o8qkydgpz": {
+            "timestamp": 1757874331883,
+            "tokens": 1319,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1319,
+            "response_time_ms": 937,
+            "output": "```json\n{\n  \"description\": \"Il primo frame mostra un'autostrada serpeggiante che si dirige verso montagne nebbiose. Il secondo frame presenta una strada costiera a picco sul mare con acque turchesi sc"
+          },
+          "1757876337269_btp4gg44g": {
+            "timestamp": 1757876337269,
+            "tokens": 1325,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1325,
+            "response_time_ms": 1452,
+            "output": "```json\n{\n  \"description\": \"Un bambino vestito da ape sorride e agita le braccia in un'ambientazione naturale. I tre frame mostrano lievi variazioni nelle sue espressioni e nei movimenti delle braccia"
+          },
+          "1757876338475_rf8hilyp5": {
+            "timestamp": 1757876338475,
+            "tokens": 1356,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1356,
+            "response_time_ms": 1200,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano il paesaggio delle montagne del Grand Teton al tramonto. La luce dorata illumina le cime, stagliandosi contro un cielo azzurro intenso. La campagna in "
+          },
+          "1757876339876_pmack5fbz": {
+            "timestamp": 1757876339876,
+            "tokens": 1327,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1327,
+            "response_time_ms": 1396,
+            "output": "```json\n{\n  \"description\": \"The first frame shows a highway winding through a mountainous landscape with clouds. The second frame transitions to a scenic road carved into a cliffside overlooking a vib"
+          },
+          "1757876486486_9l290xo72": {
+            "timestamp": 1757876486486,
+            "tokens": 1335,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1335,
+            "response_time_ms": 1270,
+            "output": "```json\n{\n  \"description\": \"Un bimbo vestito da ape in un giardino fiorito balla allegramente. Il bambino muove le braccia con entusiasmo mentre scintille dorate lo circondano. L'espressione gioiosa e"
+          },
+          "1757876487305_w2ph33o5g": {
+            "timestamp": 1757876487305,
+            "tokens": 1311,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1311,
+            "response_time_ms": 813,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un vasto paesaggio montuoso illuminato dalla luce dorata del tramonto o dell'alba. In primo piano si estende un campo verde scuro, costeggiato da una linea "
+          },
+          "1757876488644_6ak2obwwk": {
+            "timestamp": 1757876488644,
+            "tokens": 1381,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1381,
+            "response_time_ms": 1334,
+            "output": "```json\n{\n  \"description\": \"Il video inizia con una vista mozzafiato di un'autostrada che si snoda attraverso un paesaggio montano verdeggiante, con nuvole che abbracciano le cime. La scena poi transi"
+          },
+          "1757876655851_9qzsd9q35": {
+            "timestamp": 1757876655851,
+            "tokens": 1342,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1342,
+            "response_time_ms": 1131,
+            "output": "```json\n{\n  \"description\": \"Un adorabile bambino vestito da ape si muove gioiosamente in un ambiente naturale, muovendo le braccia e le gambe con entusiasmo.  I tre frame consecutivi mostrano il bambi"
+          },
+          "1757876656844_5alzoidja": {
+            "timestamp": 1757876656844,
+            "tokens": 1350,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1350,
+            "response_time_ms": 983,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un vasto paesaggio montano al tramonto, con le cime illuminate da una luce dorata. Davanti alle montagne si estende una pianura verde con una fitta vegetazi"
+          },
+          "1757876657880_abjjxe9id": {
+            "timestamp": 1757876657880,
+            "tokens": 1346,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1346,
+            "response_time_ms": 1031,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una panoramica autostradale che attraversa un paesaggio montuoso mozzafiato con nuvole basse aggrappate alle cime. Successivamente, l'inquadratura si sp"
+          },
+          "1757878660832_snqszbejl": {
+            "timestamp": 1757878660832,
+            "tokens": 1332,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1332,
+            "response_time_ms": 1356,
+            "output": "```json\n{\n  \"description\": \"Un adorabile bimbo vestito da ape balla e si muove felicemente in un ambiente naturale, circondato da fiori e luccichii. In ogni frame, il suo entusiasmo e la sua gioia tra"
+          },
+          "1757878661808_2g1j3xnw3": {
+            "timestamp": 1757878661808,
+            "tokens": 1320,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1320,
+            "response_time_ms": 971,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio montano viene illuminato dalla luce del tramonto o dell'alba, con le cime delle montagne che risplendono di toni aranciati e rosa. Davanti alle montagne si est"
+          },
+          "1757878662713_dpex6nfu0": {
+            "timestamp": 1757878662713,
+            "tokens": 1321,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1321,
+            "response_time_ms": 900,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una progressione di paesaggi mozzafiato che partono da un'autostrada che costeggia imponenti montagne, per poi trasformarsi in una strada panoramica to"
+          },
+          "1757878698582_jmeed0gh4": {
+            "timestamp": 1757878698582,
+            "tokens": 1352,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1352,
+            "response_time_ms": 1708,
+            "output": "```json\n{\n  \"description\": \"Un adorabile bambino vestito da ape è in piedi in uno sfondo verde e fiorito. Il bambino sorride con gioia e ondeggia le braccia in un movimento festoso tipico di chi balla"
+          },
+          "1757878699488_7oann3yh0": {
+            "timestamp": 1757878699488,
+            "tokens": 1360,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1360,
+            "response_time_ms": 901,
+            "output": "```json\n{\n  \"description\": \"La scena mostra le maestose montagne Grand Teton illuminate dai raggi dorati del tramonto, con una vasta pianura coperta da vegetazione bassa e densa in primo piano. La luc"
+          },
+          "1757878700639_1vrzt684x": {
+            "timestamp": 1757878700639,
+            "tokens": 1366,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1366,
+            "response_time_ms": 1143,
+            "output": "```json\n{\n  \"description\": \"La scena presenta tre immagini panoramiche che mostrano un viaggio attraverso paesaggi montani mozzafiato. Inizialmente, si vede un'autostrada che attraversa montagne avvol"
+          },
+          "1757878753673_uedwh1gq4": {
+            "timestamp": 1757878753673,
+            "tokens": 1365,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1365,
+            "response_time_ms": 1452,
+            "output": "```json\n{\n  \"description\": \"Questa scena mostra un adorabile bambino vestito con un costume da ape. Nei tre frame consecutivi, il bambino appare gioioso e attivo, con le braccia alzate e un sorriso ra"
+          },
+          "1757878754662_9296t9v6y": {
+            "timestamp": 1757878754662,
+            "tokens": 1355,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1355,
+            "response_time_ms": 984,
+            "output": "```json\n{\n  \"description\": \"L'inquadratura mostra un vasto paesaggio montano al tramonto. Le cime delle montagne sono illuminate da una luce dorata e rosata, contrastando con il cielo azzurro limpido."
+          },
+          "1757878755795_xb75e6fyi": {
+            "timestamp": 1757878755795,
+            "tokens": 1363,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1363,
+            "response_time_ms": 1127,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una vista dall'alto di un'autostrada che serpeggia tra montagne verdi e scenari naturali mozzafiato. Poco dopo, il percorso si snoda lungo un pittoresco"
+          },
+          "1757878775863_im587a0h4": {
+            "timestamp": 1757878775863,
+            "tokens": 1338,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1338,
+            "response_time_ms": 1210,
+            "output": "```json\n{\n  \"description\": \"Un adorabile bambino con un vestito da ape sta saltellando felicemente all'aperto. In ogni frame, il bambino mostra entusiasmo, con movimenti gioiosi delle braccia e un sor"
+          },
+          "1757878776825_aq2fcrjho": {
+            "timestamp": 1757878776825,
+            "tokens": 1362,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1362,
+            "response_time_ms": 955,
+            "output": "```json\n{\n  \"description\": \"Tre fotogrammi consecutivi mostrano un paesaggio montano al tramonto o all'alba. Le montagne innevate sono illuminate da una luce dorata, stagliandosi contro un cielo azzur"
+          },
+          "1757878777880_57y240g2d": {
+            "timestamp": 1757878777880,
+            "tokens": 1345,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1345,
+            "response_time_ms": 1049,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una vista panoramica di montagne imponenti e nuvole che si stagliano nel cielo azzurro, con un'autostrada che serpeggia attraverso un paesaggio verdeggi"
+          },
+          "1757878797912_q6888wrff": {
+            "timestamp": 1757878797912,
+            "tokens": 1349,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1349,
+            "response_time_ms": 1332,
+            "output": "```json\n{\n  \"description\": \"Un bambino vestito da ape nel mezzo dei tre frame balla felicemente. Nel primo frame alza le braccia verso l'alto con gioia. Nel secondo frame continua a muovere le braccia"
+          },
+          "1757878798775_5cswkiwxu": {
+            "timestamp": 1757878798775,
+            "tokens": 1324,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1324,
+            "response_time_ms": 856,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una vista panoramica delle montagne del Grand Teton al tramonto. La luce dorata colpisce le cime delle montagne, creando un contrasto vivido con il cie"
+          },
+          "1757878799735_sxhm1did7": {
+            "timestamp": 1757878799735,
+            "tokens": 1350,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1350,
+            "response_time_ms": 956,
+            "output": "```json\n{\n  \"description\": \"La prima immagine mostra un'autostrada che attraversa una vallata con montagne in lontananza coperte da nuvole. La seconda inquadratura presenta una strada tortuosa aggrapp"
+          },
+          "1757878828114_ti2wbh7v6": {
+            "timestamp": 1757878828114,
+            "tokens": 1321,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1321,
+            "response_time_ms": 1195,
+            "output": "```json\n{\n  \"description\": \"Un adorabile bambino vestito da ape sta ballando con gioia all'esterno, circondato da un ambiente naturale pieno di fiori e luce scintillante. In ogni frame, il bambino app"
+          },
+          "1757878829142_uylnlf402": {
+            "timestamp": 1757878829142,
+            "tokens": 1372,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1372,
+            "response_time_ms": 1016,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano un vasto paesaggio montano baciato dai raggi del sole del tramonto, incorniciato da un cielo azzurro limpido. In primo piano, un campo di vegetazione o"
+          },
+          "1757878830076_jwh2zoyg0": {
+            "timestamp": 1757878830076,
+            "tokens": 1330,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1330,
+            "response_time_ms": 928,
+            "output": "```json\n{\n  \"description\": \"La scena inizia con una strada a più corsie che attraversa un paesaggio montuoso con nuvole basse. Progredendo, la strada si trasforma in una tortuosa via che costeggia un "
           }
         }
       },

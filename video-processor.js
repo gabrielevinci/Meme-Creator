@@ -63,31 +63,31 @@ class VideoProcessor {
 
     // Calcola le dimensioni del blocco bianco in base alla risoluzione del video
     calculateBlockDimensions(videoWidth, videoHeight) {
-        // CORREZIONE SECONDO SPECIFICHE UTENTE:
-        // 1. Larghezza banner = larghezza video (nessun spazio laterale)
-        // 2. Altezza banner proporzionale: 1920 : 450 = lunghezza_video : x
-        // 3. La "lunghezza video" nella proporzione è l'altezza del video
-        
-        const blockWidth = videoWidth; // Banner copre tutta la larghezza del video
-        
-        // Calcola l'altezza proporzionale usando la formula: 1920 : 450 = videoHeight : blockHeight
-        // Risolviamo per blockHeight: blockHeight = (videoHeight * 450) / 1920
-        const referenceHeight = 450;
-        const referenceVideoHeight = 1920;
-        const blockHeight = Math.round((videoHeight * referenceHeight) / referenceVideoHeight);
-        
-        console.log(`📐 Calcolo banner proporzionale:`);
-        console.log(`   Formula: ${referenceVideoHeight} : ${referenceHeight} = ${videoHeight} : ${blockHeight}`);
-        console.log(`   Video: ${videoWidth}×${videoHeight}`);
-        console.log(`   Banner: ${blockWidth}×${blockHeight} (copre tutta la larghezza)`);
+            // CORREZIONE SECONDO SPECIFICHE UTENTE:
+            // 1. Larghezza banner = larghezza video (nessun spazio laterale)
+            // 2. Altezza banner proporzionale: 1920 : 450 = lunghezza_video : x
+            // 3. La "lunghezza video" nella proporzione è l'altezza del video
 
-        return {
-            width: blockWidth,
-            height: blockHeight,
-            x: 0, // Banner inizia sempre dal bordo sinistro (nessun spazio laterale)
-            aspectRatio: videoWidth / videoHeight
-        };
-    }    // Calcola l'area disponibile per il testo sottraendo i margini
+            const blockWidth = videoWidth; // Banner copre tutta la larghezza del video
+
+            // Calcola l'altezza proporzionale usando la formula: 1920 : 450 = videoHeight : blockHeight
+            // Risolviamo per blockHeight: blockHeight = (videoHeight * 450) / 1920
+            const referenceHeight = 450;
+            const referenceVideoHeight = 1920;
+            const blockHeight = Math.round((videoHeight * referenceHeight) / referenceVideoHeight);
+
+            console.log(`📐 Calcolo banner proporzionale:`);
+            console.log(`   Formula: ${referenceVideoHeight} : ${referenceHeight} = ${videoHeight} : ${blockHeight}`);
+            console.log(`   Video: ${videoWidth}×${videoHeight}`);
+            console.log(`   Banner: ${blockWidth}×${blockHeight} (copre tutta la larghezza)`);
+
+            return {
+                width: blockWidth,
+                height: blockHeight,
+                x: 0, // Banner inizia sempre dal bordo sinistro (nessun spazio laterale)
+                aspectRatio: videoWidth / videoHeight
+            };
+        } // Calcola l'area disponibile per il testo sottraendo i margini
     calculateAvailableTextArea(blockWidth, blockHeight, margins) {
         const { marginTop = 30, marginBottom = 30, marginLeft = 40, marginRight = 40 } = margins || {};
 
@@ -226,63 +226,63 @@ class VideoProcessor {
         if (!text) return text;
 
         console.log(`🔧 [DEBUG] INPUT: "${text}"`);
-        
+
         // STEP 1: Pulizia caratteri UTF-8 corrotti
         let cleaned = text
-            .replace(/Ôé¼/g, 'EUR')   // Euro corrotto
-            .replace(/├î/g, 'i')      // î corrotto (dall'errore utente)
-            .replace(/├ê/g, 'e')      // ê corrotto (dall'errore utente)  
-            .replace(/├¿/g, 'e')      // è corrotto
-            .replace(/├╣/g, 'u')      // ù corrotto
-            .replace(/├Ç/g, 'a')      // à corrotto
-            .replace(/├á/g, 'a')      
-            .replace(/├í/g, 'i')      
-            .replace(/├©/g, 'e')      
-            .replace(/├ù/g, 'u')      
-            .replace(/├â/g, 'a')      
-            .replace(/├ç/g, 'c')      
-            .replace(/├ñ/g, 'n')      
-            .replace(/├ô/g, 'o')      
-            .replace(/├«/g, 'e')      
-            .replace(/├¼/g, 'u')      
-            .replace(/├¬/g, 'i')      
-            .replace(/├┤/g, 'o')      
-            .replace(/├³/g, 'o')      
-            .replace(/├¡/g, 'i')      
-            .replace(/├¢/g, 'a')      
-            .replace(/€/g, 'EUR')     
-            .replace(/£/g, 'GBP')     
-            .replace(/©/g, '(C)');    
+            .replace(/Ôé¼/g, 'EUR') // Euro corrotto
+            .replace(/├î/g, 'i') // î corrotto (dall'errore utente)
+            .replace(/├ê/g, 'e') // ê corrotto (dall'errore utente)  
+            .replace(/├¿/g, 'e') // è corrotto
+            .replace(/├╣/g, 'u') // ù corrotto
+            .replace(/├Ç/g, 'a') // à corrotto
+            .replace(/├á/g, 'a')
+            .replace(/├í/g, 'i')
+            .replace(/├©/g, 'e')
+            .replace(/├ù/g, 'u')
+            .replace(/├â/g, 'a')
+            .replace(/├ç/g, 'c')
+            .replace(/├ñ/g, 'n')
+            .replace(/├ô/g, 'o')
+            .replace(/├«/g, 'e')
+            .replace(/├¼/g, 'u')
+            .replace(/├¬/g, 'i')
+            .replace(/├┤/g, 'o')
+            .replace(/├³/g, 'o')
+            .replace(/├¡/g, 'i')
+            .replace(/├¢/g, 'a')
+            .replace(/€/g, 'EUR')
+            .replace(/£/g, 'GBP')
+            .replace(/©/g, '(C)');
 
         console.log(`🧹 [DEBUG] PULITO: "${cleaned}"`);
 
         // STEP 2: Escape caratteri speciali FFmpeg (SENZA VIRGOLETTE)
         let escaped = cleaned
-            .replace(/\\/g, '\\\\')   // Backslash PRIMA
-            .replace(/'/g, "\\'")     // Solo apostrofi 
-            .replace(/:/g, '\\:')     // Due punti
-            .replace(/\[/g, '\\[')    // Parentesi quadre
-            .replace(/\]/g, '\\]')    
-            .replace(/;/g, '\\;')     // Punto e virgola
-            .replace(/,/g, '\\,');    // Virgola
-            
+            .replace(/\\/g, '\\\\') // Backslash PRIMA
+            .replace(/'/g, "\\'") // Solo apostrofi 
+            .replace(/:/g, '\\:') // Due punti
+            .replace(/\[/g, '\\[') // Parentesi quadre
+            .replace(/\]/g, '\\]')
+            .replace(/;/g, '\\;') // Punto e virgola
+            .replace(/,/g, '\\,'); // Virgola
+
         console.log(`🔒 [DEBUG] OUTPUT: "${escaped}"`);
-        
+
         // Verifica finale
         const stillProblematic = ['├î', '├ê', '├¿', '├╣', 'Ôé¼'];
         let hasIssues = false;
-        
+
         stillProblematic.forEach(chars => {
             if (escaped.includes(chars)) {
                 console.log(`❌ ERRORE: "${chars}" ancora presente!`);
                 hasIssues = true;
             }
         });
-        
+
         if (!hasIssues) {
             console.log(`✅ [SUCCESS] Testo pulito per FFmpeg`);
         }
-        
+
         return escaped;
     }
 
@@ -1083,16 +1083,16 @@ class VideoProcessor {
         // SOLUZIONE FONT PATH: Copia font in directory senza spazi se necessario
         let workingFontPath = fontPath;
         let fontNeedsCopy = fontPath.includes(' ') || fontPath.includes('\\');
-        
+
         if (fontNeedsCopy) {
             console.log(`⚠️ Font path contiene spazi/caratteri complessi: ${fontPath}`);
-            
+
             // Crea un nome file semplice per il font (SENZA SPAZI nel path)
             const fs = require('fs');
             const path = require('path');
             const fontName = path.basename(fontPath).replace(/\s+/g, '_'); // Rimuovi spazi
-            const tempFontPath = `temp_${fontName}`;  // Path relativo
-            
+            const tempFontPath = `temp_${fontName}`; // Path relativo
+
             try {
                 // Copia il font nella directory principale con path relativo
                 fs.copyFileSync(fontPath, tempFontPath);
@@ -1104,7 +1104,7 @@ class VideoProcessor {
                 workingFontPath = null; // Usa font di sistema
             }
         }
-        
+
         // Prepara il percorso font per FFmpeg
         let escapedFontPath = '';
         if (workingFontPath) {
@@ -1115,7 +1115,7 @@ class VideoProcessor {
         } else {
             console.log('🎨 Utilizzo font di sistema per compatibilità FFmpeg Windows');
         }
-        
+
         console.log(`🎨 Utilizzando font: ${selectedFont}`);
         console.log(`📂 Font path per FFmpeg: ${workingFontPath || 'Font di sistema'}`);
         console.log(`📂 Font parameter: ${escapedFontPath}`);
@@ -1209,17 +1209,16 @@ class VideoProcessor {
         if (processedAiResponse.banner_position === 'bottom') {
             const bannerY = height - blockHeight;
 
-            // CORREZIONE FINALE: Il testo deve iniziare dal margine superiore + ascent del font
-            // L'ascent è la parte del carattere sopra la baseline (~75% del fontSize)
-            baseY = bannerY + marginTop + (fontSize * 0.8); // 0.8 è un valore più accurato per l'ascent
+            // CORREZIONE MARGINI: Il testo deve iniziare ESATTAMENTE dal marginTop
+            baseY = bannerY + marginTop; // Il testo inizia esattamente dal margine superiore
 
             // CORREZIONE FONDAMENTALE: Usa bannerX per centrare il banner nel video
             textFilters = `[0:v]drawbox=x=${bannerX}:y=${bannerY}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
             console.log(`📍 BANNER BOTTOM - X: ${bannerX}, Y: ${bannerY}, size: ${blockWidth}x${blockHeight}px, baseY testo: ${baseY}`);
 
         } else {
-            // CORREZIONE FINALE: Banner in alto - testo inizia da marginTop + ascent per rispettare il margine
-            baseY = marginTop + (fontSize * 0.8); // 0.8 per l'ascent, più accurato
+            // CORREZIONE MARGINI: Banner in alto - testo inizia ESATTAMENTE dal marginTop
+            baseY = marginTop; // Il testo inizia esattamente dal margine superiore
 
             // CORREZIONE FONDAMENTALE: Usa bannerX per centrare il banner nel video
             textFilters = `[0:v]drawbox=x=${bannerX}:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
@@ -1235,7 +1234,7 @@ class VideoProcessor {
         while (!validPositioning && attemptCount < maxAttempts) {
             attemptCount++;
             validPositioning = true; // Assume che andrà bene
-            
+
             console.log(`\n🔄 Tentativo ${attemptCount}: font ${fontSize}px, ${lines.length} righe`);
 
             for (let i = 0; i < lines.length; i++) {
@@ -1253,24 +1252,33 @@ class VideoProcessor {
                     .replace(/\)/g, '\\)') // Parentesi tonde chiuse
                     .replace(/;/g, '\\;'); // Punto e virgola
 
-                // Posizione Y per questa riga usando il lineHeight calcolato
-                const yPos = Math.round(baseY + (i * lineHeight));
+                // CALCOLO SPAZIATURA UNIFORME: Distribuisce le righe uniformemente nell'area disponibile
+                let yPos;
+                if (lines.length === 1) {
+                    // Una sola riga: centrata verticalmente nell'area disponibile
+                    yPos = Math.round(baseY + ((textArea.height - fontSize) / 2));
+                } else {
+                    // Più righe: distribuisce uniformemente nell'area disponibile
+                    const availableSpace = textArea.height - (lines.length * fontSize);
+                    const spacingBetweenLines = availableSpace / (lines.length + 1); // +1 per includere margini superiore e inferiore
+                    yPos = Math.round(baseY + spacingBetweenLines + (i * (fontSize + spacingBetweenLines)));
+                }
 
                 // BOUNDARY CHECK CORRETTO: Verifica che la riga non esca dai limiti del banner
                 const bannerTopY = (processedAiResponse.banner_position === 'bottom') ? height - blockHeight : 0;
                 const bannerBottomY = (processedAiResponse.banner_position === 'bottom') ? height : blockHeight;
-                
+
                 // Limiti effettivi considerando i margini
                 const minAllowedY = bannerTopY + marginTop;
                 const maxAllowedY = bannerBottomY - marginBottom - fontSize; // Sottrai fontSize per evitare che il testo esca dal banner
 
                 if (yPos < minAllowedY || yPos > maxAllowedY) {
                     console.warn(`⚠️ OVERFLOW RILEVATO! Riga ${i + 1} a Y=${yPos} eccede i limiti del banner [${minAllowedY}-${maxAllowedY}]`);
-                    
+
                     // Se il testo eccede e possiamo ridurre il font, fallo
                     if (fontSize > 12) {
                         console.log(`🔄 Tentativo di riduzione font size da ${fontSize}px a ${fontSize-2}px`);
-                        
+
                         // Riduci font size
                         const newFontSize = fontSize - 2;
                         const newLineHeight = newFontSize * 1.2;
@@ -1353,20 +1361,20 @@ class VideoProcessor {
 
         // COSTRUZIONE CORRETTA DEL FILTRO COMPLEX
         let filterComplex;
-        
+
         // Aggiungi filtro velocità video se specificato nel config
         if (config && config.videoSpeed && config.videoSpeed !== 1) {
             console.log(`⚡ Applicazione velocità video: ${config.videoSpeed}x`);
-            
+
             // Filtro con velocità: [0:v] -> [v_with_text] -> [v]
             filterComplex = textFilters + '[v_with_text];[v_with_text]setpts=PTS/' + config.videoSpeed + '[v]';
-            
+
             // Gestione dell'audio: se la velocità è troppo alta/bassa, rimuovi l'audio
             if (config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
                 // Applica atempo per l'audio (limitato tra 0.5x e 2.0x)
                 const atempoValue = Math.min(Math.max(config.videoSpeed, 0.5), 2.0);
                 console.log(`🔊 Applicazione velocità audio: ${atempoValue}x`);
-                
+
                 // Aggiungi processamento audio
                 filterComplex += ';[0:a]atempo=' + atempoValue + '[a]';
             } else {
@@ -1385,13 +1393,13 @@ class VideoProcessor {
             '-i', inputVideoPath,
             '-filter_complex', filterComplex
         ];
-        
+
         // Aggiungi mappature
         ffmpegArgs.push('-map', '[v]');
-        
+
         // Aggiungi mappatura audio condizionale
         let audioCodec = 'copy'; // Default per audio non processato
-        
+
         if (config && config.videoSpeed && config.videoSpeed !== 1) {
             if (config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0) {
                 // Audio processato con atempo - serve re-encoding
@@ -1404,7 +1412,7 @@ class VideoProcessor {
             // Velocità normale, copia audio originale se presente
             ffmpegArgs.push('-map', '0:a?');
         }
-        
+
         // Codec
         ffmpegArgs.push('-c:v', 'libx264', '-c:a', audioCodec);
 
@@ -1445,7 +1453,7 @@ class VideoProcessor {
                         console.log(`⚠️ Impossibile rimuovere font temporaneo: ${error.message}`);
                     }
                 }
-                
+
                 if (code === 0) {
                     console.log(`✅ SUCCESSO: Video con banner completato: ${path.basename(outputVideoPath)}`);
                     resolve(outputVideoPath);

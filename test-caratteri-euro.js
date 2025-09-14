@@ -23,10 +23,10 @@ console.log('🔧 TEST ESCAPE AVANZATO:');
 testCases.forEach((text, i) => {
     console.log(`\n--- Test Case ${i + 1} ---`);
     console.log(`Input: "${text}"`);
-    
+
     const escaped = processor.escapeTextForFFmpeg(text);
     console.log(`Escaped: "${escaped}"`);
-    
+
     // Simula comando FFmpeg con virgolette doppie consistenti
     const mockFontPath = "D:/Desktop/NUOVA PROVA/font/impact.TTF";
     const ffmpegCommand = `drawtext=text="${escaped}":fontfile="${mockFontPath}":fontcolor=black:fontsize=40:x=100:y=100`;
@@ -35,7 +35,7 @@ testCases.forEach((text, i) => {
 
 console.log('\n✅ Test completato!');
 console.log('\n🎯 MIGLIORAMENTI:');
-console.log('- € → EUR (evita corruption UTF-8)'); 
+console.log('- € → EUR (evita corruption UTF-8)');
 console.log('- Virgolette doppie consistenti in text E fontfile');
 console.log('- Path font senza escape virgolette singole');
 console.log('- Gestione completa simboli monetari e trademark');

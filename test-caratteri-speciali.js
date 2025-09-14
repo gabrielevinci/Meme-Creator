@@ -24,13 +24,13 @@ console.log('🔧 TEST SANITIZE TEXT:');
 testCases.forEach((text, i) => {
     console.log(`\n--- Test Case ${i + 1} ---`);
     console.log(`Input: "${text}"`);
-    
+
     const sanitized = processor.sanitizeText(text);
     console.log(`Sanitized: "${sanitized}"`);
-    
+
     const escaped = processor.escapeTextForFFmpeg(sanitized);
     console.log(`Escaped: "${escaped}"`);
-    
+
     // Simula il comando FFmpeg drawtext
     const ffmpegCommand = `drawtext=text="${escaped}":fontfile=impact.ttf:fontsize=40:x=100:y=100`;
     console.log(`FFmpeg Command: ${ffmpegCommand}`);

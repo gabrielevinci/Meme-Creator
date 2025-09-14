@@ -19,7 +19,7 @@ console.log('\n🔍 Esecuzione test...\n');
 
 exec(command, (error, stdout, stderr) => {
     console.log('📊 RISULTATO:');
-    
+
     if (error) {
         console.log(`❌ Errore: ${error.message}`);
         console.log(`📝 Stderr: ${stderr}`);
@@ -27,6 +27,6 @@ exec(command, (error, stdout, stderr) => {
         console.log('✅ SUCCESSO! Font di sistema funziona');
         console.log(`🎯 Video creato: ${outputVideo}`);
     }
-    
+
     if (stdout) console.log(`📤 Stdout: ${stdout}`);
 });

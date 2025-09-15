@@ -6521,6 +6521,24 @@
             "tokens_used": 1149,
             "response_time_ms": 1434,
             "output": "```json\n{\n  \"description\": \"Una giovane donna con una felpa con cappuccio bianca e pantaloni neri larghi balla energicamente con le braccia aperte. Indossa un cappellino da baseball sotto il cappuccio"
+          },
+          "1757902774519_8il3vhvk9": {
+            "timestamp": 1757902774519,
+            "tokens": 1140,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1140,
+            "response_time_ms": 1449,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una giovane donna che balla in quello che sembra essere un soggiorno. Indossa una felpa con cappuccio bianca oversize e pantaloni neri larghi. Si muove con "
+          },
+          "1757904928551_ao0lnnfbl": {
+            "timestamp": 1757904928551,
+            "tokens": 1341,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1341,
+            "response_time_ms": 1234,
+            "output": "```json\n{\n  \"description\": \"Una ragazza indossa un cappuccio bianco e pantaloni neri larghi, balla con una progressione di movimenti fluidi. Si muove con le braccia piegate e oscillanti, la testa legg"
           }
         }
       },

@@ -3,12 +3,14 @@ const path = require('path');
 const fs = require('fs').promises;
 const sharp = require('sharp');
 const sox = require('sox');
+const { Vibrant } = require('node-vibrant/node');
 
 class VideoProcessor {
     constructor() {
         this.outputDir = path.join(__dirname, 'OUTPUT');
         this.tempDir = path.join(__dirname, 'temp_frames');
         this.ffmpegPath = this.findFFmpegPath();
+        this.ffprobePath = this.findFFprobePath();
     }
 
     // Taglia il primo frame se è nero - PROCESSO SEMPLICE
@@ -33,34 +35,86 @@ class VideoProcessor {
                 extractCmd.on('error', reject);
             });
 
-            // STEP 2: Controlla se il frame è nero (semplice controllo colore)
-            const { data, info } = await sharp(tempFramePath)
-                .raw()
-                .toBuffer({ resolveWithObject: true });
-
-            let totalBrightness = 0;
-            const { width, height, channels } = info;
-            const totalPixels = width * height;
-
-            // Somma tutti i valori RGB
-            for (let i = 0; i < data.length; i += channels) {
-                totalBrightness += data[i] + data[i + 1] + data[i + 2]; // R + G + B
+            // STEP 2: Analizza il colore del frame usando Node Vibrant per un'analisi più precisa
+            console.log(`🔍 Analisi colori avanzata del primo frame...`);
+            
+            const vibrant = Vibrant.from(tempFramePath);
+            const palette = await vibrant.getPalette();
+            
+            // Controllo se il frame è completamente nero o molto scuro
+            let isBlack = false;
+            let analysisResult = '';
+            
+            // Analizza i colori dominanti con popolazione > 0
+            const colors = Object.entries(palette)
+                .filter(([_, swatch]) => swatch !== null && swatch.population > 0)
+                .sort(([_, a], [__, b]) => b.population - a.population); // Ordina per popolazione (più popolato prima)
+            
+            if (colors.length === 0) {
+                // Nessun colore estratto -> probabilmente nero
+                isBlack = true;
+                analysisResult = 'Nessun colore significativo rilevato → NERO COMPLETO';
+            } else {
+                // Calcola la luminosità media PESATA per popolazione
+                const totalPixels = colors.reduce((sum, [_, swatch]) => sum + swatch.population, 0);
+                const weightedBrightness = colors.reduce((sum, [_, swatch]) => {
+                    const [r, g, b] = swatch.rgb;
+                    const brightness = (r + g + b) / 3;
+                    const weight = swatch.population / totalPixels;
+                    return sum + (brightness * weight);
+                }, 0);
+                
+                isBlack = weightedBrightness < 25; // Soglia per nero/grigio scuro
+                
+                const dominantColor = colors[0][1]; // Colore più popolato
+                const dominantPercent = ((dominantColor.population / totalPixels) * 100).toFixed(1);
+                
+                analysisResult = `Colore dominante: ${dominantColor.hex} (${dominantPercent}% dei pixel) - Luminosità pesata: ${weightedBrightness.toFixed(1)}/255`;
             }
 
-            // Calcola luminosità media (0-765 per pixel, 0-255 per canale)
-            const avgBrightness = totalBrightness / (totalPixels * 3);
-            const isBlack = avgBrightness < 15; // Soglia molto bassa per nero
+            console.log(`📊 ${analysisResult}`);
+            console.log(`🎯 Risultato: ${isBlack ? 'NERO → RIMUOVO' : 'OK → MANTENGO'}`);
 
-            console.log(`📊 Luminosità media primo frame: ${avgBrightness.toFixed(1)}/255 - ${isBlack ? 'NERO → TAGLIO' : 'OK → MANTENGO'}`);
-
-            // STEP 3: Se è nero, usa il filtro SELECT per rimuovere ESATTAMENTE il primo frame
+            // STEP 3: Se è nero, ottieni FPS e rimuovi FISICAMENTE il primo frame
             if (isBlack) {
+                // Prima ottieni il framerate del video
+                const videoInfo = await new Promise((resolve, reject) => {
+                    const ffprobeCmd = spawn(this.ffprobePath, [
+                        '-v', 'quiet',
+                        '-show_streams',
+                        '-select_streams', 'v:0',
+                        '-of', 'csv=p=0',
+                        '-show_entries', 'stream=r_frame_rate,duration',
+                        inputVideoPath
+                    ]);
+
+                    let output = '';
+                    ffprobeCmd.stdout.on('data', (data) => output += data);
+                    ffprobeCmd.on('close', (code) => {
+                        if (code === 0) {
+                            const lines = output.trim().split('\n');
+                            const [frameRate] = lines[0].split(',');
+                            resolve({ frameRate });
+                        } else {
+                            reject(new Error(`FFprobe failed: ${code}`));
+                        }
+                    });
+                    ffprobeCmd.on('error', reject);
+                });
+
+                // Calcola la durata di un frame in secondi
+                const [num, den] = videoInfo.frameRate.split('/').map(Number);
+                const fps = den ? num / den : num;
+                const frameDuration = 1 / fps;
+                
+                console.log(`📊 FPS video: ${fps.toFixed(2)}, durata primo frame: ${frameDuration.toFixed(6)}s`);
+
                 await new Promise((resolve, reject) => {
-                    // Usa il filtro select per saltare il frame 0 (primo frame)
+                    // Usa seekInput per iniziare dal secondo frame
                     const trimCmd = spawn(this.ffmpegPath, [
+                        '-ss', frameDuration.toString(), // Salta la durata esatta di un frame
                         '-i', inputVideoPath,
-                        '-vf', 'select=gt(n\\,0)', // Seleziona solo frame > 0 (salta il frame 0)
-                        '-c:a', 'copy', // Copia audio senza ricodifica
+                        '-c', 'copy', // Copia tutto senza ricodifica per velocità
                         '-y', trimmedVideoPath
                     ]);
 
@@ -70,7 +124,7 @@ class VideoProcessor {
                     trimCmd.on('error', reject);
                 });
 
-                console.log(`✅ Primo frame nero rimosso con filtro select`);
+                console.log(`✅ Primo frame nero rimosso con seek di ${frameDuration.toFixed(6)}s`);
 
                 // Cleanup frame temporaneo
                 await fs.unlink(tempFramePath).catch(() => {});
@@ -517,6 +571,18 @@ class VideoProcessor {
             path.join(__dirname, 'node_modules', 'ffmpeg-static', 'ffmpeg.exe'),
             path.join(__dirname, 'ffmpeg', 'ffmpeg.exe'),
             'C:\\ffmpeg\\bin\\ffmpeg.exe'
+        ];
+
+        return possiblePaths[0]; // Per ora usa il primo, in futuro si può verificare quale esiste
+    }
+
+    findFFprobePath() {
+        // Prova diversi percorsi per FFprobe (di solito nella stessa cartella di FFmpeg)
+        const possiblePaths = [
+            'ffprobe', // Se è nel PATH
+            path.join(__dirname, 'node_modules', 'ffmpeg-static', 'ffprobe.exe'),
+            path.join(__dirname, 'ffmpeg', 'ffprobe.exe'),
+            'C:\\ffmpeg\\bin\\ffprobe.exe'
         ];
 
         return possiblePaths[0]; // Per ora usa il primo, in futuro si può verificare quale esiste

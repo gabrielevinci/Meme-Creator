@@ -11,6 +11,91 @@ class VideoProcessor {
         this.ffmpegPath = this.findFFmpegPath();
     }
 
+    // Taglia il primo frame se è nero - PROCESSO SEMPLICE
+    async removeFirstFrameIfBlack(inputVideoPath) {
+        console.log(`🎞️ Controllo e rimozione primo frame nero per: ${path.basename(inputVideoPath)}`);
+
+        const tempFramePath = path.join(this.tempDir, `first_frame_${Date.now()}.png`);
+        const trimmedVideoPath = path.join(this.tempDir, `trimmed_${Date.now()}.mp4`);
+
+        try {
+            // STEP 1: Estrai solo il primo frame per controllare se è nero
+            await new Promise((resolve, reject) => {
+                const extractCmd = spawn(this.ffmpegPath, [
+                    '-i', inputVideoPath,
+                    '-vframes', '1',
+                    '-y', tempFramePath
+                ]);
+
+                extractCmd.on('close', (code) => {
+                    code === 0 ? resolve() : reject(new Error(`Extract failed: ${code}`));
+                });
+                extractCmd.on('error', reject);
+            });
+
+            // STEP 2: Controlla se il frame è nero (semplice controllo colore)
+            const { data, info } = await sharp(tempFramePath)
+                .raw()
+                .toBuffer({ resolveWithObject: true });
+
+            let totalBrightness = 0;
+            const { width, height, channels } = info;
+            const totalPixels = width * height;
+
+            // Somma tutti i valori RGB
+            for (let i = 0; i < data.length; i += channels) {
+                totalBrightness += data[i] + data[i + 1] + data[i + 2]; // R + G + B
+            }
+
+            // Calcola luminosità media (0-765 per pixel, 0-255 per canale)
+            const avgBrightness = totalBrightness / (totalPixels * 3);
+            const isBlack = avgBrightness < 15; // Soglia molto bassa per nero
+
+            console.log(`📊 Luminosità media primo frame: ${avgBrightness.toFixed(1)}/255 - ${isBlack ? 'NERO → TAGLIO' : 'OK → MANTENGO'}`);
+
+            // STEP 3: Se è nero, usa il filtro SELECT per rimuovere ESATTAMENTE il primo frame
+            if (isBlack) {
+                await new Promise((resolve, reject) => {
+                    // Usa il filtro select per saltare il frame 0 (primo frame)
+                    const trimCmd = spawn(this.ffmpegPath, [
+                        '-i', inputVideoPath,
+                        '-vf', 'select=gt(n\\,0)', // Seleziona solo frame > 0 (salta il frame 0)
+                        '-c:a', 'copy', // Copia audio senza ricodifica
+                        '-y', trimmedVideoPath
+                    ]);
+
+                    trimCmd.on('close', (code) => {
+                        code === 0 ? resolve() : reject(new Error(`Trim failed: ${code}`));
+                    });
+                    trimCmd.on('error', reject);
+                });
+
+                console.log(`✅ Primo frame nero rimosso con filtro select`);
+
+                // Cleanup frame temporaneo
+                await fs.unlink(tempFramePath).catch(() => {});
+
+                return trimmedVideoPath; // Ritorna il video tagliato
+            } else {
+                console.log(`✅ Primo frame non è nero, mantengo video originale`);
+
+                // Cleanup frame temporaneo
+                await fs.unlink(tempFramePath).catch(() => {});
+
+                return inputVideoPath; // Ritorna il video originale
+            }
+
+        } catch (error) {
+            console.error(`❌ Errore nel processo rimozione frame:`, error.message);
+            console.log(`🔄 Fallback: uso video originale`);
+
+            // Cleanup in caso di errore
+            await fs.unlink(tempFramePath).catch(() => {});
+
+            return inputVideoPath; // Fallback sicuro
+        }
+    }
+
     // Metodo per calcolare la larghezza reale del testo formattato
     calculateTextMetrics(text, fontSize, format = 'normal') {
         // Fattori di correzione basati sui caratteri reali del testo formattato
@@ -74,7 +159,7 @@ class VideoProcessor {
             // Usa l'altezza personalizzata dall'utente o il default 450
             const referenceHeight = customBlockHeight || 450;
             const referenceVideoHeight = 1920;
-            
+
             // Calcola l'altezza proporzionale usando la formula: 1920 : referenceHeight = videoHeight : blockHeight
             // Risolviamo per blockHeight: blockHeight = (videoHeight * referenceHeight) / 1920
             const blockHeight = Math.round((videoHeight * referenceHeight) / referenceVideoHeight);
@@ -1200,11 +1285,24 @@ class VideoProcessor {
         }
 
         // Verifica che il file video esista
-        const inputVideoPath = path.join(__dirname, 'INPUT', originalVideoName);
+        let inputVideoPath = path.join(__dirname, 'INPUT', originalVideoName);
         try {
             await fs.access(inputVideoPath);
         } catch (error) {
             throw new Error(`Video non trovato: ${inputVideoPath}`);
+        }
+
+        // RIMOZIONE PRIMO FRAME NERO - PROCESSO SEMPLICE
+        let tempVideoForCleanup = null;
+        if (config && config.removeBlackFrameEnabled) {
+            console.log(`🎞️ Rimozione primo frame nero: ABILITATA`);
+            const processedVideoPath = await this.removeFirstFrameIfBlack(inputVideoPath);
+            if (processedVideoPath !== inputVideoPath) {
+                inputVideoPath = processedVideoPath;
+                tempVideoForCleanup = processedVideoPath; // Per cleanup finale
+            }
+        } else {
+            console.log(`🎞️ Rimozione primo frame nero: DISABILITATA`);
         }
 
         // Il video finale va nella cartella OUTPUT con nome basato sul video originale
@@ -1313,7 +1411,7 @@ class VideoProcessor {
         // DIMENSIONAMENTO AUTOMATICO: Adatta blocco e testo alla risoluzione del video
 
         // Calcola le dimensioni ottimali del blocco bianco in base alla risoluzione
-        const blockDimensions = this.calculateBlockDimensions(width, height, config?.blockHeight);
+        const blockDimensions = this.calculateBlockDimensions(width, height, config && config.blockHeight);
         const blockWidth = blockDimensions.width;
         const blockHeight = blockDimensions.height;
         const bannerX = blockDimensions.x; // AGGIUNTO: posizione X del banner
@@ -1325,10 +1423,10 @@ class VideoProcessor {
         const marginRight = (config && config.marginRight !== undefined) ? config.marginRight : 40;
 
         console.log(`🔧 MARGINI DA CONFIG:`, {
-            marginTop: config?.marginTop,
-            marginBottom: config?.marginBottom, 
-            marginLeft: config?.marginLeft,
-            marginRight: config?.marginRight
+            marginTop: config && config.marginTop,
+            marginBottom: config && config.marginBottom,
+            marginLeft: config && config.marginLeft,
+            marginRight: config && config.marginRight
         });
         console.log(`🔧 MARGINI FINALI UTILIZZATI: T=${marginTop}, B=${marginBottom}, L=${marginLeft}, R=${marginRight}`);
 
@@ -1577,7 +1675,7 @@ class VideoProcessor {
         let overlayInputIndex = -1;
         let audioInputIndex = -1;
         let backgroundAudioInputIndex = -1;
-        
+
         // Calcola gli indici in base agli input che saranno aggiunti
         let inputCounter = 1; // [0] è sempre il video principale
 
@@ -1588,7 +1686,7 @@ class VideoProcessor {
 
         // Determina se useremo audio preprocessato o tradizionale
         const preprocessedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir);
-        
+
         if (preprocessedAudioPath) {
             audioInputIndex = inputCounter;
             inputCounter++;
@@ -1660,25 +1758,25 @@ class VideoProcessor {
             if (needsVideoZoom) {
                 const nextLabel = `[v${stepCounter}]`;
                 const zoomFactor = config.videoZoom;
-                
+
                 if (zoomFactor > 1) {
                     // Zoom in: scala il video e poi croppalo al centro per mantenere le dimensioni originali
                     const scaledWidth = Math.round(width * zoomFactor);
                     const scaledHeight = Math.round(height * zoomFactor);
                     const cropX = Math.round((scaledWidth - width) / 2);
                     const cropY = Math.round((scaledHeight - height) / 2);
-                    
+
                     videoFilters.push(`${currentLabel}scale=${scaledWidth}:${scaledHeight},crop=${width}:${height}:${cropX}:${cropY}${nextLabel}`);
                     console.log(`🔍 Aggiunto zoom in: ${zoomFactor}x (scala ${scaledWidth}x${scaledHeight} -> crop ${width}x${height})`);
                 } else if (zoomFactor < 1) {
                     // Zoom out: scala il video più piccolo e aggiunge padding nero per mantenere le dimensioni originali
                     const scaledWidth = Math.round(width * zoomFactor);
                     const scaledHeight = Math.round(height * zoomFactor);
-                    
+
                     videoFilters.push(`${currentLabel}scale=${scaledWidth}:${scaledHeight},pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black${nextLabel}`);
                     console.log(`🔍 Aggiunto zoom out: ${zoomFactor}x (scala ${scaledWidth}x${scaledHeight} -> pad ${width}x${height})`);
                 }
-                
+
                 currentLabel = nextLabel;
                 stepCounter++;
             }
@@ -1901,6 +1999,17 @@ class VideoProcessor {
                     }
                 }
 
+                // Cleanup video temporaneo se è stato creato per rimozione frame nero
+                if (tempVideoForCleanup) {
+                    try {
+                        const fs = require('fs');
+                        fs.unlinkSync(tempVideoForCleanup);
+                        console.log(`🧹 Video temporaneo (senza frame nero) rimosso: ${path.basename(tempVideoForCleanup)}`);
+                    } catch (error) {
+                        console.log(`⚠️ Impossibile rimuovere video temporaneo: ${error.message}`);
+                    }
+                }
+
                 if (code === 0) {
                     console.log(`✅ SUCCESSO: Video con banner completato: ${path.basename(outputVideoPath)}`);
                     resolve(outputVideoPath);
@@ -1924,6 +2033,18 @@ class VideoProcessor {
                         console.log(`⚠️ Impossibile rimuovere font temporaneo (errore): ${err.message}`);
                     }
                 }
+
+                // Cleanup video temporaneo anche in caso di errore
+                if (tempVideoForCleanup) {
+                    try {
+                        const fs = require('fs');
+                        fs.unlinkSync(tempVideoForCleanup);
+                        console.log(`🧹 Video temporaneo (senza frame nero) rimosso (errore): ${path.basename(tempVideoForCleanup)}`);
+                    } catch (err) {
+                        console.log(`⚠️ Impossibile rimuovere video temporaneo (errore): ${err.message}`);
+                    }
+                }
+
                 reject(new Error(`Errore FFmpeg: ${error.message}`));
             });
         });

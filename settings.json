@@ -19,5 +19,6 @@
   "overlayOpacity": 50,
   "backgroundAudioEnabled": false,
   "backgroundAudioPath": "",
-  "backgroundAudioVolume": 0
+  "backgroundAudioVolume": 0,
+  "removeBlackFrameEnabled": false
 }

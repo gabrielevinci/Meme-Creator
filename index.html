@@ -1679,11 +1679,29 @@
                     </div>
                 </div>
 
+                <!-- Blocco Opzioni -->
+                <div class="form-group">
+                    <div class="options-container" style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 1px solid #e0e0e0;">
+                        <h4 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 1.1em; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 8px;">⚙️ Opzioni</h4>
+
+                        <!-- Rimuovi frame nero iniziale -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="remove-black-frame-enabled" class="checkbox-input">
+                                <label for="remove-black-frame-enabled" class="checkbox-label">🎞️ Rimuovi Frame Nero Iniziale</label>
+                            </div>
+                            <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
+                                Se abilitato, rimuove automaticamente il primo frame se è completamente nero
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Blocco Media Avanzati -->
                 <div class="form-group">
                     <div class="media-advanced-container" style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 1px solid #e0e0e0;">
                         <h4 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 1.1em; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 8px;">🎬 Media Avanzati</h4>
-                        
+
                         <!-- Sovrapponi immagine -->
                         <div class="form-group" style="margin-bottom: 20px;">
                             <div class="checkbox-container">
@@ -2075,6 +2093,14 @@
                 if (window.electronAPI.onAiAnalysisError) {
                     window.electronAPI.onAiAnalysisError((event, errorData) => {
                         this.handleAiAnalysisError(errorData);
+                    });
+                }
+
+                // Event listeners per i checkbox delle opzioni
+                const removeBlackFrameCheckbox = document.getElementById('remove-black-frame-enabled');
+                if (removeBlackFrameCheckbox) {
+                    removeBlackFrameCheckbox.addEventListener('change', () => {
+                        this.saveSettings();
                     });
                 }
             }
@@ -2656,6 +2682,13 @@
                         }
                     }
 
+                    if (settings.removeBlackFrameEnabled !== undefined) {
+                        const removeBlackFrameCheckbox = document.getElementById('remove-black-frame-enabled');
+                        if (removeBlackFrameCheckbox) {
+                            removeBlackFrameCheckbox.checked = settings.removeBlackFrameEnabled;
+                        }
+                    }
+
                     // Aggiorna il preview dashboard dopo aver caricato le impostazioni
                     setTimeout(() => this.updateBannerPreview(), 100);
 
@@ -2688,7 +2721,8 @@
                         overlayOpacity: parseInt(document.getElementById('overlay-opacity-slider') && document.getElementById('overlay-opacity-slider').value || 50),
                         backgroundAudioEnabled: document.getElementById('background-audio-enabled') && document.getElementById('background-audio-enabled').checked || false,
                         backgroundAudioPath: this.backgroundAudioPath || '',
-                        backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0)
+                        backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
+                        removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false
                     };
 
                     console.log('Salvataggio impostazioni:', settings);
@@ -2830,7 +2864,7 @@
 
                 // Banner copre tutta la larghezza del video (specifiche utente)
                 const bannerWidth = previewVideoWidth;
-                
+
                 // Altezza proporzionale usando il valore dall'interfaccia utente
                 const blockHeightEl = document.getElementById('block-height');
                 const userBlockHeight = blockHeightEl ? parseInt(blockHeightEl.value) : 450;
@@ -2948,7 +2982,8 @@
                     overlayOpacity: parseInt(document.getElementById('overlay-opacity-slider') && document.getElementById('overlay-opacity-slider').value || 50),
                     backgroundAudioEnabled: document.getElementById('background-audio-enabled') && document.getElementById('background-audio-enabled').checked || false,
                     backgroundAudioPath: this.backgroundAudioPath || '',
-                    backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0)
+                    backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
+                    removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false
                 };
 
                 // Gestione sicura dei margini (permette il valore 0)

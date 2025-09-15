@@ -6467,6 +6467,60 @@
             "tokens_used": 1108,
             "response_time_ms": 826,
             "output": "```json\n{\n  \"description\": \"Una mano tiene una bottiglia cilindrica di colore giallo chiaro con il marchio \\\"sundae\\\" e la scritta \\\"Very Vanilla\\\" sulla parte inferiore. La bottiglia è in una stanza "
+          },
+          "1757896993069_vmahb9khp": {
+            "timestamp": 1757896993069,
+            "tokens": 1340,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1340,
+            "response_time_ms": 1350,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni larghi neri esegue una coreografia di ballo in tre frame successivi. I movimenti sono fluidi e coinvolgono le braccia e il b"
+          },
+          "1757899919265_0o5gj465o": {
+            "timestamp": 1757899919265,
+            "tokens": 1365,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1365,
+            "response_time_ms": 1456,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con un cappuccio e pantaloni larghi sta ballando con movimenti fluidi delle braccia e del corpo. La coreografia progredisce attraverso una serie di passi "
+          },
+          "1757900524721_kdv6pub61": {
+            "timestamp": 1757900524721,
+            "tokens": 1374,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1374,
+            "response_time_ms": 1193,
+            "output": "```json\n{\n  \"description\": \"Una ballerina adolescente con una felpa bianca con cappuccio e pantaloni neri larghi esegue una coreografia in un ambiente interno domestico. I suoi movimenti fluiscono flu"
+          },
+          "1757900942177_d6uf2xv8c": {
+            "timestamp": 1757900942177,
+            "tokens": 1362,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1362,
+            "response_time_ms": 1308,
+            "output": "```json\n{\n  \"description\": \"Una ragazza con un cappuccio bianco e pantaloni neri larghi esegue una serie di movimenti di danza in continuazione. Nelle tre inquadrature consecutive, la ragazza si muove"
+          },
+          "1757901710195_7qpg02okj": {
+            "timestamp": 1757901710195,
+            "tokens": 1342,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1342,
+            "response_time_ms": 1133,
+            "output": "```json\n{\n  \"description\": \"Una ragazza con una felpa con cappuccio bianca e pantaloni larghi neri esegue una coreografia di danza dall'aspetto energico. La scena mostra una prospettiva frontale con l"
+          },
+          "1757902678357_fh4ah0jew": {
+            "timestamp": 1757902678357,
+            "tokens": 1149,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1149,
+            "response_time_ms": 1434,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con una felpa con cappuccio bianca e pantaloni neri larghi balla energicamente con le braccia aperte. Indossa un cappellino da baseball sotto il cappuccio"
           }
         }
       },

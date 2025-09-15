@@ -1666,33 +1666,6 @@
                     </div>
                 </div>
 
-                <!-- Sovrapponi immagine -->
-                <div class="form-group">
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="overlay-image-enabled" class="checkbox-input">
-                        <label for="overlay-image-enabled" class="checkbox-label">🖼️ Sovrapponi Immagine</label>
-                    </div>
-                    <div id="overlay-image-controls" class="nested-controls" style="display: none;">
-                        <div class="form-group">
-                            <button type="button" id="overlay-image-select" class="secondary-button" disabled>
-                                📁 Seleziona Immagine
-                            </button>
-                            <div id="overlay-image-filename" class="file-info"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="overlay-opacity-slider">Opacità Sovrapposizione</label>
-                            <div class="slider-container">
-                                <input type="range" id="overlay-opacity-slider" class="range-input" min="0" max="100" value="50" step="1" disabled>
-                                <div class="slider-labels">
-                                    <span class="slider-label-left">0%</span>
-                                    <span id="overlay-opacity-value" class="range-value">50%</span>
-                                    <span class="slider-label-right">100%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Aumenta volume video -->
                 <div class="form-group">
                     <label for="video-volume-slider">🔊 Volume Video</label>
@@ -1706,27 +1679,61 @@
                     </div>
                 </div>
 
-                <!-- Audio bianco -->
+                <!-- Blocco Media Avanzati -->
                 <div class="form-group">
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="background-audio-enabled" class="checkbox-input">
-                        <label for="background-audio-enabled" class="checkbox-label">🎵 Audio di Sottofondo</label>
-                    </div>
-                    <div id="background-audio-controls" class="nested-controls" style="display: none;">
-                        <div class="form-group">
-                            <button type="button" id="background-audio-select" class="secondary-button" disabled>
-                                📁 Seleziona Audio
-                            </button>
-                            <div id="background-audio-filename" class="file-info"></div>
+                    <div class="media-advanced-container" style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 1px solid #e0e0e0;">
+                        <h4 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 1.1em; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 8px;">🎬 Media Avanzati</h4>
+                        
+                        <!-- Sovrapponi immagine -->
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="overlay-image-enabled" class="checkbox-input">
+                                <label for="overlay-image-enabled" class="checkbox-label">🖼️ Sovrapponi Immagine</label>
+                            </div>
+                            <div id="overlay-image-controls" class="nested-controls" style="display: none;">
+                                <div class="form-group">
+                                    <button type="button" id="overlay-image-select" class="secondary-button" disabled>
+                                        📁 Seleziona Immagine
+                                    </button>
+                                    <div id="overlay-image-filename" class="file-info"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overlay-opacity-slider">Opacità Sovrapposizione</label>
+                                    <div class="slider-container">
+                                        <input type="range" id="overlay-opacity-slider" class="range-input" min="0" max="100" value="50" step="1" disabled>
+                                        <div class="slider-labels">
+                                            <span class="slider-label-left">0%</span>
+                                            <span id="overlay-opacity-value" class="range-value">50%</span>
+                                            <span class="slider-label-right">100%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="background-audio-volume-slider">Volume Audio di Sottofondo</label>
-                            <div class="slider-container">
-                                <input type="range" id="background-audio-volume-slider" class="range-input" min="-100" max="30" value="0" step="1" disabled>
-                                <div class="slider-labels">
-                                    <span class="slider-label-left">-100db (Muto)</span>
-                                    <span id="background-audio-volume-value" class="range-value">0db</span>
-                                    <span class="slider-label-right">+30db (Max)</span>
+
+                        <!-- Audio di sottofondo -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="background-audio-enabled" class="checkbox-input">
+                                <label for="background-audio-enabled" class="checkbox-label">🎵 Audio di Sottofondo</label>
+                            </div>
+                            <div id="background-audio-controls" class="nested-controls" style="display: none;">
+                                <div class="form-group">
+                                    <button type="button" id="background-audio-select" class="secondary-button" disabled>
+                                        📁 Seleziona Audio
+                                    </button>
+                                    <div id="background-audio-filename" class="file-info"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="background-audio-volume-slider">Volume Audio di Sottofondo</label>
+                                    <div class="slider-container">
+                                        <input type="range" id="background-audio-volume-slider" class="range-input" min="-100" max="30" value="0" step="1" disabled>
+                                        <div class="slider-labels">
+                                            <span class="slider-label-left">-100db (Muto)</span>
+                                            <span id="background-audio-volume-value" class="range-value">0db</span>
+                                            <span class="slider-label-right">+30db (Max)</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

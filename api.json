@@ -6656,6 +6656,204 @@
             "tokens_used": 1391,
             "response_time_ms": 1689,
             "output": "```json\n{\n  \"description\": \"La scena mostra tre uomini in abito che eseguono passi di danza in momenti diversi. Il primo a sinistra è un giovane in un completo scuro che sembra danzare con enfasi, con"
+          },
+          "1757907258190_utwmp567q": {
+            "timestamp": 1757907258190,
+            "tokens": 1341,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1341,
+            "response_time_ms": 1381,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappuccio bianco e pantaloni neri larghi esegue una danza energetica in un soggiorno. I movimenti sono fluidi e ritmici, con un'enfasi sul gioco di gambe"
+          },
+          "1757907259911_r7z1xdc8c": {
+            "timestamp": 1757907259911,
+            "tokens": 1364,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1364,
+            "response_time_ms": 1714,
+            "output": "```json\n{\n  \"description\": \"La prima immagine mostra una mano che insapona creando molta schiuma, suggerendo un'azione di pulizia o rito. La seconda immagine presenta una serie di flaconi di prodotti "
+          },
+          "1757907261388_7zf7cyxj2": {
+            "timestamp": 1757907261388,
+            "tokens": 1341,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1341,
+            "response_time_ms": 1471,
+            "output": "```json\n{\n  \"description\": \"Un uomo è seduto sulle scale di pietra mentre una giovane bambina con i capelli ricci balla di fronte a lui. La bambina esegue diversi passi di danza con espressioni giocos"
+          },
+          "1757907262865_e5jzcrf60": {
+            "timestamp": 1757907262865,
+            "tokens": 1336,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1336,
+            "response_time_ms": 1471,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano un paesaggio serale con nubi scure che contrastano con un leggero bagliore all'orizzonte, indice del tramonto o dell'alba. L'acqua è calma e sullo sfon"
+          },
+          "1757907264191_utem5m22h": {
+            "timestamp": 1757907264191,
+            "tokens": 1331,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1331,
+            "response_time_ms": 1319,
+            "output": "```json\n{\n  \"description\": \"Due giovani donne sono mostrate mentre eseguono una danza in sincronia. La progressione attraverso i frame rivela movimenti coordinati delle braccia e del corpo, con espres"
+          },
+          "1757907265701_tl26ijmkz": {
+            "timestamp": 1757907265701,
+            "tokens": 1391,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1391,
+            "response_time_ms": 1498,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una sequenza di tre uomini in abiti eleganti che sembrano eseguire dei passi di danza. Nel primo frame, un uomo in giacca e cravatta nera si muove con gesti"
+          },
+          "1757907453900_e4ie6uixg": {
+            "timestamp": 1757907453900,
+            "tokens": 1351,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1351,
+            "response_time_ms": 1428,
+            "output": "```json\n{\n  \"description\": \"Una giovane donna con capelli scuri raccolti in uno chignon balla in un soggiorno. Inizia rivolta verso la telecamera con le mani leggermente mosse, per poi girarsi di schi"
+          },
+          "1757907455397_3v0z5lco8": {
+            "timestamp": 1757907455397,
+            "tokens": 1339,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1339,
+            "response_time_ms": 1489,
+            "output": "```json\n{\n  \"description\": \"Un gruppo di persone sta eseguendo una danza dinamica all'aperto, con un accento particolare su coppie che si muovono in sincronia e gesti gioiosi.\\nL'azione si svolge in u"
+          },
+          "1757907456599_x9i2jd42f": {
+            "timestamp": 1757907456599,
+            "tokens": 1328,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1328,
+            "response_time_ms": 1197,
+            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino e un gilet verde acceso sta ballando allegramente in un corridoio. Nel primo frame tiene in mano un bicchiere di caffè, mentre nei frame succe"
+          },
+          "1757907458450_0eol1xvnl": {
+            "timestamp": 1757907458450,
+            "tokens": 1350,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1350,
+            "response_time_ms": 1845,
+            "output": "```json\n{\n  \"description\": \"Un gruppo di giovani balla energicamente in una piazza cittadina illuminata di notte. I loro movimenti sono sincronizzati mentre si spostano fluidamente attraverso la scena"
+          },
+          "1757907460057_gjkcvk77w": {
+            "timestamp": 1757907460057,
+            "tokens": 1399,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1399,
+            "response_time_ms": 1601,
+            "output": "```json\n{\n  \"description\": \"La scena mostra tre frame di persone che intraprendono azioni di ballo in spazi che sembrano essere sotterranei o stazioni della metropolitana. Nel primo frame, una persona"
+          },
+          "1757907461552_99najl1z2": {
+            "timestamp": 1757907461552,
+            "tokens": 1334,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1334,
+            "response_time_ms": 1489,
+            "output": "```json\n{\n  \"description\": \"Un uomo e due donne si muovono energicamente con passi di danza congiunti, indossando abiti che vanno dal casual al vivace rosso.  L'azione si svolge all'aperto, con un edi"
+          },
+          "1757907463197_a5cvr1fxs": {
+            "timestamp": 1757907463197,
+            "tokens": 1352,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1352,
+            "response_time_ms": 1639,
+            "output": "```json\n{\n  \"description\": \"Tre pannelli mostrano una vasta distesa di fiori bianchi e arancioni che occupano la parte inferiore del frame. Dietro di essi si erge una fila di alberi verdi lussureggian"
+          },
+          "1757907464756_90wx701h3": {
+            "timestamp": 1757907464756,
+            "tokens": 1349,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1349,
+            "response_time_ms": 1552,
+            "output": "```json\n{\n  \"description\": \"Un gruppo di persone con capelli rossi e ventenni sta ballando con movimenti energici e sincronizzati all'aperto, con un edificio moderno sullo sfondo illuminato dalla luce"
+          },
+          "1757907465973_cuz2097vp": {
+            "timestamp": 1757907465973,
+            "tokens": 1324,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1324,
+            "response_time_ms": 1210,
+            "output": "```json\n{\n  \"description\": \"Il primo frame mostra John Cena con le cuffie, vestito in modo formale e con un'espressione concentrata. Il secondo frame presenta un uomo che esegue un movimento di ballo,"
+          },
+          "1757907467780_n9sqzdd5f": {
+            "timestamp": 1757907467780,
+            "tokens": 1342,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1342,
+            "response_time_ms": 1801,
+            "output": "```json\n{\n  \"description\": \"Una donna indossa un top corto color carne e pantaloni sportivi larghi blu scuro, si muove con passi di danza energici in un soggiorno moderno. Nelle tre sequenze, i suoi m"
+          },
+          "1757907469497_hyd3b4zf2": {
+            "timestamp": 1757907469497,
+            "tokens": 1318,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1318,
+            "response_time_ms": 1711,
+            "output": "```json\n{\n  \"description\": \"Il tramonto infuoca un cielo pieno di nuvole stratificate, con un albero solitario che proietta un'ombra allungata su un vasto campo di tulipani rosa e gialli. La scena è r"
+          },
+          "1757907471058_umr5xhbhh": {
+            "timestamp": 1757907471058,
+            "tokens": 1358,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1358,
+            "response_time_ms": 1556,
+            "output": "```json\n{\n  \"description\": \"Il video mostra una persona in un ambiente domestico che compie movimenti di ballo. Nei primi due frame, la persona è vista di spalle mentre balla, con un movimento ritmico"
+          },
+          "1757907473023_kx2b7qm48": {
+            "timestamp": 1757907473023,
+            "tokens": 1408,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1408,
+            "response_time_ms": 1959,
+            "output": "```json\n{\n  \"description\": \"Un gruppo di donne si riunisce per ballare all'aperto in diverse ambientazioni notturne. Nei frame iniziali, in primo piano, una donna con pantaloni larghi esegue movimenti"
+          },
+          "1757907474289_ea7cuwyml": {
+            "timestamp": 1757907474289,
+            "tokens": 1326,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1326,
+            "response_time_ms": 1261,
+            "output": "```json\n{\n  \"description\": \"La donna inizia a ballare con movimenti fluidi del corpo, gesticolando con le braccia. La sua espressione è divertita e rilassata mentre si muove seguendo un ritmo invisibi"
+          },
+          "1757907475895_imxumhfbh": {
+            "timestamp": 1757907475895,
+            "tokens": 1282,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1282,
+            "response_time_ms": 1600,
+            "output": "```json\n{\n  \"description\": \"Un uomo con occhiali parla rivolto alla telecamera, con uno sfondo neutro. A sinistra dell'uomo, un'illustrazione antica raffigura una figura umana stilizzata incorniciata."
+          },
+          "1757907477570_wzw2zekeg": {
+            "timestamp": 1757907477570,
+            "tokens": 1347,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1347,
+            "response_time_ms": 1667,
+            "output": "```json\n{\n  \"description\": \"Una coppia di ballo esegue mosse sincronizzate in uno spazio pubblico aperto, probabilmente un centro commerciale o una piazza. La donna indossa abiti scuri con dettagli ro"
           }
         }
       },

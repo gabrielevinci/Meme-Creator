@@ -297,16 +297,9 @@ class VideoProcessor {
                 videoFilters[videoFilters.length - 1] = lastFilter.replace(currentLabel, '[v]');
             }
 
-            // Aggiungi filtro complex se necessario
-            if (videoFilters.length > 0) {
-                ffmpegArgs.push('-filter_complex', videoFilters.join(';'));
-                ffmpegArgs.push('-map', '[v]');
-            } else {
-                ffmpegArgs.push('-c:v', 'copy'); // Copia video se nessun filtro
-            }
-
             // Gestione audio
             let audioProcessed = false;
+            const hasSpeedChange = config && config.videoSpeed && config.videoSpeed !== 1;
 
             if (hasAudioModifications) {
                 // Processa l'audio separatamente usando SOX (più veloce)
@@ -320,11 +313,38 @@ class VideoProcessor {
                 }
             }
 
-            if (!audioProcessed) {
-                if (needsVideoSpeed) {
-                    // Se abbiamo velocità video ma non altre modifiche audio
+            // Costruisci filtri video e audio insieme
+            let finalFilterComplex = '';
+            let audioMapping = '';
+
+            if (videoFilters.length > 0) {
+                finalFilterComplex = videoFilters.join(';');
+                
+                if (!audioProcessed && hasSpeedChange) {
+                    // Aggiungi filtro audio al filter_complex
+                    const audioTempo = config.videoSpeed;
+                    finalFilterComplex += `;[0:a]atempo=${audioTempo}[a]`;
+                    audioMapping = '[a]';
+                    console.log(`🎵 Audio velocità aggiunta al filter_complex: ${audioTempo}x`);
+                } else if (!audioProcessed) {
+                    audioMapping = '0:a?'; // Audio originale
+                }
+                
+                ffmpegArgs.push('-filter_complex', finalFilterComplex);
+                ffmpegArgs.push('-map', '[v]');
+                
+                if (audioMapping) {
+                    ffmpegArgs.push('-map', audioMapping);
+                }
+            } else {
+                // Nessun filtro video
+                ffmpegArgs.push('-c:v', 'copy');
+                
+                if (!audioProcessed && hasSpeedChange) {
+                    // Solo velocità audio
                     ffmpegArgs.push('-af', `atempo=${config.videoSpeed}`);
-                } else {
+                    console.log(`🎵 Audio velocità semplice: ${config.videoSpeed}x`);
+                } else if (!audioProcessed) {
                     ffmpegArgs.push('-c:a', 'copy'); // Copia audio
                 }
             }
@@ -1954,14 +1974,17 @@ class VideoProcessor {
         // Aggiungi il filtro complex per testo e banner
         ffmpegArgs.push('-filter_complex', filterComplex);
         ffmpegArgs.push('-map', '[v]');
-        ffmpegArgs.push('-map', '0:a?'); // Copia audio originale se presente
+        
+        // CORREZIONE AUDIO: Il video inputVideoPath potrebbe avere già audio modificato dalla Fase 1
+        // Quindi copiamo l'audio dal video di input della Fase 2, non dal video originale
+        ffmpegArgs.push('-map', '0:a?'); // Mappa l'audio dal video di input (che potrebbe essere già processato)
 
-        // Codec ottimizzati per Fase 2
+        // Codec ottimizzati per Fase 2 
         ffmpegArgs.push(
             '-c:v', 'libx264',
             '-preset', 'fast',
             '-crf', '23',
-            '-c:a', 'copy' // Copia audio senza ricodifica
+            '-c:a', 'copy' // Copia l'audio del video di input (già processato se necessario)
         );
 
         // Output finale

@@ -1685,13 +1685,24 @@
                         <h4 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 1.1em; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 8px;">⚙️ Opzioni</h4>
 
                         <!-- Rimuovi frame nero iniziale -->
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group" style="margin-bottom: 15px;">
                             <div class="checkbox-container">
                                 <input type="checkbox" id="remove-black-frame-enabled" class="checkbox-input">
                                 <label for="remove-black-frame-enabled" class="checkbox-label">🎞️ Rimuovi Frame Nero Iniziale</label>
                             </div>
                             <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
                                 Se abilitato, rimuove automaticamente il primo frame se è completamente nero
+                            </div>
+                        </div>
+
+                        <!-- Trasforma in 1920 -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="transform-to-1920-enabled" class="checkbox-input">
+                                <label for="transform-to-1920-enabled" class="checkbox-label">📐 Trasforma in 1920px</label>
+                            </div>
+                            <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
+                                Posiziona il blocco bianco per raggiungere un'altezza totale di 1920px (formato ottimale per i social)
                             </div>
                         </div>
                     </div>
@@ -2100,6 +2111,13 @@
                 const removeBlackFrameCheckbox = document.getElementById('remove-black-frame-enabled');
                 if (removeBlackFrameCheckbox) {
                     removeBlackFrameCheckbox.addEventListener('change', () => {
+                        this.saveSettings();
+                    });
+                }
+
+                const transformTo1920Checkbox = document.getElementById('transform-to-1920-enabled');
+                if (transformTo1920Checkbox) {
+                    transformTo1920Checkbox.addEventListener('change', () => {
                         this.saveSettings();
                     });
                 }
@@ -2689,6 +2707,13 @@
                         }
                     }
 
+                    if (settings.transformTo1920Enabled !== undefined) {
+                        const transformTo1920Checkbox = document.getElementById('transform-to-1920-enabled');
+                        if (transformTo1920Checkbox) {
+                            transformTo1920Checkbox.checked = settings.transformTo1920Enabled;
+                        }
+                    }
+
                     // Aggiorna il preview dashboard dopo aver caricato le impostazioni
                     setTimeout(() => this.updateBannerPreview(), 100);
 
@@ -2722,7 +2747,8 @@
                         backgroundAudioEnabled: document.getElementById('background-audio-enabled') && document.getElementById('background-audio-enabled').checked || false,
                         backgroundAudioPath: this.backgroundAudioPath || '',
                         backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
-                        removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false
+                        removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
+                        transformTo1920Enabled: document.getElementById('transform-to-1920-enabled') && document.getElementById('transform-to-1920-enabled').checked || false
                     };
 
                     console.log('Salvataggio impostazioni:', settings);
@@ -2983,7 +3009,8 @@
                     backgroundAudioEnabled: document.getElementById('background-audio-enabled') && document.getElementById('background-audio-enabled').checked || false,
                     backgroundAudioPath: this.backgroundAudioPath || '',
                     backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
-                    removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false
+                    removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
+                    transformTo1920Enabled: document.getElementById('transform-to-1920-enabled') && document.getElementById('transform-to-1920-enabled').checked || false
                 };
 
                 // Gestione sicura dei margini (permette il valore 0)

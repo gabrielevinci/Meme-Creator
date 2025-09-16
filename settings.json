@@ -1,10 +1,10 @@
 {
   "fontFamily": "Impact",
-  "marginTop": 30,
-  "marginBottom": 30,
-  "marginLeft": 40,
-  "marginRight": 40,
-  "blockHeight": 450,
+  "marginTop": 3,
+  "marginBottom": 7,
+  "marginLeft": 2,
+  "marginRight": 9,
+  "blockHeight": 350,
   "textFormat": "normal",
   "temperature": 1,
   "videoSpeed": 1,
@@ -20,5 +20,6 @@
   "backgroundAudioEnabled": false,
   "backgroundAudioPath": "",
   "backgroundAudioVolume": 0,
-  "removeBlackFrameEnabled": false
+  "removeBlackFrameEnabled": false,
+  "transformTo1920Enabled": false
 }

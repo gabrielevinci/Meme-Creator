@@ -165,8 +165,8 @@ class VideoProcessor {
         const needsVolumeChange = config && config.videoVolume && config.videoVolume !== 0;
         const needsBackgroundAudio = config && config.backgroundAudioEnabled && config.backgroundAudioPath;
 
-        const hasVideoModifications = needsContrast || needsSaturation || needsGamma || needsLift || 
-                                     needsVideoSpeed || needsVideoZoom || needsOverlayImage;
+        const hasVideoModifications = needsContrast || needsSaturation || needsGamma || needsLift ||
+            needsVideoSpeed || needsVideoZoom || needsOverlayImage;
         const hasAudioModifications = needsVolumeChange || needsBackgroundAudio;
 
         if (!hasVideoModifications && !hasAudioModifications) {
@@ -176,10 +176,10 @@ class VideoProcessor {
 
         // Crea path per video modificato
         const modifiedVideoPath = path.join(this.tempDir, `video_modified_${Date.now()}.mp4`);
-        
+
         console.log(`🎥 Modifiche video da applicare:`, {
             contrast: needsContrast ? config.contrast : 'skip',
-            saturation: needsSaturation ? config.saturation : 'skip', 
+            saturation: needsSaturation ? config.saturation : 'skip',
             gamma: needsGamma ? config.gamma : 'skip',
             lift: needsLift ? config.lift : 'skip',
             videoSpeed: needsVideoSpeed ? config.videoSpeed + 'x' : 'skip',
@@ -198,7 +198,7 @@ class VideoProcessor {
 
             // Costruisci gli argomenti FFmpeg
             const ffmpegArgs = ['-i', inputVideoPath];
-            
+
             // Array per input aggiuntivi
             let inputCounter = 1;
             let overlayInputIndex = -1;
@@ -278,7 +278,7 @@ class VideoProcessor {
             if (needsOverlayImage) {
                 const nextLabel = `[v${stepCounter}]`;
                 const opacity = ((100 - config.overlayOpacity) / 100).toFixed(2);
-                
+
                 videoFilters.push(`[${overlayInputIndex}:v]scale=${width}:${height}[scaled_overlay]`);
                 videoFilters.push(`${currentLabel}[scaled_overlay]blend=all_mode=normal:all_opacity=${opacity}${nextLabel}`);
                 currentLabel = nextLabel;
@@ -304,7 +304,7 @@ class VideoProcessor {
             if (hasAudioModifications) {
                 // Processa l'audio separatamente usando SOX (più veloce)
                 const processedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir);
-                
+
                 if (processedAudioPath) {
                     ffmpegArgs.push('-i', processedAudioPath);
                     ffmpegArgs.push('-map', `${inputCounter}:a`);
@@ -319,7 +319,7 @@ class VideoProcessor {
 
             if (videoFilters.length > 0) {
                 finalFilterComplex = videoFilters.join(';');
-                
+
                 if (!audioProcessed && hasSpeedChange) {
                     // Aggiungi filtro audio al filter_complex
                     const audioTempo = config.videoSpeed;
@@ -329,17 +329,17 @@ class VideoProcessor {
                 } else if (!audioProcessed) {
                     audioMapping = '0:a?'; // Audio originale
                 }
-                
+
                 ffmpegArgs.push('-filter_complex', finalFilterComplex);
                 ffmpegArgs.push('-map', '[v]');
-                
+
                 if (audioMapping) {
                     ffmpegArgs.push('-map', audioMapping);
                 }
             } else {
                 // Nessun filtro video
                 ffmpegArgs.push('-c:v', 'copy');
-                
+
                 if (!audioProcessed && hasSpeedChange) {
                     // Solo velocità audio
                     ffmpegArgs.push('-af', `atempo=${config.videoSpeed}`);
@@ -1597,7 +1597,7 @@ class VideoProcessor {
         // APPLICAZIONE TUTTE LE MODIFICHE VIDEO PRIMA DEL TESTO
         console.log(`🎨 === FASE 1: APPLICAZIONE MODIFICHE VIDEO ===`);
         const videoModificationsResult = await this.applyVideoModifications(inputVideoPath, config);
-        
+
         if (videoModificationsResult.processedVideoPath !== inputVideoPath) {
             // Se è stato creato un nuovo video modificato, aggiorna il path
             if (tempVideoForCleanup) {
@@ -1803,12 +1803,71 @@ class VideoProcessor {
         const finalMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, fontSize, config && config.textFormat);
         lineHeight = finalMetrics.lineHeight; // RIMOSSA la dichiarazione const per evitare conflitti
 
-        // POSIZIONAMENTO BANNER
+        // 🎯 FUNZIONALITÀ "TRASFORMA IN 1920" - Calcolo posizione ottimale del banner
+        let originalBannerPosition = processedAiResponse.banner_position;
+        let optimizedBannerPosition = originalBannerPosition;
+        let optimizedHeight = height;
+        
+        if (config && config.transformTo1920Enabled) {
+            console.log(`📐 === TRASFORMA IN 1920 ATTIVATA ===`);
+            console.log(`📏 Altezza video attuale: ${height}px`);
+            console.log(`📏 Altezza blocco: ${blockHeight}px`);
+            console.log(`📍 Posizione originale AI: ${originalBannerPosition}`);
+            
+            const TARGET_HEIGHT = 1920;
+            
+            if (height >= TARGET_HEIGHT) {
+                console.log(`✅ Video già >= ${TARGET_HEIGHT}px - mantieni posizione AI: ${originalBannerPosition}`);
+                optimizedBannerPosition = originalBannerPosition;
+            } else {
+                // Calcola se il video + blocco può raggiungere 1920px
+                const totalWithBlock = height + blockHeight;
+                
+                if (totalWithBlock >= TARGET_HEIGHT) {
+                    // Può raggiungere 1920px - calcola posizione ottimale
+                    const excessHeight = totalWithBlock - TARGET_HEIGHT;
+                    
+                    if (originalBannerPosition === 'bottom') {
+                        // Banner in basso - sposta il banner verso l'alto per raggiungere esattamente 1920px
+                        const optimalBannerY = TARGET_HEIGHT - blockHeight;
+                        console.log(`🎯 Banner BOTTOM ottimizzato: Y=${optimalBannerY} (era ${height - blockHeight})`);
+                        optimizedBannerPosition = 'bottom';
+                        optimizedHeight = TARGET_HEIGHT;
+                    } else {
+                        // Banner in alto - il video finale sarà esattamente 1920px
+                        console.log(`🎯 Banner TOP ottimizzato: video finale = ${TARGET_HEIGHT}px`);
+                        optimizedBannerPosition = 'top';  
+                        optimizedHeight = TARGET_HEIGHT;
+                    }
+                } else {
+                    // Non può raggiungere 1920px - massimizza comunque
+                    console.log(`⚠️ Video + blocco = ${totalWithBlock}px < ${TARGET_HEIGHT}px - massimizza comunque`);
+                    console.log(`🎯 Posizione scelta: ${originalBannerPosition} (da AI) - altezza finale: ${totalWithBlock}px`);
+                    optimizedBannerPosition = originalBannerPosition;
+                    optimizedHeight = totalWithBlock;
+                }
+            }
+            
+            console.log(`🎯 DECISIONE FINALE:`);
+            console.log(`   📍 Posizione: ${optimizedBannerPosition}`);
+            console.log(`   📏 Altezza finale: ${optimizedHeight}px`);
+            console.log(`📐 === FINE TRASFORMA IN 1920 ===`);
+        }
+
+        // POSIZIONAMENTO BANNER (usando la posizione ottimizzata)
         let textFilters = '';
         let baseY;
 
-        if (processedAiResponse.banner_position === 'bottom') {
-            const bannerY = height - blockHeight;
+        if (optimizedBannerPosition === 'bottom') {
+            let bannerY;
+            
+            if (config && config.transformTo1920Enabled && optimizedHeight === 1920) {
+                // Modalità 1920: posiziona il banner per raggiungere esattamente 1920px
+                bannerY = 1920 - blockHeight;
+            } else {
+                // Modalità normale: banner in fondo al video
+                bannerY = height - blockHeight;
+            }
 
             // CORREZIONE MARGINI: Il testo deve iniziare ESATTAMENTE dal marginTop
             baseY = bannerY + marginTop; // Il testo inizia esattamente dal margine superiore
@@ -1962,10 +2021,31 @@ class VideoProcessor {
 
         // COSTRUZIONE SEMPLIFICATA DEL FILTRO COMPLEX - SOLO TESTO E BANNER
         console.log(`📝 Costruzione filtro per testo e banner bianco...`);
-        
+
         // Le modifiche video sono già state applicate nella fase precedente
         // Ora serve solo aggiungere il testo e il banner bianco
-        let filterComplex = textFilters + '[v]';
+        let filterComplex = textFilters + '[v1]';
+        
+        // 📐 ESTENSIONE CANVAS PER MODALITÀ 1920px
+        if (config && config.transformTo1920Enabled && optimizedHeight > height) {
+            // Estendi il canvas per raggiungere l'altezza ottimizzata
+            const paddingNeeded = optimizedHeight - height;
+            console.log(`📐 Estensione canvas: da ${height}px a ${optimizedHeight}px (+${paddingNeeded}px)`);
+            
+            if (optimizedBannerPosition === 'top') {
+                // Banner in alto: aggiungi padding in basso
+                filterComplex += `;[v1]pad=${width}:${optimizedHeight}:0:0:color=black[v]`;
+                console.log(`📐 Padding BOTTOM: +${paddingNeeded}px (banner in alto)`);
+            } else {
+                // Banner in basso: aggiungi padding in alto per spingere tutto verso il basso
+                filterComplex += `;[v1]pad=${width}:${optimizedHeight}:0:${paddingNeeded}:color=black[v]`;
+                console.log(`📐 Padding TOP: +${paddingNeeded}px (banner in basso)`);
+            }
+        } else {
+            // Modalità normale: nessuna estensione canvas
+            filterComplex += ';[v1]null[v]';
+        }
+        
         console.log(`📋 Filtro complex finale: ${filterComplex}`);
 
         // Array per gli argomenti FFmpeg - SEMPLIFICATO per Fase 2
@@ -1974,7 +2054,7 @@ class VideoProcessor {
         // Aggiungi il filtro complex per testo e banner
         ffmpegArgs.push('-filter_complex', filterComplex);
         ffmpegArgs.push('-map', '[v]');
-        
+
         // CORREZIONE AUDIO: Il video inputVideoPath potrebbe avere già audio modificato dalla Fase 1
         // Quindi copiamo l'audio dal video di input della Fase 2, non dal video originale
         ffmpegArgs.push('-map', '0:a?'); // Mappa l'audio dal video di input (che potrebbe essere già processato)

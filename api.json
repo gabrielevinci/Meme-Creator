@@ -6854,6 +6854,60 @@
             "tokens_used": 1347,
             "response_time_ms": 1667,
             "output": "```json\n{\n  \"description\": \"Una coppia di ballo esegue mosse sincronizzate in uno spazio pubblico aperto, probabilmente un centro commerciale o una piazza. La donna indossa abiti scuri con dettagli ro"
+          },
+          "1758059598298_se4hjpjl4": {
+            "timestamp": 1758059598298,
+            "tokens": 1170,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1170,
+            "response_time_ms": 3897,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di fiori multicolori si estende verso l'orizzonte, con striature di rosso acceso, rosa delicato, giallo vibrante e bianco puro che si alternano in pendii dol"
+          },
+          "1758059599543_uee9x15g4": {
+            "timestamp": 1758059599543,
+            "tokens": 1133,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1133,
+            "response_time_ms": 1236,
+            "output": "```json\n{\n  \"description\": \"Un vasto prato verde si estende sotto un cielo nuvoloso con raggi di sole che filtrano attraverso le nubi. In lontananza, una fitta foresta verde si erge su colline ondulat"
+          },
+          "1758059698779_hwpebyfa3": {
+            "timestamp": 1758059698779,
+            "tokens": 1148,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1148,
+            "response_time_ms": 1426,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di fiori colorati si estende verso un cielo glorioso al tramonto. Il sole, un globo luminoso di giallo e arancione, illumina la scena con una luce calda e do"
+          },
+          "1758059699852_v4kdfgttp": {
+            "timestamp": 1758059699852,
+            "tokens": 1119,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1119,
+            "response_time_ms": 1067,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano un vasto prato verde in primo piano, mosso dal vento. Sullo sfondo si estende una fitta foresta che sfuma dolcemente verso delle colline ondulate sotto"
+          },
+          "1758059761982_ujd9vhmgr": {
+            "timestamp": 1758059761982,
+            "tokens": 1130,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1130,
+            "response_time_ms": 2152,
+            "output": "```json\n{\n  \"description\": \"Un campo fiorito di colori vivaci si estende sotto un cielo azzurro punteggiato da nuvole bianche e un sole splendente che illumina il paesaggio. In lontananza, si intraved"
+          },
+          "1758059763096_l94sj5d0l": {
+            "timestamp": 1758059763096,
+            "tokens": 1137,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1137,
+            "response_time_ms": 1108,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio naturale estivo con un vasto prato di erba verdeggiante in primo piano. Dietro il prato si estende una fitta foresta di alberi verdi che arriva fino alle colli"
           }
         }
       },

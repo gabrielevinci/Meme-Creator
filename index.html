@@ -1740,6 +1740,25 @@
                             </div>
                         </div>
 
+                        <!-- Sostituisci suono -->
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="replace-audio-enabled" class="checkbox-input">
+                                <label for="replace-audio-enabled" class="checkbox-label">🔄 Sostituisci Suono</label>
+                            </div>
+                            <div id="replace-audio-controls" class="nested-controls" style="display: none;">
+                                <div class="form-group">
+                                    <button type="button" id="replace-audio-folder-select" class="secondary-button" disabled>
+                                        📁 Seleziona Cartella Audio
+                                    </button>
+                                    <div id="replace-audio-folder-info" class="file-info"></div>
+                                </div>
+                                <div class="form-group">
+                                    <div id="replace-audio-status" class="status-info" style="font-size: 0.9em; color: #666; margin-top: 5px;"></div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Audio di sottofondo -->
                         <div class="form-group" style="margin-bottom: 0;">
                             <div class="checkbox-container">
@@ -2004,6 +2023,11 @@
                 // Variabili per i percorsi dei file
                 this.overlayImagePath = '';
                 this.backgroundAudioPath = '';
+                this.replaceAudioFolderPath = '';
+                
+                // Gestione audio replacement
+                this.availableAudioFiles = [];
+                this.usedAudioFiles = new Set();
 
                 this.initializeElements();
                 this.setupEventListeners();
@@ -2314,6 +2338,22 @@
                     });
                 }
 
+                // Setup per Checkbox Replace Audio
+                const replaceAudioEnabled = document.getElementById('replace-audio-enabled');
+                const replaceAudioControls = document.getElementById('replace-audio-controls');
+                const replaceAudioFolderSelect = document.getElementById('replace-audio-folder-select');
+
+                if (replaceAudioEnabled && replaceAudioControls) {
+                    replaceAudioEnabled.addEventListener('change', (e) => {
+                        const isEnabled = e.target.checked;
+                        replaceAudioControls.style.display = isEnabled ? 'block' : 'none';
+
+                        if (replaceAudioFolderSelect) replaceAudioFolderSelect.disabled = !isEnabled;
+
+                        this.saveSettings();
+                    });
+                }
+
                 // Setup per Checkbox Background Audio
                 const bgAudioEnabled = document.getElementById('background-audio-enabled');
                 const bgAudioControls = document.getElementById('background-audio-controls');
@@ -2350,6 +2390,24 @@
                             }
                         } catch (error) {
                             console.error('Errore nella selezione immagine:', error);
+                        }
+                    });
+                }
+
+                // Button per selezionare cartella audio per sostituzione
+                const replaceAudioFolderSelect = document.getElementById('replace-audio-folder-select');
+                if (replaceAudioFolderSelect) {
+                    replaceAudioFolderSelect.addEventListener('click', async() => {
+                        try {
+                            const result = await window.electronAPI.selectDirectory();
+                            if (result) {
+                                document.getElementById('replace-audio-folder-info').textContent = `Cartella: ${result.name}`;
+                                this.replaceAudioFolderPath = result.path;
+                                await this.scanAudioFolder();
+                                this.saveSettings();
+                            }
+                        } catch (error) {
+                            console.error('Errore nella selezione cartella audio:', error);
                         }
                     });
                 }
@@ -2700,6 +2758,30 @@
                         }
                     }
 
+                    if (settings.replaceAudioEnabled !== undefined) {
+                        const replaceAudioEnabled = document.getElementById('replace-audio-enabled');
+                        const replaceAudioControls = document.getElementById('replace-audio-controls');
+                        const replaceAudioFolderSelect = document.getElementById('replace-audio-folder-select');
+
+                        if (replaceAudioEnabled) {
+                            replaceAudioEnabled.checked = settings.replaceAudioEnabled;
+                            if (replaceAudioControls) {
+                                replaceAudioControls.style.display = settings.replaceAudioEnabled ? 'block' : 'none';
+                            }
+                            if (replaceAudioFolderSelect) replaceAudioFolderSelect.disabled = !settings.replaceAudioEnabled;
+                        }
+
+                        if (settings.replaceAudioFolderPath) {
+                            this.replaceAudioFolderPath = settings.replaceAudioFolderPath;
+                            const folderName = settings.replaceAudioFolderPath.split('/').pop() || settings.replaceAudioFolderPath.split('\\').pop();
+                            const folderInfoEl = document.getElementById('replace-audio-folder-info');
+                            if (folderInfoEl) folderInfoEl.textContent = `Cartella: ${folderName}`;
+                            
+                            // Scansiona automaticamente la cartella al caricamento
+                            setTimeout(() => this.scanAudioFolder(), 500);
+                        }
+                    }
+
                     if (settings.removeBlackFrameEnabled !== undefined) {
                         const removeBlackFrameCheckbox = document.getElementById('remove-black-frame-enabled');
                         if (removeBlackFrameCheckbox) {
@@ -2747,6 +2829,8 @@
                         backgroundAudioEnabled: document.getElementById('background-audio-enabled') && document.getElementById('background-audio-enabled').checked || false,
                         backgroundAudioPath: this.backgroundAudioPath || '',
                         backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
+                        replaceAudioEnabled: document.getElementById('replace-audio-enabled') && document.getElementById('replace-audio-enabled').checked || false,
+                        replaceAudioFolderPath: this.replaceAudioFolderPath || '',
                         removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
                         transformTo1920Enabled: document.getElementById('transform-to-1920-enabled') && document.getElementById('transform-to-1920-enabled').checked || false
                     };
@@ -2941,6 +3025,127 @@
                 console.log(`🎬 Preview aggiornato: banner ${bannerWidth}px, altezza ${bannerHeight}px, margini T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}, area testo ${textAreaWidth}×${textAreaHeight}px`);
             }
 
+            async scanAudioFolder() {
+                if (!this.replaceAudioFolderPath) {
+                    console.log('🔄 Nessuna cartella audio selezionata');
+                    return;
+                }
+
+                try {
+                    console.log('🔄 Scansione cartella audio:', this.replaceAudioFolderPath);
+                    const audioFiles = await window.electronAPI.scanAudioFolder(this.replaceAudioFolderPath);
+                    
+                    this.availableAudioFiles = audioFiles.filter(file => {
+                        const ext = file.toLowerCase();
+                        return ext.endsWith('.mp3') || ext.endsWith('.wav') || 
+                               ext.endsWith('.aac') || ext.endsWith('.flac') || 
+                               ext.endsWith('.m4a') || ext.endsWith('.ogg');
+                    });
+
+                    console.log(`🎵 Trovati ${this.availableAudioFiles.length} file audio nella cartella`);
+                    
+                    // Aggiorna status
+                    const statusElement = document.getElementById('replace-audio-status');
+                    if (statusElement) {
+                        if (this.availableAudioFiles.length > 0) {
+                            statusElement.textContent = `✅ Trovati ${this.availableAudioFiles.length} file audio compatibili`;
+                            statusElement.style.color = '#27ae60';
+                        } else {
+                            statusElement.textContent = '⚠️ Nessun file audio compatibile trovato';
+                            statusElement.style.color = '#e74c3c';
+                        }
+                    }
+
+                    // Reset dei file usati quando cambia cartella
+                    this.usedAudioFiles.clear();
+
+                } catch (error) {
+                    console.error('❌ Errore nella scansione della cartella audio:', error);
+                    const statusElement = document.getElementById('replace-audio-status');
+                    if (statusElement) {
+                        statusElement.textContent = '❌ Errore nella lettura della cartella';
+                        statusElement.style.color = '#e74c3c';
+                    }
+                }
+            }
+
+            async selectAudioForVideo(videoDuration) {
+                if (!this.availableAudioFiles || this.availableAudioFiles.length === 0) {
+                    console.log('🔄 Nessun audio disponibile per la sostituzione');
+                    return null;
+                }
+
+                try {
+                    // Prima passa: cerca audio non ancora usati che durano almeno quanto il video
+                    const unusedAudio = this.availableAudioFiles.filter(audioFile => 
+                        !this.usedAudioFiles.has(audioFile)
+                    );
+
+                    console.log(`🎵 Audio disponibili: ${unusedAudio.length}/${this.availableAudioFiles.length} non ancora usati`);
+
+                    let suitableAudio = [];
+                    
+                    // Ottieni durata per ogni audio non usato
+                    for (const audioFile of unusedAudio) {
+                        try {
+                            const audioPath = require('path').join(this.replaceAudioFolderPath, audioFile);
+                            const audioDuration = await window.electronAPI.getAudioDuration(audioPath);
+                            
+                            if (audioDuration >= videoDuration) {
+                                suitableAudio.push({
+                                    file: audioFile,
+                                    path: audioPath,
+                                    duration: audioDuration
+                                });
+                            }
+                        } catch (error) {
+                            console.warn(`⚠️ Errore nell'ottenere durata audio ${audioFile}:`, error);
+                        }
+                    }
+
+                    // Se non ci sono audio non usati sufficienti, riusa quelli già usati
+                    if (suitableAudio.length === 0) {
+                        console.log('🔄 Tutti gli audio non usati sono troppo corti, riuso audio già utilizzati...');
+                        
+                        for (const audioFile of this.availableAudioFiles) {
+                            try {
+                                const audioPath = require('path').join(this.replaceAudioFolderPath, audioFile);
+                                const audioDuration = await window.electronAPI.getAudioDuration(audioPath);
+                                
+                                if (audioDuration >= videoDuration) {
+                                    suitableAudio.push({
+                                        file: audioFile,
+                                        path: audioPath,
+                                        duration: audioDuration
+                                    });
+                                }
+                            } catch (error) {
+                                console.warn(`⚠️ Errore nell'ottenere durata audio ${audioFile}:`, error);
+                            }
+                        }
+                    }
+
+                    if (suitableAudio.length === 0) {
+                        console.log('⚠️ Nessun audio ha durata sufficiente, mantengo audio originale');
+                        return null;
+                    }
+
+                    // Scegli il primo audio disponibile (o random se preferisci)
+                    const selectedAudio = suitableAudio[0];
+                    
+                    // Segna come usato
+                    this.usedAudioFiles.add(selectedAudio.file);
+                    
+                    console.log(`✅ Audio selezionato: ${selectedAudio.file} (durata: ${selectedAudio.duration}s per video di ${videoDuration}s)`);
+                    
+                    return selectedAudio;
+
+                } catch (error) {
+                    console.error('❌ Errore nella selezione audio:', error);
+                    return null;
+                }
+            }
+
             async refreshVideoList() {
                 try {
                     const videos = await window.electronAPI.getInputVideos();
@@ -3009,6 +3214,8 @@
                     backgroundAudioEnabled: document.getElementById('background-audio-enabled') && document.getElementById('background-audio-enabled').checked || false,
                     backgroundAudioPath: this.backgroundAudioPath || '',
                     backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
+                    replaceAudioEnabled: document.getElementById('replace-audio-enabled') && document.getElementById('replace-audio-enabled').checked || false,
+                    replaceAudioFolderPath: this.replaceAudioFolderPath || '',
                     removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
                     transformTo1920Enabled: document.getElementById('transform-to-1920-enabled') && document.getElementById('transform-to-1920-enabled').checked || false
                 };

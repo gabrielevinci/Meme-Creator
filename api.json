@@ -6908,6 +6908,24 @@
             "tokens_used": 1137,
             "response_time_ms": 1108,
             "output": "```json\n{\n  \"description\": \"Un paesaggio naturale estivo con un vasto prato di erba verdeggiante in primo piano. Dietro il prato si estende una fitta foresta di alberi verdi che arriva fino alle colli"
+          },
+          "1758059885433_se8zn3zmm": {
+            "timestamp": 1758059885433,
+            "tokens": 1163,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1163,
+            "response_time_ms": 1564,
+            "output": "```json\n{\n  \"description\": \"Una vasta distesa di fiori colorati sboccia sotto un cielo vibrante con nuvole bianche e un sole splendente che crea un'atmosfera luminosa. L'immagine mostra un paesaggio l"
+          },
+          "1758059886799_h5gqqapxk": {
+            "timestamp": 1758059886799,
+            "tokens": 1166,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1166,
+            "response_time_ms": 1359,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo d'erba alta verde si estende a perdita d'occhio, con alberelli sparsi che rompono la monotonia. All'orizzonte si staglia una fitta foresta scura, seguita da "
           }
         }
       },

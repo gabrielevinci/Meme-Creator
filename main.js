@@ -559,6 +559,53 @@ class ContentCreatorApp {
 
             return null;
         });
+
+        // Directory selection handler
+        ipcMain.handle('select-directory', async(event) => {
+            const options = {
+                title: 'Seleziona Cartella',
+                buttonLabel: 'Seleziona',
+                properties: ['openDirectory']
+            };
+
+            const result = await dialog.showOpenDialog(this.mainWindow, options);
+
+            if (!result.canceled && result.filePaths.length > 0) {
+                const folderPath = result.filePaths[0];
+                const folderName = path.basename(folderPath);
+                return {
+                    path: folderPath,
+                    name: folderName
+                };
+            }
+
+            return null;
+        });
+
+        // Audio folder scanning handler
+        ipcMain.handle('scan-audio-folder', async(event, folderPath) => {
+            try {
+                const fs = require('fs').promises;
+                const files = await fs.readdir(folderPath);
+                return files.filter(file => {
+                    const ext = path.extname(file).toLowerCase();
+                    return ['.mp3', '.wav', '.aac', '.flac', '.m4a', '.ogg'].includes(ext);
+                });
+            } catch (error) {
+                console.error('Errore nella scansione cartella audio:', error);
+                throw error;
+            }
+        });
+
+        // Audio duration handler
+        ipcMain.handle('get-audio-duration', async(event, audioPath) => {
+            try {
+                return await this.videoProcessor.getAudioDuration(audioPath);
+            } catch (error) {
+                console.error('Errore nell\'ottenere durata audio:', error);
+                throw error;
+            }
+        });
     }
 
     async processVideos(config) {

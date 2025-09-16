@@ -164,10 +164,11 @@ class VideoProcessor {
         const needsOverlayImage = config && config.overlayImageEnabled && config.overlayImagePath;
         const needsVolumeChange = config && config.videoVolume && config.videoVolume !== 0;
         const needsBackgroundAudio = config && config.backgroundAudioEnabled && config.backgroundAudioPath;
+        const needsAudioReplacement = config && config.replaceAudioEnabled && config.replaceAudioFolderPath;
 
         const hasVideoModifications = needsContrast || needsSaturation || needsGamma || needsLift ||
             needsVideoSpeed || needsVideoZoom || needsOverlayImage;
-        const hasAudioModifications = needsVolumeChange || needsBackgroundAudio;
+        const hasAudioModifications = needsVolumeChange || needsBackgroundAudio || needsAudioReplacement;
 
         if (!hasVideoModifications && !hasAudioModifications) {
             console.log(`✅ Nessuna modifica video necessaria, uso video originale`);
@@ -186,7 +187,8 @@ class VideoProcessor {
             videoZoom: needsVideoZoom ? config.videoZoom + 'x' : 'skip',
             overlayImage: needsOverlayImage ? 'enabled' : 'skip',
             volume: needsVolumeChange ? config.videoVolume + 'dB' : 'skip',
-            backgroundAudio: needsBackgroundAudio ? 'enabled' : 'skip'
+            backgroundAudio: needsBackgroundAudio ? 'enabled' : 'skip',
+            audioReplacement: needsAudioReplacement ? 'enabled' : 'skip'
         });
 
         try {
@@ -302,8 +304,11 @@ class VideoProcessor {
             const hasSpeedChange = config && config.videoSpeed && config.videoSpeed !== 1;
 
             if (hasAudioModifications) {
+                // Ottieni il nome del video per tracking degli audio
+                const videoFilename = path.basename(inputVideoPath, path.extname(inputVideoPath));
+                
                 // Processa l'audio separatamente usando SOX (più veloce)
-                const processedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir);
+                const processedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir, videoFilename);
 
                 if (processedAudioPath) {
                     ffmpegArgs.push('-i', processedAudioPath);
@@ -965,6 +970,176 @@ class VideoProcessor {
         });
     }
 
+    async getAudioDuration(audioPath) {
+        return new Promise((resolve, reject) => {
+            const ffprobe = spawn(this.ffprobePath, [
+                '-v', 'error',
+                '-select_streams', 'a:0',
+                '-show_entries', 'format=duration',
+                '-of', 'csv=p=0',
+                audioPath
+            ]);
+
+            let output = '';
+            let errorOutput = '';
+
+            ffprobe.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            ffprobe.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            ffprobe.on('close', (code) => {
+                if (code === 0) {
+                    const duration = parseFloat(output.trim());
+                    if (isNaN(duration) || duration <= 0) {
+                        reject(new Error('Durata audio non valida'));
+                    } else {
+                        resolve(duration);
+                    }
+                } else {
+                    reject(new Error(`FFprobe fallito per audio: ${errorOutput || 'Errore sconosciuto'}`));
+                }
+            });
+
+            ffprobe.on('error', (error) => {
+                if (error.code === 'ENOENT') {
+                    reject(new Error('FFprobe non trovato. Assicurati che FFmpeg sia installato e nel PATH.'));
+                } else {
+                    reject(new Error(`Errore nell'esecuzione FFprobe per audio: ${error.message}`));
+                }
+            });
+        });
+    }
+
+    // Seleziona audio di sostituzione appropriato per il video
+    async selectReplacementAudio(audioFolderPath, videoDuration, videoFilename = null) {
+        try {
+            const fs = require('fs').promises;
+            const audioFiles = await fs.readdir(audioFolderPath);
+            const supportedExtensions = ['.mp3', '.wav', '.aac', '.flac', '.m4a', '.ogg'];
+            
+            // Filtra solo file audio supportati
+            const validAudioFiles = audioFiles.filter(file => {
+                const ext = path.extname(file).toLowerCase();
+                return supportedExtensions.includes(ext);
+            });
+
+            if (validAudioFiles.length === 0) {
+                console.log('🔄 Nessun file audio trovato nella cartella');
+                return null;
+            }
+
+            console.log(`🔄 Trovati ${validAudioFiles.length} file audio nella cartella`);
+
+            // Inizializza tracciamento se non esiste
+            if (!this.usedAudioFiles) {
+                this.usedAudioFiles = new Set();
+            }
+
+            // Prima passata: cerca audio non ancora usati che durano almeno quanto il video
+            const unusedAudio = validAudioFiles.filter(audioFile => 
+                !this.usedAudioFiles.has(audioFile)
+            );
+
+            let suitableAudio = [];
+            
+            // Ottieni durata per ogni audio non usato
+            for (const audioFile of unusedAudio) {
+                try {
+                    const audioPath = path.join(audioFolderPath, audioFile);
+                    const audioDuration = await this.getAudioDuration(audioPath);
+                    
+                    if (audioDuration >= videoDuration) {
+                        suitableAudio.push({
+                            file: audioFile,
+                            path: audioPath,
+                            duration: audioDuration
+                        });
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ Errore nell'ottenere durata audio ${audioFile}:`, error);
+                }
+            }
+
+            // Se non ci sono audio non usati sufficienti, riusa quelli già usati
+            if (suitableAudio.length === 0) {
+                console.log('🔄 Tutti gli audio non usati sono troppo corti, riuso audio già utilizzati...');
+                
+                for (const audioFile of validAudioFiles) {
+                    try {
+                        const audioPath = path.join(audioFolderPath, audioFile);
+                        const audioDuration = await this.getAudioDuration(audioPath);
+                        
+                        if (audioDuration >= videoDuration) {
+                            suitableAudio.push({
+                                file: audioFile,
+                                path: audioPath,
+                                duration: audioDuration
+                            });
+                        }
+                    } catch (error) {
+                        console.warn(`⚠️ Errore nell'ottenere durata audio ${audioFile}:`, error);
+                    }
+                }
+            }
+
+            if (suitableAudio.length === 0) {
+                console.log('⚠️ Nessun audio ha durata sufficiente per il video');
+                return null;
+            }
+
+            // Scegli il primo audio disponibile 
+            const selectedAudio = suitableAudio[0];
+            
+            // Segna come usato
+            this.usedAudioFiles.add(selectedAudio.file);
+            
+            console.log(`✅ Audio selezionato: ${selectedAudio.file} (durata: ${selectedAudio.duration}s per video di ${videoDuration}s)`);
+            
+            return selectedAudio;
+
+        } catch (error) {
+            console.error('❌ Errore nella selezione audio di sostituzione:', error);
+            return null;
+        }
+    }
+
+    // Taglia l'audio alla durata esatta del video
+    async cropAudioToVideoDuration(inputAudioPath, outputAudioPath, videoDuration) {
+        return new Promise((resolve, reject) => {
+            const ffmpeg = spawn(this.ffmpegPath, [
+                '-i', inputAudioPath,
+                '-t', videoDuration.toString(), // Durata esatta del video
+                '-c:a', 'pcm_s16le', // Codec audio non compresso per qualità
+                '-ar', '44100', // Sample rate standard
+                '-ac', '2', // Stereo
+                '-y', outputAudioPath
+            ]);
+
+            let errorOutput = '';
+
+            ffmpeg.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            ffmpeg.on('close', (code) => {
+                if (code === 0) {
+                    console.log(`✂️ Audio tagliato a ${videoDuration}s: ${outputAudioPath}`);
+                    resolve();
+                } else {
+                    reject(new Error(`Errore nel taglio audio: ${errorOutput}`));
+                }
+            });
+
+            ffmpeg.on('error', (error) => {
+                reject(new Error(`Errore nell'esecuzione FFmpeg per taglio audio: ${error.message}`));
+            });
+        });
+    }
+
     async extractSingleFrame(videoPath, timestamp, outputName, originalVideoName) {
         // Usa il nome basato sul video originale
         const outputPath = path.join(this.tempDir, outputName);
@@ -1175,7 +1350,7 @@ class VideoProcessor {
     // ===============================
 
     // Metodo OTTIMIZZATO per preprocessare l'audio con SOX (molto più veloce di FFmpeg)
-    async preprocessAudioWithSox(config, inputVideoPath, tempDir) {
+    async preprocessAudioWithSox(config, inputVideoPath, tempDir, videoFilename = null) {
         console.log(`🎵 Preprocessing audio con SOX - MODALITÀ VELOCE`);
 
         let finalAudioPath = null;
@@ -1184,19 +1359,50 @@ class VideoProcessor {
         const hasVolumeChange = config && config.videoVolume && config.videoVolume !== 0;
         const hasBackgroundAudio = config && config.backgroundAudioEnabled && config.backgroundAudioPath;
         const hasSpeedChange = config && config.videoSpeed && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0;
+        const hasAudioReplacement = config && config.replaceAudioEnabled && config.replaceAudioFolderPath;
 
-        if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange) {
+        if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange && !hasAudioReplacement) {
             console.log(`📋 Nessuna modifica audio necessaria - skip preprocessing`);
             return null; // Usa audio originale
         }
 
         try {
-            // 1. ESTRAZIONE AUDIO ORIGINALE VELOCE
-            const originalAudioPath = path.join(tempDir, 'original_audio.wav');
-            await this.extractAudioFast(inputVideoPath, originalAudioPath);
-            console.log(`📤 Audio originale estratto: ${originalAudioPath}`);
+            let processedAudioPath = null;
 
-            let processedAudioPath = originalAudioPath;
+            // 🔄 STEP 1: SOSTITUZIONE AUDIO (se abilitata) - PRIMA DI TUTTO
+            if (hasAudioReplacement) {
+                console.log(`🔄 Sostituzione audio abilitata...`);
+                
+                // Ottieni durata video
+                const videoDuration = await this.getVideoDuration(inputVideoPath);
+                console.log(`📏 Durata video: ${videoDuration}s`);
+                
+                // Scegli audio sostitutivo
+                const selectedAudio = await this.selectReplacementAudio(config.replaceAudioFolderPath, videoDuration, videoFilename);
+                
+                if (selectedAudio) {
+                    console.log(`✅ Audio selezionato: ${selectedAudio.file} (${selectedAudio.duration}s)`);
+                    
+                    // Taglia l'audio alla durata del video
+                    const replacementAudioPath = path.join(tempDir, 'replacement_audio.wav');
+                    await this.cropAudioToVideoDuration(selectedAudio.path, replacementAudioPath, videoDuration);
+                    processedAudioPath = replacementAudioPath;
+                    
+                    console.log(`🔄 Audio sostituito con successo: ${selectedAudio.file}`);
+                } else {
+                    console.log(`⚠️ Nessun audio compatibile trovato, mantengo audio originale`);
+                    // Estrai audio originale come fallback
+                    const originalAudioPath = path.join(tempDir, 'original_audio.wav');
+                    await this.extractAudioFast(inputVideoPath, originalAudioPath);
+                    processedAudioPath = originalAudioPath;
+                }
+            } else {
+                // ESTRAZIONE AUDIO ORIGINALE VELOCE
+                const originalAudioPath = path.join(tempDir, 'original_audio.wav');
+                await this.extractAudioFast(inputVideoPath, originalAudioPath);
+                console.log(`📤 Audio originale estratto: ${originalAudioPath}`);
+                processedAudioPath = originalAudioPath;
+            }
 
             // 2. MODIFICA VOLUME PRINCIPALE CON SOX (molto più veloce)
             if (hasVolumeChange) {
@@ -1807,26 +2013,26 @@ class VideoProcessor {
         let originalBannerPosition = processedAiResponse.banner_position;
         let optimizedBannerPosition = originalBannerPosition;
         let optimizedHeight = height;
-        
+
         if (config && config.transformTo1920Enabled) {
             console.log(`📐 === TRASFORMA IN 1920 ATTIVATA ===`);
             console.log(`📏 Altezza video attuale: ${height}px`);
             console.log(`📏 Altezza blocco: ${blockHeight}px`);
             console.log(`📍 Posizione originale AI: ${originalBannerPosition}`);
-            
+
             const TARGET_HEIGHT = 1920;
-            
+
             if (height >= TARGET_HEIGHT) {
                 console.log(`✅ Video già >= ${TARGET_HEIGHT}px - mantieni posizione AI: ${originalBannerPosition}`);
                 optimizedBannerPosition = originalBannerPosition;
             } else {
                 // Calcola se il video + blocco può raggiungere 1920px
                 const totalWithBlock = height + blockHeight;
-                
+
                 if (totalWithBlock >= TARGET_HEIGHT) {
                     // Può raggiungere 1920px - calcola posizione ottimale
                     const excessHeight = totalWithBlock - TARGET_HEIGHT;
-                    
+
                     if (originalBannerPosition === 'bottom') {
                         // Banner in basso - sposta il banner verso l'alto per raggiungere esattamente 1920px
                         const optimalBannerY = TARGET_HEIGHT - blockHeight;
@@ -1836,7 +2042,7 @@ class VideoProcessor {
                     } else {
                         // Banner in alto - il video finale sarà esattamente 1920px
                         console.log(`🎯 Banner TOP ottimizzato: video finale = ${TARGET_HEIGHT}px`);
-                        optimizedBannerPosition = 'top';  
+                        optimizedBannerPosition = 'top';
                         optimizedHeight = TARGET_HEIGHT;
                     }
                 } else {
@@ -1847,7 +2053,7 @@ class VideoProcessor {
                     optimizedHeight = totalWithBlock;
                 }
             }
-            
+
             console.log(`🎯 DECISIONE FINALE:`);
             console.log(`   📍 Posizione: ${optimizedBannerPosition}`);
             console.log(`   📏 Altezza finale: ${optimizedHeight}px`);
@@ -1860,7 +2066,7 @@ class VideoProcessor {
 
         if (optimizedBannerPosition === 'bottom') {
             let bannerY;
-            
+
             if (config && config.transformTo1920Enabled && optimizedHeight === 1920) {
                 // Modalità 1920: posiziona il banner per raggiungere esattamente 1920px
                 bannerY = 1920 - blockHeight;
@@ -2025,13 +2231,13 @@ class VideoProcessor {
         // Le modifiche video sono già state applicate nella fase precedente
         // Ora serve solo aggiungere il testo e il banner bianco
         let filterComplex = textFilters + '[v1]';
-        
+
         // 📐 ESTENSIONE CANVAS PER MODALITÀ 1920px
         if (config && config.transformTo1920Enabled && optimizedHeight > height) {
             // Estendi il canvas per raggiungere l'altezza ottimizzata
             const paddingNeeded = optimizedHeight - height;
             console.log(`📐 Estensione canvas: da ${height}px a ${optimizedHeight}px (+${paddingNeeded}px)`);
-            
+
             if (optimizedBannerPosition === 'top') {
                 // Banner in alto: aggiungi padding in basso
                 filterComplex += `;[v1]pad=${width}:${optimizedHeight}:0:0:color=black[v]`;
@@ -2045,7 +2251,7 @@ class VideoProcessor {
             // Modalità normale: nessuna estensione canvas
             filterComplex += ';[v1]null[v]';
         }
-        
+
         console.log(`📋 Filtro complex finale: ${filterComplex}`);
 
         // Array per gli argomenti FFmpeg - SEMPLIFICATO per Fase 2

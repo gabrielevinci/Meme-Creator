@@ -17,9 +17,9 @@
   "overlayImageEnabled": false,
   "overlayImagePath": "",
   "overlayOpacity": 50,
-  "backgroundAudioEnabled": false,
+  "backgroundAudioEnabled": true,
   "backgroundAudioPath": "",
   "backgroundAudioVolume": 0,
   "removeBlackFrameEnabled": false,
-  "transformTo1920Enabled": false
+  "transformTo1920Enabled": true
 }

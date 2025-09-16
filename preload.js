@@ -34,6 +34,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     // File selection
     selectFile: (filters) => ipcRenderer.invoke('select-file', filters),
+    selectDirectory: () => ipcRenderer.invoke('select-directory'),
+
+    // Audio management
+    scanAudioFolder: (folderPath) => ipcRenderer.invoke('scan-audio-folder', folderPath),
+    getAudioDuration: (audioPath) => ipcRenderer.invoke('get-audio-duration', audioPath),
 
     // Status updates
     onStatusUpdate: (callback) => ipcRenderer.on('status-update', callback),

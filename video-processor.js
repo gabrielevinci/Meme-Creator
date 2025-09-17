@@ -1070,12 +1070,20 @@ class VideoProcessor {
                 this.usedAudioFiles = new Set();
             }
 
+            // Log dello stato corrente del tracciamento
+            if (this.usedAudioFiles.size > 0) {
+                console.log(`📊 Audio già utilizzati: ${Array.from(this.usedAudioFiles).join(', ')}`);
+            } else {
+                console.log(`📊 Nessun audio ancora utilizzato`);
+            }
+
             // Prima passata: cerca audio non ancora usati che durano almeno quanto il video
             const unusedAudio = validAudioFiles.filter(audioFile => 
                 !this.usedAudioFiles.has(audioFile)
             );
 
             let suitableAudio = [];
+            let usedUnusedAudio = false; // Flag per sapere se abbiamo usato audio non usati
             
             // Ottieni durata per ogni audio non usato
             for (const audioFile of unusedAudio) {
@@ -1089,6 +1097,7 @@ class VideoProcessor {
                             path: audioPath,
                             duration: audioDuration
                         });
+                        usedUnusedAudio = true;
                     }
                 } catch (error) {
                     console.warn(`⚠️ Errore nell'ottenere durata audio ${audioFile}:`, error);
@@ -1122,13 +1131,16 @@ class VideoProcessor {
                 return null;
             }
 
-            // Scegli il primo audio disponibile 
-            const selectedAudio = suitableAudio[0];
+            // Scegli casualmente un audio tra quelli disponibili
+            const randomIndex = Math.floor(Math.random() * suitableAudio.length);
+            const selectedAudio = suitableAudio[randomIndex];
             
             // Segna come usato
             this.usedAudioFiles.add(selectedAudio.file);
             
             console.log(`✅ Audio selezionato: ${selectedAudio.file} (durata: ${selectedAudio.duration}s per video di ${videoDuration}s)`);
+            console.log(`🎲 Scelto casualmente ${randomIndex + 1}/${suitableAudio.length} da audio ${usedUnusedAudio ? 'non usati' : 'già usati'}`);
+            console.log(`📊 Audio già utilizzati: ${Array.from(this.usedAudioFiles).join(', ')}`);
             
             return selectedAudio;
 

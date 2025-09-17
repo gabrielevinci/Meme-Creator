@@ -7034,6 +7034,24 @@
             "tokens_used": 1137,
             "response_time_ms": 1526,
             "output": "```json\n{\n  \"description\": \"I frame mostrano un vasto paesaggio naturale con un prato verde rigoglioso in primo piano. In lontananza si intravede una densa foresta di alberi e poi delle montagne sfuma"
+          },
+          "1758068686183_2ux1houl6": {
+            "timestamp": 1758068686183,
+            "tokens": 1146,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1146,
+            "response_time_ms": 1565,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di fiori colorati si estende sotto un cielo blu vivace con nuvole bianche e dorate illuminate da un sole al tramonto. Nel mezzo del campo, un mulino a vento "
+          },
+          "1758068687337_vuk175hj2": {
+            "timestamp": 1758068687337,
+            "tokens": 1128,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1128,
+            "response_time_ms": 1149,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo d'erba verde si estende verso una lussureggiante foresta che fa da sfondo a dolci colline montuose. Nuvole drammatiche tempestose si addensano nel cielo, ill"
           }
         }
       },

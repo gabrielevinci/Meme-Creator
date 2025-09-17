@@ -20,8 +20,8 @@
   "backgroundAudioEnabled": false,
   "backgroundAudioPath": "",
   "backgroundAudioVolume": 0,
-  "replaceAudioEnabled": false,
-  "replaceAudioFolderPath": "",
+  "replaceAudioEnabled": true,
+  "replaceAudioFolderPath": "D:\\Desktop\\NUOVA PROVA\\SUONI",
   "removeBlackFrameEnabled": false,
   "transformTo1920Enabled": false
 }

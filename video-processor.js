@@ -1518,21 +1518,47 @@ class VideoProcessor {
                 if (fsSync.existsSync(replacementAudioPath)) {
                     console.log(`✅ Fallback: audio sostitutivo trovato, applicando modifiche con FFmpeg`);
                     
-                    // Se c'è anche modifica volume, applicala con FFmpeg
+                    let currentAudioPath = replacementAudioPath;
+                    
+                    // 1. Se c'è modifica volume, applicala con FFmpeg
                     if (hasVolumeChange) {
                         const volumeAdjustedPath = path.join(tempDir, 'fallback_volume_adjusted.wav');
                         try {
-                            await this.adjustVolumeWithFFmpeg(replacementAudioPath, volumeAdjustedPath, config.videoVolume);
+                            await this.adjustVolumeWithFFmpeg(currentAudioPath, volumeAdjustedPath, config.videoVolume);
+                            currentAudioPath = volumeAdjustedPath;
                             console.log(`🔊 Volume applicato con FFmpeg fallback: ${config.videoVolume}dB`);
-                            return volumeAdjustedPath;
                         } catch (volumeError) {
                             console.warn(`⚠️ Errore applicazione volume fallback: ${volumeError.message}`);
-                            return replacementAudioPath; // Ritorna almeno l'audio sostituito
+                            // Continua comunque con l'audio senza volume
                         }
                     }
                     
-                    console.log(`✅ Fallback: restituisco audio sostitutivo: ${replacementAudioPath}`);
-                    return replacementAudioPath;
+                    // 2. Se c'è audio di sottofondo, mixalo con FFmpeg
+                    if (hasBackgroundAudio) {
+                        const bgProcessedPath = path.join(tempDir, 'fallback_bg_processed.wav');
+                        const mixedAudioPath = path.join(tempDir, 'fallback_mixed_audio.wav');
+                        
+                        try {
+                            // Prima processa il volume del background audio se necessario
+                            if (config.backgroundAudioVolume && config.backgroundAudioVolume !== 0) {
+                                await this.adjustVolumeWithFFmpeg(config.backgroundAudioPath, bgProcessedPath, config.backgroundAudioVolume);
+                            } else {
+                                // Copia il file senza modifiche
+                                await this.copyAudioFile(config.backgroundAudioPath, bgProcessedPath);
+                            }
+                            
+                            // Poi mixa i due audio con FFmpeg
+                            await this.mixAudioWithFFmpeg(currentAudioPath, bgProcessedPath, mixedAudioPath);
+                            currentAudioPath = mixedAudioPath;
+                            console.log(`🎵 Audio mixati con FFmpeg fallback`);
+                        } catch (mixError) {
+                            console.warn(`⚠️ Errore mix audio fallback: ${mixError.message}`);
+                            // Continua comunque con l'audio principale
+                        }
+                    }
+                    
+                    console.log(`✅ Fallback completato: ${currentAudioPath}`);
+                    return currentAudioPath;
                 }
             }
             
@@ -1626,6 +1652,44 @@ class VideoProcessor {
 
             ffmpeg.on('error', (error) => {
                 console.error(`❌ FFmpeg volume spawn error: ${error.message}`);
+                reject(error);
+            });
+        });
+    }
+
+    // Mix audio con FFmpeg (fallback quando SOX non funziona)
+    async mixAudioWithFFmpeg(mainAudioPath, bgAudioPath, outputPath) {
+        return new Promise((resolve, reject) => {
+            const ffmpeg = spawn(this.ffmpegPath, [
+                '-i', mainAudioPath,      // Audio principale (sostituito)
+                '-i', bgAudioPath,        // Audio di sottofondo
+                '-filter_complex', '[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3[out]', // Mix audio
+                '-map', '[out]',          // Mappa l'output del filtro
+                '-c:a', 'pcm_s16le',     // Codec audio non compresso
+                '-ar', '44100',          // Sample rate standard
+                '-ac', '2',              // Stereo
+                '-y', outputPath
+            ]);
+
+            let errorOutput = '';
+            
+            ffmpeg.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            ffmpeg.on('close', (code) => {
+                if (code === 0) {
+                    console.log(`✅ FFmpeg audio mix completato`);
+                    resolve(outputPath);
+                } else {
+                    const error = new Error(`FFmpeg mix fallito: ${errorOutput}`);
+                    console.error(`❌ FFmpeg mix error: ${error.message}`);
+                    reject(error);
+                }
+            });
+
+            ffmpeg.on('error', (error) => {
+                console.error(`❌ FFmpeg mix spawn error: ${error.message}`);
                 reject(error);
             });
         });

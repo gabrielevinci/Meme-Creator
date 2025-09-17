@@ -6926,6 +6926,114 @@
             "tokens_used": 1166,
             "response_time_ms": 1359,
             "output": "```json\n{\n  \"description\": \"Un vasto campo d'erba alta verde si estende a perdita d'occhio, con alberelli sparsi che rompono la monotonia. All'orizzonte si staglia una fitta foresta scura, seguita da "
+          },
+          "1758067224093_e4c7wot7d": {
+            "timestamp": 1758067224093,
+            "tokens": 1150,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1150,
+            "response_time_ms": 1654,
+            "output": "```json\n{\n  \"description\": \"Una vasta distesa di fiori colorati si estende a perdita d'occhio, creando un tappeto vibrante di rosa, viola, giallo e bianco. Sopra questo tripudio floreale, un cielo azz"
+          },
+          "1758067225223_30t127rka": {
+            "timestamp": 1758067225223,
+            "tokens": 1134,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1134,
+            "response_time_ms": 1124,
+            "output": "```json\n{\n  \"description\": \"In tre frame consecutivi si osserva un vasto prato verde con erba alta che ondeggia leggermente, sotto un cielo drammatico solcato da nuvole scure che lasciano intravedere "
+          },
+          "1758067334060_cn7jyb1lb": {
+            "timestamp": 1758067334060,
+            "tokens": 1148,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1148,
+            "response_time_ms": 1577,
+            "output": "```json\n{\n  \"description\": \"Un campo fiorito vibrante e sconfinato si estende sotto un cielo azzurro brillante con nuvole bianche e soffici. Il sole al tramonto irradia luce dorata attraverso il cielo"
+          },
+          "1758067335382_5x7yv5zdk": {
+            "timestamp": 1758067335382,
+            "tokens": 1108,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1108,
+            "response_time_ms": 1314,
+            "output": "```json\n{\n  \"description\": \"Un vasto prato verde con erba alta si estende verso una foresta densa che fa da sfondo. Sopra la foresta si stagliano colline ondulate e montagne in lontananza, il tutto so"
+          },
+          "1758067683354_xtieaikmc": {
+            "timestamp": 1758067683354,
+            "tokens": 1166,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1166,
+            "response_time_ms": 1635,
+            "output": "```json\n{\n  \"description\": \"Una veduta panoramica di un vasto campo fiorito in piena fioritura, con fiori disposti in righe colorate che degradano dolcemente. Il sole di un vivido giallo splende nel c"
+          },
+          "1758067684588_n5l1xp90r": {
+            "timestamp": 1758067684588,
+            "tokens": 1121,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1121,
+            "response_time_ms": 1227,
+            "output": "```json\n{\n  \"description\": \"Un campo di erba alta e ondeggiante si estende verso una lussureggiante foresta verde in lontananza. Il cielo è coperto da nuvole scure e minacciose, ma uno spiraglio di lu"
+          },
+          "1758067997249_rzdkkikqy": {
+            "timestamp": 1758067997249,
+            "tokens": 1188,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1188,
+            "response_time_ms": 1603,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo fiorito si estende verso l'orizzonte sotto un cielo azzurro punteggiato da nuvole bianche e soffici. Il sole tramonta, tingendo l'orizzonte di tonalità dorat"
+          },
+          "1758067998399_mev1jkqnr": {
+            "timestamp": 1758067998399,
+            "tokens": 1115,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1115,
+            "response_time_ms": 1144,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio verdeggiante si estende sotto un cielo drammatico con nuvole grigie e squarci di luce solare che filtrano all'orizzonte. Colline boscose fanno da sfondo a un p"
+          },
+          "1758068325183_3xv54th6d": {
+            "timestamp": 1758068325183,
+            "tokens": 1182,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1182,
+            "response_time_ms": 1872,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo fiorito si estende verso l'orizzonte, con file ordinate di fiori dai colori vivaci che creano un mosaico psichedelico. In alto, il cielo è dipinto di sfumatu"
+          },
+          "1758068326350_lbg6phy33": {
+            "timestamp": 1758068326350,
+            "tokens": 1121,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1121,
+            "response_time_ms": 1161,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di erba alta e verde si estende verso una foresta lussureggiante, scolpita da colline ondulate. Sopra, un cielo drammatico è dipinto con nuvole tempestose ch"
+          },
+          "1758068545406_7n9gwgwxy": {
+            "timestamp": 1758068545406,
+            "tokens": 1165,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1165,
+            "response_time_ms": 1602,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo fiorito si estende a perdita d'occhio sotto un cielo azzurro punteggiato da nuvole bianche e dorate per via del sole al tramonto. Le file di fiori multicolor"
+          },
+          "1758068546950_07333l9f5": {
+            "timestamp": 1758068546950,
+            "tokens": 1137,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1137,
+            "response_time_ms": 1526,
+            "output": "```json\n{\n  \"description\": \"I frame mostrano un vasto paesaggio naturale con un prato verde rigoglioso in primo piano. In lontananza si intravede una densa foresta di alberi e poi delle montagne sfuma"
           }
         }
       },

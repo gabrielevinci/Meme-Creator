@@ -1,6 +1,7 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const sharp = require('sharp');
 const sox = require('sox');
 const { Vibrant } = require('node-vibrant/node');
@@ -166,6 +167,12 @@ class VideoProcessor {
         const needsBackgroundAudio = config && config.backgroundAudioEnabled && config.backgroundAudioPath;
         const needsAudioReplacement = config && config.replaceAudioEnabled && config.replaceAudioFolderPath;
 
+        console.log(`🔍 DEBUG AUDIO REPLACEMENT:`, {
+            replaceAudioEnabled: config?.replaceAudioEnabled,
+            replaceAudioFolderPath: config?.replaceAudioFolderPath,
+            needsAudioReplacement: needsAudioReplacement
+        });
+
         const hasVideoModifications = needsContrast || needsSaturation || needsGamma || needsLift ||
             needsVideoSpeed || needsVideoZoom || needsOverlayImage;
         const hasAudioModifications = needsVolumeChange || needsBackgroundAudio || needsAudioReplacement;
@@ -195,6 +202,11 @@ class VideoProcessor {
             // Ottieni informazioni del video
             const videoInfo = await this.getVideoInfo(inputVideoPath);
             const videoStream = videoInfo.streams.find(s => s.codec_type === 'video');
+            
+            if (!videoStream) {
+                throw new Error(`Nessun stream video trovato in: ${inputVideoPath}`);
+            }
+            
             const width = videoStream.width;
             const height = videoStream.height;
 
@@ -315,6 +327,15 @@ class VideoProcessor {
                     ffmpegArgs.push('-map', `${inputCounter}:a`);
                     audioProcessed = true;
                     console.log(`🔊 Audio preprocessato con SOX applicato`);
+                } else if (needsAudioReplacement) {
+                    // Fallback: se SOX fallisce ma c'è sostituzione audio, usa il file replacement_audio.wav
+                    const replacementAudioPath = path.join(this.tempDir, 'replacement_audio.wav');
+                    if (fsSync.existsSync(replacementAudioPath)) {
+                        console.log(`🔄 Fallback audio sostituzione: ${replacementAudioPath}`);
+                        ffmpegArgs.push('-i', replacementAudioPath);
+                        ffmpegArgs.push('-map', `${inputCounter}:a`);
+                        audioProcessed = true;
+                    }
                 }
             }
 
@@ -343,14 +364,23 @@ class VideoProcessor {
                 }
             } else {
                 // Nessun filtro video
+                ffmpegArgs.push('-map', '0:v'); // Mappa il video dall'input originale
                 ffmpegArgs.push('-c:v', 'copy');
 
-                if (!audioProcessed && hasSpeedChange) {
-                    // Solo velocità audio
-                    ffmpegArgs.push('-af', `atempo=${config.videoSpeed}`);
-                    console.log(`🎵 Audio velocità semplice: ${config.videoSpeed}x`);
-                } else if (!audioProcessed) {
-                    ffmpegArgs.push('-c:a', 'copy'); // Copia audio
+                // Gestione audio
+                if (audioProcessed) {
+                    // Usa l'audio processato (sostituzione o modifiche) - già mappato prima
+                    ffmpegArgs.push('-c:a', 'copy');
+                    console.log(`🎵 Usando audio processato`);
+                } else {
+                    ffmpegArgs.push('-map', '0:a'); // Mappa l'audio originale
+                    if (hasSpeedChange) {
+                        // Solo velocità audio
+                        ffmpegArgs.push('-af', `atempo=${config.videoSpeed}`);
+                        console.log(`🎵 Audio velocità semplice: ${config.videoSpeed}x`);
+                    } else {
+                        ffmpegArgs.push('-c:a', 'copy'); // Copia audio
+                    }
                 }
             }
 
@@ -1018,6 +1048,7 @@ class VideoProcessor {
     async selectReplacementAudio(audioFolderPath, videoDuration, videoFilename = null) {
         try {
             const fs = require('fs').promises;
+            const path = require('path'); // Sposta require all'inizio
             const audioFiles = await fs.readdir(audioFolderPath);
             const supportedExtensions = ['.mp3', '.wav', '.aac', '.flac', '.m4a', '.ogg'];
             
@@ -1138,6 +1169,12 @@ class VideoProcessor {
                 reject(new Error(`Errore nell'esecuzione FFmpeg per taglio audio: ${error.message}`));
             });
         });
+    }
+
+    // Reset della lista degli audio usati (chiamato ad ogni nuova elaborazione)
+    resetUsedAudioFiles() {
+        this.usedAudioFiles = new Set();
+        console.log('🔄 Lista audio utilizzati resettata');
     }
 
     async extractSingleFrame(videoPath, timestamp, outputName, originalVideoName) {
@@ -1361,6 +1398,15 @@ class VideoProcessor {
         const hasSpeedChange = config && config.videoSpeed && config.videoSpeed >= 0.5 && config.videoSpeed <= 2.0;
         const hasAudioReplacement = config && config.replaceAudioEnabled && config.replaceAudioFolderPath;
 
+        console.log(`🔍 DEBUG PREPROCESSING AUDIO:`, {
+            hasVolumeChange,
+            hasBackgroundAudio, 
+            hasSpeedChange,
+            hasAudioReplacement,
+            replaceAudioEnabled: config?.replaceAudioEnabled,
+            replaceAudioFolderPath: config?.replaceAudioFolderPath
+        });
+
         if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange && !hasAudioReplacement) {
             console.log(`📋 Nessuna modifica audio necessaria - skip preprocessing`);
             return null; // Usa audio originale
@@ -1389,6 +1435,12 @@ class VideoProcessor {
                     processedAudioPath = replacementAudioPath;
                     
                     console.log(`🔄 Audio sostituito con successo: ${selectedAudio.file}`);
+                    
+                    // Se la sostituzione audio è l'unica modifica, return direttamente
+                    if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange) {
+                        console.log(`✅ Solo sostituzione audio richiesta - skip ulteriore processing SOX`);
+                        return processedAudioPath;
+                    }
                 } else {
                     console.log(`⚠️ Nessun audio compatibile trovato, mantengo audio originale`);
                     // Estrai audio originale come fallback
@@ -1445,6 +1497,16 @@ class VideoProcessor {
         } catch (error) {
             console.error(`❌ Errore nel preprocessing audio con SOX: ${error.message}`);
             console.log(`🔄 Fallback su elaborazione FFmpeg tradizionale`);
+            
+            // Se la sostituzione audio è riuscita ma SOX ha fallito, restituisci l'audio sostitutivo
+            if (hasAudioReplacement) {
+                const replacementAudioPath = path.join(tempDir, 'replacement_audio.wav');
+                if (fsSync.existsSync(replacementAudioPath)) {
+                    console.log(`✅ Fallback: restituisco audio sostitutivo nonostante errore SOX: ${replacementAudioPath}`);
+                    return replacementAudioPath;
+                }
+            }
+            
             return null;
         }
     }
@@ -1827,6 +1889,11 @@ class VideoProcessor {
         // Ottieni informazioni del video
         const videoInfo = await this.getVideoInfo(inputVideoPath);
         const videoStream = videoInfo.streams.find(s => s.codec_type === 'video');
+        
+        if (!videoStream) {
+            throw new Error(`Nessun stream video trovato in: ${inputVideoPath}`);
+        }
+        
         const width = videoStream.width;
         const height = videoStream.height;
 

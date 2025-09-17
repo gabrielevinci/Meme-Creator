@@ -606,17 +606,34 @@ class ContentCreatorApp {
                 throw error;
             }
         });
+
+        // Reset used audio files
+        ipcMain.handle('reset-used-audio-files', async(event) => {
+            try {
+                this.videoProcessor.resetUsedAudioFiles();
+                return { success: true };
+            } catch (error) {
+                console.error('Errore nel reset audio files:', error);
+                throw error;
+            }
+        });
     }
 
     async processVideos(config) {
         console.log('Avvio elaborazione con configurazione:', config);
 
-        // Step 0: Pulizia cartelle OUTPUT e temp_frames all'inizio
+        // Step 0: Reset audio usati per nuova elaborazione
+        if (config && config.replaceAudioEnabled) {
+            console.log('🔄 Reset lista audio utilizzati...');
+            this.videoProcessor.resetUsedAudioFiles();
+        }
+
+        // Step 1: Pulizia cartelle OUTPUT e temp_frames all'inizio
         console.log('🧹 Pulizia cartelle OUTPUT e temp_frames prima dell\'elaborazione...');
         this.mainWindow.webContents.send('status-update', 'Pulizia cartelle OUTPUT e temp_frames...');
         await this.videoProcessor.cleanOutputDirectoryOnly();
 
-        // Step 1: Ottieni lista video
+        // Step 2: Ottieni lista video
         const videos = await this.getInputVideos();
         if (videos.length === 0) {
             throw new Error('Nessun video trovato nella cartella INPUT');

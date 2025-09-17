@@ -1521,7 +1521,7 @@
                         </div>
                     </div>
                     <div class="help-text">
-                        <small>💡 Controlla l'altezza del banner bianco per video di altezza 1920px. Altri formati verranno scalati proporzionalmente.</small>
+                        <small>💡 Controlla l'altezza del banner bianco. Il valore viene scalato proporzionalmente in base alle dimensioni del video.</small>
                     </div>
                 </div>
 
@@ -1695,16 +1695,6 @@
                             </div>
                         </div>
 
-                        <!-- Trasforma in 1920 -->
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <div class="checkbox-container">
-                                <input type="checkbox" id="transform-to-1920-enabled" class="checkbox-input">
-                                <label for="transform-to-1920-enabled" class="checkbox-label">📐 Trasforma in 1920px</label>
-                            </div>
-                            <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
-                                Posiziona il blocco bianco per raggiungere un'altezza totale di 1920px (formato ottimale per i social)
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -2131,13 +2121,6 @@
                 const removeBlackFrameCheckbox = document.getElementById('remove-black-frame-enabled');
                 if (removeBlackFrameCheckbox) {
                     removeBlackFrameCheckbox.addEventListener('change', () => {
-                        this.saveSettings();
-                    });
-                }
-
-                const transformTo1920Checkbox = document.getElementById('transform-to-1920-enabled');
-                if (transformTo1920Checkbox) {
-                    transformTo1920Checkbox.addEventListener('change', () => {
                         this.saveSettings();
                     });
                 }
@@ -2785,13 +2768,6 @@
                         }
                     }
 
-                    if (settings.transformTo1920Enabled !== undefined) {
-                        const transformTo1920Checkbox = document.getElementById('transform-to-1920-enabled');
-                        if (transformTo1920Checkbox) {
-                            transformTo1920Checkbox.checked = settings.transformTo1920Enabled;
-                        }
-                    }
-
                     // Aggiorna il preview dashboard dopo aver caricato le impostazioni
                     setTimeout(() => this.updateBannerPreview(), 100);
 
@@ -2827,8 +2803,7 @@
                         backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
                         replaceAudioEnabled: document.getElementById('replace-audio-enabled') && document.getElementById('replace-audio-enabled').checked || false,
                         replaceAudioFolderPath: this.replaceAudioFolderPath || '',
-                        removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
-                        transformTo1920Enabled: document.getElementById('transform-to-1920-enabled') && document.getElementById('transform-to-1920-enabled').checked || false
+                        removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false
                     };
 
                     console.log('Salvataggio impostazioni:', settings);
@@ -3135,8 +3110,7 @@
                     backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
                     replaceAudioEnabled: document.getElementById('replace-audio-enabled') && document.getElementById('replace-audio-enabled').checked || false,
                     replaceAudioFolderPath: this.replaceAudioFolderPath || '',
-                    removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
-                    transformTo1920Enabled: document.getElementById('transform-to-1920-enabled') && document.getElementById('transform-to-1920-enabled').checked || false
+                    removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false
                 };
 
                 // Gestione sicura dei margini (permette il valore 0)

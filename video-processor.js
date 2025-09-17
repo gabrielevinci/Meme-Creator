@@ -2205,87 +2205,45 @@ class VideoProcessor {
         const finalMetrics = this.calculateTextMetrics(processedAiResponse.meme_text, fontSize, config && config.textFormat);
         lineHeight = finalMetrics.lineHeight; // RIMOSSA la dichiarazione const per evitare conflitti
 
-        // 🎯 FUNZIONALITÀ "TRASFORMA IN 1920" - Calcolo posizione ottimale del banner
-        let originalBannerPosition = processedAiResponse.banner_position;
-        let optimizedBannerPosition = originalBannerPosition;
-        let optimizedHeight = height;
+        let bannerPosition = processedAiResponse.banner_position;
 
-        if (config && config.transformTo1920Enabled) {
-            console.log(`📐 === TRASFORMA IN 1920 ATTIVATA ===`);
-            console.log(`📏 Altezza video attuale: ${height}px`);
-            console.log(`📏 Altezza blocco: ${blockHeight}px`);
-            console.log(`📍 Posizione originale AI: ${originalBannerPosition}`);
 
-            const TARGET_HEIGHT = 1920;
 
-            if (height >= TARGET_HEIGHT) {
-                console.log(`✅ Video già >= ${TARGET_HEIGHT}px - mantieni posizione AI: ${originalBannerPosition}`);
-                optimizedBannerPosition = originalBannerPosition;
-            } else {
-                // Calcola se il video + blocco può raggiungere 1920px
-                const totalWithBlock = height + blockHeight;
 
-                if (totalWithBlock >= TARGET_HEIGHT) {
-                    // Può raggiungere 1920px - calcola posizione ottimale
-                    const excessHeight = totalWithBlock - TARGET_HEIGHT;
+                // Blocco bianco dimensione standard
 
-                    if (originalBannerPosition === 'bottom') {
-                        // Banner in basso - sposta il banner verso l'alto per raggiungere esattamente 1920px
-                        const optimalBannerY = TARGET_HEIGHT - blockHeight;
-                        console.log(`🎯 Banner BOTTOM ottimizzato: Y=${optimalBannerY} (era ${height - blockHeight})`);
-                        optimizedBannerPosition = 'bottom';
-                        optimizedHeight = TARGET_HEIGHT;
-                    } else {
-                        // Banner in alto - il video finale sarà esattamente 1920px
-                        console.log(`🎯 Banner TOP ottimizzato: video finale = ${TARGET_HEIGHT}px`);
-                        optimizedBannerPosition = 'top';
-                        optimizedHeight = TARGET_HEIGHT;
-                    }
-                } else {
-                    // Non può raggiungere 1920px - massimizza comunque
-                    console.log(`⚠️ Video + blocco = ${totalWithBlock}px < ${TARGET_HEIGHT}px - massimizza comunque`);
-                    console.log(`🎯 Posizione scelta: ${originalBannerPosition} (da AI) - altezza finale: ${totalWithBlock}px`);
-                    optimizedBannerPosition = originalBannerPosition;
-                    optimizedHeight = totalWithBlock;
-                }
-            }
+        // POSIZIONAMENTO BANNER - LOGICA SEMPLIFICATA
 
-            console.log(`🎯 DECISIONE FINALE:`);
-            console.log(`   📍 Posizione: ${optimizedBannerPosition}`);
-            console.log(`   📏 Altezza finale: ${optimizedHeight}px`);
-            console.log(`📐 === FINE TRASFORMA IN 1920 ===`);
-        }
 
-        // POSIZIONAMENTO BANNER (usando la posizione ottimizzata)
+
+
+
+
         let textFilters = '';
         let baseY;
+        let bannerY;
 
-        if (optimizedBannerPosition === 'bottom') {
-            let bannerY;
-
-            if (config && config.transformTo1920Enabled && optimizedHeight === 1920) {
-                // Modalità 1920: posiziona il banner per raggiungere esattamente 1920px
-                bannerY = 1920 - blockHeight;
-            } else {
-                // Modalità normale: banner in fondo al video
-                bannerY = height - blockHeight;
-            }
-
-            // CORREZIONE MARGINI: Il testo deve iniziare ESATTAMENTE dal marginTop
-            baseY = bannerY + marginTop; // Il testo inizia esattamente dal margine superiore
-
-            // CORREZIONE FONDAMENTALE: Usa bannerX per centrare il banner nel video
-            textFilters = `[0:v]drawbox=x=${bannerX}:y=${bannerY}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
-            console.log(`📍 BANNER BOTTOM - X: ${bannerX}, Y: ${bannerY}, size: ${blockWidth}x${blockHeight}px, baseY testo: ${baseY}`);
+        if (bannerPosition === 'bottom') {
+            // Banner in fondo al video
+            bannerY = height - blockHeight;
+            baseY = bannerY + marginTop;
+            
+            console.log(`📍 BANNER BOTTOM:`);
+            console.log(`   📏 Banner Y: ${bannerY}px`);
+            console.log(`   📏 Base Y testo: ${baseY}px`);
 
         } else {
-            // CORREZIONE MARGINI: Banner in alto - testo inizia ESATTAMENTE dal marginTop
-            baseY = marginTop; // Il testo inizia esattamente dal margine superiore
-
-            // CORREZIONE FONDAMENTALE: Usa bannerX per centrare il banner nel video
-            textFilters = `[0:v]drawbox=x=${bannerX}:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
-            console.log(`📍 BANNER TOP - X: ${bannerX}, Y: 0, size: ${blockWidth}x${blockHeight}px, baseY testo: ${baseY}`);
+            // Banner TOP
+            bannerY = 0;
+            baseY = bannerY + marginTop;
+            
+            console.log(`📍 BANNER TOP:`);
+            console.log(`   📏 Banner Y: ${bannerY}px`);
+            console.log(`   📏 Base Y testo: ${baseY}px`);
         }
+
+        // Crea il drawbox per il banner bianco
+        textFilters = `[0:v]drawbox=x=${bannerX}:y=${bannerY}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
 
         // Aggiungi ogni riga con posizionamento preciso secondo i margini
         // LOOP con gestione dinamica del font size
@@ -2362,20 +2320,22 @@ class VideoProcessor {
                         lines = newAutoSizeResult.lines;
                         totalTextHeight = newAutoSizeResult.totalHeight;
 
-                        // Ricalcola il baseY con il nuovo font size
-                        if (processedAiResponse.banner_position === 'bottom') {
-                            const bannerY = height - blockHeight;
-                            baseY = bannerY + marginTop + (fontSize * 0.8);
+                        // Ricalcola il baseY con il nuovo font size - logica semplificata
+                        if (bannerPosition === 'bottom') {
+                            const newBannerY = height - blockHeight;
+                            baseY = newBannerY + marginTop + (fontSize * 0.8);
                         } else {
-                            baseY = marginTop + (fontSize * 0.8);
+                            const newBannerY = 0; // Banner TOP sempre da 0
+                            baseY = newBannerY + marginTop + (fontSize * 0.8);
                         }
 
                         console.log(`📐 Nuovo font size: ${fontSize}px, lineHeight: ${lineHeight}px, baseY: ${baseY}, righe: ${lines.length}`);
 
-                        // Reset del banner box
-                        textFilters = processedAiResponse.banner_position === 'bottom' ?
-                            `[0:v]drawbox=x=${bannerX}:y=${height - blockHeight}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill` :
-                            `[0:v]drawbox=x=${bannerX}:y=0:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
+                        // Reset del banner box - logica semplificata
+                        const resetBannerY = (bannerPosition === 'bottom') ?
+                            height - blockHeight :
+                            0; // Banner TOP sempre inizia da 0
+                        textFilters = `[0:v]drawbox=x=${bannerX}:y=${resetBannerY}:w=${blockWidth}:h=${blockHeight}:color=white:t=fill`;
 
                         validPositioning = false; // Riprova con i nuovi valori
                         break; // Esci dal loop delle righe per ricominciare
@@ -2421,32 +2381,14 @@ class VideoProcessor {
         console.log(`   📏 Margini: T${marginTop} B${marginBottom} L${marginLeft} R${marginRight}`);
         console.log(`   📍 Base Y: ${baseY}`);
 
-        // COSTRUZIONE SEMPLIFICATA DEL FILTRO COMPLEX - SOLO TESTO E BANNER
-        console.log(`📝 Costruzione filtro per testo e banner bianco...`);
+        // COSTRUZIONE FILTRO COMPLEX - ESTENSIONE CON COLORE BIANCO (NO NERO)
+        console.log(`📝 Costruzione filtro per banner e testo...`);
 
-        // Le modifiche video sono già state applicate nella fase precedente
-        // Ora serve solo aggiungere il testo e il banner bianco
         let filterComplex = textFilters + '[v1]';
 
-        // 📐 ESTENSIONE CANVAS PER MODALITÀ 1920px
-        if (config && config.transformTo1920Enabled && optimizedHeight > height) {
-            // Estendi il canvas per raggiungere l'altezza ottimizzata
-            const paddingNeeded = optimizedHeight - height;
-            console.log(`📐 Estensione canvas: da ${height}px a ${optimizedHeight}px (+${paddingNeeded}px)`);
-
-            if (optimizedBannerPosition === 'top') {
-                // Banner in alto: aggiungi padding in basso
-                filterComplex += `;[v1]pad=${width}:${optimizedHeight}:0:0:color=black[v]`;
-                console.log(`📐 Padding BOTTOM: +${paddingNeeded}px (banner in alto)`);
-            } else {
-                // Banner in basso: aggiungi padding in alto per spingere tutto verso il basso
-                filterComplex += `;[v1]pad=${width}:${optimizedHeight}:0:${paddingNeeded}:color=black[v]`;
-                console.log(`📐 Padding TOP: +${paddingNeeded}px (banner in basso)`);
-            }
-        } else {
-            // Modalità normale: nessuna estensione canvas
-            filterComplex += ';[v1]null[v]';
-        }
+        // FILTRO SEMPLIFICATO - SOLO OVERLAY DEL BANNER
+        filterComplex += ';[v1]null[v]';
+        console.log(`📐 Modalità standard: solo sovrapposizione del banner bianco`);
 
         console.log(`📋 Filtro complex finale: ${filterComplex}`);
 

@@ -53,6 +53,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     onProcessingError: (callback) => ipcRenderer.on('processing-error', callback),
     onAiAnalysisError: (callback) => ipcRenderer.on('ai-analysis-error', callback),
 
+    // Metadata events - NUOVI
+    onVideoMetadataApplied: (callback) => ipcRenderer.on('video-metadata-applied', callback),
+    onVideoMetadataError: (callback) => ipcRenderer.on('video-metadata-error', callback),
+
     // Remove listeners
     removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel)
 });

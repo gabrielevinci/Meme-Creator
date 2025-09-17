@@ -2117,6 +2117,19 @@
                     });
                 }
 
+                // NUOVI: Event listeners per metadati video
+                if (window.electronAPI.onVideoMetadataApplied) {
+                    window.electronAPI.onVideoMetadataApplied((event, data) => {
+                        this.handleVideoMetadataApplied(data);
+                    });
+                }
+
+                if (window.electronAPI.onVideoMetadataError) {
+                    window.electronAPI.onVideoMetadataError((event, data) => {
+                        this.handleVideoMetadataError(data);
+                    });
+                }
+
                 // Event listeners per i checkbox delle opzioni
                 const removeBlackFrameCheckbox = document.getElementById('remove-black-frame-enabled');
                 if (removeBlackFrameCheckbox) {
@@ -3359,6 +3372,51 @@
                 }
             }
 
+            // NUOVO: Gestione successo applicazione metadati
+            handleVideoMetadataApplied(data) {
+                try {
+                    console.log(`✅ Metadati applicati con successo: ${data.title}`);
+                    
+                    // Aggiorna lo status di processamento
+                    this.updateProcessingStatus({
+                        phase: 'metadata-applied',
+                        message: `Video completato: ${data.title}`,
+                        success: true
+                    });
+
+                    // Mostra notifica di successo
+                    this.showSuccessNotification('Metadati Applicati', `Video "${data.title}" completato con metadati`);
+                    
+                    // Log per debugging
+                    console.log('Percorso originale:', data.originalPath);
+                    console.log('Nuovo percorso:', data.newPath);
+                    
+                } catch (e) {
+                    console.warn('Error in handleVideoMetadataApplied:', e);
+                }
+            }
+
+            // NUOVO: Gestione errori applicazione metadati
+            handleVideoMetadataError(data) {
+                try {
+                    console.error(`❌ Errore applicazione metadati: ${data.error}`);
+                    
+                    // Mostra notifica di avviso (non errore critico)
+                    this.showWarningNotification('Metadati Non Applicati', 
+                        `Video creato ma metadati non applicati: ${data.error}`);
+                    
+                    // Aggiorna status senza fermare il processo
+                    this.updateProcessingStatus({
+                        phase: 'metadata-warning',
+                        message: `Video creato (metadati falliti): ${data.error}`,
+                        warning: true
+                    });
+                    
+                } catch (e) {
+                    console.warn('Error in handleVideoMetadataError:', e);
+                }
+            }
+
             // Mostra notifica di errore prominente
             showErrorNotification(title, message) {
                 try {
@@ -3415,6 +3473,120 @@
                 } catch (error) {
                     // Fallback estremo per errori di notifica
                     console.error('[NOTIFICATION ERROR]', title, message, error);
+                }
+            }
+
+            // NUOVO: Mostra notifica di successo
+            showSuccessNotification(title, message) {
+                try {
+                    let successContainer = document.getElementById('success-notifications');
+                    if (!successContainer) {
+                        successContainer = document.createElement('div');
+                        successContainer.id = 'success-notifications';
+                        successContainer.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            z-index: 10000;
+                            max-width: 400px;
+                        `;
+                        document.body.appendChild(successContainer);
+                    }
+
+                    const notification = document.createElement('div');
+                    notification.style.cssText = `
+                        background: linear-gradient(135deg, #27ae60, #2ecc71);
+                        color: white;
+                        padding: 15px;
+                        border-radius: 8px;
+                        margin-bottom: 10px;
+                        box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+                        animation: slideInRight 0.3s ease-out;
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    `;
+
+                    notification.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <div style="font-weight: bold; margin-bottom: 5px;">✅ ${title}</div>
+                                <div style="font-size: 14px; line-height: 1.4;">${message}</div>
+                            </div>
+                            <button onclick="this.parentElement.parentElement.remove()" 
+                                    style="background: none; border: none; color: white; cursor: pointer; font-size: 18px; padding: 0; margin-left: 10px;">×</button>
+                        </div>
+                    `;
+
+                    successContainer.appendChild(notification);
+
+                    // Auto-rimozione dopo 5 secondi
+                    setTimeout(() => {
+                        try {
+                            if (notification.parentNode) {
+                                notification.remove();
+                            }
+                        } catch (e) {
+                            console.warn('Error removing success notification:', e);
+                        }
+                    }, 5000);
+                } catch (error) {
+                    console.error('[SUCCESS NOTIFICATION ERROR]', title, message, error);
+                }
+            }
+
+            // NUOVO: Mostra notifica di avviso
+            showWarningNotification(title, message) {
+                try {
+                    let warningContainer = document.getElementById('warning-notifications');
+                    if (!warningContainer) {
+                        warningContainer = document.createElement('div');
+                        warningContainer.id = 'warning-notifications';
+                        warningContainer.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            z-index: 10000;
+                            max-width: 400px;
+                        `;
+                        document.body.appendChild(warningContainer);
+                    }
+
+                    const notification = document.createElement('div');
+                    notification.style.cssText = `
+                        background: linear-gradient(135deg, #f39c12, #e67e22);
+                        color: white;
+                        padding: 15px;
+                        border-radius: 8px;
+                        margin-bottom: 10px;
+                        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+                        animation: slideInRight 0.3s ease-out;
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    `;
+
+                    notification.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <div style="font-weight: bold; margin-bottom: 5px;">⚠️ ${title}</div>
+                                <div style="font-size: 14px; line-height: 1.4;">${message}</div>
+                            </div>
+                            <button onclick="this.parentElement.parentElement.remove()" 
+                                    style="background: none; border: none; color: white; cursor: pointer; font-size: 18px; padding: 0; margin-left: 10px;">×</button>
+                        </div>
+                    `;
+
+                    warningContainer.appendChild(notification);
+
+                    // Auto-rimozione dopo 6 secondi
+                    setTimeout(() => {
+                        try {
+                            if (notification.parentNode) {
+                                notification.remove();
+                            }
+                        } catch (e) {
+                            console.warn('Error removing warning notification:', e);
+                        }
+                    }, 6000);
+                } catch (error) {
+                    console.error('[WARNING NOTIFICATION ERROR]', title, message, error);
                 }
             }
 

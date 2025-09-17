@@ -7,11 +7,12 @@ const sox = require('sox');
 const { Vibrant } = require('node-vibrant/node');
 
 class VideoProcessor {
-    constructor() {
+    constructor(mainApp = null) {
         this.outputDir = path.join(__dirname, 'OUTPUT');
         this.tempDir = path.join(__dirname, 'temp_frames');
         this.ffmpegPath = this.findFFmpegPath();
         this.ffprobePath = this.findFFprobePath();
+        this.mainApp = mainApp; // Riferimento alla classe principale per callback metadati
     }
 
     // Taglia il primo frame se è nero - PROCESSO SEMPLICE
@@ -2462,7 +2463,33 @@ class VideoProcessor {
 
                 if (code === 0) {
                     console.log(`✅ SUCCESSO: Video con banner completato: ${path.basename(outputVideoPath)}`);
-                    resolve(outputVideoPath);
+                    
+                    // NUOVO: Applica metadati se disponibili e mainApp è collegato
+                    if (this.mainApp && this.mainApp.processVideoComplete) {
+                        try {
+                            console.log(`📝 Applicazione metadati per: ${path.basename(outputVideoPath)}`);
+                            
+                            // Prepara dati API dai dati AI response
+                            const apiData = this.prepareApiDataFromAiResponse(processedAiResponse);
+                            
+                            // Chiama il processamento metadati nel main app (asincrono)
+                            this.mainApp.processVideoComplete(outputVideoPath, apiData)
+                                .then(finalVideoPath => {
+                                    resolve(finalVideoPath);
+                                })
+                                .catch(metadataError => {
+                                    console.error(`⚠️ Errore metadati (video comunque creato):`, metadataError);
+                                    resolve(outputVideoPath); // Restituisce il video originale anche se metadati falliscono
+                                });
+                        } catch (metadataError) {
+                            console.error(`⚠️ Errore preparazione metadati:`, metadataError);
+                            resolve(outputVideoPath);
+                        }
+                    } else {
+                        // Nessun processamento metadati disponibile
+                        console.log(`ℹ️ Processamento metadati non disponibile`);
+                        resolve(outputVideoPath);
+                    }
                 } else {
                     console.log(`❌ ERRORE FFmpeg: Comando fallito con codice ${code}`);
                     if (errorOutput.trim()) {
@@ -2561,6 +2588,57 @@ class VideoProcessor {
 
         // Unisci le righe con semplice \n (verrà gestito diversamente nel filtro FFmpeg)
         return wrappedLines.join('\\n');
+    }
+
+    // NUOVO: Prepara dati API dal formato AI response per i metadati
+    prepareApiDataFromAiResponse(aiResponse) {
+        // Crea un oggetto nel formato richiesto dall'API
+        const apiData = {
+            title: aiResponse.meme_text || 'Video Meme Generato',
+            metadata: {
+                // Metadati di base
+                'Title': aiResponse.meme_text || 'Video Meme',
+                'Artist': 'AI Meme Creator',
+                'Album': 'Meme Collection',
+                'Genre': 'Meme',
+                'Composer': 'AI Generated',
+                'Data di creazione': 'now', // Verrà convertito in data attuale
+                'Commenti': `Meme generato automaticamente. Posizione banner: ${aiResponse.banner_position}`,
+                
+                // Video Info
+                'Show': 'AI Meme Videos',
+                'HD Video': 'yes',
+                
+                // Dettagli tecnici
+                'Encoded by': 'Meme Creator v1.0',
+                'Encoder tool': 'FFmpeg + AI Processing',
+                
+                // Tag personalizzati iTunes
+                'Sottotitolo': aiResponse.meme_text || '',
+                'Tag': 'meme,ai,viral,social',
+                'Umore': 'humorous',
+                
+                // Crediti produzione (se si vuole essere creativi)
+                'Director': 'AI Director',
+                'Producer': 'Automated Content Creator',
+                'Studio': 'AI Meme Studio',
+                'Editore': 'Meme Creator App',
+                'Provider di contenuti': 'Local AI Processing'
+            }
+        };
+
+        // Se l'AI response contiene campi specifici per metadati, usali
+        if (aiResponse.metadata) {
+            // Sovrascrivi con metadati specifici se forniti dall'API
+            Object.assign(apiData.metadata, aiResponse.metadata);
+        }
+
+        console.log(`📋 Dati API preparati:`, {
+            title: apiData.title,
+            metadataKeys: Object.keys(apiData.metadata).length
+        });
+
+        return apiData;
     }
 }
 

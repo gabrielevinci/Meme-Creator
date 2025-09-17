@@ -7,13 +7,15 @@ const fsSync = require('fs');
 const ApiManager = require('./api-manager');
 const VideoProcessor = require('./video-processor');
 const AiProcessor = require('./ai-processor');
+const MetadataManager = require('./metadata-manager');
 
 class ContentCreatorApp {
     constructor() {
         this.mainWindow = null;
         this.apiManager = new ApiManager();
-        this.videoProcessor = new VideoProcessor();
+        this.videoProcessor = new VideoProcessor(this); // Passa riferimento a se stesso
         this.aiProcessor = new AiProcessor();
+        this.metadataManager = MetadataManager;
         this.isProcessing = false;
 
         // Verifica modalità sviluppo
@@ -21,6 +23,54 @@ class ContentCreatorApp {
 
         // Sistema di logging centralizzato
         this.setupLogging();
+    }
+
+    // NUOVO: Metodo per applicare metadati dopo creazione video
+    async processVideoComplete(videoPath, apiResponseData) {
+        try {
+            console.log(`🎬 Post-processing video: ${path.basename(videoPath)}`);
+            
+            // Applica metadati e rinomina
+            const result = await this.metadataManager.applyMetadataToVideo(videoPath, apiResponseData);
+            
+            if (result.success) {
+                console.log(`✅ Video processato con metadati: ${path.basename(result.newPath)}`);
+                
+                // Notifica al renderer del successo
+                if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                    this.mainWindow.webContents.send('video-metadata-applied', {
+                        originalPath: videoPath,
+                        newPath: result.newPath,
+                        title: apiResponseData.title
+                    });
+                }
+                
+                return result.newPath;
+            } else {
+                console.error(`❌ Errore metadati: ${result.error}`);
+                
+                // Notifica errore
+                if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                    this.mainWindow.webContents.send('video-metadata-error', {
+                        path: videoPath,
+                        error: result.error
+                    });
+                }
+                
+                return videoPath; // Restituisce il path originale se i metadati falliscono
+            }
+        } catch (error) {
+            console.error('Errore critico processamento metadati:', error);
+            
+            if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                this.mainWindow.webContents.send('video-metadata-error', {
+                    path: videoPath,
+                    error: error.message
+                });
+            }
+            
+            return videoPath; // Restituisce il path originale in caso di errore critico
+        }
     }
 
     setupLogging() {

@@ -7754,6 +7754,78 @@
             "tokens_used": 2797,
             "response_time_ms": 2560,
             "output": "```json\n{\n  \"description\": \"Un sentiero tortuoso attraversa un parco verdeggiante con alberi sparsi e un cielo color pesca con una foschia diffusa. La pioggia crea riflessi sulla strada bagnata e aggi"
+          },
+          "1758082771564_uu8fd3hke": {
+            "timestamp": 1758082771564,
+            "tokens": 2815,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2815,
+            "response_time_ms": 4593,
+            "output": "```json\n{\n  \"description\": \"Tre frame mostrano da vicino due fiori di ibisco rosa pallido con dettagli intricati dei petali e degli stami. La luce del sole illumina i fiori evidenziando le loro sfumat"
+          },
+          "1758082775640_h8m1706i6": {
+            "timestamp": 1758082775640,
+            "tokens": 2826,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2826,
+            "response_time_ms": 4069,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio collinare coperto da un prato verde e rigoglioso si estende verso un bosco denso all'orizzonte. Sopra, un cielo drammatico è solcato da nuvole scure che lascia"
+          },
+          "1758082779845_46utnog99": {
+            "timestamp": 1758082779845,
+            "tokens": 2857,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2857,
+            "response_time_ms": 4198,
+            "output": "```json\n{\n  \"description\": \"Il video cattura un paesaggio naturale mozzafiato al tramonto. Le colline dolci e ondulate sono ricoperte da una fitta vegetazione di alberi mentre il cielo si tinge di sfu"
+          },
+          "1758082784277_qdcbniiy9": {
+            "timestamp": 1758082784277,
+            "tokens": 2800,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2800,
+            "response_time_ms": 4426,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un paesaggio naturale con alberi spogli e un pino imponente. Un sentiero serpeggia attraverso un prato umido, suggerendo pioggia recente o in corso. L'atmos"
+          },
+          "1758083083754_rbifcaxs1": {
+            "timestamp": 1758083083754,
+            "tokens": 2810,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2810,
+            "response_time_ms": 3599,
+            "output": "```json\n{\n  \"description\": \"La scena mostra due splendidi fiori di ibisco rosa in primo piano. Le loro texture delicate e i petali leggermente mossi dal vento sono ben definiti. Lo sfondo presenta un "
+          },
+          "1758083087963_mpb7z701y": {
+            "timestamp": 1758083087963,
+            "tokens": 2890,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2890,
+            "response_time_ms": 4203,
+            "output": "```json\n{\n  \"description\": \"Una vasta distesa di erba alta e verdeggiante occupa la parte inferiore del frame, estendendosi verso l'orizzonte. Dietro il prato si erge una fitta foresta di alberi, con "
+          },
+          "1758083091783_t3jfydkss": {
+            "timestamp": 1758083091783,
+            "tokens": 2820,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2820,
+            "response_time_ms": 3811,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale al tramonto, con montagne all'orizzonte e un cielo viola sfumato di rosa. In primo piano, un prato verde ben curato delimitato da una siepe e una recinz"
+          },
+          "1758083096091_qneq5qvge": {
+            "timestamp": 1758083096091,
+            "tokens": 2901,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2901,
+            "response_time_ms": 4302,
+            "output": "```json\n{\n  \"description\": \"La scena mostra un paesaggio nebbioso e umido con alberi spogli e un sentiero sinuoso. La luce soffusa e la foschia creano un'atmosfera eterea, suggerendo una pioggia recen"
           }
         }
       },

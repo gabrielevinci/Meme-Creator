@@ -1,19 +1,15 @@
 # Prompt Template per Creazione Meme Perfetto
-
 ## 1. OBIETTIVO PRINCIPALE
-
 Il tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.
-
 **L'obiettivo finale è generare un meme che:**
 - Sia visivamente e concettualmente perfetto
 - Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato
 - Segua lo stile linguistico richiesto
 - Sia posizionato ottimalmente nell'immagine
+- Include metadati completi per la distribuzione sui social
 
 ## 2. VERIFICA FILTRO IMMAGINE
-
 Devi analizzare se il contenuto dei tre frame corrisponde al filtro specificato dall'utente: **{{CONTENT_FILTER}}**
-
 **Criteri di valutazione:**
 - Osserva l'azione principale, i soggetti e l'ambiente
 - Considera la progressione attraverso i 3 frame
@@ -21,41 +17,43 @@ Devi analizzare se il contenuto dei tre frame corrisponde al filtro specificato 
 - Assegna `1` se corrisponde, `0` se non corrisponde
 
 ## 3. POSIZIONAMENTO BANNER
-
 Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) analizzando attentamente i frame.
-
 ### Regole di Posizionamento:
 - Se i **soggetti principali sono centrali** → posiziona `"top"`.  
 - Se i **soggetti partono dalla parte bassa fino a metà del frame** → posiziona `"top"`.  
 - Se i **soggetti principali occupano la parte alta** e la zona bassa appare libera o statica → posiziona `"bottom"`.  
 - Se i soggetti sono distribuiti in più aree, scegli la posizione che **libera di più spazio visivo** e garantisce leggibilità.  
-- **Mai sovrapporre testo al volto o all’azione principale.**
+- **Mai sovrapporre testo al volto o all'azione principale.**
 
 ### Criteri da considerare:
-1. **Soggetti principali**: dove si trovano nell’inquadratura (alto, basso, centro).  
+1. **Soggetti principali**: dove si trovano nell'inquadratura (alto, basso, centro).  
 2. **Azione centrale**: quale zona del frame è cruciale per capire la scena.  
-3. **Spazi liberi**: scegli l’area più statica o vuota per il testo.  
+3. **Spazi liberi**: scegli l'area più statica o vuota per il testo.  
 
 ## 4. CREAZIONE MEME COERENTE
-
 Se il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusione perfetta** di:
-
 ### Formula del Meme Perfetto:
 **CONTENUTO VISIVO + STILE LINGUISTICO + OBIETTIVO = MEME PERFETTO**
-
 ### Elementi Obbligatori:
 1. **CONTENUTO VISIVO**: Utilizza la descrizione dell'immagine come contesto
 2. **STILE LINGUISTICO**: Segui gli esempi di stile forniti dall'utente
 3. **OBIETTIVO**: Integra l'obiettivo specificato: **{{BUSINESS_THEME}}**
 4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo
 
-## ISTRUZIONI TECNICHE
+## 5. GENERAZIONE TITOLO VIRALE
+Crea un titolo originale e accattivante che:
+- Comunichi alle piattaforme social (TikTok e Instagram) il potenziale virale del contenuto
+- Sia intrigante e clickbait senza essere ingannevole
+- Rifletta il contenuto del meme e l'obiettivo business
+- Utilizzi parole chiave che favoriscono la viralità
+- Massimo 100 caratteri per ottimizzare la visualizzazione
+- **NON USARE CARATTERI SPECIALI O EMOJI**
 
+## ISTRUZIONI TECNICHE
 ### Formato di Risposta
 Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
 
 ### Campi JSON Richiesti
-
 1. **`"description"`**: Descrizione coerente (3-5 frasi) del contenuto dell'immagine, includendo azioni, soggetti, movimenti, interazioni e sfondo.
 
 2. **`"matches_filter"`**: Inserisci `1` se l'azione principale corrisponde al filtro `{{CONTENT_FILTER}}`, altrimenti `0`.
@@ -72,16 +70,119 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
      - SCRIVI L'INTERO MEME ALL'INTERNO DELLA STESSA RIGA SENZA FRASI SU DUE RIGHE
    - Se `"matches_filter" = 0`: lascia stringa vuota `""`
 
+5. **`"title"`**: Titolo virale originale per piattaforme social (massimo 100 caratteri).
+
+6. **`"metadata"`**: Oggetto contenente tutti i metadati necessari (**SENZA caratteri speciali o emoji**):
+   - **`"Title"`**: Titolo del contenuto
+   - **`"Artist"`**: Nome dell'artista/creatore
+   - **`"Composer"`**: Compositore (se applicabile)
+   - **`"Album"`**: Nome dell'album/collezione
+   - **`"Album artist"`**: Artista dell'album
+   - **`"Genre"`**: Genere del contenuto
+   - **`"Grouping"`**: Raggruppamento tematico
+   - **`"Copyright"`**: Informazioni copyright
+   - **`"Commenti"`**: Commenti descrittivi
+   - **`"Data di creazione"`**: Data odierna in formato YYYY-MM-DD
+   - **`"Show"`**: Nome dello show/serie
+   - **`"TV Network"`**: Rete televisiva
+   - **`"Season number"`**: Numero stagione (intero)
+   - **`"Episode number"`**: Numero episodio (intero)
+   - **`"HD Video"`**: Flag HD (true/false)
+   - **`"Encoded by"`**: Codificato da
+   - **`"Encoder tool"`**: Strumento di codifica
+   - **`"Sottotitolo"`**: Sottotitolo descrittivo
+   - **`"Classificazione (esplicito)"`**: Contenuto esplicito (Sì/No)
+   - **`"Motivo classificazione"`**: Motivo della classificazione
+   - **`"Tag"`**: Tag separati da virgola
+   - **`"Umore"`**: Umore/atmosfera del contenuto
+   - **`"Chiave iniziale"`**: Chiave musicale iniziale
+   - **`"Protetto"`**: Contenuto protetto (true/false)
+   - **`"Director"`**: Regista
+   - **`"Director of photography"`**: Direttore della fotografia
+   - **`"Sound engineer"`**: Tecnico del suono
+   - **`"Art director"`**: Direttore artistico
+   - **`"Production designer"`**: Designer di produzione
+   - **`"Choreographer"`**: Coreografo
+   - **`"Costume designer"`**: Costumista
+   - **`"Writer"`**: Scrittore
+   - **`"Screenwriter"`**: Sceneggiatore
+   - **`"Editor"`**: Montatore
+   - **`"Producer"`**: Produttore
+   - **`"Co-producer"`**: Co-produttore
+   - **`"Executive producer"`**: Produttore esecutivo
+   - **`"Distributed by"`**: Distribuito da
+   - **`"Studio"`**: Studio di produzione
+   - **`"Editore"`**: Casa editrice
+   - **`"Provider di contenuti"`**: Fornitore di contenuti
+   - **`"Conduttori"`**: Conduttori/Presentatori
+   - **`"Title sort order"`**: Ordinamento per titolo
+   - **`"Artist sort order"`**: Ordinamento per artista
+   - **`"Album sort order"`**: Ordinamento per album
+   - **`"Album artist sort order"`**: Ordinamento per artista album
+   - **`"Composer sort order"`**: Ordinamento per compositore
+   - **`"Show sort order"`**: Ordinamento per show
+
 ### Regola Fondamentale
 ❌ **SBAGLIATO**: Meme generico sull'obiettivo senza connessione visuale  
 ✅ **CORRETTO**: Meme che unisce perfettamente ciò che si vede con l'obiettivo
 
 ### Esempio di Output
-
 ```json
 {
   "description": "La tua descrizione continua qui...",
   "matches_filter": 1,
   "banner_position": "top",
-  "meme_text": "Il tuo meme perfetto qui..."
+  "meme_text": "Il tuo meme perfetto qui...",
+  "title": "Titolo virale per social media",
+  "metadata": {
+    "Title": "Titolo del video",
+    "Artist": "Nome Creatore",
+    "Composer": "",
+    "Album": "Collezione Meme 2024",
+    "Album artist": "Nome Creatore",
+    "Genre": "Comedy",
+    "Grouping": "Viral Content",
+    "Copyright": "© 2024 Nome Creatore",
+    "Commenti": "Meme virale generato da AI",
+    "Data di creazione": "2024-12-19",
+    "Show": "Viral Memes",
+    "TV Network": "Social Media",
+    "Season number": 1,
+    "Episode number": 1,
+    "HD Video": true,
+    "Encoded by": "AI Content Creator",
+    "Encoder tool": "Custom Software v4.0",
+    "Sottotitolo": "Contenuto virale per social media",
+    "Classificazione (esplicito)": "No",
+    "Motivo classificazione": "Contenuto adatto a tutti",
+    "Tag": "viral,meme,comedy,trending",
+    "Umore": "Divertente",
+    "Chiave iniziale": "",
+    "Protetto": false,
+    "Director": "AI Director",
+    "Director of photography": "",
+    "Sound engineer": "",
+    "Art director": "AI Content Creator",
+    "Production designer": "",
+    "Choreographer": "",
+    "Costume designer": "",
+    "Writer": "AI Writer",
+    "Screenwriter": "AI Screenwriter",
+    "Editor": "AI Editor",
+    "Producer": "AI Producer",
+    "Co-producer": "",
+    "Executive producer": "AI Executive Producer",
+    "Distributed by": "Social Media Platforms",
+    "Studio": "AI Content Studio",
+    "Editore": "Independent",
+    "Provider di contenuti": "AI Content Provider",
+    "Conduttori": "",
+    "Title sort order": "Titolo del video",
+    "Artist sort order": "Nome Creatore",
+    "Album sort order": "Collezione Meme 2024",
+    "Album artist sort order": "Nome Creatore",
+    "Composer sort order": "",
+    "Show sort order": "Viral Memes"
+  }
 }
+```

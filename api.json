@@ -7682,6 +7682,78 @@
             "tokens_used": 1121,
             "response_time_ms": 1852,
             "output": "```json\n{\n  \"description\": \"Il video mostra un parco alberato con un sentiero in curva che riflette le nuvole e l'atmosfera del cielo. L'ambiente circostante è verde e rigoglioso, con alberi spogli e "
+          },
+          "1758080021699_8dfnz0ffa": {
+            "timestamp": 1758080021699,
+            "tokens": 2890,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2890,
+            "response_time_ms": 3936,
+            "output": "```json\n{\n  \"description\": \"La scena mostra due fiori di ibisco rosa in primo piano, con i loro petali delicati e stami evidenti. Lo sfondo è sfocato e mette in risalto la bellezza naturale dei fiori."
+          },
+          "1758080025820_zzre9op7d": {
+            "timestamp": 1758080025820,
+            "tokens": 2874,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2874,
+            "response_time_ms": 4115,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano un vasto paesaggio collinare verdeggiante sotto un cielo nuvoloso. L'erba alta e rigogliosa domina il primo piano, ondeggiando leggermente. D"
+          },
+          "1758080031952_qu1mlancl": {
+            "timestamp": 1758080031952,
+            "tokens": 2939,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2939,
+            "response_time_ms": 6126,
+            "output": "```json\n{\n  \"description\": \"Tre frame che mostrano un paesaggio collinare mozzafiato al tramonto. Il cielo è un'affascinante fusione di viola e rosa, punteggiato da nuvole soffici. I dolci pendii mont"
+          },
+          "1758080035988_70utw8lnb": {
+            "timestamp": 1758080035988,
+            "tokens": 2905,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2905,
+            "response_time_ms": 4029,
+            "output": "```json\n{\n  \"description\": \"Nei tre frame consecutivi si osserva un paesaggio naturale percorso da una strada umida e alberi maestosi. C'è una leggera foschia che avvolge la scena, creando un'atmosfer"
+          },
+          "1758080504198_5awfiogq6": {
+            "timestamp": 1758080504198,
+            "tokens": 2832,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2832,
+            "response_time_ms": 3768,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano due fiori di ibisco rosa in primo piano, con uno dei fiori parzialmente fuori dall'inquadratura. Dietro i fiori, si intravedono foglie verdi "
+          },
+          "1758080508148_ej4ngohek": {
+            "timestamp": 1758080508148,
+            "tokens": 2867,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2867,
+            "response_time_ms": 3943,
+            "output": "```json\n{\n  \"description\": \"Un'ampia distesa di prato verde, punteggiata da erba alta e qualche arbusto sparso, occupa la parte inferiore del frame. Sullo sfondo, una fitta foresta di alberi verdi si "
+          },
+          "1758080511593_so3nrcd12": {
+            "timestamp": 1758080511593,
+            "tokens": 2805,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2805,
+            "response_time_ms": 3438,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale serale con un cielo viola e rosa crepuscolare punteggiato da nuvole soffici. In primo piano, un prato verde intenso è delimitato da una siepe e una reci"
+          },
+          "1758080514159_7p15v6x51": {
+            "timestamp": 1758080514159,
+            "tokens": 2797,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2797,
+            "response_time_ms": 2560,
+            "output": "```json\n{\n  \"description\": \"Un sentiero tortuoso attraversa un parco verdeggiante con alberi sparsi e un cielo color pesca con una foschia diffusa. La pioggia crea riflessi sulla strada bagnata e aggi"
           }
         }
       },

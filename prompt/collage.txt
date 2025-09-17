@@ -5,7 +5,7 @@
 Il tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.
 
 **L'obiettivo finale è generare un meme che:**
-- Sia visivamente e concettualmente perfetto
+- Sia visualmente e concettualmente perfetto
 - Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato
 - Segua lo stile linguistico richiesto
 - Sia posizionato ottimalmente nell'immagine
@@ -28,12 +28,12 @@ Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) anali
 - Se i **soggetti principali sono centrali o occupano la parte bassa fino a metà del frame** → posiziona `"top"`.  
 - Se i **soggetti principali occupano la parte alta** e la zona bassa è libera o statica → posiziona `"bottom"`.  
 - Se i soggetti sono distribuiti in più aree, scegli la posizione che **libera di più spazio visivo** e garantisce leggibilità.  
-- **Mai sovrapporre testo al volto o all’azione principale.**
+- **Mai sovrapporre testo al volto o all'azione principale.**
 
 ### Criteri da considerare:
-1. **Soggetti principali**: dove si trovano nell’inquadratura (alto, basso, centro).  
+1. **Soggetti principali**: dove si trovano nell'inquadratura (alto, basso, centro).  
 2. **Azione centrale**: quale zona del frame è cruciale per capire la scena.  
-3. **Spazi liberi**: scegli l’area più statica o vuota per il testo.  
+3. **Spazi liberi**: scegli l'area più statica o vuota per il testo.  
 
 ## 4. CREAZIONE MEME COERENTE
 
@@ -50,6 +50,18 @@ Se il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusio
 
 ### Esempi di Stile da Seguire:
 {{STYLE_EXAMPLES}}
+
+## 5. CREAZIONE TITOLO VIRALE
+
+Genera un titolo originale che:
+- Comunichi alle piattaforme social (TikTok e Instagram) il potenziale virale del contenuto
+- Sia accattivante e ottimizzato per l'algoritmo
+- Non contenga caratteri speciali o emoji
+- Rifletta il tema del meme e l'obiettivo di business
+
+## 6. GENERAZIONE METADATI COMPLETI
+
+Genera metadati completi per il file video che saranno applicati automaticamente dal software. Tutti i metadati devono essere pertinenti al contenuto del meme e non contenere caratteri speciali o emoji.
 
 ## ISTRUZIONI TECNICHE
 
@@ -74,10 +86,61 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
      - SCRIVI L'INTERO MEME ALL'INTERNO DELLA STESSA RIGA SENZA FRASI SU DUE RIGHE
    - Se `"matches_filter" = 0`: lascia stringa vuota `""`
 
+5. **`"title"`**: Titolo originale ottimizzato per il potenziale virale su TikTok e Instagram (senza caratteri speciali o emoji).
+
+6. **`"metadata"`**: Oggetto contenente tutti i metadati del file:
+   - **`"Title"`**: Titolo del contenuto
+   - **`"Artist"`**: Artista/Creatore
+   - **`"Composer"`**: Compositore del contenuto
+   - **`"Album"`**: Album di appartenenza
+   - **`"Album artist"`**: Artista dell'album
+   - **`"Genre"`**: Genere del contenuto
+   - **`"Grouping"`**: Raggruppamento tematico
+   - **`"Copyright"`**: Informazioni di copyright
+   - **`"Commenti"`**: Commenti descrittivi
+   - **`"Data di creazione"`**: Data di creazione (formato YYYY-MM-DD)
+   - **`"Show"`**: Nome dello show/serie
+   - **`"TV Network"`**: Network televisivo
+   - **`"Season number"`**: Numero stagione (numero intero)
+   - **`"Episode number"`**: Numero episodio (numero intero)
+   - **`"HD Video"`**: Flag HD (true/false)
+   - **`"Encoded by"`**: Codificato da
+   - **`"Encoder tool"`**: Strumento di codifica
+   - **`"Sottotitolo"`**: Sottotitolo del contenuto
+   - **`"Classificazione (esplicito)"`**: Classificazione contenuto esplicito (Si/No)
+   - **`"Motivo classificazione"`**: Motivo della classificazione
+   - **`"Tag"`**: Tag/parole chiave
+   - **`"Umore"`**: Umore del contenuto
+   - **`"Chiave iniziale"`**: Chiave musicale iniziale
+   - **`"Protetto"`**: Flag protezione (true/false)
+   - **`"Director"`**: Regista
+   - **`"Director of photography"`**: Direttore della fotografia
+   - **`"Sound engineer"`**: Tecnico del suono
+   - **`"Art director"`**: Direttore artistico
+   - **`"Production designer"`**: Designer di produzione
+   - **`"Choreographer"`**: Coreografo
+   - **`"Costume designer"`**: Designer dei costumi
+   - **`"Writer"`**: Scrittore
+   - **`"Screenwriter"`**: Sceneggiatore
+   - **`"Editor"`**: Editore
+   - **`"Producer"`**: Produttore
+   - **`"Co-producer"`**: Co-produttore
+   - **`"Executive producer"`**: Produttore esecutivo
+   - **`"Distributed by"`**: Distribuito da
+   - **`"Studio"`**: Studio di produzione
+   - **`"Editore"`**: Editore
+   - **`"Provider di contenuti"`**: Fornitore di contenuti
+   - **`"Conduttori"`**: Conduttori/Presentatori
+   - **`"Title sort order"`**: Ordinamento per titolo
+   - **`"Artist sort order"`**: Ordinamento per artista
+   - **`"Album sort order"`**: Ordinamento per album
+   - **`"Album artist sort order"`**: Ordinamento per artista album
+   - **`"Composer sort order"`**: Ordinamento per compositore
+   - **`"Show sort order"`**: Ordinamento per show
+
 ### Regola Fondamentale
 ❌ **SBAGLIATO**: Meme generico sull'obiettivo senza connessione visuale  
 ✅ **CORRETTO**: Meme che unisce perfettamente ciò che si vede con l'obiettivo
-
 
 ### Esempio di Output
 
@@ -86,5 +149,57 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
   "description": "La tua descrizione continua qui...",
   "matches_filter": 1,
   "banner_position": "top",
-  "meme_text": "Il tuo meme perfetto qui..."
+  "meme_text": "Il tuo meme perfetto qui...",
+  "title": "Titolo virale ottimizzato per social media",
+  "metadata": {
+    "Title": "Titolo del meme",
+    "Artist": "Nome creatore",
+    "Composer": "Compositore",
+    "Album": "Album di riferimento",
+    "Album artist": "Artista album",
+    "Genre": "Comedy/Meme",
+    "Grouping": "Viral Content",
+    "Copyright": "Copyright info",
+    "Commenti": "Descrizione del contenuto",
+    "Data di creazione": "2024-01-01",
+    "Show": "Nome show",
+    "TV Network": "Social Media",
+    "Season number": 1,
+    "Episode number": 1,
+    "HD Video": true,
+    "Encoded by": "Meme Creator",
+    "Encoder tool": "AI Meme Generator",
+    "Sottotitolo": "Sottotitolo descrittivo",
+    "Classificazione (esplicito)": "No",
+    "Motivo classificazione": "Contenuto adatto a tutti",
+    "Tag": "meme, viral, comedy",
+    "Umore": "Funny",
+    "Chiave iniziale": "C Major",
+    "Protetto": false,
+    "Director": "AI Director",
+    "Director of photography": "Virtual Camera",
+    "Sound engineer": "Audio Tech",
+    "Art director": "Creative Director",
+    "Production designer": "Visual Designer",
+    "Choreographer": "Movement Coach",
+    "Costume designer": "Style Coordinator",
+    "Writer": "Content Writer",
+    "Screenwriter": "Script Writer",
+    "Editor": "Video Editor",
+    "Producer": "Content Producer",
+    "Co-producer": "Assistant Producer",
+    "Executive producer": "Executive Producer",
+    "Distributed by": "Social Media Platforms",
+    "Studio": "Digital Studio",
+    "Editore": "Content Publisher",
+    "Provider di contenuti": "Meme Generator",
+    "Conduttori": "Social Media Host",
+    "Title sort order": "Titolo ordinamento",
+    "Artist sort order": "Artista ordinamento",
+    "Album sort order": "Album ordinamento",
+    "Album artist sort order": "Artista album ordinamento",
+    "Composer sort order": "Compositore ordinamento",
+    "Show sort order": "Show ordinamento"
+  }
 }
+```

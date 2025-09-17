@@ -2,7 +2,7 @@
   "fontFamily": "Impact",
   "marginTop": 30,
   "marginBottom": 30,
-  "marginLeft": 40,
+  "marginLeft": 27,
   "marginRight": 40,
   "blockHeight": 450,
   "textFormat": "normal",
@@ -10,9 +10,9 @@
   "videoSpeed": 1,
   "videoZoom": 1,
   "contrast": 1,
-  "saturation": 50,
-  "gamma": 0,
-  "lift": 0,
+  "saturation": 100,
+  "gamma": 0.6,
+  "lift": -0.6,
   "videoVolume": 0,
   "overlayImageEnabled": false,
   "overlayImagePath": "",
@@ -22,5 +22,5 @@
   "backgroundAudioVolume": 0,
   "replaceAudioEnabled": false,
   "replaceAudioFolderPath": "",
-  "removeBlackFrameEnabled": false
+  "removeBlackFrameEnabled": true
 }

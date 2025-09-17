@@ -7196,6 +7196,42 @@
             "tokens_used": 1134,
             "response_time_ms": 1445,
             "output": "```json\n{\n  \"description\": \"Una vasta distesa erbosa verdeggiante si estende verso orizzonti collinari, punteggiati da una fitta foresta. Sopra, un cielo drammatico è solcato da nuvole scure e minacci"
+          },
+          "1758070382874_t2bn1iyjn": {
+            "timestamp": 1758070382874,
+            "tokens": 1165,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1165,
+            "response_time_ms": 1862,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di fiori colorati si estende verso l'orizzonte sotto un cielo vibrante al tramonto. Il sole, un globo giallo brillante, sembra sorgere o tramontare tra nuvol"
+          },
+          "1758070384222_l6viujb7e": {
+            "timestamp": 1758070384222,
+            "tokens": 1138,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1138,
+            "response_time_ms": 1341,
+            "output": "```json\n{\n  \"description\": \"I frame catturano un vasto paesaggio naturale con un campo d'erba alta in primo piano. L'erba ondeggia dolcemente sotto un cielo nuvoloso, con sprazzi di luce solare che fi"
+          },
+          "1758070452196_01x7h92du": {
+            "timestamp": 1758070452196,
+            "tokens": 1180,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1180,
+            "response_time_ms": 1894,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di fiori multicolori si estende verso l'orizzonte sotto un cielo blu vibrante punteggiato da nuvole bianche soffici e dense. Il sole splende intensamente, ti"
+          },
+          "1758070453956_7907ukiez": {
+            "timestamp": 1758070453956,
+            "tokens": 1114,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1114,
+            "response_time_ms": 1752,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo erboso si estende fino a una foresta lussureggiante e ondulata. Sopra, nuvole scure e drammatiche si addensano contro un cielo illuminato da raggi di sole pe"
           }
         }
       },

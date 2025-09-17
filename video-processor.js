@@ -1448,11 +1448,13 @@ class VideoProcessor {
                     
                     console.log(`🔄 Audio sostituito con successo: ${selectedAudio.file}`);
                     
-                    // Se la sostituzione audio è l'unica modifica, return direttamente
+                    // Se la sostituzione audio è l'unica modifica (senza volume, background o speed), return direttamente
                     if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange) {
                         console.log(`✅ Solo sostituzione audio richiesta - skip ulteriore processing SOX`);
                         return processedAudioPath;
                     }
+                    
+                    console.log(`🔧 Audio sostituito, continuando con ulteriori modifiche (volume: ${hasVolumeChange ? config.videoVolume + 'dB' : 'no'}, background: ${hasBackgroundAudio ? 'sì' : 'no'}, speed: ${hasSpeedChange ? 'sì' : 'no'})`);
                 } else {
                     console.log(`⚠️ Nessun audio compatibile trovato, mantengo audio originale`);
                     // Estrai audio originale come fallback
@@ -1510,11 +1512,26 @@ class VideoProcessor {
             console.error(`❌ Errore nel preprocessing audio con SOX: ${error.message}`);
             console.log(`🔄 Fallback su elaborazione FFmpeg tradizionale`);
             
-            // Se la sostituzione audio è riuscita ma SOX ha fallito, restituisci l'audio sostitutivo
+            // Se la sostituzione audio è riuscita ma SOX ha fallito, applica modifiche con FFmpeg
             if (hasAudioReplacement) {
                 const replacementAudioPath = path.join(tempDir, 'replacement_audio.wav');
                 if (fsSync.existsSync(replacementAudioPath)) {
-                    console.log(`✅ Fallback: restituisco audio sostitutivo nonostante errore SOX: ${replacementAudioPath}`);
+                    console.log(`✅ Fallback: audio sostitutivo trovato, applicando modifiche con FFmpeg`);
+                    
+                    // Se c'è anche modifica volume, applicala con FFmpeg
+                    if (hasVolumeChange) {
+                        const volumeAdjustedPath = path.join(tempDir, 'fallback_volume_adjusted.wav');
+                        try {
+                            await this.adjustVolumeWithFFmpeg(replacementAudioPath, volumeAdjustedPath, config.videoVolume);
+                            console.log(`🔊 Volume applicato con FFmpeg fallback: ${config.videoVolume}dB`);
+                            return volumeAdjustedPath;
+                        } catch (volumeError) {
+                            console.warn(`⚠️ Errore applicazione volume fallback: ${volumeError.message}`);
+                            return replacementAudioPath; // Ritorna almeno l'audio sostituito
+                        }
+                    }
+                    
+                    console.log(`✅ Fallback: restituisco audio sostitutivo: ${replacementAudioPath}`);
                     return replacementAudioPath;
                 }
             }
@@ -1575,6 +1592,42 @@ class VideoProcessor {
                         resolve(outputPath);
                     }
                 });
+        });
+    }
+
+    // Regolazione volume con FFmpeg (fallback quando SOX non funziona)
+    async adjustVolumeWithFFmpeg(inputPath, outputPath, volumeDb) {
+        return new Promise((resolve, reject) => {
+            const ffmpeg = spawn(this.ffmpegPath, [
+                '-i', inputPath,
+                '-af', `volume=${volumeDb}dB`, // Filtro audio volume
+                '-c:a', 'pcm_s16le', // Codec audio non compresso
+                '-ar', '44100', // Sample rate standard
+                '-ac', '2', // Stereo
+                '-y', outputPath
+            ]);
+
+            let errorOutput = '';
+            
+            ffmpeg.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            ffmpeg.on('close', (code) => {
+                if (code === 0) {
+                    console.log(`✅ FFmpeg volume adjustment completato: ${volumeDb}dB`);
+                    resolve(outputPath);
+                } else {
+                    const error = new Error(`FFmpeg volume adjustment fallito: ${errorOutput}`);
+                    console.error(`❌ FFmpeg volume error: ${error.message}`);
+                    reject(error);
+                }
+            });
+
+            ffmpeg.on('error', (error) => {
+                console.error(`❌ FFmpeg volume spawn error: ${error.message}`);
+                reject(error);
+            });
         });
     }
 

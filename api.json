@@ -7106,6 +7106,42 @@
             "tokens_used": 1138,
             "response_time_ms": 1041,
             "output": "```json\n{\n  \"description\": \"Un vasto campo d'erba alta ondeggia sotto un cielo nuvoloso e drammatico. In lontananza, una foresta folta e verde scuro si estende fino alle dolci colline che fanno da sfo"
+          },
+          "1758069424220_yip2oia01": {
+            "timestamp": 1758069424220,
+            "tokens": 1162,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1162,
+            "response_time_ms": 1493,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo fiorito si estende a perdita d'occhio sotto un cielo blu brillante con nuvole bianche soffici e un sole giallo intenso che tramonta all'orizzonte. La scena è"
+          },
+          "1758069425878_h6cxdxyff": {
+            "timestamp": 1758069425878,
+            "tokens": 1113,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1113,
+            "response_time_ms": 1651,
+            "output": "```json\n{\n  \"description\": \"Una vasta distesa di erba verde alta ondula sotto un cielo drammatico con nuvole scure e squarci di luce dorata. In lontananza, si staglia una foresta fitta e ondulata, seg"
+          },
+          "1758069631621_2t2pu9ru8": {
+            "timestamp": 1758069631621,
+            "tokens": 1174,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1174,
+            "response_time_ms": 1531,
+            "output": "```json\n{\n  \"description\": \"Il video mostra un paesaggio mozzafiato di un campo fiorito al tramonto. Un cielo colorato di giallo e azzurro domina la scena, con nuvole soffici che creano un effetto sug"
+          },
+          "1758069632755_aox6r3zz0": {
+            "timestamp": 1758069632755,
+            "tokens": 1137,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1137,
+            "response_time_ms": 1127,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo verde coperto di erba alta si estende verso un gruppo di alberi e colline lontane. Il cielo è coperto da nuvole scure e drammatiche che lasciano intravedere "
           }
         }
       },

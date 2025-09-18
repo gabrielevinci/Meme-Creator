@@ -29,20 +29,20 @@ class ContentCreatorApp {
     async processVideoComplete(videoPath, apiResponseData) {
         try {
             console.log(`🎬 Post-processing video: ${path.basename(videoPath)}`);
-            
+
             // Applica metadati e rinomina
             const result = await this.metadataManager.applyMetadataToVideo(videoPath, apiResponseData);
-            
+
             if (result.success) {
                 console.log(`✅ Video processato con metadati: ${path.basename(result.newPath)}`);
-                
+
                 // RIMOSSA NOTIFICA POPUP COME RICHIESTO DALL'UTENTE
                 // I metadati vengono applicati silenziosamente
-                
+
                 return result.newPath;
             } else {
                 console.error(`❌ Errore metadati: ${result.error}`);
-                
+
                 // Notifica errore
                 if (this.mainWindow && !this.mainWindow.isDestroyed()) {
                     this.mainWindow.webContents.send('video-metadata-error', {
@@ -50,19 +50,19 @@ class ContentCreatorApp {
                         error: result.error
                     });
                 }
-                
+
                 return videoPath; // Restituisce il path originale se i metadati falliscono
             }
         } catch (error) {
             console.error('Errore critico processamento metadati:', error);
-            
+
             if (this.mainWindow && !this.mainWindow.isDestroyed()) {
                 this.mainWindow.webContents.send('video-metadata-error', {
                     path: videoPath,
                     error: error.message
                 });
             }
-            
+
             return videoPath; // Restituisce il path originale in caso di errore critico
         }
     }

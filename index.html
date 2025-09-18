@@ -1695,6 +1695,17 @@
                             </div>
                         </div>
 
+                        <!-- Aggiungi metadati -->
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="add-metadata-enabled" class="checkbox-input">
+                                <label for="add-metadata-enabled" class="checkbox-label">📋 Aggiungi Metadati</label>
+                            </div>
+                            <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
+                                Se abilitato, genera metadati completi per massimizzare la viralità sui social
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -2134,6 +2145,13 @@
                 const removeBlackFrameCheckbox = document.getElementById('remove-black-frame-enabled');
                 if (removeBlackFrameCheckbox) {
                     removeBlackFrameCheckbox.addEventListener('change', () => {
+                        this.saveSettings();
+                    });
+                }
+
+                const addMetadataCheckbox = document.getElementById('add-metadata-enabled');
+                if (addMetadataCheckbox) {
+                    addMetadataCheckbox.addEventListener('change', () => {
                         this.saveSettings();
                     });
                 }
@@ -2816,7 +2834,8 @@
                         backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
                         replaceAudioEnabled: document.getElementById('replace-audio-enabled') && document.getElementById('replace-audio-enabled').checked || false,
                         replaceAudioFolderPath: this.replaceAudioFolderPath || '',
-                        removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false
+                        removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
+                        addMetadataEnabled: document.getElementById('add-metadata-enabled') && document.getElementById('add-metadata-enabled').checked || false
                     };
 
                     console.log('Salvataggio impostazioni:', settings);
@@ -3123,7 +3142,8 @@
                     backgroundAudioVolume: parseInt(document.getElementById('background-audio-volume-slider') && document.getElementById('background-audio-volume-slider').value || 0),
                     replaceAudioEnabled: document.getElementById('replace-audio-enabled') && document.getElementById('replace-audio-enabled').checked || false,
                     replaceAudioFolderPath: this.replaceAudioFolderPath || '',
-                    removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false
+                    removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
+                    addMetadataEnabled: document.getElementById('add-metadata-enabled') && document.getElementById('add-metadata-enabled').checked || false
                 };
 
                 // Gestione sicura dei margini (permette il valore 0)

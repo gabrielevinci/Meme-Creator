@@ -7931,6 +7931,51 @@
             "tokens_used": 2909,
             "response_time_ms": 4168,
             "output": "```json\n{\n  \"description\": \"Il frame iniziale mostra un cielo notturno stellato con una luna piena luminosa in alto a destra. La luce lunare illumina un paesaggio marino con onde che arrivano dolcemen"
+          },
+          "1758225699717_fiypxwtn6": {
+            "timestamp": 1758225699717,
+            "tokens": 3241,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3241,
+            "response_time_ms": 3961,
+            "output": "```json\n{\n  \"description\": \"La scena notturna mostra una spiaggia illuminata da bioluminescenza nella scia delle onde che lambiscono la riva. La progressione dei frame rivela il movimento continuo del"
+          },
+          "1758225703669_g132yb6s0": {
+            "timestamp": 1758225703669,
+            "tokens": 3199,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3199,
+            "response_time_ms": 3945,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo erboso si estende fino a una fila di alberi che delimita un panorama montuoso imponente. Le montagne sono illuminate da una luce calda, probabilmente del tra"
+          },
+          "1758225707398_1bt0wbceg": {
+            "timestamp": 1758225707398,
+            "tokens": 3259,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3259,
+            "response_time_ms": 3722,
+            "output": "```json\n{\n  \"description\": \"La sequenza mostra una progressione di paesaggi naturali mozzafiato. Inizialmente, si osserva una strada autostradale che serpeggia tra montagne verdi e imponenti cime rocc"
+          },
+          "1758225711277_upfpz4637": {
+            "timestamp": 1758225711277,
+            "tokens": 3274,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3274,
+            "response_time_ms": 3873,
+            "output": "```json\n{\n  \"description\": \"Trascorsa una scena notturna su una spiaggia, le onde bioluminescenti brillano di una luce azzurra intensa mentre lambiscono la riva scura, creando un contrasto suggestivo "
+          },
+          "1758225714066_266kgbxvl": {
+            "timestamp": 1758225714066,
+            "tokens": 3125,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3125,
+            "response_time_ms": 2782,
+            "output": "```json\n{\n  \"description\": \"Un litorale notturno illuminato da una bioluminescenza bluastra che segue le onde. La scena si snoda lungo la costa sotto un cielo stellato e una luna piena radiosa. Le cre"
           }
         }
       },

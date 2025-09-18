@@ -61,7 +61,7 @@ Genera un titolo originale che:
 
 ## 6. GENERAZIONE METADATI COMPLETI
 
-Genera metadati completi per il file video che saranno applicati automaticamente dal software. Tutti i metadati devono essere pertinenti al contenuto del meme e non contenere caratteri speciali o emoji.
+Genera metadati completi e ottimizzati per questi frame di video. I metadati devono essere pertinenti al contenuto, descrizione che hai dato, e "meme_text" che hai scritto. Tutti i metadati devono essere ricchi di keyword strategiche e coerenti con il tema, senza mai inserire caratteri speciali o emoji. Non devono comparire riferimenti a tecnologie, processi di generazione o intelligenza artificiale. L’obiettivo è creare metadati che favoriscano la massima visibilità e viralità sui social network, trasmettendo in maniera implicita segnali forti e rilevanti agli algoritmi delle piattaforme.
 
 ## ISTRUZIONI TECNICHE
 

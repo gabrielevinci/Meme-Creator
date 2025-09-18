@@ -1,0 +1,87 @@
+# Prompt Template per Creazione Meme Perfetto
+
+## 1. OBIETTIVO PRINCIPALE
+
+Il tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.
+
+**L'obiettivo finale è generare un meme che:**
+- Sia visivamente e concettualmente perfetto
+- Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato
+- Segua lo stile linguistico richiesto
+- Sia posizionato ottimalmente nell'immagine
+
+## 2. VERIFICA FILTRO IMMAGINE
+
+Devi analizzare se il contenuto dei tre frame corrisponde al filtro specificato dall'utente: **{{CONTENT_FILTER}}**
+
+**Criteri di valutazione:**
+- Osserva l'azione principale, i soggetti e l'ambiente
+- Considera la progressione attraverso i 3 frame
+- Verifica se gli elementi richiesti dal filtro sono presenti e prominenti
+- Assegna `1` se corrisponde, `0` se non corrisponde
+
+## 3. POSIZIONAMENTO BANNER
+
+Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) analizzando attentamente i frame.
+
+### Regole di Posizionamento:
+- Se i **soggetti principali sono centrali** → posiziona `"top"`.  
+- Se i **soggetti partono dalla parte bassa fino a metà del frame** → posiziona `"top"`.  
+- Se i **soggetti principali occupano la parte alta** e la zona bassa appare libera o statica → posiziona `"bottom"`.  
+- Se i soggetti sono distribuiti in più aree, scegli la posizione che **libera di più spazio visivo** e garantisce leggibilità.  
+- **Mai sovrapporre testo al volto o all’azione principale.**
+
+### Criteri da considerare:
+1. **Soggetti principali**: dove si trovano nell’inquadratura (alto, basso, centro).  
+2. **Azione centrale**: quale zona del frame è cruciale per capire la scena.  
+3. **Spazi liberi**: scegli l’area più statica o vuota per il testo.  
+
+## 4. CREAZIONE MEME COERENTE
+
+Se il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusione perfetta** di:
+
+### Formula del Meme Perfetto:
+**CONTENUTO VISIVO + STILE LINGUISTICO + OBIETTIVO = MEME PERFETTO**
+
+### Elementi Obbligatori:
+1. **CONTENUTO VISIVO**: Utilizza la descrizione dell'immagine come contesto
+2. **STILE LINGUISTICO**: Segui gli esempi di stile forniti dall'utente
+3. **OBIETTIVO**: Integra l'obiettivo specificato: **{{BUSINESS_THEME}}**
+4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo
+
+## ISTRUZIONI TECNICHE
+
+### Formato di Risposta
+Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
+
+### Campi JSON Richiesti
+
+1. **`"description"`**: Descrizione coerente (3-5 frasi) del contenuto dell'immagine, includendo azioni, soggetti, movimenti, interazioni e sfondo.
+
+2. **`"matches_filter"`**: Inserisci `1` se l'azione principale corrisponde al filtro `{{CONTENT_FILTER}}`, altrimenti `0`.
+
+3. **`"banner_position"`**: Specifica `"top"` o `"bottom"`, seguendo le regole di posizionamento descritte.
+
+4. **`"meme_text"`**: 
+   - Se `"matches_filter" = 1`: genera il **meme perfetto** che deve:
+     - Utilizzare la **descrizione dell'immagine** come contesto visuale
+     - Seguire lo **stile linguistico** degli esempi forniti
+     - Essere **coerente con l'obiettivo**: "{{BUSINESS_THEME}}"
+     - **COLLEGARE** in modo intelligente il contenuto visivo con l'obiettivo
+     - NON USARE CARATTERI SPECIALI O EMOJI
+     - SCRIVI L'INTERO MEME ALL'INTERNO DELLA STESSA RIGA SENZA FRASI SU DUE RIGHE
+   - Se `"matches_filter" = 0`: lascia stringa vuota `""`
+
+### Regola Fondamentale
+❌ **SBAGLIATO**: Meme generico sull'obiettivo senza connessione visuale  
+✅ **CORRETTO**: Meme che unisce perfettamente ciò che si vede con l'obiettivo
+
+### Esempio di Output
+
+```json
+{
+  "description": "La tua descrizione continua qui...",
+  "matches_filter": 1,
+  "banner_position": "top",
+  "meme_text": "Il tuo meme perfetto qui..."
+}

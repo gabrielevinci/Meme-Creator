@@ -61,18 +61,18 @@ async function integrationTestV4() {
 
         // Scenario 5: Valori edge case
         await testScenario("Scenario 5: Edge Cases", {
-            title: "",  // Titolo vuoto
+            title: "", // Titolo vuoto
             metadata: {
-                'Season number': "non-numero",  // Valore non numerico
-                'HD Video': "maybe",            // Valore ambiguo
-                'Data di creazione': 'now',     // Data speciale
-                'Classificazione (esplicito)': 'EXPLICIT'  // Maiuscolo
+                'Season number': "non-numero", // Valore non numerico
+                'HD Video': "maybe", // Valore ambiguo
+                'Data di creazione': 'now', // Data speciale
+                'Classificazione (esplicito)': 'EXPLICIT' // Maiuscolo
             }
         });
 
         console.log('\n🏆 TUTTI I TEST DI INTEGRAZIONE V4 COMPLETATI');
         console.log('✅ Sistema pronto per produzione');
-        
+
     } catch (error) {
         console.error('❌ Errore nei test di integrazione:', error);
     }
@@ -81,12 +81,12 @@ async function integrationTestV4() {
 async function testScenario(scenarioName, testData) {
     console.log(`\n📋 ${scenarioName}`);
     console.log('='.repeat(scenarioName.length + 5));
-    
+
     try {
         // Trova video di test
         const inputDir = path.join(__dirname, 'INPUT');
         const videos = fs.readdirSync(inputDir).filter(file => file.toLowerCase().endsWith('.mp4'));
-        
+
         if (videos.length === 0) {
             console.log('⚠️ Nessun video disponibile, salto questo scenario');
             return;
@@ -94,7 +94,7 @@ async function testScenario(scenarioName, testData) {
 
         const testVideo = videos[0];
         const testVideoPath = path.join(inputDir, testVideo);
-        
+
         // Crea copia unica per questo test
         const timestamp = Date.now();
         const testCopyPath = testVideoPath.replace('.mp4', `_INTEGRATION_${timestamp}.mp4`);
@@ -110,7 +110,7 @@ async function testScenario(scenarioName, testData) {
         if (result.success) {
             console.log(`✅ ${scenarioName} - SUCCESSO`);
             console.log(`📝 File finale: ${path.basename(result.newPath)}`);
-            
+
             // Cleanup - rimuovi file di test
             setTimeout(() => {
                 try {
@@ -122,10 +122,10 @@ async function testScenario(scenarioName, testData) {
                     console.warn('⚠️ Pulizia file:', cleanupErr.message);
                 }
             }, 1000);
-            
+
         } else {
             console.log(`❌ ${scenarioName} - FALLITO: ${result.error}`);
-            
+
             // Cleanup file in caso di errore
             if (fs.existsSync(testCopyPath)) {
                 fs.unlinkSync(testCopyPath);
@@ -145,7 +145,7 @@ async function performanceTest() {
     console.log('======================');
 
     const startTime = Date.now();
-    
+
     const testData = {
         title: "Performance Test Video",
         metadata: {
@@ -164,7 +164,7 @@ async function performanceTest() {
         // Trova video di test
         const inputDir = path.join(__dirname, 'INPUT');
         const videos = fs.readdirSync(inputDir).filter(file => file.toLowerCase().endsWith('.mp4'));
-        
+
         if (videos.length === 0) {
             console.log('⚠️ Nessun video disponibile per test performance');
             return;
@@ -184,12 +184,12 @@ async function performanceTest() {
         const processEndTime = Date.now();
 
         const totalTime = processEndTime - processStartTime;
-        
+
         if (result.success) {
             console.log(`✅ Performance test completato`);
             console.log(`⏱️ Tempo elaborazione: ${totalTime}ms`);
             console.log(`📊 Velocità: ${totalTime < 5000 ? 'OTTIMA' : totalTime < 10000 ? 'BUONA' : 'DA OTTIMIZZARE'}`);
-            
+
             // Cleanup
             setTimeout(() => {
                 if (fs.existsSync(result.newPath)) {
@@ -210,10 +210,10 @@ async function performanceTest() {
 
 // Esecuzione test completi
 if (require.main === module) {
-    (async () => {
+    (async() => {
         await integrationTestV4();
         await performanceTest();
-        
+
         console.log('\n🎉 TESTING V4 COMPLETATO');
         console.log('========================');
         console.log('✅ Sistema MetadataManager V4 validato');

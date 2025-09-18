@@ -1,6 +1,6 @@
 {
   "fontFamily": "Impact",
-  "marginTop": 30,
+  "marginTop": 19,
   "marginBottom": 30,
   "marginLeft": 40,
   "marginRight": 40,
@@ -22,5 +22,6 @@
   "backgroundAudioVolume": 0,
   "replaceAudioEnabled": false,
   "replaceAudioFolderPath": "",
-  "removeBlackFrameEnabled": false
+  "removeBlackFrameEnabled": false,
+  "addMetadataEnabled": true
 }

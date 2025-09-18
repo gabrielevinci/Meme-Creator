@@ -30,10 +30,14 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
 
     async analyzeFrames(framePaths, config, apiManager, originalVideoName = null) {
         console.log('Avvio analisi AI per', framePaths.length, 'frame');
+        console.log('🔧 Configurazione opzioni:', {
+            useCollage: config.useCollage,
+            addMetadataEnabled: config.addMetadataEnabled
+        });
 
         try {
-            // Carica il template prompt appropriato
-            const templateName = config.useCollage ? 'collage.txt' : 'single_frame.txt';
+            // Selezione template prompt basata su useCollage e addMetadataEnabled
+            const templateName = this.getTemplateNameByOptions(config.useCollage, config.addMetadataEnabled);
             const promptTemplate = await this.loadPromptTemplate(templateName);
 
             // Sostituisci le variabili nel template
@@ -147,6 +151,30 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
         }
     }
 
+    /**
+     * Determina il nome del template prompt basato sulle opzioni selezionate
+     * @param {boolean} useCollage - Se usare rilevamento collage
+     * @param {boolean} addMetadata - Se aggiungere metadati
+     * @returns {string} Nome del file template
+     */
+    getTemplateNameByOptions(useCollage, addMetadata) {
+        console.log(`📋 Selezione template: useCollage=${useCollage}, addMetadata=${addMetadata}`);
+        
+        if (useCollage && addMetadata) {
+            console.log(`✅ Template selezionato: collage_metadati.txt`);
+            return 'collage_metadati.txt';
+        } else if (useCollage && !addMetadata) {
+            console.log(`✅ Template selezionato: collage_no_metadati.txt`);
+            return 'collage_no_metadati.txt';
+        } else if (!useCollage && addMetadata) {
+            console.log(`✅ Template selezionato: single_frame_metadati.txt`);
+            return 'single_frame_metadati.txt';
+        } else {
+            console.log(`✅ Template selezionato: single_frame_no_metadati.txt`);
+            return 'single_frame_no_metadati.txt';
+        }
+    }
+
     async loadPromptTemplate(templateName) {
         try {
             const templatePath = path.join(this.promptsDir, templateName);
@@ -161,6 +189,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
 
     getDefaultTemplate(templateName) {
         const templates = {
+            // Template legacy per compatibilità
             'single_frame.txt': `Analizza questa immagine estratta da un video per creare un meme.
 
 BUSINESS THEME: {{BUSINESS_THEME}}
@@ -203,10 +232,22 @@ FRAME 2 (50%): [Descrizione secondo frame]
 FRAME 3 (75%): [Descrizione terzo frame]
 PROGRESSIONE: [Analisi della sequenza temporale]
 MEME NARRATIVO: [Testo del meme che sfrutta la progressione]
-RATIONALE: [Spiegazione della scelta creativa]`
+RATIONALE: [Spiegazione della scelta creativa]`,
+
+            // Nuovi template V4 - fallback ai file nella cartella prompt se non trovati
+            'single_frame_no_metadati.txt': `Template fallback: Analizza questa immagine per creare un meme senza metadati.`,
+            'single_frame_metadati.txt': `Template fallback: Analizza questa immagine per creare un meme con metadati completi.`,
+            'collage_no_metadati.txt': `Template fallback: Analizza questo collage per creare un meme senza metadati.`,
+            'collage_metadati.txt': `Template fallback: Analizza questo collage per creare un meme con metadati completi.`
         };
 
-        return templates[templateName] || templates['single_frame.txt'];
+        const template = templates[templateName];
+        if (!template) {
+            console.warn(`⚠️ Template ${templateName} non trovato, uso fallback single_frame.txt`);
+            return templates['single_frame.txt'];
+        }
+
+        return template;
     }
 
     replaceVariables(template, config) {

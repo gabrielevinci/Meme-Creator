@@ -1,5 +1,7 @@
 # Prompt Template per Creazione Meme Perfetto
+
 ## 1. OBIETTIVO PRINCIPALE
+
 Il tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.
 **L'obiettivo finale è generare un meme che:**
 - Sia visivamente e concettualmente perfetto
@@ -48,6 +50,11 @@ Crea un titolo originale e accattivante che:
 - Utilizzi parole chiave che favoriscono la viralità
 - Massimo 100 caratteri per ottimizzare la visualizzazione
 - **NON USARE CARATTERI SPECIALI O EMOJI**
+
+## 6. GENERAZIONE METADATI COMPLETI
+
+Genera metadati completi e ottimizzati per questi frame di video. I metadati devono essere pertinenti al contenuto, descrizione che hai dato, e "meme_text" che hai scritto. Tutti i metadati devono essere ricchi di keyword strategiche e coerenti con il tema, senza mai inserire caratteri speciali o emoji. Non devono comparire riferimenti a tecnologie, processi di generazione o intelligenza artificiale. L’obiettivo è creare metadati che favoriscano la massima visibilità e viralità sui social network, trasmettendo in maniera implicita segnali forti e rilevanti agli algoritmi delle piattaforme.
+
 
 ## ISTRUZIONI TECNICHE
 ### Formato di Risposta

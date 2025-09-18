@@ -7904,6 +7904,42 @@
             "tokens_used": 2878,
             "response_time_ms": 5044,
             "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo una scogliera ripida a picco su un lago azzurro brillante. La vegetazione lussureggiante ricopre la parete rocciosa, mentre alberi sve"
+          },
+          "1758218072785_c6phx9amf": {
+            "timestamp": 1758218072785,
+            "tokens": 2819,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2819,
+            "response_time_ms": 4676,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una spiaggia di notte illuminata da una luna piena e stelle scintillanti nel cielo blu scuro. Le onde del mare avanzano dolcemente sulla sabbia, creando rif"
+          },
+          "1758218077051_sh5xr21bh": {
+            "timestamp": 1758218077051,
+            "tokens": 2842,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2842,
+            "response_time_ms": 4260,
+            "output": "```json\n{\n  \"description\": \"Una vasta pianura coperta da vegetazione bassa e fitta si estende verso una maestosa catena montuosa in lontananza. Il cielo è di un blu intenso e limpido, con le cime dei "
+          },
+          "1758218080882_fz4k9j6er": {
+            "timestamp": 1758218080882,
+            "tokens": 2835,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2835,
+            "response_time_ms": 3825,
+            "output": "```json\n{\n  \"description\": \"Una strada serpeggiante corre lungo un ripido fianco della montagna, con un lago azzurro brillante e montagne in lontananza. La vegetazione verde e lussureggiante ricopre l"
+          },
+          "1758218085121_goj2kl9s2": {
+            "timestamp": 1758218085121,
+            "tokens": 2805,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2805,
+            "response_time_ms": 4233,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano la costa di una spiaggia di notte. Nel cielo scuro e stellato, la luna piena illumina la scena. Le onde, illuminate da un bagliore biolumines"
           }
         }
       },

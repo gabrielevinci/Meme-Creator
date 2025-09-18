@@ -5,88 +5,43 @@ const fs = require('fs');
 
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
-// MAPPATURA METADATI MP4 (V6 FINALE ASSOLUTA - COMPATIBILITA' FFMPEG)
-// Mappatura identica al codice Python funzionante ma con escape per ffmpeg
+// MAPPATURA METADATI MP4 CORRETTA PER WINDOWS FFMPEG
+// Basata sulla documentazione di music-metadata e iTunes standard
 const TAG_MAP = {
-  // Basic Info - Usa formato compatibile con ffmpeg Windows
-  'Title': 'title', 'Artist': 'artist', 'Composer': 'composer',
-  'Album': 'album', 'Album artist': 'album_artist', 'Genre': 'genre',
-  'Grouping': 'grouping', 'Copyright': 'copyright', 'Commenti': 'comment',
-  'Data di creazione': 'date',
+  // Basic Info - Formato iTunes/MP4 CORRETTO
+  'title': '©nam',          // Titolo del video (©NAM in iTunes)
+  'artist': '©ART',         // Artista/creatore (©ART in iTunes)
+  'album': '©alb',          // Album/collezione (©ALB in iTunes)
+  'genre': '©gen',          // Genere (©GEN in iTunes)
+  'keywords': 'keyw',       // Parole chiave (KEYW in iTunes)
+  'comment': '©cmt',        // Commento (©CMT in iTunes)
+  'date': '©day',           // Data (©DAY in iTunes)
+  'composer': '©wrt',       // Compositore (©WRT in iTunes)
   
-  // Video Info
-  'Show': 'show', 'TV Network': 'network', 'Season number': 'season_number',
-  'Episode number': 'episode_id', 'HD Video': 'hd_video',
-  
-  // Dettagli Tecnici e Contenuto
-  'Encoded by': 'encoded_by', 'Encoder tool': 'encoder',
-  'Sottotitolo': 'description',
-  'Classificazione (esplicito)': 'content_rating',
-  'Motivo classificazione': 'rating_reason',
-  'Tag': 'keywords',
-  'Umore': 'mood',
-  'Chiave iniziale': 'initial_key',
-  'Protetto': 'gapless_playback',
-
-  // Crediti e Distribuzione - Usa metadati standard quando possibile
-  'Director': 'director',
-  'Director of photography': 'director_of_photography',
-  'Sound engineer': 'sound_engineer',
-  'Art director': 'art_director',
-  'Production designer': 'production_designer',
-  'Choreographer': 'choreographer',
-  'Costume designer': 'costume_designer',
-  'Writer': 'writer',
-  'Screenwriter': 'screenwriter',
-  'Editor': 'editor',
-  'Producer': 'producer',
-  'Co-producer': 'co_producer',
-  'Executive producer': 'executive_producer',
-  'Distributed by': 'publisher',
-  'Studio': 'label',
-  'Editore': 'publisher',
-  'Provider di contenuti': 'content_provider',
-  'Conduttori': 'conductor',
-  'URL autore': 'artist_url',
-  'URL di promozione': 'promotion_url',
-  
-  // Ordinamento (Sort Order) - Versione compatibile
-  'Title sort order': 'sort_name', 'Artist sort order': 'sort_artist', 'Album sort order': 'sort_album',
-  'Album artist sort order': 'sort_album_artist', 'Composer sort order': 'sort_composer', 'Show sort order': 'sort_show'
+  // Metadati aggiuntivi MP4/iTunes
+  'album_artist': 'aART',   // Album artist (aART)
+  'sort_name': 'sonm',      // Title sort (sonm)
+  'sort_artist': 'soar',    // Artist sort (soar)  
+  'sort_album': 'soal',     // Album sort (soal)
+  'sort_album_artist': 'soaa', // Album artist sort (soaa)
+  'description': 'desc',    // Descrizione (desc)
+  'copyright': 'cprt',      // Copyright (cprt)
+  'encoder': '©too',        // Encoder tool (©TOO)
+  'grouping': '©grp'        // Raggruppamento (©GRP)
 };
 
-// LOGICHE DI FORMATTAZIONE SPECIFICHE (COMPATIBILI CON FFMPEG WINDOWS)
+// FORMATTAZIONE SEMPLIFICATA PER COMPATIBILITÀ MP4/WINDOWS
 function formatMetadataValue(tagKey, value) {
-  // --- Logica di Formattazione Specifica per FFmpeg ---
+  // Conversione semplice del valore in stringa, rimuovendo caratteri problematici
+  const cleanValue = String(value)
+    .replace(/"/g, '')         // Rimuovi virgolette
+    .replace(/\\/g, '')        // Rimuovi backslash
+    .replace(/\n/g, ' ')       // Converti newline in spazio
+    .replace(/\r/g, '')        // Rimuovi carriage return
+    .trim();                   // Rimuovi spazi extra
   
-  if (tagKey === 'content_rating') {
-    // Rating esplicito: 255 per esplicito, 0 per no
-    return ['sì', 'si', 'yes', 'explicit'].includes(String(value).toLowerCase()) ? '255' : '0';
-  }
-  
-  if (tagKey === 'date') {
-    // Data corrente o valore specifico
-    return String(value).toLowerCase() === 'now' ? 
-      new Date().toISOString().split('T')[0] : String(value);
-  }
-  
-  if (['season_number', 'episode_id'].includes(tagKey)) {
-    // Season e Episode Number devono essere interi
-    return parseInt(value) || 0;
-  }
-  
-  if (tagKey === 'hd_video') {
-    // HD Video flag (0 o 1)
-    return ['true', '1', 'sì', 'si', 'yes'].includes(String(value).toLowerCase()) ? 1 : 0;
-  }
-  
-  if (tagKey === 'gapless_playback') {
-    // Protetto (boolean)
-    return ['true', '1', 'sì', 'si', 'yes'].includes(String(value).toLowerCase()) ? 'true' : 'false';
-  }
-  
-  // Tutti gli altri tag - escape caratteri speciali per ffmpeg
-  return String(value).replace(/"/g, '\\"');
+  console.log(`  📝 Formattazione: ${tagKey} = "${cleanValue}"`);
+  return cleanValue;
 }
 
 class MetadataManager {

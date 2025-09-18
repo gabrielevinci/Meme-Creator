@@ -7877,6 +7877,33 @@
             "tokens_used": 2837,
             "response_time_ms": 6424,
             "output": "```json\n{\n  \"description\": \"I tre frame mostrano una vista dall'interno di un'auto durante un tramonto spettacolare. Il cielo è un'esplosione di colori arancioni e rossi incandescenti, con nuvole che "
+          },
+          "1758217494459_k55n4uahq": {
+            "timestamp": 1758217494459,
+            "tokens": 2838,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2838,
+            "response_time_ms": 14951,
+            "output": "```json\n{\n  \"description\": \"Una magnifica vista notturna di una spiaggia con onde luminose che si infrangono sulla riva. La luna piena splende nel cielo stellato, illuminando le acque che brillano di "
+          },
+          "1758217498717_jsvbhf8ox": {
+            "timestamp": 1758217498717,
+            "tokens": 2790,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2790,
+            "response_time_ms": 4251,
+            "output": "```json\n{\n  \"description\": \"Una veduta panoramica di un vasto campo verdeggiante con erbe basse e arbusti si estende fino a una linea di alberi scuri. Oltre la foresta, maestose montagne dalle cime fr"
+          },
+          "1758217503768_sj1rf97wo": {
+            "timestamp": 1758217503768,
+            "tokens": 2878,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2878,
+            "response_time_ms": 5044,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo una scogliera ripida a picco su un lago azzurro brillante. La vegetazione lussureggiante ricopre la parete rocciosa, mentre alberi sve"
           }
         }
       },

@@ -36,14 +36,8 @@ class ContentCreatorApp {
             if (result.success) {
                 console.log(`✅ Video processato con metadati: ${path.basename(result.newPath)}`);
                 
-                // Notifica al renderer del successo
-                if (this.mainWindow && !this.mainWindow.isDestroyed()) {
-                    this.mainWindow.webContents.send('video-metadata-applied', {
-                        originalPath: videoPath,
-                        newPath: result.newPath,
-                        title: apiResponseData.title
-                    });
-                }
+                // RIMOSSA NOTIFICA POPUP COME RICHIESTO DALL'UTENTE
+                // I metadati vengono applicati silenziosamente
                 
                 return result.newPath;
             } else {

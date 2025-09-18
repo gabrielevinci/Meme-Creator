@@ -78,16 +78,79 @@ class MetadataManagerV4 {
     }
 
     /**
+     * Pulisce tutti i metadati esistenti dal video MP4
+     * @param {string} videoPath - Path del video MP4
+     * @returns {Object} - {success: boolean, cleanedPath?: string, error?: string}
+     */
+    async clearMetadata(videoPath) {
+        try {
+            console.log(`🧹 Inizio pulizia metadati per: ${path.basename(videoPath)}`);
+            
+            const outputPath = videoPath.replace('.mp4', '_clean.mp4');
+            const tempPath = outputPath + this.tempSuffix;
+            
+            // Comando FFmpeg per rimuovere tutti i metadati
+            const ffmpegCommand = `"${ffmpegStatic}" -i "${videoPath}" -map_metadata -1 -c copy "${tempPath}"`;
+            
+            console.log(`🔧 Eseguendo: ${ffmpegCommand}`);
+            
+            try {
+                const { stdout, stderr } = await execAsync(ffmpegCommand);
+                if (stderr) {
+                    console.log('📄 FFmpeg stderr:', stderr);
+                }
+                console.log('✅ Pulizia metadati completata');
+            } catch (ffmpegError) {
+                console.error('❌ Errore FFmpeg pulizia:', ffmpegError);
+                throw new Error(`Errore pulizia metadati: ${ffmpegError.message}`);
+            }
+            
+            // Sostituisci file originale con quello pulito
+            if (fs.existsSync(tempPath)) {
+                if (fs.existsSync(outputPath)) {
+                    fs.unlinkSync(outputPath);
+                }
+                fs.renameSync(tempPath, outputPath);
+                console.log(`✅ Metadati rimossi: ${path.basename(outputPath)}`);
+                
+                return { success: true, cleanedPath: outputPath };
+            } else {
+                throw new Error('File temporaneo non trovato dopo pulizia');
+            }
+            
+        } catch (error) {
+            console.error('❌ Errore pulizia metadati:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
      * Punto di ingresso principale: applica metadati MP4 seguendo logica Python V4
      * @param {string} videoPath - Path del video MP4
      * @param {Object} apiData - Dati dall'AI con struttura {title, metadata}
+     * @param {boolean} clearFirst - Se true, pulisce metadati esistenti prima di applicare quelli nuovi
      * @returns {Object} - {success: boolean, newPath?: string, error?: string}
      */
-    async applyMetadataToVideo(videoPath, apiData) {
+    async applyMetadataToVideo(videoPath, apiData, clearFirst = false) {
         try {
             console.log(`📝 Inizio applicazione metadati V4 per: ${path.basename(videoPath)}`);
             console.log(`🏷️ Titolo da API: ${apiData.title || 'Non specificato'}`);
+            console.log(`🧹 Pulizia metadati precedenti: ${clearFirst ? 'Sì' : 'No'}`);
 
+            let currentVideoPath = videoPath;
+
+            // FASE 1: Pulizia metadati esistenti se richiesta
+            if (clearFirst) {
+                console.log(`🧹 Pulizia metadati esistenti prima di applicare quelli nuovi...`);
+                const cleanResult = await this.clearMetadata(currentVideoPath);
+                if (!cleanResult.success) {
+                    throw new Error(`Errore pulizia metadati: ${cleanResult.error}`);
+                }
+                currentVideoPath = cleanResult.cleanedPath;
+                console.log(`✅ Metadati esistenti puliti: ${path.basename(currentVideoPath)}`);
+            }
+
+            // FASE 2: Applicazione nuovi metadati
             const metadata = apiData.metadata || {};
             console.log(`📊 Metadati ricevuti: ${Object.keys(metadata).length}`);
 
@@ -96,15 +159,15 @@ class MetadataManagerV4 {
                 console.log(`⚠️ Nessun metadato fornito, procedo solo con la rinominazione`);
             } else {
                 // Applica metadati usando la logica Python V4
-                const result = await this.applyMetadataToFile(videoPath, metadata);
+                const result = await this.applyMetadataToFile(currentVideoPath, metadata);
                 if (!result) {
                     throw new Error('Fallita applicazione metadati');
                 }
                 console.log(`✅ Metadati applicati con successo`);
             }
 
-            // Rinomina file basandosi sul titolo
-            const newPath = await this.renameFile(videoPath, apiData.title);
+            // FASE 3: Rinomina file basandosi sul titolo
+            const newPath = await this.renameFile(currentVideoPath, apiData.title);
             console.log(`📝 File processato: ${path.basename(newPath)}`);
 
             return { success: true, newPath };

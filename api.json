@@ -7976,6 +7976,105 @@
             "tokens_used": 3125,
             "response_time_ms": 2782,
             "output": "```json\n{\n  \"description\": \"Un litorale notturno illuminato da una bioluminescenza bluastra che segue le onde. La scena si snoda lungo la costa sotto un cielo stellato e una luna piena radiosa. Le cre"
+          },
+          "1758227122596_j7hghtyho": {
+            "timestamp": 1758227122596,
+            "tokens": 3012,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3012,
+            "response_time_ms": 3546,
+            "output": "```json\n{\n  \"description\": \"Una spiaggia è illuminata da una suggestiva bioluminescenza bluastra mentre le onde si infrangono dolcemente sulla riva sotto un cielo notturno stellato. La luna piena sple"
+          },
+          "1758227126084_egprcmqp7": {
+            "timestamp": 1758227126084,
+            "tokens": 2958,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2958,
+            "response_time_ms": 3481,
+            "output": "```json\n{\n  \"description\": \"Una vasta distesa di vegetazione bassa e verde si estende nell'inquadratura, con una linea di alberi scuri che segna l'orizzonte. Sopra gli alberi incombono maestose montag"
+          },
+          "1758227129379_9u9vdxc9n": {
+            "timestamp": 1758227129379,
+            "tokens": 2938,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2938,
+            "response_time_ms": 3287,
+            "output": "```json\n{\n  \"description\": \"Un drone cattura una spettacolare strada costiera che si snoda lungo una scogliera ricca di vegetazione. La strada presenta una barriera di sicurezza in metallo sul lato af"
+          },
+          "1758227132796_cqefyb8at": {
+            "timestamp": 1758227132796,
+            "tokens": 2945,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2945,
+            "response_time_ms": 3411,
+            "output": "```json\n{\n  \"description\": \"Una scena notturna su una spiaggia, con la luna piena alta nel cielo stellato e la fluorescenza bioluminescente che illumina le onde che lambiscono dolcemente la riva sabbi"
+          },
+          "1758227136508_i5tsn47c3": {
+            "timestamp": 1758227136508,
+            "tokens": 3046,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3046,
+            "response_time_ms": 3704,
+            "output": "```json\n{\n  \"description\": \"La scena presenta una spiaggia notturna illuminata dalla luna piena e dalle stelle. Le onde che lambiscono la riva sono bioluminescenti, creando un effetto luminoso blu int"
+          },
+          "1758227173733_104ad9qhu": {
+            "timestamp": 1758227173733,
+            "tokens": 3015,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3015,
+            "response_time_ms": 3459,
+            "output": "```json\n{\n  \"description\": \"Una spiaggia di notte illuminata dalla brillantezza bioluminescente delle onde. La luna piena splende alta nel cielo stellato scuro, proiettando una luce tenue. Le onde che"
+          },
+          "1758227176985_mvrwyq6gg": {
+            "timestamp": 1758227176985,
+            "tokens": 2998,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2998,
+            "response_time_ms": 3246,
+            "output": "```json\n{\n  \"description\": \"I frame mostrano maestose montagne illuminate dai raggi dorati del sole al tramonto, con vette imponenti che si stagliano contro un cielo azzurro intenso. Ai piedi delle mo"
+          },
+          "1758227180271_8tnamuxpo": {
+            "timestamp": 1758227180271,
+            "tokens": 2992,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2992,
+            "response_time_ms": 3279,
+            "output": "```json\n{\n  \"description\": \"Una strada tortuosa su un ripido pendio montuoso si affaccia su un lago turchese scintillante. La vegetazione lussureggiante ricopre la montagna, mentre nuvole sottili dise"
+          },
+          "1758227201295_c1drn7tzl": {
+            "timestamp": 1758227201295,
+            "tokens": 2902,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2902,
+            "response_time_ms": 2938,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio notturno sereno sulla costa marittima. La luna piena brilla luminosa nel cielo scuro costellato di stelle. Onde luminose e bioluminescenti lambiscono dolcement"
+          },
+          "1758227206907_3tms9p93e": {
+            "timestamp": 1758227206907,
+            "tokens": 2996,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2996,
+            "response_time_ms": 5605,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di erbe basse e arbusti si estende fino a una linea di alberi scuri, con un imponente gruppo di montagne frastagliate che si erge sullo sfondo. Il cielo è di"
+          },
+          "1758227210140_ubm7ytxdu": {
+            "timestamp": 1758227210140,
+            "tokens": 3022,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3022,
+            "response_time_ms": 3227,
+            "output": "```json\n{\n  \"description\": \"Una strada serpeggiante corre lungo un ripido promontorio a strapiombo su un lago azzurro brillante. Montagne boscose si ergono sullo sfondo sotto un cielo azzurro pieno di"
           }
         }
       },

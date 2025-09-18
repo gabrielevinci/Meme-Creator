@@ -1706,6 +1706,20 @@
                             </div>
                         </div>
 
+                        <!-- Elimina metadati -->
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="remove-metadata-enabled" class="checkbox-input">
+                                <label for="remove-metadata-enabled" class="checkbox-label">🗑️ Elimina Metadati</label>
+                            </div>
+                            <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
+                                Se abilitato, rimuove tutti i metadati esistenti dal video senza aggiungerne di nuovi
+                            </div>
+                            <div id="metadata-conflict-warning" class="help-text" style="margin-top: 8px; color: #e74c3c; display: none; font-weight: 600;">
+                                ⚠️ Non puoi abilitare contemporaneamente "Aggiungi Metadati" e "Elimina Metadati"
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -2150,10 +2164,41 @@
                 }
 
                 const addMetadataCheckbox = document.getElementById('add-metadata-enabled');
+                const removeMetadataCheckbox = document.getElementById('remove-metadata-enabled');
+                const conflictWarning = document.getElementById('metadata-conflict-warning');
+
                 if (addMetadataCheckbox) {
                     addMetadataCheckbox.addEventListener('change', () => {
+                        // Se viene abilitato "Aggiungi Metadati", disabilita "Elimina Metadati"
+                        if (addMetadataCheckbox.checked && removeMetadataCheckbox) {
+                            removeMetadataCheckbox.checked = false;
+                            this.hideMetadataConflictWarning();
+                        }
                         this.saveSettings();
                     });
+                }
+
+                if (removeMetadataCheckbox) {
+                    removeMetadataCheckbox.addEventListener('change', () => {
+                        // Se viene abilitato "Elimina Metadati", disabilita "Aggiungi Metadati"
+                        if (removeMetadataCheckbox.checked && addMetadataCheckbox) {
+                            addMetadataCheckbox.checked = false;
+                            this.hideMetadataConflictWarning();
+                        } else if (!removeMetadataCheckbox.checked && addMetadataCheckbox && addMetadataCheckbox.checked) {
+                            // Se entrambi sono selezionati dopo il deselect, mostra warning
+                            this.showMetadataConflictWarning();
+                        }
+                        this.saveSettings();
+                    });
+                }
+
+                // Controllo iniziale per conflitti
+                if (addMetadataCheckbox && removeMetadataCheckbox) {
+                    if (addMetadataCheckbox.checked && removeMetadataCheckbox.checked) {
+                        // Priorità a "Elimina Metadati" se entrambi sono true
+                        addMetadataCheckbox.checked = false;
+                        this.showMetadataConflictWarning();
+                    }
                 }
             }
 
@@ -2528,6 +2573,21 @@
                 await new Promise(resolve => setTimeout(resolve, 800));
             }
 
+            // Funzioni helper per gestire il conflitto metadati
+            showMetadataConflictWarning() {
+                const warning = document.getElementById('metadata-conflict-warning');
+                if (warning) {
+                    warning.style.display = 'block';
+                }
+            }
+
+            hideMetadataConflictWarning() {
+                const warning = document.getElementById('metadata-conflict-warning');
+                if (warning) {
+                    warning.style.display = 'none';
+                }
+            }
+
             // Gestione delle impostazioni
             async loadSettings() {
                 try {
@@ -2799,6 +2859,33 @@
                         }
                     }
 
+                    if (settings.addMetadataEnabled !== undefined) {
+                        const addMetadataCheckbox = document.getElementById('add-metadata-enabled');
+                        if (addMetadataCheckbox) {
+                            addMetadataCheckbox.checked = settings.addMetadataEnabled;
+                        }
+                    }
+
+                    if (settings.removeMetadataEnabled !== undefined) {
+                        const removeMetadataCheckbox = document.getElementById('remove-metadata-enabled');
+                        if (removeMetadataCheckbox) {
+                            removeMetadataCheckbox.checked = settings.removeMetadataEnabled;
+                        }
+                    }
+
+                    // Controllo di mutua esclusività al caricamento
+                    const addMetadataCheckbox = document.getElementById('add-metadata-enabled');
+                    const removeMetadataCheckbox = document.getElementById('remove-metadata-enabled');
+                    if (addMetadataCheckbox && removeMetadataCheckbox) {
+                        if (addMetadataCheckbox.checked && removeMetadataCheckbox.checked) {
+                            // Priorità a "Elimina Metadati" se entrambi sono true
+                            addMetadataCheckbox.checked = false;
+                            this.showMetadataConflictWarning();
+                        } else {
+                            this.hideMetadataConflictWarning();
+                        }
+                    }
+
                     // Aggiorna il preview dashboard dopo aver caricato le impostazioni
                     setTimeout(() => this.updateBannerPreview(), 100);
 
@@ -2835,7 +2922,8 @@
                         replaceAudioEnabled: document.getElementById('replace-audio-enabled') && document.getElementById('replace-audio-enabled').checked || false,
                         replaceAudioFolderPath: this.replaceAudioFolderPath || '',
                         removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
-                        addMetadataEnabled: document.getElementById('add-metadata-enabled') && document.getElementById('add-metadata-enabled').checked || false
+                        addMetadataEnabled: document.getElementById('add-metadata-enabled') && document.getElementById('add-metadata-enabled').checked || false,
+                        removeMetadataEnabled: document.getElementById('remove-metadata-enabled') && document.getElementById('remove-metadata-enabled').checked || false
                     };
 
                     console.log('Salvataggio impostazioni:', settings);
@@ -3143,7 +3231,8 @@
                     replaceAudioEnabled: document.getElementById('replace-audio-enabled') && document.getElementById('replace-audio-enabled').checked || false,
                     replaceAudioFolderPath: this.replaceAudioFolderPath || '',
                     removeBlackFrameEnabled: document.getElementById('remove-black-frame-enabled') && document.getElementById('remove-black-frame-enabled').checked || false,
-                    addMetadataEnabled: document.getElementById('add-metadata-enabled') && document.getElementById('add-metadata-enabled').checked || false
+                    addMetadataEnabled: document.getElementById('add-metadata-enabled') && document.getElementById('add-metadata-enabled').checked || false,
+                    removeMetadataEnabled: document.getElementById('remove-metadata-enabled') && document.getElementById('remove-metadata-enabled').checked || false
                 };
 
                 // Gestione sicura dei margini (permette il valore 0)

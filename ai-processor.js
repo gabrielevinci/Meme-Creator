@@ -32,12 +32,13 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
         console.log('Avvio analisi AI per', framePaths.length, 'frame');
         console.log('🔧 Configurazione opzioni:', {
             useCollage: config.useCollage,
-            addMetadataEnabled: config.addMetadataEnabled
+            addMetadataEnabled: config.addMetadataEnabled,
+            removeMetadataEnabled: config.removeMetadataEnabled
         });
 
         try {
-            // Selezione template prompt basata su useCollage e addMetadataEnabled
-            const templateName = this.getTemplateNameByOptions(config.useCollage, config.addMetadataEnabled);
+            // Selezione template prompt basata su useCollage, addMetadataEnabled, e removeMetadataEnabled
+            const templateName = this.getTemplateNameByOptions(config.useCollage, config.addMetadataEnabled, config.removeMetadataEnabled);
             const promptTemplate = await this.loadPromptTemplate(templateName);
 
             // Sostituisci le variabili nel template
@@ -154,25 +155,42 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
     /**
      * Determina il nome del template prompt basato sulle opzioni selezionate
      * @param {boolean} useCollage - Se usare rilevamento collage
-     * @param {boolean} addMetadata - Se aggiungere metadati
+     * @param {boolean} addMetadata - Se aggiungere metadati (mutuamente esclusivo con removeMetadata)
+     * @param {boolean} removeMetadata - Se rimuovere metadati (mutuamente esclusivo con addMetadata)
      * @returns {string} Nome del file template
      */
-    getTemplateNameByOptions(useCollage, addMetadata) {
-        console.log(`📋 Selezione template: useCollage=${useCollage}, addMetadata=${addMetadata}`);
+    getTemplateNameByOptions(useCollage, addMetadata = false, removeMetadata = false) {
+        console.log(`📋 Selezione template: useCollage=${useCollage}, addMetadata=${addMetadata}, removeMetadata=${removeMetadata}`);
         
-        if (useCollage && addMetadata) {
-            console.log(`✅ Template selezionato: collage_metadati.txt`);
-            return 'collage_metadati.txt';
-        } else if (useCollage && !addMetadata) {
-            console.log(`✅ Template selezionato: collage_no_metadati.txt`);
-            return 'collage_no_metadati.txt';
-        } else if (!useCollage && addMetadata) {
-            console.log(`✅ Template selezionato: single_frame_metadati.txt`);
-            return 'single_frame_metadati.txt';
-        } else {
-            console.log(`✅ Template selezionato: single_frame_no_metadati.txt`);
-            return 'single_frame_no_metadati.txt';
+        // Verifica mutua esclusività (sicurezza aggiuntiva)
+        if (addMetadata && removeMetadata) {
+            console.warn(`⚠️ Entrambe le opzioni metadati sono abilitate! Priorità a removeMetadata`);
+            addMetadata = false;
         }
+        
+        // Selezione template basata su 6 combinazioni possibili
+        let templateName;
+        
+        if (useCollage) {
+            if (addMetadata) {
+                templateName = 'collage_metadati.txt';
+            } else {
+                // Sia per removeMetadata=true che per nessuna opzione metadati
+                templateName = 'collage_no_metadati.txt';
+            }
+        } else {
+            if (addMetadata) {
+                templateName = 'single_frame_metadati.txt';
+            } else {
+                // Sia per removeMetadata=true che per nessuna opzione metadati
+                templateName = 'single_frame_no_metadati.txt';
+            }
+        }
+        
+        console.log(`✅ Template selezionato: ${templateName}`);
+        console.log(`🎯 Modalità: ${useCollage ? 'Collage' : 'Frame Singolo'}, ${addMetadata ? 'Con Metadati' : removeMetadata ? 'Elimina Metadati' : 'Senza Metadati'}`);
+        
+        return templateName;
     }
 
     async loadPromptTemplate(templateName) {

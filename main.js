@@ -26,33 +26,59 @@ class ContentCreatorApp {
     }
 
     // NUOVO: Metodo per applicare metadati dopo creazione video
-    async processVideoComplete(videoPath, apiResponseData) {
+    async processVideoComplete(videoPath, apiResponseData, config = {}) {
         try {
             console.log(`🎬 Post-processing video: ${path.basename(videoPath)}`);
+            console.log(`🔧 Configurazione metadati:`, {
+                addMetadata: config.addMetadataEnabled || false,
+                removeMetadata: config.removeMetadataEnabled || false
+            });
 
-            // Applica metadati e rinomina
-            const result = await this.metadataManager.applyMetadataToVideo(videoPath, apiResponseData);
-
-            if (result.success) {
-                console.log(`✅ Video processato con metadati: ${path.basename(result.newPath)}`);
-
-                // RIMOSSA NOTIFICA POPUP COME RICHIESTO DALL'UTENTE
-                // I metadati vengono applicati silenziosamente
-
-                return result.newPath;
-            } else {
-                console.error(`❌ Errore metadati: ${result.error}`);
-
-                // Notifica errore
-                if (this.mainWindow && !this.mainWindow.isDestroyed()) {
-                    this.mainWindow.webContents.send('video-metadata-error', {
-                        path: videoPath,
-                        error: result.error
-                    });
+            // CASO 1: Solo eliminazione metadati
+            if (config.removeMetadataEnabled && !config.addMetadataEnabled) {
+                console.log(`🗑️ Modalità: solo eliminazione metadati`);
+                const cleanResult = await this.metadataManager.clearMetadata(videoPath);
+                
+                if (cleanResult.success) {
+                    console.log(`✅ Metadati eliminati: ${path.basename(cleanResult.cleanedPath)}`);
+                    return cleanResult.cleanedPath;
+                } else {
+                    console.error(`❌ Errore eliminazione metadati: ${cleanResult.error}`);
+                    return videoPath;
                 }
-
-                return videoPath; // Restituisce il path originale se i metadati falliscono
             }
+            
+            // CASO 2: Aggiunta metadati (con pulizia preventiva se necessario)
+            else if (config.addMetadataEnabled && !config.removeMetadataEnabled) {
+                console.log(`📋 Modalità: aggiunta metadati con pulizia preventiva`);
+                
+                // Applica metadati con pulizia automatica dei precedenti
+                const result = await this.metadataManager.applyMetadataToVideo(videoPath, apiResponseData, true);
+
+                if (result.success) {
+                    console.log(`✅ Video processato con nuovi metadati: ${path.basename(result.newPath)}`);
+                    return result.newPath;
+                } else {
+                    console.error(`❌ Errore applicazione metadati: ${result.error}`);
+                    
+                    // Notifica errore
+                    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                        this.mainWindow.webContents.send('video-metadata-error', {
+                            path: videoPath,
+                            error: result.error
+                        });
+                    }
+                    
+                    return videoPath;
+                }
+            }
+            
+            // CASO 3: Nessuna operazione metadati
+            else {
+                console.log(`⚪ Modalità: nessuna operazione metadati`);
+                return videoPath;
+            }
+            
         } catch (error) {
             console.error('Errore critico processamento metadati:', error);
 

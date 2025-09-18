@@ -23,5 +23,6 @@
   "replaceAudioEnabled": false,
   "replaceAudioFolderPath": "",
   "removeBlackFrameEnabled": false,
-  "addMetadataEnabled": true
+  "addMetadataEnabled": false,
+  "removeMetadataEnabled": true
 }

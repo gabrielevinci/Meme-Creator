@@ -2481,8 +2481,8 @@ class VideoProcessor {
                             // Prepara dati API dai dati AI response
                             const apiData = this.prepareApiDataFromAiResponse(processedAiResponse);
                             
-                            // Chiama il processamento metadati nel main app (asincrono)
-                            this.mainApp.processVideoComplete(outputVideoPath, apiData)
+                            // Chiama il processamento metadati nel main app (asincrono) con configurazione
+                            this.mainApp.processVideoComplete(outputVideoPath, apiData, config)
                                 .then(finalVideoPath => {
                                     resolve(finalVideoPath);
                                 })

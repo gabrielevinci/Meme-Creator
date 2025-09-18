@@ -12,126 +12,6 @@
           "TPM": 250000
         },
         "requests": {
-          "1757607578181_sfg7twffc": {
-            "timestamp": 1757607578181,
-            "tokens": {
-              "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.\r\n\r\n**L'obiettivo finale è generare un meme che:**\r\n- Sia visivamente e concettualmente perfetto\r\n- Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato\r\n- Segua lo stile linguistico richiesto\r\n- Sia posizionato ottimalmente nell'immagine\r\n\r\n## 2. VERIFICA FILTRO IMMAGINE\r\n\r\nDevi analizzare se il contenuto dei tre frame corrisponde al filtro specificato dall'utente: **paesaggio/landscape/tramonto**\r\n\r\n**Criteri di valutazione:**\r\n- Osserva l'azione principale, i soggetti e l'ambiente\r\n- Considera la progressione attraverso i 3 frame\r\n- Verifica se gli elementi richiesti dal filtro sono presenti e prominenti\r\n- Assegna `1` se corrisponde, `0` se non corrisponde\r\n\r\n## 3. POSIZIONAMENTO BANNER\r\n\r\nDetermina la posizione ottimale del banner di testo (`\"top\"` o `\"bottom\"`) analizzando:\r\n- **Soggetti principali**: Dove si trovano nell'inquadratura\r\n- **Azione centrale**: Quale area è più importante per la comprensione\r\n- **Spazi liberi**: Dove il testo non interferirebbe con l'elemento visivo chiave\r\n- **Regola**: Scegli la posizione che **meno ostruisce** il soggetto/azione principale\r\n\r\n## 4. CREAZIONE MEME COERENTE\r\n\r\nSe il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusione perfetta** di:\r\n\r\n### Formula del Meme Perfetto:\r\n**CONTENUTO VISIVO + STILE LINGUISTICO + OBIETTIVO = MEME PERFETTO**\r\n\r\n### Elementi Obbligatori:\r\n1. **CONTENUTO VISIVO**: Utilizza la descrizione dell'immagine come contesto\r\n2. **STILE LINGUISTICO**: Segui gli esempi di stile forniti dall'utente\r\n3. **OBIETTIVO**: Integra l'obiettivo specificato: **spotify premium 2 anni**\r\n4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo\r\n\r\n### Esempi di Stile da Seguire:\r\nio che guardo i like salire dopo aver comprato il boost da 24 ore per il cliente\nio che fisso le statistiche del cliente che è passato da 500 a 5k follower in una settimana\ncome mi sento quando il cliente mi scrive \"ma come hai fatto?\" dopo il boost di visualizzazioni\nio che guardo il telefono mentre aspetto che il cliente approvi la strategia hashtag personalizzata\nio che conto i follower che crescono dopo aver ottimizzato la bio del cliente\ncome guardo il cliente che si lamenta dei pochi follower ma non vuole investire nella crescita\nio dopo aver creato 50 Reels virali per i clienti questo mese\ncome mi sento quando il cliente dice \"voglio diventare virale\" ma ha 200 follower\nio che fisso le analytics mentre il Reel del cliente fa 100k visualizzazioni\nio e il team dopo aver portato 5 clienti da 0 a 10k follower\r\n\r\n## ISTRUZIONI TECNICHE\r\n\r\n### Formato di Risposta\r\nRispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.\r\n\r\n### Campi JSON Richiesti\r\n\r\n1. **`\"description\"`**: Descrizione coerente (3-5 frasi) del contenuto dell'immagine, includendo azioni, soggetti, movimenti, interazioni e sfondo.\r\n\r\n2. **`\"matches_filter\"`**: Inserisci `1` se l'azione principale corrisponde al filtro `paesaggio/landscape/tramonto`, altrimenti `0`.\r\n\r\n3. **`\"banner_position\"`**: Specifica `\"top\"` o `\"bottom\"`, scegliendo la posizione che meno ostruisce il soggetto/azione principale.\r\n\r\n4. **`\"meme_text\"`**: \r\n   - Se `\"matches_filter\" = 1`: genera il **meme perfetto** che deve:\r\n     - Utilizzare la **descrizione dell'immagine** come contesto visuale\r\n     - Seguire lo **stile linguistico** degli esempi forniti\r\n     - Essere **coerente con l'obiettivo**: \"spotify premium 2 anni\"\r\n     - **COLLEGARE** in modo intelligente il contenuto visivo con l'obiettivo\r\n   - Se `\"matches_filter\" = 0`: lascia stringa vuota `\"\"`\r\n\r\n### Regola Fondamentale\r\n❌ **SBAGLIATO**: Meme generico sull'obiettivo senza connessione visuale  \r\n✅ **CORRETTO**: Meme che unisce perfettamente ciò che si vede con l'obiettivo\r\n\r\n### Esempio di Output\r\n\r\n```json\r\n{\r\n  \"description\": \"La tua descrizione continua qui...\",\r\n  \"matches_filter\": 1,\r\n  \"banner_position\": \"top\",\r\n  \"meme_text\": \"Il tuo meme perfetto qui...\"\r\n}\r\n```",
-              "tokens_used": 1201,
-              "response_time_ms": 2052,
-              "output": "```json\n{\n  \"description\": \"Un campo di margherite ondeggia dolcemente sotto un cielo drammatico al tramonto. Le nuvole, tinte di arancione e grigio, creano un pattern quasi ipnotico. In lontananza, u",
-              "success": true
-            }
-          },
-          "1757607580385_278tw2efi": {
-            "timestamp": 1757607580385,
-            "tokens": {
-              "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.\r\n\r\n**L'obiettivo finale è generare un meme che:**\r\n- Sia visivamente e concettualmente perfetto\r\n- Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato\r\n- Segua lo stile linguistico richiesto\r\n- Sia posizionato ottimalmente nell'immagine\r\n\r\n## 2. VERIFICA FILTRO IMMAGINE\r\n\r\nDevi analizzare se il contenuto dei tre frame corrisponde al filtro specificato dall'utente: **paesaggio/landscape/tramonto**\r\n\r\n**Criteri di valutazione:**\r\n- Osserva l'azione principale, i soggetti e l'ambiente\r\n- Considera la progressione attraverso i 3 frame\r\n- Verifica se gli elementi richiesti dal filtro sono presenti e prominenti\r\n- Assegna `1` se corrisponde, `0` se non corrisponde\r\n\r\n## 3. POSIZIONAMENTO BANNER\r\n\r\nDetermina la posizione ottimale del banner di testo (`\"top\"` o `\"bottom\"`) analizzando:\r\n- **Soggetti principali**: Dove si trovano nell'inquadratura\r\n- **Azione centrale**: Quale area è più importante per la comprensione\r\n- **Spazi liberi**: Dove il testo non interferirebbe con l'elemento visivo chiave\r\n- **Regola**: Scegli la posizione che **meno ostruisce** il soggetto/azione principale\r\n\r\n## 4. CREAZIONE MEME COERENTE\r\n\r\nSe il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusione perfetta** di:\r\n\r\n### Formula del Meme Perfetto:\r\n**CONTENUTO VISIVO + STILE LINGUISTICO + OBIETTIVO = MEME PERFETTO**\r\n\r\n### Elementi Obbligatori:\r\n1. **CONTENUTO VISIVO**: Utilizza la descrizione dell'immagine come contesto\r\n2. **STILE LINGUISTICO**: Segui gli esempi di stile forniti dall'utente\r\n3. **OBIETTIVO**: Integra l'obiettivo specificato: **spotify premium 2 anni**\r\n4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo\r\n\r\n### Esempi di Stile da Seguire:\r\nio che guardo i like salire dopo aver comprato il boost da 24 ore per il cliente\nio che fisso le statistiche del cliente che è passato da 500 a 5k follower in una settimana\ncome mi sento quando il cliente mi scrive \"ma come hai fatto?\" dopo il boost di visualizzazioni\nio che guardo il telefono mentre aspetto che il cliente approvi la strategia hashtag personalizzata\nio che conto i follower che crescono dopo aver ottimizzato la bio del cliente\ncome guardo il cliente che si lamenta dei pochi follower ma non vuole investire nella crescita\nio dopo aver creato 50 Reels virali per i clienti questo mese\ncome mi sento quando il cliente dice \"voglio diventare virale\" ma ha 200 follower\nio che fisso le analytics mentre il Reel del cliente fa 100k visualizzazioni\nio e il team dopo aver portato 5 clienti da 0 a 10k follower\r\n\r\n## ISTRUZIONI TECNICHE\r\n\r\n### Formato di Risposta\r\nRispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.\r\n\r\n### Campi JSON Richiesti\r\n\r\n1. **`\"description\"`**: Descrizione coerente (3-5 frasi) del contenuto dell'immagine, includendo azioni, soggetti, movimenti, interazioni e sfondo.\r\n\r\n2. **`\"matches_filter\"`**: Inserisci `1` se l'azione principale corrisponde al filtro `paesaggio/landscape/tramonto`, altrimenti `0`.\r\n\r\n3. **`\"banner_position\"`**: Specifica `\"top\"` o `\"bottom\"`, scegliendo la posizione che meno ostruisce il soggetto/azione principale.\r\n\r\n4. **`\"meme_text\"`**: \r\n   - Se `\"matches_filter\" = 1`: genera il **meme perfetto** che deve:\r\n     - Utilizzare la **descrizione dell'immagine** come contesto visuale\r\n     - Seguire lo **stile linguistico** degli esempi forniti\r\n     - Essere **coerente con l'obiettivo**: \"spotify premium 2 anni\"\r\n     - **COLLEGARE** in modo intelligente il contenuto visivo con l'obiettivo\r\n   - Se `\"matches_filter\" = 0`: lascia stringa vuota `\"\"`\r\n\r\n### Regola Fondamentale\r\n❌ **SBAGLIATO**: Meme generico sull'obiettivo senza connessione visuale  \r\n✅ **CORRETTO**: Meme che unisce perfettamente ciò che si vede con l'obiettivo\r\n\r\n### Esempio di Output\r\n\r\n```json\r\n{\r\n  \"description\": \"La tua descrizione continua qui...\",\r\n  \"matches_filter\": 1,\r\n  \"banner_position\": \"top\",\r\n  \"meme_text\": \"Il tuo meme perfetto qui...\"\r\n}\r\n```",
-              "tokens_used": 1163,
-              "response_time_ms": 2199,
-              "output": "```json\n{\n  \"description\": \"Una donna con un cappellino verde e un gilet verde brillante sta ballando in un corridoio. Indossa leggings neri e scarpe da ginnastica bianche. Ha le braccia tese e la boc",
-              "success": true
-            }
-          },
-          "1757607582463_4y3z4niw1": {
-            "timestamp": 1757607582463,
-            "tokens": {
-              "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.\r\n\r\n**L'obiettivo finale è generare un meme che:**\r\n- Sia visivamente e concettualmente perfetto\r\n- Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato\r\n- Segua lo stile linguistico richiesto\r\n- Sia posizionato ottimalmente nell'immagine\r\n\r\n## 2. VERIFICA FILTRO IMMAGINE\r\n\r\nDevi analizzare se il contenuto dei tre frame corrisponde al filtro specificato dall'utente: **paesaggio/landscape/tramonto**\r\n\r\n**Criteri di valutazione:**\r\n- Osserva l'azione principale, i soggetti e l'ambiente\r\n- Considera la progressione attraverso i 3 frame\r\n- Verifica se gli elementi richiesti dal filtro sono presenti e prominenti\r\n- Assegna `1` se corrisponde, `0` se non corrisponde\r\n\r\n## 3. POSIZIONAMENTO BANNER\r\n\r\nDetermina la posizione ottimale del banner di testo (`\"top\"` o `\"bottom\"`) analizzando:\r\n- **Soggetti principali**: Dove si trovano nell'inquadratura\r\n- **Azione centrale**: Quale area è più importante per la comprensione\r\n- **Spazi liberi**: Dove il testo non interferirebbe con l'elemento visivo chiave\r\n- **Regola**: Scegli la posizione che **meno ostruisce** il soggetto/azione principale\r\n\r\n## 4. CREAZIONE MEME COERENTE\r\n\r\nSe il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusione perfetta** di:\r\n\r\n### Formula del Meme Perfetto:\r\n**CONTENUTO VISIVO + STILE LINGUISTICO + OBIETTIVO = MEME PERFETTO**\r\n\r\n### Elementi Obbligatori:\r\n1. **CONTENUTO VISIVO**: Utilizza la descrizione dell'immagine come contesto\r\n2. **STILE LINGUISTICO**: Segui gli esempi di stile forniti dall'utente\r\n3. **OBIETTIVO**: Integra l'obiettivo specificato: **spotify premium 2 anni**\r\n4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo\r\n\r\n### Esempi di Stile da Seguire:\r\nio che guardo i like salire dopo aver comprato il boost da 24 ore per il cliente\nio che fisso le statistiche del cliente che è passato da 500 a 5k follower in una settimana\ncome mi sento quando il cliente mi scrive \"ma come hai fatto?\" dopo il boost di visualizzazioni\nio che guardo il telefono mentre aspetto che il cliente approvi la strategia hashtag personalizzata\nio che conto i follower che crescono dopo aver ottimizzato la bio del cliente\ncome guardo il cliente che si lamenta dei pochi follower ma non vuole investire nella crescita\nio dopo aver creato 50 Reels virali per i clienti questo mese\ncome mi sento quando il cliente dice \"voglio diventare virale\" ma ha 200 follower\nio che fisso le analytics mentre il Reel del cliente fa 100k visualizzazioni\nio e il team dopo aver portato 5 clienti da 0 a 10k follower\r\n\r\n## ISTRUZIONI TECNICHE\r\n\r\n### Formato di Risposta\r\nRispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.\r\n\r\n### Campi JSON Richiesti\r\n\r\n1. **`\"description\"`**: Descrizione coerente (3-5 frasi) del contenuto dell'immagine, includendo azioni, soggetti, movimenti, interazioni e sfondo.\r\n\r\n2. **`\"matches_filter\"`**: Inserisci `1` se l'azione principale corrisponde al filtro `paesaggio/landscape/tramonto`, altrimenti `0`.\r\n\r\n3. **`\"banner_position\"`**: Specifica `\"top\"` o `\"bottom\"`, scegliendo la posizione che meno ostruisce il soggetto/azione principale.\r\n\r\n4. **`\"meme_text\"`**: \r\n   - Se `\"matches_filter\" = 1`: genera il **meme perfetto** che deve:\r\n     - Utilizzare la **descrizione dell'immagine** come contesto visuale\r\n     - Seguire lo **stile linguistico** degli esempi forniti\r\n     - Essere **coerente con l'obiettivo**: \"spotify premium 2 anni\"\r\n     - **COLLEGARE** in modo intelligente il contenuto visivo con l'obiettivo\r\n   - Se `\"matches_filter\" = 0`: lascia stringa vuota `\"\"`\r\n\r\n### Regola Fondamentale\r\n❌ **SBAGLIATO**: Meme generico sull'obiettivo senza connessione visuale  \r\n✅ **CORRETTO**: Meme che unisce perfettamente ciò che si vede con l'obiettivo\r\n\r\n### Esempio di Output\r\n\r\n```json\r\n{\r\n  \"description\": \"La tua descrizione continua qui...\",\r\n  \"matches_filter\": 1,\r\n  \"banner_position\": \"top\",\r\n  \"meme_text\": \"Il tuo meme perfetto qui...\"\r\n}\r\n```",
-              "tokens_used": 1185,
-              "response_time_ms": 2074,
-              "output": "```json\n{\n  \"description\": \"Un vasto campo di tulipani color pesca e gialli si estende verso l'orizzonte, illuminato dalla luce dorata di un tramonto mozzafiato. Le nuvole nel cielo sono striate di ar",
-              "success": true
-            }
-          },
-          "1757611719736_lir5ktbwk": {
-            "timestamp": 1757611719736,
-            "tokens": 1150,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1150,
-            "response_time_ms": 2215,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
-          },
-          "1757611721944_op9ysbo4r": {
-            "timestamp": 1757611721944,
-            "tokens": 1150,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1150,
-            "response_time_ms": 2204,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
-          },
-          "1757611724153_yibl38osl": {
-            "timestamp": 1757611724153,
-            "tokens": 1150,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1150,
-            "response_time_ms": 2204,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
-          },
-          "1757611758227_zmgacuv33": {
-            "timestamp": 1757611758227,
-            "tokens": 1161,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1161,
-            "response_time_ms": 2207,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
-          },
-          "1757611760438_i6vv5rbyk": {
-            "timestamp": 1757611760438,
-            "tokens": 1161,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1161,
-            "response_time_ms": 2207,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
-          },
-          "1757611762651_xkacavvep": {
-            "timestamp": 1757611762651,
-            "tokens": 1161,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1161,
-            "response_time_ms": 2208,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - gemini-2.5-flash-lite]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla m"
-          },
-          "1757611916536_5lgu3j6zm": {
-            "timestamp": 1757611916536,
-            "tokens": 970,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 970,
-            "response_time_ms": 3504,
-            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano un campo di fiori bianchi e arancioni in primo piano, con una distesa di alberi verdi sullo sfondo. Il tramonto dipinge il cielo con sfumatur"
-          },
-          "1757612003400_ikahzbgl5": {
-            "timestamp": 1757612003400,
-            "tokens": 973,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 973,
-            "response_time_ms": 3287,
-            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di margherite bianche e gialle si estende verso l'orizzonte, baciato dalla luce calda di un tramonto infuocato. Le nuvole, tinte di arancione e grigio, "
-          },
-          "1757612006320_9aktkq2se": {
-            "timestamp": 1757612006320,
-            "tokens": 935,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 935,
-            "response_time_ms": 2915,
-            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino verde, un gilet verde brillante e leggings neri sta ballando in un corridoio. La persona ha i pugni stretti e sembra saltare o muoversi energi"
-          },
-          "1757612009108_yz5x7eb78": {
-            "timestamp": 1757612009108,
-            "tokens": 967,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 967,
-            "response_time_ms": 2785,
-            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani rosa e gialli si estende verso l'orizzonte, illuminato da un tramonto mozzafiato. Le nuvole nel cielo sono dipinte di arancione e oro, crean"
-          },
           "1757614907299_7t7zx29d6": {
             "timestamp": 1757614907299,
             "tokens": 1176,
@@ -7826,6 +7706,177 @@
             "tokens_used": 2901,
             "response_time_ms": 4302,
             "output": "```json\n{\n  \"description\": \"La scena mostra un paesaggio nebbioso e umido con alberi spogli e un sentiero sinuoso. La luce soffusa e la foschia creano un'atmosfera eterea, suggerendo una pioggia recen"
+          },
+          "1758215693876_o4qok2hgt": {
+            "timestamp": 1758215693876,
+            "tokens": 2834,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2834,
+            "response_time_ms": 5697,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano un primo piano di due fiori di ibisco rosa in piena fioritura. I petali sono delicati e presentano sfumature che vanno dal rosa pallido al ma"
+          },
+          "1758215698150_j2f3prbhu": {
+            "timestamp": 1758215698150,
+            "tokens": 2801,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2801,
+            "response_time_ms": 4267,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo erboso onde l'erba alta ondeggia leggermente nella brezza. Dietro il campo si estende una fitta foresta verde, punteggiata da alberi e cespugli. Lo sfondo è "
+          },
+          "1758215702786_wnmj760cn": {
+            "timestamp": 1758215702786,
+            "tokens": 2818,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2818,
+            "response_time_ms": 4624,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo verde si estende in primo piano, delimitato da una staccionata metallica e folti cespugli. Dietro, una collina ricoperta da un'ombra densa di alberi occupa l"
+          },
+          "1758215707979_qz2o7jqhd": {
+            "timestamp": 1758215707979,
+            "tokens": 2792,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2792,
+            "response_time_ms": 5183,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una scena di un parco o di un giardino con un vialetto bagnato dalla pioggia. Alberi spogli e alberi con foglie verdi sono visibili sullo sfondo, con u"
+          },
+          "1758216566220_dtuy5vtrt": {
+            "timestamp": 1758216566220,
+            "tokens": 2782,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2782,
+            "response_time_ms": 4298,
+            "output": "```json\n{\n  \"description\": \"La scena mostra due fiori di ibisco rosa in primo piano, immersi nella luce del sole. Le foglie verdi offrono uno sfondo sfocato e naturale all'inquadratura.  La progressio"
+          },
+          "1758216572874_lsftd6g3m": {
+            "timestamp": 1758216572874,
+            "tokens": 2834,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2834,
+            "response_time_ms": 6646,
+            "output": "```json\n{\n  \"description\": \"Il video mostra dei campi aperti con erba alta nell'area in primo piano, che gradualmente lasciano spazio a una fitta foresta sul versante di una collina. Sopra la foresta "
+          },
+          "1758216577914_z0586ulca": {
+            "timestamp": 1758216577914,
+            "tokens": 2779,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2779,
+            "response_time_ms": 5034,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio rurale al tramonto con cielo viola e rosa. In primo piano, un prato verde recintato da una staccionata scura. Dietro, una linea di alberi e una collina formano"
+          },
+          "1758216583282_hsimvv7vv": {
+            "timestamp": 1758216583282,
+            "tokens": 2808,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2808,
+            "response_time_ms": 5362,
+            "output": "```json\n{\n  \"description\": \"Una scena all'aperto mostra un paesaggio nebbioso con alberi spogli e alcuni alberi perenni. Un sentiero curveggia attraverso un prato verde che appare bagnato, suggerendo "
+          },
+          "1758216587648_ia3ccx70a": {
+            "timestamp": 1758216587648,
+            "tokens": 2818,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2818,
+            "response_time_ms": 4358,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano un primo piano di due fiori di ibisco rosa luminosi con petali delicati e stami evidenti, immersi in un ambiente naturale. Lo sfondo sfocato "
+          },
+          "1758216592831_y7dzd50hw": {
+            "timestamp": 1758216592831,
+            "tokens": 2863,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2863,
+            "response_time_ms": 5178,
+            "output": "Di seguito è riportato il prompt template in formato JSON, pronto per essere utilizzato.\n\n```json\n{\n  \"description\": \"Tre frame consecutivi mostrano un paesaggio montano mozzafiato al sorgere del sole"
+          },
+          "1758216846741_fr77bai0d": {
+            "timestamp": 1758216846741,
+            "tokens": 2812,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2812,
+            "response_time_ms": 5196,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano due fiori di ibisco rosa brillante in piena fioritura su uno sfondo verde indefinito. L'obiettivo è creare un meme perfetto che colleghi il c"
+          },
+          "1758216850655_2z9jhs1dt": {
+            "timestamp": 1758216850655,
+            "tokens": 2840,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2840,
+            "response_time_ms": 3906,
+            "output": "```json\n{\n  \"description\": \"Un'ampia distesa erbosa si estende verso un orizzonte punteggiato da colline boscose sotto un cielo nuvoloso drammatico. La luce del sole filtra attraverso le nubi, creando"
+          },
+          "1758216855662_xvwha6g7y": {
+            "timestamp": 1758216855662,
+            "tokens": 2749,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2749,
+            "response_time_ms": 5001,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio collinare al tramonto. Il cielo passa dal rosa all'arancione e viola, con nuvole rosa soffici. In primo piano, un prato verde è delimitato da una siepe. In lon"
+          },
+          "1758216861990_a4cfi0stt": {
+            "timestamp": 1758216861990,
+            "tokens": 2759,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2759,
+            "response_time_ms": 6323,
+            "output": "```json\n{\n  \"description\": \"Una scena piovosa e nebbiosa mostra un parco con alberi spogli e rigogliosi. Un sentiero serpeggia attraverso un prato verdissimo, riflesso dall'acqua che cade. La luce sof"
+          },
+          "1758216866663_8w0zarx6f": {
+            "timestamp": 1758216866663,
+            "tokens": 2845,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2845,
+            "response_time_ms": 4666,
+            "output": "```json\n{\n  \"description\": \"Tre frame consecutivi mostrano un primo piano di due fiori di ibisco rosa acceso con petali delicati e pistilli prominenti. Lo sfondo è sfocato, con foglie verdi scure che "
+          },
+          "1758216871016_y1fvyy5jq": {
+            "timestamp": 1758216871016,
+            "tokens": 2815,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2815,
+            "response_time_ms": 4346,
+            "output": "```json\n{\n  \"description\": \"Tre frame mostrano prima un bocciolo di ibisco che inizia ad aprirsi, poi due bellissimi fiori di ibisco rosa completamente sbocciati che si muovono leggermente nella brezz"
+          },
+          "1758217058231_5p2hj92ki": {
+            "timestamp": 1758217058231,
+            "tokens": 2858,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2858,
+            "response_time_ms": 4245,
+            "output": "```json\n{\n  \"description\": \"Una vasta distesa di erba verde brillante occupa la parte inferiore del fotogramma, con un lago calmo che riflette un paesaggio montuoso maestoso e pieno di alberi sullo sf"
+          },
+          "1758217062719_tif1di07y": {
+            "timestamp": 1758217062719,
+            "tokens": 2796,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2796,
+            "response_time_ms": 4481,
+            "output": "```json\n{\n  \"description\": \"Un ruscello scorre sereno attraverso una foresta lussureggiante e verde. Rocce coperte di muschio e felci rigogliose bordano le sue sponde, evocando un'atmosfera pacifica e"
+          },
+          "1758217069152_03m5ohfof": {
+            "timestamp": 1758217069152,
+            "tokens": 2837,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n## 1. OBIETTIVO PRINCIPALE\r\nIl tuo compito è **creare",
+            "tokens_used": 2837,
+            "response_time_ms": 6424,
+            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una vista dall'interno di un'auto durante un tramonto spettacolare. Il cielo è un'esplosione di colori arancioni e rossi incandescenti, con nuvole che "
           }
         }
       },
@@ -7836,62 +7887,7 @@
           "RPD": 1000,
           "TPM": 50000
         },
-        "requests": {
-          "1757611504460_3ky765v6x": {
-            "timestamp": 1757611504460,
-            "tokens": 934,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 934,
-            "response_time_ms": 2207,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
-          },
-          "1757611552872_5buebeitb": {
-            "timestamp": 1757611552872,
-            "tokens": 934,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 934,
-            "response_time_ms": 2214,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
-          },
-          "1757611596870_zjs3840is": {
-            "timestamp": 1757611596870,
-            "tokens": 954,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 954,
-            "response_time_ms": 2213,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
-          },
-          "1757611660628_n6g2mqidw": {
-            "timestamp": 1757611660628,
-            "tokens": 934,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 934,
-            "response_time_ms": 2211,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
-          },
-          "1757611662834_nlxwdbyrv": {
-            "timestamp": 1757611662834,
-            "tokens": 934,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 934,
-            "response_time_ms": 2202,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
-          },
-          "1757611665054_ss4wiff4g": {
-            "timestamp": 1757611665054,
-            "tokens": 934,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 934,
-            "response_time_ms": 2216,
-            "output": "[SIMULAZIONE AIZASYCZRIDERJ1CDFYGVTQAD6ZPLXKZ02SVKJY - fdiocanr]\n\nDESCRIZIONE: Analisi completata dell'elemento visivo fornito.\n\nELEMENTI MEME: Identificazione di componenti adatti alla memeficazione."
-          }
-        },
+        "requests": {},
         "temporaryUnavailable": {
           "until": 1757816541644,
           "reason": "Multiple consecutive failures",

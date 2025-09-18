@@ -816,10 +816,19 @@ class VideoProcessor {
     // Funzione helper per creare nome basato sul video
     generateVideoBasedName(videoName, suffix = '') {
         // Rimuovi estensione e caratteri speciali dal nome video
-        const baseName = path.parse(videoName).name
-            .replace(/[^a-zA-Z0-9]/g, '_')
-            .substring(0, 50); // Limita lunghezza
+        let baseName = path.parse(videoName).name
+            .replace(/[^a-zA-Z0-9]/g, '_')              // Sostituisce caratteri speciali con underscore
+            .replace(/_+/g, '_')                        // Riduce underscore multipli a uno singolo
+            .replace(/^_|_$/g, '')                      // Rimuove underscore all'inizio e alla fine
+            .substring(0, 30);                          // Limita a 30 caratteri per evitare problemi con path lunghi
+        
+        // Se il nome è troppo corto dopo la pulizia, usa un fallback
+        if (baseName.length < 3) {
+            baseName = `video_${Date.now().toString().slice(-8)}`;
+        }
 
+        console.log(`🔧 Nome video sanificato: "${videoName}" → "${baseName}"`);
+        
         return suffix ? `${baseName}_${suffix}` : baseName;
     }
 

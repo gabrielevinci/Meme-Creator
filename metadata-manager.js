@@ -5,83 +5,88 @@ const fs = require('fs');
 
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
-// MAPPATURA METADATI MP4 (OBBLIGATORIA)
-// Basata su mutagen Python per tag MP4
+// MAPPATURA METADATI MP4 (V6 FINALE ASSOLUTA - COMPATIBILITA' FFMPEG)
+// Mappatura identica al codice Python funzionante ma con escape per ffmpeg
 const TAG_MAP = {
-  // Basic Info
-  'Title': '©nam', 'Artist': '©ART', 'Composer': '©wrt',
-  'Album': '©alb', 'Album artist': 'aART', 'Genre': '©gen',
-  'Grouping': '©grp', 'Copyright': 'cprt', 'Commenti': '©cmt',
-  'Data di creazione': '©day',
+  // Basic Info - Usa formato compatibile con ffmpeg Windows
+  'Title': 'title', 'Artist': 'artist', 'Composer': 'composer',
+  'Album': 'album', 'Album artist': 'album_artist', 'Genre': 'genre',
+  'Grouping': 'grouping', 'Copyright': 'copyright', 'Commenti': 'comment',
+  'Data di creazione': 'date',
   
   // Video Info
-  'Show': 'tvsh', 'TV Network': 'tvnn', 'Season number': 'tvsn',
-  'Episode number': 'tves', 'HD Video': 'hdvd',
+  'Show': 'show', 'TV Network': 'network', 'Season number': 'season_number',
+  'Episode number': 'episode_id', 'HD Video': 'hd_video',
   
-  // Dettagli Tecnici
-  'Encoded by': '©enc', 'Encoder tool': '©too',
-  'Sottotitolo': '----:com.apple.iTunes:SUBTITLE',
-  'Classificazione (esplicito)': '----:com.apple.iTunes:Rating',
-  'Motivo classificazione': '----:com.apple.iTunes:Rating Annotation',
-  'Tag': '----:com.apple.iTunes:keywords',
-  'Umore': '----:com.apple.iTunes:MOOD',
-  'Chiave iniziale': '----:com.apple.iTunes:initialkey',
-  'Protetto': '----:com.apple.iTunes:isprotected',
+  // Dettagli Tecnici e Contenuto
+  'Encoded by': 'encoded_by', 'Encoder tool': 'encoder',
+  'Sottotitolo': 'description',
+  'Classificazione (esplicito)': 'content_rating',
+  'Motivo classificazione': 'rating_reason',
+  'Tag': 'keywords',
+  'Umore': 'mood',
+  'Chiave iniziale': 'initial_key',
+  'Protetto': 'gapless_playback',
 
-  // Crediti Produzione
-  'Director': '----:com.apple.iTunes:DIRECTOR',
-  'Director of photography': '----:com.apple.iTunes:Director of Photography',
-  'Sound engineer': '----:com.apple.iTunes:Sound Engineer',
-  'Art director': '----:com.apple.iTunes:Art Director',
-  'Production designer': '----:com.apple.iTunes:Production Designer',
-  'Choreographer': '----:com.apple.iTunes:Choreographer',
-  'Costume designer': '----:com.apple.iTunes:Costume Designer',
-  'Writer': '----:com.apple.iTunes:Writer',
-  'Screenwriter': '----:com.apple.iTunes:Screenwriters',
-  'Editor': '----:com.apple.iTunes:Editors',
-  'Producer': '----:com.apple.iTunes:PRODUCER',
-  'Co-producer': '----:com.apple.iTunes:Co-Producer',
-  'Executive producer': '----:com.apple.iTunes:Executive Producer',
-  'Distributed by': '----:com.apple.iTunes:Distributed By',
-  'Studio': '----:com.apple.iTunes:Studio',
-  'Editore': '----:com.apple.iTunes:publisher',
-  'Provider di contenuti': '----:com.apple.iTunes:content_provider',
-  'Conduttori': '----:com.apple.iTunes:Conductor',
+  // Crediti e Distribuzione - Usa metadati standard quando possibile
+  'Director': 'director',
+  'Director of photography': 'director_of_photography',
+  'Sound engineer': 'sound_engineer',
+  'Art director': 'art_director',
+  'Production designer': 'production_designer',
+  'Choreographer': 'choreographer',
+  'Costume designer': 'costume_designer',
+  'Writer': 'writer',
+  'Screenwriter': 'screenwriter',
+  'Editor': 'editor',
+  'Producer': 'producer',
+  'Co-producer': 'co_producer',
+  'Executive producer': 'executive_producer',
+  'Distributed by': 'publisher',
+  'Studio': 'label',
+  'Editore': 'publisher',
+  'Provider di contenuti': 'content_provider',
+  'Conduttori': 'conductor',
+  'URL autore': 'artist_url',
+  'URL di promozione': 'promotion_url',
   
-  // Sort Order
-  'Title sort order': 'sonm', 'Artist sort order': 'soar', 'Album sort order': 'soal',
-  'Album artist sort order': 'soaa', 'Composer sort order': 'soco', 'Show sort order': 'sosn'
+  // Ordinamento (Sort Order) - Versione compatibile
+  'Title sort order': 'sort_name', 'Artist sort order': 'sort_artist', 'Album sort order': 'sort_album',
+  'Album artist sort order': 'sort_album_artist', 'Composer sort order': 'sort_composer', 'Show sort order': 'sort_show'
 };
 
-// LOGICHE DI FORMATTAZIONE SPECIFICHE (CRITICHE)
+// LOGICHE DI FORMATTAZIONE SPECIFICHE (COMPATIBILI CON FFMPEG WINDOWS)
 function formatMetadataValue(tagKey, value) {
-  // Rating esplicito
-  if (tagKey === '----:com.apple.iTunes:Rating') {
+  // --- Logica di Formattazione Specifica per FFmpeg ---
+  
+  if (tagKey === 'content_rating') {
+    // Rating esplicito: 255 per esplicito, 0 per no
     return ['sì', 'si', 'yes', 'explicit'].includes(String(value).toLowerCase()) ? '255' : '0';
   }
   
-  // Data corrente
-  if (tagKey === '©day' && String(value).toLowerCase() === 'now') {
-    return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  if (tagKey === 'date') {
+    // Data corrente o valore specifico
+    return String(value).toLowerCase() === 'now' ? 
+      new Date().toISOString().split('T')[0] : String(value);
   }
   
-  // Numeri interi per season/episode
-  if (['tvsn', 'tves'].includes(tagKey)) {
+  if (['season_number', 'episode_id'].includes(tagKey)) {
+    // Season e Episode Number devono essere interi
     return parseInt(value) || 0;
   }
   
-  // HD Video flag
-  if (tagKey === 'hdvd') {
-    return ['true', '1', 'sì', 'si', 'yes'].includes(String(value).toLowerCase()) ? '1' : '0';
+  if (tagKey === 'hd_video') {
+    // HD Video flag (0 o 1)
+    return ['true', '1', 'sì', 'si', 'yes'].includes(String(value).toLowerCase()) ? 1 : 0;
   }
   
-  // Tag personalizzati iTunes (per ffmpeg usiamo stringa normale)
-  if (tagKey.startsWith('----')) {
-    return String(value);
+  if (tagKey === 'gapless_playback') {
+    // Protetto (boolean)
+    return ['true', '1', 'sì', 'si', 'yes'].includes(String(value).toLowerCase()) ? 'true' : 'false';
   }
   
-  // Altri tag standard
-  return String(value);
+  // Tutti gli altri tag - escape caratteri speciali per ffmpeg
+  return String(value).replace(/"/g, '\\"');
 }
 
 class MetadataManager {
@@ -94,6 +99,15 @@ class MetadataManager {
       console.log(`📝 Inizio applicazione metadati per: ${path.basename(videoPath)}`);
       console.log(`🏷️ Titolo da API: ${apiData.title}`);
       console.log(`📊 Metadati ricevuti:`, Object.keys(apiData.metadata || {}).length);
+
+      // Debug: mostra tutti i metadati ricevuti
+      if (apiData.metadata && Object.keys(apiData.metadata).length > 0) {
+        console.log(`🔍 DETTAGLIO METADATI RICEVUTI:`);
+        Object.entries(apiData.metadata).forEach(([key, value]) => {
+          const mapped = TAG_MAP[key] ? `✓ (${TAG_MAP[key]})` : '✗ (non mappato)';
+          console.log(`  - ${key}: "${value}" ${mapped}`);
+        });
+      }
 
       // 1. Applica metadati
       if (apiData.metadata && Object.keys(apiData.metadata).length > 0) {
@@ -119,54 +133,73 @@ class MetadataManager {
       const tempPath = videoPath + this.tempSuffix;
       let command = ffmpeg(videoPath);
       
-      console.log(`🔄 Creazione file temporaneo: ${path.basename(tempPath)}`);
+      console.log(`🔄 Processo metadati IDENTICO al Python V4.py`);
+      console.log(`📁 File: ${path.basename(videoPath)}`);
       
       let metadataApplied = 0;
-      
-      // Applica ogni metadato con la mappatura corretta
+      let appliedMetadata = [];
+
+      // PROCESSO IDENTICO AL PYTHON: per ogni metadato nel dizionario
       Object.entries(metadata).forEach(([key, value]) => {
-        if (TAG_MAP[key] && value !== null && value !== undefined && value !== '') {
-          const tagKey = TAG_MAP[key];
-          const formattedValue = formatMetadataValue(tagKey, value);
-          
-          console.log(`📋 Applicazione metadato: ${key} (${tagKey}) = "${formattedValue}"`);
-          command = command.outputOptions('-metadata', `${tagKey}=${formattedValue}`);
-          metadataApplied++;
-        } else if (!TAG_MAP[key]) {
-          console.log(`⚠️ Tag non mappato: ${key} - valore ignorato`);
-        } else {
-          console.log(`⚠️ Valore vuoto per: ${key} - ignorato`);
+        if (!(key in TAG_MAP)) {
+          console.log(`  ⚠️ Attenzione: Indice '${key}' non riconosciuto, verrà ignorato.`);
+          return; // continue nel Python
         }
+
+        const tag_key = TAG_MAP[key];
+
+        // LOGICA DI FORMATTAZIONE COMPATIBILE CON FFMPEG WINDOWS
+        const data_to_write = formatMetadataValue(tag_key, value);
+
+        console.log(`📋 Applicando: ${key} (${tag_key}) = "${data_to_write}"`);
+        
+        // Applica metadato con formato semplice compatibile FFmpeg
+        command = command.outputOptions('-metadata', `${tag_key}=${data_to_write}`);
+        
+        appliedMetadata.push({ key, tag_key, value: data_to_write });
+        metadataApplied++;
       });
-      
+
       if (metadataApplied === 0) {
         console.log(`⚠️ Nessun metadato valido trovato da applicare`);
         resolve();
         return;
       }
+
+      console.log(`📊 Totale metadati da applicare: ${metadataApplied} (come nel Python)`);
       
-      console.log(`📊 Totale metadati da applicare: ${metadataApplied}`);
-      
-      // Copia stream senza ricodifica per preservare qualità
+      // Configurazione ffmpeg per massima compatibilità con metadati MP4
+      // Equivalente al video.save() del Python
       command = command
-        .outputOptions('-c', 'copy')
+        .outputOptions('-c', 'copy')                    // Non ricodificare
+        .outputOptions('-map_metadata', '0')            // Preserva metadati esistenti
+        .outputOptions('-movflags', 'use_metadata_tags') // Forza scrittura tag MP4
+        .outputOptions('-f', 'mp4')                     // Formato MP4 esplicito
         .output(tempPath);
-      
+
       command
         .on('start', (commandLine) => {
-          console.log(`🎬 Avvio comando ffmpeg: ${commandLine.substring(0, 100)}...`);
+          console.log(`🎬 Avvio processo metadati (stile Python mutagen)...`);
         })
         .on('progress', (progress) => {
           if (progress.percent) {
-            console.log(`⏳ Progresso metadati: ${Math.round(progress.percent)}%`);
+            console.log(`⏳ Progresso: ${Math.round(progress.percent)}%`);
           }
         })
         .on('end', () => {
-          console.log(`✅ Metadati applicati, sostituisco file originale`);
-          // Usa la funzione di rinominazione robusta
+          console.log(`✅ Metadati applicati, sostituisco file originale (come video.save())`);
+          // Equivalente al video.save() del Python
           this.safeRenameFile(tempPath, videoPath)
-            .then(() => {
-              console.log(`✅ File originale sostituito con successo`);
+            .then(async () => {
+              console.log(`✅ File salvato con successo (equivalente a video.save())`);
+              
+              // Verifica metadati applicati (per debug)
+              try {
+                await this.verifyMetadata(videoPath);
+              } catch (verifyErr) {
+                console.log(`⚠️ Verifica metadati fallita: ${verifyErr.message}`);
+              }
+              
               resolve();
             })
             .catch((err) => {
@@ -184,7 +217,7 @@ class MetadataManager {
             });
         })
         .on('error', (err) => {
-          console.error(`❌ Errore ffmpeg:`, err);
+          console.error(`❌ ERRORE CRITICO durante l'elaborazione. Dettagli:`, err);
           // Pulizia file temporaneo in caso di errore
           if (fs.existsSync(tempPath)) {
             try {
@@ -289,6 +322,35 @@ class MetadataManager {
         }
       }
     }
+  }
+
+  // NUOVO: Verifica metadati applicati (per debug)
+  async verifyMetadata(videoPath) {
+    return new Promise((resolve, reject) => {
+      ffmpeg.ffprobe(videoPath, (err, metadata) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        console.log(`🔍 VERIFICA METADATI APPLICATI:`);
+        if (metadata && metadata.format && metadata.format.tags) {
+          const appliedTags = metadata.format.tags;
+          let tagCount = 0;
+          
+          Object.entries(appliedTags).forEach(([key, value]) => {
+            console.log(`  ✓ ${key}: "${value}"`);
+            tagCount++;
+          });
+          
+          console.log(`📊 Totale tag applicati: ${tagCount}`);
+        } else {
+          console.log(`⚠️ Nessun metadato trovato nel file`);
+        }
+        
+        resolve();
+      });
+    });
   }
 }
 

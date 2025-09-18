@@ -7,7 +7,7 @@ const fsSync = require('fs');
 const ApiManager = require('./api-manager');
 const VideoProcessor = require('./video-processor');
 const AiProcessor = require('./ai-processor');
-const MetadataManager = require('./metadata-manager');
+const MetadataManager = require('./metadata-manager-v4');
 
 class ContentCreatorApp {
     constructor() {

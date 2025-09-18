@@ -34,6 +34,9 @@ class ContentCreatorApp {
                 removeMetadata: config.removeMetadataEnabled || false
             });
 
+            const originalVideoPath = videoPath; // Salva path originale per cleanup
+            let finalVideoPath = videoPath;
+
             // CASO 1: Solo eliminazione metadati
             if (config.removeMetadataEnabled && !config.addMetadataEnabled) {
                 console.log(`🗑️ Modalità: solo eliminazione metadati`);
@@ -41,10 +44,9 @@ class ContentCreatorApp {
                 
                 if (cleanResult.success) {
                     console.log(`✅ Metadati eliminati: ${path.basename(cleanResult.cleanedPath)}`);
-                    return cleanResult.cleanedPath;
+                    finalVideoPath = cleanResult.cleanedPath;
                 } else {
                     console.error(`❌ Errore eliminazione metadati: ${cleanResult.error}`);
-                    return videoPath;
                 }
             }
             
@@ -57,7 +59,7 @@ class ContentCreatorApp {
 
                 if (result.success) {
                     console.log(`✅ Video processato con nuovi metadati: ${path.basename(result.newPath)}`);
-                    return result.newPath;
+                    finalVideoPath = result.newPath;
                 } else {
                     console.error(`❌ Errore applicazione metadati: ${result.error}`);
                     
@@ -68,16 +70,25 @@ class ContentCreatorApp {
                             error: result.error
                         });
                     }
-                    
-                    return videoPath;
                 }
             }
             
             // CASO 3: Nessuna operazione metadati
             else {
                 console.log(`⚪ Modalità: nessuna operazione metadati`);
-                return videoPath;
             }
+
+            // CLEANUP: Elimina file originale se il path finale è diverso (evita duplicazioni)
+            if (finalVideoPath !== originalVideoPath && fsSync.existsSync(originalVideoPath)) {
+                try {
+                    fsSync.unlinkSync(originalVideoPath);
+                    console.log(`🧹 File originale eliminato per evitare duplicazione: ${path.basename(originalVideoPath)}`);
+                } catch (cleanupError) {
+                    console.warn(`⚠️ Impossibile eliminare file originale: ${cleanupError.message}`);
+                }
+            }
+
+            return finalVideoPath;
             
         } catch (error) {
             console.error('Errore critico processamento metadati:', error);

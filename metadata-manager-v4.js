@@ -86,8 +86,8 @@ class MetadataManagerV4 {
         try {
             console.log(`🧹 Inizio pulizia metadati per: ${path.basename(videoPath)}`);
             
-            const outputPath = videoPath.replace('.mp4', '_clean.mp4');
-            const tempPath = outputPath + this.tempSuffix;
+            // Usa file temporaneo nella stessa cartella per operazione in-place
+            const tempPath = videoPath.replace('.mp4', '.metadata_temp_clean.mp4');
             
             // Comando FFmpeg per rimuovere tutti i metadati
             const ffmpegCommand = `"${ffmpegStatic}" -i "${videoPath}" -map_metadata -1 -c copy "${tempPath}"`;
@@ -105,15 +105,24 @@ class MetadataManagerV4 {
                 throw new Error(`Errore pulizia metadati: ${ffmpegError.message}`);
             }
             
-            // Sostituisci file originale con quello pulito
+            // Sostituisci file originale con quello pulito (operazione in-place)
             if (fs.existsSync(tempPath)) {
-                if (fs.existsSync(outputPath)) {
-                    fs.unlinkSync(outputPath);
+                // Backup del file originale (per sicurezza)
+                const backupPath = videoPath + '.backup';
+                if (fs.existsSync(backupPath)) {
+                    fs.unlinkSync(backupPath);
                 }
-                fs.renameSync(tempPath, outputPath);
-                console.log(`✅ Metadati rimossi: ${path.basename(outputPath)}`);
+                fs.renameSync(videoPath, backupPath);
                 
-                return { success: true, cleanedPath: outputPath };
+                // Sostituisci con il file pulito
+                fs.renameSync(tempPath, videoPath);
+                
+                // Elimina backup se tutto è andato bene
+                fs.unlinkSync(backupPath);
+                
+                console.log(`✅ Metadati rimossi in-place: ${path.basename(videoPath)}`);
+                
+                return { success: true, cleanedPath: videoPath };
             } else {
                 throw new Error('File temporaneo non trovato dopo pulizia');
             }

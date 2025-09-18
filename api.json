@@ -8075,6 +8075,60 @@
             "tokens_used": 3022,
             "response_time_ms": 3227,
             "output": "```json\n{\n  \"description\": \"Una strada serpeggiante corre lungo un ripido promontorio a strapiombo su un lago azzurro brillante. Montagne boscose si ergono sullo sfondo sotto un cielo azzurro pieno di"
+          },
+          "1758227958189_5u3d7e4z9": {
+            "timestamp": 1758227958189,
+            "tokens": 2959,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2959,
+            "response_time_ms": 4660,
+            "output": "```json\n{\n  \"description\": \"Un bellissimo paesaggio costiero notturno con la luna piena che illumina il cielo stellato. Le onde del mare, increspate dalla brezza, brillano di una luce azzurra biolumin"
+          },
+          "1758227961890_nl6goq39b": {
+            "timestamp": 1758227961890,
+            "tokens": 3006,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3006,
+            "response_time_ms": 3694,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di erba bassa e cespugli ricopre la parte inferiore dell'immagine, con una linea di alberi scuri che attraversa l'orizzonte. Sopra di essi, imponenti montagn"
+          },
+          "1758227965158_jfhcnmupi": {
+            "timestamp": 1758227965158,
+            "tokens": 3017,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3017,
+            "response_time_ms": 3261,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo un fianco di una montagna ripida con vegetazione lussureggiante. A destra del frame si apre un lago azzurro scintillante, incorniciato"
+          },
+          "1758228040120_zfpd3n096": {
+            "timestamp": 1758228040120,
+            "tokens": 1123,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1123,
+            "response_time_ms": 1342,
+            "output": "```json\n{\n  \"description\": \"Una spiaggia di notte sotto una luna piena luminosa e un cielo stellato. L'onda del mare increspata dalla risacca illumina la riva con una bioluminescenza blu neon, creando"
+          },
+          "1758228041294_djikmnz7u": {
+            "timestamp": 1758228041294,
+            "tokens": 1126,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1126,
+            "response_time_ms": 1166,
+            "output": "```json\n{\n  \"description\": \"Un vasto paesaggio di bassa vegetazione brulla e verde occupa la parte inferiore del fotogramma, con una fila densa di alberi scuri che separa il campo dalle maestose monta"
+          },
+          "1758228042646_t6cddsvh9": {
+            "timestamp": 1758228042646,
+            "tokens": 1132,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 1132,
+            "response_time_ms": 1344,
+            "output": "```json\n{\n  \"description\": \"Una strada serpeggiante corre lungo un ripido pendio roccioso coperto di vegetazione lussureggiante. A destra, un vasto e limpido lago turchese si estende fino a dolci coll"
           }
         }
       },

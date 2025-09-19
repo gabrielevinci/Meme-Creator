@@ -7733,6 +7733,33 @@
             "tokens_used": 3284,
             "response_time_ms": 3517,
             "output": "```json\n{\n  \"description\": \"Un'imponente strada tortuosa costeggia una scogliera verdeggiante, affacciandosi su un lago sereno di colore turchese. Montagne boscose si stagliano in lontananza sotto un "
+          },
+          "1758247916528_zesyhjx16": {
+            "timestamp": 1758247916528,
+            "tokens": 2617,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2617,
+            "response_time_ms": 3880,
+            "output": "```json\n{\n  \"description\": \"Una spiaggia di notte illuminata dalla luna e dalle stelle. Le onde che si infrangono sulla riva emettono una luminescenza bluastra brillante, creando un contrasto magico c"
+          },
+          "1758247920140_l5wjujzf3": {
+            "timestamp": 1758247920140,
+            "tokens": 2641,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2641,
+            "response_time_ms": 3605,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio montano maestoso al tramonto, con le cime illuminate da una luce dorata. In primo piano, un vasto campo di arbusti verdi si estende fino a una densa foresta di"
+          },
+          "1758247923660_b9vt50yqo": {
+            "timestamp": 1758247923660,
+            "tokens": 2663,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2663,
+            "response_time_ms": 3511,
+            "output": "```json\n{\n  \"description\": \"Una strada serpeggiante si snoda lungo una scogliera a picco su un lago turchese cristallino. Le montagne verdi fanno da sfondo alla scena scenica, creando un paesaggio moz"
           }
         }
       },

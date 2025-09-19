@@ -216,53 +216,23 @@ class ResocontoManager {
             const filePath = path.join(tempFramesDir, outputFile);
             const content = await fs.readFile(filePath, 'utf8');
             
-            // Estrai il prompt completo dalla sezione PROMPT COMPLETO INVIATO
-            const promptStart = content.indexOf('PROMPT COMPLETO INVIATO:');
-            const responseStart = content.indexOf('RISPOSTA AI:\n========================================');
-            let inputAI = '';
-            
-            if (promptStart !== -1 && responseStart !== -1) {
-                inputAI = content.substring(promptStart + 'PROMPT COMPLETO INVIATO:'.length, responseStart)
-                    .replace(/={40}/g, '') // Rimuovi le linee di separazione
-                    .trim();
-            }
-            
-            // Fallback alla vecchia sezione CONFIGURAZIONE se il nuovo formato non è disponibile
-            if (!inputAI) {
-                const configStart = content.indexOf('CONFIGURAZIONE:');
-                if (configStart !== -1 && responseStart !== -1) {
-                    inputAI = content.substring(configStart, responseStart).trim();
-                }
-            }
-            
-            // Cerca specificamente la sezione dopo i delimitatori di RISPOSTA AI
-            const aiSectionMarker = 'RISPOSTA AI:\n========================================';
-            const aiSectionStart = content.lastIndexOf(aiSectionMarker); // USA lastIndexOf per trovare l'ULTIMA occorrenza
-            
-            if (aiSectionStart === -1) {
-                console.warn(`Sezione RISPOSTA AI con delimitatori non trovata nel file: ${outputFile}`);
-                return { metadata: {}, inputAI, outputAI: 'Sezione RISPOSTA AI non trovata' };
-            }
-            
-            // Estrai solo il contenuto dopo la sezione RISPOSTA AI completa
-            const responseSection = content.substring(aiSectionStart + aiSectionMarker.length);
-            
-            // Trova la sezione JSON nella risposta AI (cerca dal basso)
-            const jsonStart = responseSection.lastIndexOf('```json'); // USA lastIndexOf
-            const jsonEnd = responseSection.lastIndexOf('```'); // USA lastIndexOf
+            // Il file ora contiene SOLO la risposta dell'AI
+            // Cerca il JSON nella risposta (dal basso per sicurezza)
+            const jsonStart = content.lastIndexOf('```json');
+            const jsonEnd = content.lastIndexOf('```');
             
             if (jsonStart === -1 || jsonEnd === -1 || jsonEnd <= jsonStart) {
-                console.warn(`JSON non trovato nella sezione RISPOSTA AI del file: ${outputFile}`);
-                return { metadata: {}, inputAI, outputAI: 'JSON non trovato nella sezione RISPOSTA AI' };
+                console.warn(`JSON non trovato nel file AI: ${outputFile}`);
+                return { metadata: {}, inputAI: '', outputAI: content.substring(0, 200) + '...' };
             }
             
-            const jsonContent = responseSection.substring(jsonStart + 7, jsonEnd).trim();
+            const jsonContent = content.substring(jsonStart + 7, jsonEnd).trim();
             const aiResponse = JSON.parse(jsonContent);
             
             console.log(`📖 Metadati letti da file AI: ${outputFile}`);
             return { 
                 metadata: aiResponse.metadata || {},
-                inputAI,
+                inputAI: '', // Non più disponibile nel file .txt
                 outputAI: jsonContent
             };
             
@@ -335,6 +305,19 @@ class ResocontoManager {
             'Output Ricevuto AI'
         ];
 
+        // Colonne di configurazione (nuove)
+        const colonneConfigurazione = [
+            'Tipologia Meme',
+            'Filtro Video Configurato', 
+            'Stile Meme',
+            'Usa Collage',
+            'Font Selezionato',
+            'Temperatura AI',
+            'Aggiungi Metadati',
+            'Rimuovi Metadati',
+            'Timestamp Elaborazione'
+        ];
+
         // Aggiungi colonne per tutti i possibili metadati
         const metadati = this.ottieniChiaviMetadati();
         const colonneMetadati = metadati.map(meta => `Metadato: ${meta}`);
@@ -346,7 +329,7 @@ class ResocontoManager {
             'Larghezza Video (px)'
         ];
 
-        return [...colonneBase, ...colonneMetadati, ...colonneTecniche];
+        return [...colonneBase, ...colonneConfigurazione, ...colonneMetadati, ...colonneTecniche];
     }
 
     /**
@@ -370,6 +353,30 @@ class ResocontoManager {
             rigaExcel['Descrizione Video'] = riga.descrizione || '';
             rigaExcel['Input Dato AI'] = riga.inputAI || '';
             rigaExcel['Output Ricevuto AI'] = riga.outputAI || '';
+
+            // Configurazione (nuova)
+            if (riga.configurazione) {
+                rigaExcel['Tipologia Meme'] = riga.configurazione.tipologiaMeme || '';
+                rigaExcel['Filtro Video Configurato'] = riga.configurazione.filtroVideo || '';
+                rigaExcel['Stile Meme'] = riga.configurazione.stileMeme || '';
+                rigaExcel['Usa Collage'] = riga.configurazione.usaCollage || 'No';
+                rigaExcel['Font Selezionato'] = riga.configurazione.fontSelezionato || '';
+                rigaExcel['Temperatura AI'] = riga.configurazione.temperaturaAI || '';
+                rigaExcel['Aggiungi Metadati'] = riga.configurazione.aggiungiMetadati || 'No';
+                rigaExcel['Rimuovi Metadati'] = riga.configurazione.rimuoviMetadati || 'No';
+                rigaExcel['Timestamp Elaborazione'] = riga.configurazione.timestamp || '';
+            } else {
+                // Valori di default se la configurazione non è disponibile
+                rigaExcel['Tipologia Meme'] = '';
+                rigaExcel['Filtro Video Configurato'] = '';
+                rigaExcel['Stile Meme'] = '';
+                rigaExcel['Usa Collage'] = 'No';
+                rigaExcel['Font Selezionato'] = '';
+                rigaExcel['Temperatura AI'] = '';
+                rigaExcel['Aggiungi Metadati'] = 'No';
+                rigaExcel['Rimuovi Metadati'] = 'No';
+                rigaExcel['Timestamp Elaborazione'] = '';
+            }
 
             // Metadati - mostra i valori reali dell'AI con mappatura corretta
             const metadati = this.ottieniChiaviMetadati();
@@ -398,13 +405,25 @@ class ResocontoManager {
         try {
             console.log('📊 Generazione file RESOCONTO.xlsx...');
             
-            if (this.datiResoconto.length === 0) {
-                console.log('⚠️ Nessun dato da inserire nel resoconto');
-                return;
-            }
-
             // Assicurati che la cartella OUTPUT esista
             await fs.mkdir(outputDir, { recursive: true });
+
+            // Calcola il path del file anche se non ci sono dati
+            const filePath = path.join(outputDir, 'RESOCONTO.xlsx');
+            
+            if (this.datiResoconto.length === 0) {
+                console.log('⚠️ Nessun dato da inserire nel resoconto, creo file vuoto');
+                
+                // Crea un Excel vuoto con solo le intestazioni
+                const colonne = this.creaColonne();
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet([colonne]); // Solo header
+                XLSX.utils.book_append_sheet(wb, ws, 'Resoconto Elaborazione');
+                XLSX.writeFile(wb, filePath);
+                
+                console.log(`✅ File RESOCONTO.xlsx vuoto creato: ${filePath}`);
+                return filePath;
+            }
 
             const colonne = this.creaColonne();
             const datiExcel = this.convertiDatiPerExcel(colonne);
@@ -416,8 +435,7 @@ class ResocontoManager {
             // Aggiungi il worksheet al workbook
             XLSX.utils.book_append_sheet(wb, ws, 'Resoconto Elaborazione');
 
-            // Salva il file
-            const filePath = path.join(outputDir, 'RESOCONTO.xlsx');
+            // Salva il file (usa la variabile filePath già definita sopra)
             XLSX.writeFile(wb, filePath);
 
             console.log(`✅ File RESOCONTO.xlsx creato con successo: ${filePath}`);

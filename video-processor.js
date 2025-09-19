@@ -1823,16 +1823,21 @@ class VideoProcessor {
             for (const txtFile of txtFiles) {
                 try {
                     const txtPath = path.join(this.tempDir, txtFile);
+                    
+                    // Il file ora contiene SOLO la risposta dell'AI
                     const content = await fs.readFile(txtPath, 'utf8');
 
-                    // Estrai il JSON dalla risposta AI
-                    const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
-                    if (!jsonMatch) {
+                    // Cerca il JSON nella risposta (dal basso per sicurezza)
+                    const jsonStart = content.lastIndexOf('```json');
+                    const jsonEnd = content.lastIndexOf('```');
+                    
+                    if (jsonStart === -1 || jsonEnd === -1 || jsonEnd <= jsonStart) {
                         console.log(`⚠️ Nessun JSON trovato in ${txtFile}`);
                         continue;
                     }
 
-                    const aiResponse = JSON.parse(jsonMatch[1]);
+                    const jsonContent = content.substring(jsonStart + 7, jsonEnd).trim();
+                    const aiResponse = JSON.parse(jsonContent);
 
                     // Controlla se il video ha superato il filtro
                     if (aiResponse.matches_filter !== 1) {

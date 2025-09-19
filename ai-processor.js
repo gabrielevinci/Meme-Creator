@@ -622,34 +622,9 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
     }
 
     async saveAiOutputToFile(outputPath, aiResponse, config, framePath, fullPrompt = null) {
-        const videoName = path.basename(framePath);
-        const content = `ANALISI AI - ${videoName}
-========================================
-
-CONFIGURAZIONE:
-- Tipologia Meme: ${config.memeType}
-- Filtro Video: ${config.videoFilter}
-- Stile Meme: ${config.memeStyle}
-- Usa Collage: ${config.useCollage ? 'Sì' : 'No'}
-- Font Selezionato: ${config.selectedFont}
-
-TIMESTAMP: ${new Date().toISOString()}
-
-PROMPT COMPLETO INVIATO:
-========================================
-
-${fullPrompt || 'Prompt non disponibile'}
-
-========================================
-
-RISPOSTA AI:
-========================================
-
-${aiResponse}
-
-========================================
-Fine Analisi
-`;
+        // Salva SOLO la risposta dell'AI nel file .txt
+        // Tutte le altre informazioni andranno nel resoconto Excel
+        const content = aiResponse;
 
         await fs.writeFile(outputPath, content, 'utf8');
     }

@@ -129,8 +129,21 @@ class ContentCreatorApp {
             const nomeInput = apiResponseData.originalVideoFullName || apiResponseData.originalVideoName || vecchioNome;
             const nomeOutput = nuovoNome;
             
-            // NUOVO: Leggi i metadati direttamente dal file di output dell'AI
+            // Leggi i metadati dal file di output dell'AI (ora contiene solo la risposta)
             const datiAI = await this.resocontoManager.leggiMetadatiDaOutputAI(nomeInput);
+            
+            // Prepara le informazioni di configurazione che ora vanno nel resoconto
+            const configInfo = {
+                tipologiaMeme: config.memeType || '',
+                filtroVideo: config.videoFilter || '',
+                stileMeme: config.memeStyle || '',
+                usaCollage: config.useCollage ? 'Sì' : 'No',
+                fontSelezionato: config.selectedFont || 'impact',
+                temperaturaAI: config.temperature || 1,
+                aggiungiMetadati: config.addMetadataEnabled ? 'Sì' : 'No',
+                rimuoviMetadati: config.removeMetadataEnabled ? 'Sì' : 'No',
+                timestamp: new Date().toISOString()
+            };
             
             // Prepara i dati
             const datiRiga = {
@@ -144,12 +157,13 @@ class ContentCreatorApp {
                 posizioneBanner: aiData.banner_position || '',
                 descrizione: aiData.description || '',
                 metadati: datiAI.metadata, // Metadati dal file AI
-                inputAI: datiAI.inputAI, // Input dato all'AI
+                inputAI: '', // Ora vuoto perché il prompt non è più salvato nel file .txt
                 outputAI: datiAI.outputAI, // Output ricevuto dall'AI
                 durata: infoVideo.durata,
                 dimensioneMB: infoVideo.dimensioneMB,
                 altezza: infoVideo.altezza,
-                larghezza: infoVideo.larghezza
+                larghezza: infoVideo.larghezza,
+                configurazione: configInfo // NUOVE informazioni di configurazione
             };
 
             this.resocontoManager.aggiungiRiga(datiRiga);

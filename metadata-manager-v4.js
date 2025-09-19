@@ -400,7 +400,7 @@ class MetadataManagerV4 {
 
         // Sanifica il titolo per renderlo compatibile con filesystem
         const sanitizedTitle = newTitle
-            .replace(/[<>:"/\\|?*]/g, '_') // Caratteri non validi → underscore
+            .replace(/[<>:"/\\|?*#]/g, '_') // Caratteri non validi → underscore (incluso #)
             .replace(/\s+/g, ' ') // Spazi multipli → singolo spazio
             .trim() // Rimuovi spazi iniziali/finali
             .substring(0, 200); // Limita lunghezza

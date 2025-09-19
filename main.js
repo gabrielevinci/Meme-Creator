@@ -8,6 +8,7 @@ const ApiManager = require('./api-manager');
 const VideoProcessor = require('./video-processor');
 const AiProcessor = require('./ai-processor');
 const MetadataManager = require('./metadata-manager-v4');
+const ResocontoManager = require('./resoconto-manager');
 
 class ContentCreatorApp {
     constructor() {
@@ -16,6 +17,7 @@ class ContentCreatorApp {
         this.videoProcessor = new VideoProcessor(this); // Passa riferimento a se stesso
         this.aiProcessor = new AiProcessor();
         this.metadataManager = MetadataManager;
+        this.resocontoManager = new ResocontoManager();
         this.isProcessing = false;
 
         // Verifica modalità sviluppo
@@ -88,6 +90,13 @@ class ContentCreatorApp {
                 }
             }
 
+            // RACCOLTA DATI PER RESOCONTO
+            try {
+                await this.raccogliDatiResoconto(originalVideoPath, finalVideoPath, apiResponseData, config);
+            } catch (resocontoError) {
+                console.warn(`⚠️ Errore raccolta dati resoconto: ${resocontoError.message}`);
+            }
+
             return finalVideoPath;
             
         } catch (error) {
@@ -101,6 +110,37 @@ class ContentCreatorApp {
             }
 
             return videoPath; // Restituisce il path originale in caso di errore critico
+        }
+    }
+
+    // Raccoglie i dati per il resoconto Excel
+    async raccogliDatiResoconto(pathOriginale, pathFinale, apiResponseData, config) {
+        try {
+            const vecchioNome = path.basename(pathOriginale);
+            const nuovoNome = path.basename(pathFinale);
+            
+            // Ottieni informazioni tecniche del video finale
+            const infoVideo = await this.resocontoManager.ottieniInfoVideo(pathFinale);
+            
+            // Prepara i dati
+            const datiRiga = {
+                vecchioNome: vecchioNome,
+                nuovoNome: nuovoNome,
+                meme: apiResponseData.meme_text || '',
+                filtro: config.filterEnabled || false,
+                posizioneBanner: config.bannerPosition || '',
+                descrizione: apiResponseData.metadata?.Description || '',
+                metadati: apiResponseData.metadata || {},
+                durata: infoVideo.durata,
+                dimensioneMB: infoVideo.dimensioneMB,
+                altezza: infoVideo.altezza,
+                larghezza: infoVideo.larghezza
+            };
+
+            this.resocontoManager.aggiungiRiga(datiRiga);
+        } catch (error) {
+            console.error('Errore nella raccolta dati resoconto:', error);
+            throw error;
         }
     }
 
@@ -703,6 +743,10 @@ class ContentCreatorApp {
     async processVideos(config) {
         console.log('Avvio elaborazione con configurazione:', config);
 
+        // Step 0: Reset resoconto per nuova elaborazione
+        this.resocontoManager.reset();
+        console.log('🔄 Reset resoconto manager...');
+
         // Step 0: Reset audio usati per nuova elaborazione
         if (config && config.replaceAudioEnabled) {
             console.log('🔄 Reset lista audio utilizzati...');
@@ -855,11 +899,23 @@ class ContentCreatorApp {
             };
         }
 
+        // Step 5: Genera resoconto Excel
+        try {
+            console.log('📊 Generazione resoconto Excel...');
+            this.mainWindow.webContents.send('status-update', 'Generazione resoconto Excel...');
+            
+            const resocontoPath = await this.resocontoManager.generaResocontoExcel('./OUTPUT');
+            this.log('success', `Resoconto Excel generato: ${path.basename(resocontoPath)}`);
+        } catch (resocontoError) {
+            this.log('error', `Errore nella generazione del resoconto Excel: ${resocontoError.message}`);
+        }
+
         return {
             success: true,
             message: `Elaborazione completa terminata: ${videos.length} video analizzati, banner processati automaticamente`,
             results: aiResults,
-            bannerResults: bannerResults
+            bannerResults: bannerResults,
+            resocontoGenerato: true
         };
     }
 

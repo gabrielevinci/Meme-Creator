@@ -2306,7 +2306,21 @@
                 input.max = mapping.max;
                 input.step = mapping.step;
                 input.className = 'range-value range-value-editing';
-                input.style.width = valueElement.offsetWidth + 'px'; // Mantiene la larghezza originale
+                
+                // Calcola larghezza dinamica basata sul contenuto
+                const maxValue = Math.max(Math.abs(mapping.min), Math.abs(mapping.max));
+                const maxDigits = maxValue.toString().length;
+                const decimals = mapping.step < 1 ? 2 : 0;
+                const suffixLength = mapping.suffix ? mapping.suffix.length : 0;
+                
+                // Calcola larghezza minima necessaria (8px per carattere + padding)
+                const estimatedWidth = Math.max(
+                    (maxDigits + decimals + suffixLength + 2) * 8 + 16, // +2 per punto decimale e segno
+                    valueElement.offsetWidth,
+                    70 // Larghezza minima
+                );
+                
+                input.style.width = estimatedWidth + 'px';
                 input.style.textAlign = 'center';
                 input.style.fontSize = getComputedStyle(valueElement).fontSize;
                 input.style.fontFamily = getComputedStyle(valueElement).fontFamily;

@@ -218,7 +218,7 @@ class ResocontoManager {
             
             // Estrai il prompt completo dalla sezione PROMPT COMPLETO INVIATO
             const promptStart = content.indexOf('PROMPT COMPLETO INVIATO:');
-            const responseStart = content.indexOf('RISPOSTA AI:');
+            const responseStart = content.indexOf('RISPOSTA AI:\n========================================');
             let inputAI = '';
             
             if (promptStart !== -1 && responseStart !== -1) {
@@ -235,16 +235,28 @@ class ResocontoManager {
                 }
             }
             
-            // Trova la sezione JSON nella risposta AI
-            const jsonStart = content.indexOf('```json');
-            const jsonEnd = content.indexOf('```', jsonStart + 7);
+            // Cerca specificamente la sezione dopo i delimitatori di RISPOSTA AI
+            const aiSectionMarker = 'RISPOSTA AI:\n========================================';
+            const aiSectionStart = content.lastIndexOf(aiSectionMarker); // USA lastIndexOf per trovare l'ULTIMA occorrenza
             
-            if (jsonStart === -1 || jsonEnd === -1) {
-                console.warn(`JSON non trovato nel file: ${outputFile}`);
-                return { metadata: {}, inputAI, outputAI: 'JSON non trovato' };
+            if (aiSectionStart === -1) {
+                console.warn(`Sezione RISPOSTA AI con delimitatori non trovata nel file: ${outputFile}`);
+                return { metadata: {}, inputAI, outputAI: 'Sezione RISPOSTA AI non trovata' };
             }
             
-            const jsonContent = content.substring(jsonStart + 7, jsonEnd).trim();
+            // Estrai solo il contenuto dopo la sezione RISPOSTA AI completa
+            const responseSection = content.substring(aiSectionStart + aiSectionMarker.length);
+            
+            // Trova la sezione JSON nella risposta AI (cerca dal basso)
+            const jsonStart = responseSection.lastIndexOf('```json'); // USA lastIndexOf
+            const jsonEnd = responseSection.lastIndexOf('```'); // USA lastIndexOf
+            
+            if (jsonStart === -1 || jsonEnd === -1 || jsonEnd <= jsonStart) {
+                console.warn(`JSON non trovato nella sezione RISPOSTA AI del file: ${outputFile}`);
+                return { metadata: {}, inputAI, outputAI: 'JSON non trovato nella sezione RISPOSTA AI' };
+            }
+            
+            const jsonContent = responseSection.substring(jsonStart + 7, jsonEnd).trim();
             const aiResponse = JSON.parse(jsonContent);
             
             console.log(`📖 Metadati letti da file AI: ${outputFile}`);

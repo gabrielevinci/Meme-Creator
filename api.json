@@ -7706,6 +7706,87 @@
             "tokens_used": 2646,
             "response_time_ms": 4575,
             "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia su un ripido pendio montuoso, a picco su un lago turchese brillante. Vegetazione lussureggiante ricopre la scogliera, mentre montagne sfumat"
+          },
+          "1758254236704_kt9p1f9a3": {
+            "timestamp": 1758254236704,
+            "tokens": 2709,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2709,
+            "response_time_ms": 5327,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio notturno mozzafiato su una spiaggia dove l'acqua illumina la riva con una bioluminescenza blu brillante. Il cielo scuro è punteggiato di stelle e dominato da u"
+          },
+          "1758254241273_prqwvg9fj": {
+            "timestamp": 1758254241273,
+            "tokens": 2641,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2641,
+            "response_time_ms": 4562,
+            "output": "```json\n{\n  \"description\": \"Un panorama mozzafiato delle montagne del Grand Teton illuminate dalla luce dorata dell'alba o del tramonto. In primo piano, un vasto campo con vegetazione rigogliosa e det"
+          },
+          "1758254246452_6r9t0h5qz": {
+            "timestamp": 1758254246452,
+            "tokens": 2651,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2651,
+            "response_time_ms": 5173,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo ripide scogliere a strapiombo su un lago turchese cristallino. Le montagne verdi punteggiano l'orizzonte, sotto un cielo blu vibrante "
+          },
+          "1758254530697_bmjbj5nch": {
+            "timestamp": 1758254530697,
+            "tokens": 2661,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2661,
+            "response_time_ms": 4745,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio notturno di una spiaggia con la luna piena che splende nel cielo stellato. Le onde dell'oceano, illuminate da bioluminescenza blu, lambiscono la riva rendendo "
+          },
+          "1758254535551_x1bmu8oyh": {
+            "timestamp": 1758254535551,
+            "tokens": 2678,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2678,
+            "response_time_ms": 4847,
+            "output": "```json\n{\n  \"description\": \"Un vasto paesaggio naturale caratterizzato da montagne imponenti illuminate dalla luce dorata del tramonto. Sotto le cime frastagliate, si estende una fitta foresta di albe"
+          },
+          "1758254540747_alaxcoa11": {
+            "timestamp": 1758254540747,
+            "tokens": 2686,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2686,
+            "response_time_ms": 5189,
+            "output": "```json\n{\n  \"description\": \"Un drone sorvola una strada tortuosa costruita a strapiombo su un'imponente scogliera rocciosa che digrada verso un lago di un blu intenso. La vegetazione lussureggiante ri"
+          },
+          "1758254795960_9s1vzeh8m": {
+            "timestamp": 1758254795960,
+            "tokens": 2661,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2661,
+            "response_time_ms": 4895,
+            "output": "```json\n{\n  \"description\": \"Un bellissimo paesaggio marino notturno con la luna piena che brilla nel cielo stellato. Le onde che lambiscono la riva sono illuminate da una vivace luminescenza bluastra,"
+          },
+          "1758254800388_h4ywvy5uo": {
+            "timestamp": 1758254800388,
+            "tokens": 2617,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2617,
+            "response_time_ms": 4421,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio montano mozzafiato al tramonto, con le cime delle montagne illuminate da una calda luce dorata. In primo piano, un vasto campo di vegetazione bassa e uniforme "
+          },
+          "1758254805256_cdx5ak6ep": {
+            "timestamp": 1758254805256,
+            "tokens": 2676,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2676,
+            "response_time_ms": 4861,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo un ripido fianco della montagna, offrendo viste mozzafiato su un lago alpino cristallino le cui acque assumono un vibrante colore turc"
           }
         }
       },

@@ -7679,6 +7679,33 @@
             "tokens_used": 2675,
             "response_time_ms": 4209,
             "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo una scogliera ripida a picco su un lago blu brillante. Le montagne verdi e il cielo azzurro con nuvole bianche creano uno sfondo mozza"
+          },
+          "1758253782677_2yvw0inu0": {
+            "timestamp": 1758253782677,
+            "tokens": 2653,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2653,
+            "response_time_ms": 4730,
+            "output": "```json\n{\n  \"description\": \"Una spiaggia di notte con la luna piena alta nel cielo stellato. Le onde che lambiscono la riva sono illuminate da una bioluminescenza blu brillante, creando un contrasto m"
+          },
+          "1758253786980_8iiuz0isf": {
+            "timestamp": 1758253786980,
+            "tokens": 2655,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2655,
+            "response_time_ms": 4295,
+            "output": "```json\n{\n  \"description\": \"Un vasto paesaggio naturale illuminato dalla luce dorata dell'alba o del tramonto. In primo piano, un campo erboso con bassa vegetazione si estende verso una linea di alber"
+          },
+          "1758253791563_t385jho2d": {
+            "timestamp": 1758253791563,
+            "tokens": 2646,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2646,
+            "response_time_ms": 4575,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia su un ripido pendio montuoso, a picco su un lago turchese brillante. Vegetazione lussureggiante ricopre la scogliera, mentre montagne sfumat"
           }
         }
       },

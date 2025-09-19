@@ -10,16 +10,24 @@ ffmpeg.setFfmpegPath(ffmpegStatic);
 const TAG_MAP = {
   // Basic Info - Formato iTunes/MP4 CORRETTO
   'title': '©nam',          // Titolo del video (©NAM in iTunes)
+  'Title': '©nam',          // Titolo del video (versione Title Case)
   'artist': '©ART',         // Artista/creatore (©ART in iTunes)
+  'Artist': '©ART',         // Artista/creatore (versione Title Case)
   'album': '©alb',          // Album/collezione (©ALB in iTunes)
+  'Album': '©alb',          // Album/collezione (versione Title Case)
   'genre': '©gen',          // Genere (©GEN in iTunes)
+  'Genre': '©gen',          // Genere (versione Title Case)
   'keywords': 'keyw',       // Parole chiave (KEYW in iTunes)
   'comment': '©cmt',        // Commento (©CMT in iTunes)
+  'Commenti': '©cmt',       // Commento (versione italiana Title Case)
   'date': '©day',           // Data (©DAY in iTunes)
+  'Data di creazione': '©day', // Data (versione italiana Title Case)
   'composer': '©wrt',       // Compositore (©WRT in iTunes)
+  'Composer': '©wrt',       // Compositore (versione Title Case)
   
   // Metadati aggiuntivi MP4/iTunes
   'album_artist': 'aART',   // Album artist (aART)
+  'Album artist': 'aART',   // Album artist (versione Title Case)
   'sort_name': 'sonm',      // Title sort (sonm)
   'sort_artist': 'soar',    // Artist sort (soar)  
   'sort_album': 'soal',     // Album sort (soal)
@@ -27,7 +35,21 @@ const TAG_MAP = {
   'description': 'desc',    // Descrizione (desc)
   'copyright': 'cprt',      // Copyright (cprt)
   'encoder': '©too',        // Encoder tool (©TOO)
-  'grouping': '©grp'        // Raggruppamento (©GRP)
+  'Encoder tool': '©too',   // Encoder tool (versione Title Case)
+  'Encoded by': '©enc',     // Encoded by (©ENC)
+  'grouping': '©grp',       // Raggruppamento (©GRP)
+  
+  // Campi specializzati per video/TV
+  'Show': 'tvsh',           // Show/Serie TV
+  'HD Video': 'hdvd',       // HD Video flag
+  'Sottotitolo': '©nam',    // Sottotitolo (usa stesso tag del titolo)
+  'Tag': 'keyw',            // Tag (usa keyword)
+  'Umore': '©grp',          // Umore (usa grouping)
+  'Director': '©dir',       // Regista
+  'Producer': '©prd',       // Produttore
+  'Studio': '©stu',         // Studio
+  'Editore': '©pub',        // Editore
+  'Provider di contenuti': '©src' // Provider contenuti
 };
 
 // FORMATTAZIONE SEMPLIFICATA PER COMPATIBILITÀ MP4/WINDOWS

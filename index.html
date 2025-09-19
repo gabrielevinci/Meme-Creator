@@ -198,6 +198,21 @@
             color: #2c3e50 !important;
             border: 2px solid #3498db !important;
             outline: none;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: baseline;
+        }
+
+        /* Nasconde gli spinner (freccette su/giù) negli input numerici */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield; /* Firefox */
+            appearance: textfield; /* Standard */
         }
 
         .range-input-group {
@@ -2291,7 +2306,12 @@
                 input.max = mapping.max;
                 input.step = mapping.step;
                 input.className = 'range-value range-value-editing';
-                input.style.width = '60px';
+                input.style.width = valueElement.offsetWidth + 'px'; // Mantiene la larghezza originale
+                input.style.textAlign = 'center';
+                input.style.fontSize = getComputedStyle(valueElement).fontSize;
+                input.style.fontFamily = getComputedStyle(valueElement).fontFamily;
+                input.style.margin = getComputedStyle(valueElement).margin;
+                input.style.padding = getComputedStyle(valueElement).padding;
                 
                 // Sostituisci temporaneamente l'elemento
                 const parent = valueElement.parentNode;

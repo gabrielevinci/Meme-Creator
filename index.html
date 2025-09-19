@@ -177,11 +177,57 @@
             display: inline-block;
             background: #3498db;
             color: white;
-            padding: 2px 8px;
+            padding: 4px 8px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
             margin-left: 8px;
+            cursor: pointer;
+            min-width: 45px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .range-value:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .range-value-editing {
+            background: white !important;
+            color: #2c3e50 !important;
+            border: 2px solid #3498db !important;
+            outline: none;
+        }
+
+        .range-input-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .range-number-input {
+            width: 70px;
+            padding: 4px 6px;
+            border: 2px solid #3498db;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            background: white;
+            color: #2c3e50;
+        }
+
+        .range-number-input:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        .range-unit {
+            font-size: 12px;
+            font-weight: 600;
+            color: #3498db;
         }
         /* Stili per slider temperature */
         
@@ -1475,10 +1521,13 @@
                 <div class="form-group">
                     <label for="temperature-slider">🎲 Creatività AI (Temperature)</label>
                     <div class="slider-container">
-                        <input type="range" id="temperature-slider" class="range-input" min="0" max="2" value="1" step="0.1">
+                        <input type="range" id="temperature-slider" class="range-input" min="0" max="2" value="1" step="0.01">
                         <div class="slider-labels">
                             <span class="slider-label-left">0 (Preciso)</span>
-                            <span id="temperature-value" class="range-value">1.0</span>
+                            <div class="range-input-group">
+                                <input type="number" id="temperature-input" class="range-number-input" min="0" max="2" step="0.01" value="1.00">
+                                <span class="range-unit"></span>
+                            </div>
                             <span class="slider-label-right">2 (Creativo)</span>
                         </div>
                     </div>
@@ -1516,10 +1565,10 @@
                 <div class="form-group">
                     <label for="block-height">📐 Altezza Blocco Bianco</label>
                     <div class="slider-container">
-                        <input type="range" id="block-height" class="range-input" min="200" max="800" value="450" step="10">
+                        <input type="range" id="block-height" class="range-input" min="200" max="800" value="350" step="10">
                         <div class="slider-labels">
                             <span class="slider-label-left">200px</span>
-                            <span id="block-height-value" class="slider-value">450px</span>
+                            <span id="block-height-value" class="slider-value">350px</span>
                             <span class="slider-label-right">800px</span>
                         </div>
                     </div>
@@ -1599,7 +1648,7 @@
                         <input type="range" id="video-speed-slider" class="range-input" min="0.1" max="10" value="1" step="0.1">
                         <div class="slider-labels">
                             <span class="slider-label-left">0.1x (Lento)</span>
-                            <span id="video-speed-value" class="range-value">1.0x</span>
+                            <span id="video-speed-value" class="range-value">1.00x</span>
                             <span class="slider-label-right">10x (Veloce)</span>
                         </div>
                     </div>
@@ -1611,7 +1660,7 @@
                         <input type="range" id="video-zoom-slider" class="range-input" min="0" max="2" value="1" step="0.1">
                         <div class="slider-labels">
                             <span class="slider-label-left">0x</span>
-                            <span id="video-zoom-value" class="range-value">1.0x</span>
+                            <span id="video-zoom-value" class="range-value">1.00x</span>
                             <span class="slider-label-right">2x</span>
                         </div>
                     </div>
@@ -1624,7 +1673,7 @@
                         <input type="range" id="contrast-slider" class="range-input" min="0" max="2" value="1" step="0.1">
                         <div class="slider-labels">
                             <span class="slider-label-left">0 (Min)</span>
-                            <span id="contrast-value" class="range-value">1.0</span>
+                            <span id="contrast-value" class="range-value">1.00</span>
                             <span class="slider-label-right">2 (Max)</span>
                         </div>
                     </div>
@@ -1650,7 +1699,7 @@
                         <input type="range" id="gamma-slider" class="range-input" min="-1" max="1" value="0" step="0.1">
                         <div class="slider-labels">
                             <span class="slider-label-left">-1 (Scuro)</span>
-                            <span id="gamma-value" class="range-value">0.0</span>
+                            <span id="gamma-value" class="range-value">0.00</span>
                             <span class="slider-label-right">+1 (Chiaro)</span>
                         </div>
                     </div>
@@ -1663,7 +1712,7 @@
                         <input type="range" id="lift-slider" class="range-input" min="-1" max="1" value="0" step="0.1">
                         <div class="slider-labels">
                             <span class="slider-label-left">-1 (Scuro)</span>
-                            <span id="lift-value" class="range-value">0.0</span>
+                            <span id="lift-value" class="range-value">0.00</span>
                             <span class="slider-label-right">+1 (Chiaro)</span>
                         </div>
                     </div>
@@ -1809,13 +1858,6 @@
                     <label>📹 Video nella cartella INPUT</label>
                     <div id="video-list" class="video-list">
                         <div class="video-item">Caricamento...</div>
-                    </div>
-                </div>
-
-                <div class="form-group output-folder-option">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="open-output-folder" checked>
-                        <label for="open-output-folder">📂 Apri cartella OUTPUT al termine del processo</label>
                     </div>
                 </div>
 
@@ -2199,6 +2241,67 @@
                 }
             }
 
+            // Funzione generale per rendere i valori degli slider editabili
+            makeSliderValuesEditable() {
+                const sliderMappings = [
+                    {sliderId: 'temperature-slider', valueId: 'temperature-input', min: 0, max: 2, step: 0.01, suffix: ''},
+                    {sliderId: 'video-speed-slider', valueId: 'video-speed-value', min: 0.1, max: 10, step: 0.01, suffix: 'x'},
+                    {sliderId: 'video-zoom-slider', valueId: 'video-zoom-value', min: 0, max: 2, step: 0.01, suffix: 'x'},
+                    {sliderId: 'contrast-slider', valueId: 'contrast-value', min: 0, max: 3, step: 0.01, suffix: ''},
+                    {sliderId: 'gamma-slider', valueId: 'gamma-value', min: -1, max: 1, step: 0.01, suffix: ''},
+                    {sliderId: 'lift-slider', valueId: 'lift-value', min: -1, max: 1, step: 0.01, suffix: ''},
+                ];
+
+                sliderMappings.forEach(mapping => {
+                    const slider = document.getElementById(mapping.sliderId);
+                    const valueElement = document.getElementById(mapping.valueId);
+                    
+                    if (slider && valueElement && !mapping.valueId.includes('input')) {
+                        // Rendi il valore cliccabile per editing diretto (solo per span, non input)
+                        valueElement.addEventListener('click', () => {
+                            this.startEditing(valueElement, slider, mapping);
+                        });
+                    }
+                });
+            }
+
+            startEditing(valueElement, slider, mapping) {
+                if (valueElement.classList.contains('range-value-editing')) return;
+                
+                const currentValue = parseFloat(slider.value);
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = currentValue.toFixed(2);
+                input.min = mapping.min;
+                input.max = mapping.max;
+                input.step = mapping.step;
+                input.className = 'range-value range-value-editing';
+                input.style.width = '60px';
+                
+                // Sostituisci temporaneamente l'elemento
+                const parent = valueElement.parentNode;
+                parent.replaceChild(input, valueElement);
+                input.focus();
+                input.select();
+                
+                const finishEditing = () => {
+                    const newValue = parseFloat(input.value);
+                    if (!isNaN(newValue) && newValue >= mapping.min && newValue <= mapping.max) {
+                        slider.value = newValue;
+                        valueElement.textContent = newValue.toFixed(2) + mapping.suffix;
+                        this.saveSettings();
+                    }
+                    parent.replaceChild(valueElement, input);
+                };
+                
+                input.addEventListener('blur', finishEditing);
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === 'Escape') {
+                        finishEditing();
+                    }
+                });
+            }
+
             setupRangeInputs() {
                 // Event listeners per i range input
                 const rangeInputs = [{
@@ -2223,18 +2326,33 @@
                     suffix: 'px'
                 }];
 
+                // Funzione generale per rendere i valori degli slider editabili
+                this.makeSliderValuesEditable();
+
                 // Gestione speciale per il temperature slider
                 const temperatureSlider = document.getElementById('temperature-slider');
-                const temperatureValue = document.getElementById('temperature-value');
+                const temperatureInput = document.getElementById('temperature-input');
 
-                if (temperatureSlider && temperatureValue) {
+                if (temperatureSlider && temperatureInput) {
+                    // Sincronizza slider -> input
                     temperatureSlider.addEventListener('input', (e) => {
-                        temperatureValue.textContent = parseFloat(e.target.value).toFixed(1);
+                        const value = parseFloat(e.target.value);
+                        temperatureInput.value = value.toFixed(2);
                         this.saveSettings();
                     });
 
-                    // Imposta il valore iniziale
-                    temperatureValue.textContent = parseFloat(temperatureSlider.value).toFixed(1);
+                    // Sincronizza input -> slider
+                    temperatureInput.addEventListener('input', (e) => {
+                        const value = parseFloat(e.target.value);
+                        if (!isNaN(value) && value >= 0 && value <= 2) {
+                            temperatureSlider.value = value;
+                            this.saveSettings();
+                        }
+                    });
+
+                    // Imposta i valori iniziali
+                    const initialValue = parseFloat(temperatureSlider.value);
+                    temperatureInput.value = initialValue.toFixed(2);
                 }
 
                 // Gestione speciale per il video speed slider
@@ -2244,12 +2362,12 @@
                 if (videoSpeedSlider && videoSpeedValue) {
                     videoSpeedSlider.addEventListener('input', (e) => {
                         const value = parseFloat(e.target.value);
-                        videoSpeedValue.textContent = value.toFixed(1) + 'x';
+                        videoSpeedValue.textContent = value.toFixed(2) + 'x';
                         this.saveSettings();
                     });
 
                     // Imposta il valore iniziale
-                    videoSpeedValue.textContent = parseFloat(videoSpeedSlider.value).toFixed(1) + 'x';
+                    videoSpeedValue.textContent = parseFloat(videoSpeedSlider.value).toFixed(2) + 'x';
                 }
 
                 // Gestione speciale per il video zoom slider
@@ -2259,12 +2377,12 @@
                 if (videoZoomSlider && videoZoomValue) {
                     videoZoomSlider.addEventListener('input', (e) => {
                         const value = parseFloat(e.target.value);
-                        videoZoomValue.textContent = value.toFixed(1) + 'x';
+                        videoZoomValue.textContent = value.toFixed(2) + 'x';
                         this.saveSettings();
                     });
 
                     // Imposta il valore iniziale
-                    videoZoomValue.textContent = parseFloat(videoZoomSlider.value).toFixed(1) + 'x';
+                    videoZoomValue.textContent = parseFloat(videoZoomSlider.value).toFixed(2) + 'x';
                 }
 
                 // Gestione controlli per i nuovi parametri video
@@ -2300,10 +2418,10 @@
                 const contrastValue = document.getElementById('contrast-value');
                 if (contrastSlider && contrastValue) {
                     contrastSlider.addEventListener('input', (e) => {
-                        contrastValue.textContent = parseFloat(e.target.value).toFixed(1);
+                        contrastValue.textContent = parseFloat(e.target.value).toFixed(2);
                         this.saveSettings();
                     });
-                    contrastValue.textContent = parseFloat(contrastSlider.value).toFixed(1);
+                    contrastValue.textContent = parseFloat(contrastSlider.value).toFixed(2);
                 }
 
                 // Setup per Saturazione
@@ -2322,10 +2440,10 @@
                 const gammaValue = document.getElementById('gamma-value');
                 if (gammaSlider && gammaValue) {
                     gammaSlider.addEventListener('input', (e) => {
-                        gammaValue.textContent = parseFloat(e.target.value).toFixed(1);
+                        gammaValue.textContent = parseFloat(e.target.value).toFixed(2);
                         this.saveSettings();
                     });
-                    gammaValue.textContent = parseFloat(gammaSlider.value).toFixed(1);
+                    gammaValue.textContent = parseFloat(gammaSlider.value).toFixed(2);
                 }
 
                 // Setup per Lift
@@ -2333,10 +2451,10 @@
                 const liftValue = document.getElementById('lift-value');
                 if (liftSlider && liftValue) {
                     liftSlider.addEventListener('input', (e) => {
-                        liftValue.textContent = parseFloat(e.target.value).toFixed(1);
+                        liftValue.textContent = parseFloat(e.target.value).toFixed(2);
                         this.saveSettings();
                     });
-                    liftValue.textContent = parseFloat(liftSlider.value).toFixed(1);
+                    liftValue.textContent = parseFloat(liftSlider.value).toFixed(2);
                 }
 
                 // Setup per Volume Video

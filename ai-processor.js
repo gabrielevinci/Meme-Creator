@@ -80,7 +80,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
             // Salva l'output AI usando il nome del video originale se fornito
             const outputFileName = this.generateOutputFileName(framePaths[0], originalVideoName);
             const outputPath = path.join(__dirname, 'temp_frames', outputFileName);
-            await this.saveAiOutputToFile(outputPath, response, config, framePaths[0]);
+            await this.saveAiOutputToFile(outputPath, response, config, framePaths[0], finalPrompt);
 
             console.log(`Output salvato in: ${outputFileName}`);
 
@@ -621,7 +621,7 @@ RATIONALE: Il formato POV (Point of View) è molto popolare nei meme contemporan
         return `${videoBaseName}_ai_output_${timestamp}.txt`;
     }
 
-    async saveAiOutputToFile(outputPath, aiResponse, config, framePath) {
+    async saveAiOutputToFile(outputPath, aiResponse, config, framePath, fullPrompt = null) {
         const videoName = path.basename(framePath);
         const content = `ANALISI AI - ${videoName}
 ========================================
@@ -634,6 +634,13 @@ CONFIGURAZIONE:
 - Font Selezionato: ${config.selectedFont}
 
 TIMESTAMP: ${new Date().toISOString()}
+
+PROMPT COMPLETO INVIATO:
+========================================
+
+${fullPrompt || 'Prompt non disponibile'}
+
+========================================
 
 RISPOSTA AI:
 ========================================

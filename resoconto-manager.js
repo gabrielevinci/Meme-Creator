@@ -216,13 +216,23 @@ class ResocontoManager {
             const filePath = path.join(tempFramesDir, outputFile);
             const content = await fs.readFile(filePath, 'utf8');
             
-            // Estrai l'input dato all'AI (sezione CONFIGURAZIONE)
-            const configStart = content.indexOf('CONFIGURAZIONE:');
+            // Estrai il prompt completo dalla sezione PROMPT COMPLETO INVIATO
+            const promptStart = content.indexOf('PROMPT COMPLETO INVIATO:');
             const responseStart = content.indexOf('RISPOSTA AI:');
             let inputAI = '';
             
-            if (configStart !== -1 && responseStart !== -1) {
-                inputAI = content.substring(configStart, responseStart).trim();
+            if (promptStart !== -1 && responseStart !== -1) {
+                inputAI = content.substring(promptStart + 'PROMPT COMPLETO INVIATO:'.length, responseStart)
+                    .replace(/={40}/g, '') // Rimuovi le linee di separazione
+                    .trim();
+            }
+            
+            // Fallback alla vecchia sezione CONFIGURAZIONE se il nuovo formato non è disponibile
+            if (!inputAI) {
+                const configStart = content.indexOf('CONFIGURAZIONE:');
+                if (configStart !== -1 && responseStart !== -1) {
+                    inputAI = content.substring(configStart, responseStart).trim();
+                }
             }
             
             // Trova la sezione JSON nella risposta AI

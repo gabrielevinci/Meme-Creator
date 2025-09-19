@@ -12,141 +12,6 @@
           "TPM": 250000
         },
         "requests": {
-          "1757645449369_j273uc3cw": {
-            "timestamp": 1757645449369,
-            "tokens": 1185,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1185,
-            "response_time_ms": 2233,
-            "output": "```json\n{\n  \"description\": \"Una vasta distesa di fiori bianchi e arancioni riempie il primo piano, estendendosi verso un orizzonte dove il sole tramonta tra colline verdi e alberi. Il cielo è dipinto "
-          },
-          "1757645451575_qqwipa7zu": {
-            "timestamp": 1757645451575,
-            "tokens": 1185,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1185,
-            "response_time_ms": 2201,
-            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino e un gilet verde brillante sta ballando in un corridoio. Nel primo frame, tiene in mano una bevanda e sembra fare un movimento energico. Nei f"
-          },
-          "1757645454516_s6749qr0q": {
-            "timestamp": 1757645454516,
-            "tokens": 1177,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1177,
-            "response_time_ms": 2937,
-            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani dai colori tenui, con sfumature di rosa e giallo, si estende verso l'orizzonte. Sopra, un cielo drammatico è dipinto da nuvole striate e dor"
-          },
-          "1757647875837_wko1plo93": {
-            "timestamp": 1757647875837,
-            "tokens": 1191,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1191,
-            "response_time_ms": 2020,
-            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una spiaggia al tramonto. Le onde si infrangono dolcemente sulla riva, lasciando una scia umida sulla sabbia. Il cielo sfuma dal giallo intenso dell'or"
-          },
-          "1757647877971_hdcmt2g0q": {
-            "timestamp": 1757647877971,
-            "tokens": 1198,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1198,
-            "response_time_ms": 2115,
-            "output": "```json\n{\n  \"description\": \"Una strada sterrata serpeggia attraverso un prato verde brillante, fiancheggiata da una staccionata in legno. In lontananza, si ergono caseggiati rurali tra dolci colline r"
-          },
-          "1757647880034_jmjqstefm": {
-            "timestamp": 1757647880034,
-            "tokens": 1226,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1226,
-            "response_time_ms": 2054,
-            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una progressione attraverso un bosco nebbioso e scuro. Inizialmente, l'attenzione è sui fiori rossi in primo piano e sugli alberi nodosi sullo sfondo. "
-          },
-          "1757647882254_jyj9lnsx3": {
-            "timestamp": 1757647882254,
-            "tokens": 1244,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1244,
-            "response_time_ms": 2215,
-            "output": "```json\n{\n  \"description\": \"La scena inizia con un primo piano su un giradischi e delle cuffie appese a un muro, con un vinile di un artista che emana un'atmosfera vintage. Successivamente, l'inquadra"
-          },
-          "1757647884040_f2zusq73k": {
-            "timestamp": 1757647884040,
-            "tokens": 1163,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1163,
-            "response_time_ms": 1782,
-            "output": "```json\n{\n  \"description\": \"La donna è seduta su un divano, con un quadro colorato appeso al muro alle sue spalle. Nei tre frame consecutivi, la sua espressione cambia da una conversazione attiva a un"
-          },
-          "1757647885821_8fm4rwrq7": {
-            "timestamp": 1757647885821,
-            "tokens": 1266,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1266,
-            "response_time_ms": 1771,
-            "output": "```json\n{\n  \"description\": \"I tre frame mostrano una progressione attraverso un vasto paesaggio montano e una rigogliosa prateria verde. Inizialmente, l'inquadratura si apre su maestose montagne innev"
-          },
-          "1757647888107_s0qw16h1y": {
-            "timestamp": 1757647888107,
-            "tokens": 1199,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1199,
-            "response_time_ms": 2283,
-            "output": "```json\n{\n  \"description\": \"Una scena di foresta autunnale si apre con una cascata che scende lungo una parete rocciosa coperta di muschio. Il ruscello prosegue serpeggiando tra rocce e tronchi caduti"
-          },
-          "1757647890499_orh0cmblz": {
-            "timestamp": 1757647890499,
-            "tokens": 1218,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1218,
-            "response_time_ms": 2387,
-            "output": "```json\n{\n  \"description\": \"La scena mostra una prospettiva dal cruscotto di un'auto che percorre un'autostrada al tramonto. Il cielo è dominato da nuvole infuocate di un arancione intenso, che creano"
-          },
-          "1757647892787_2re9da8ha": {
-            "timestamp": 1757647892787,
-            "tokens": 1203,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1203,
-            "response_time_ms": 2278,
-            "output": "```json\n{\n  \"description\": \"Una vista aerea notturna di una metropoli illuminata da innumerevoli luci. I grattacieli si ergono maestosi, con alcuni edifici che spiccano per le loro luci colorate e un "
-          },
-          "1757647894483_xrd4sr047": {
-            "timestamp": 1757647894483,
-            "tokens": 1221,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1221,
-            "response_time_ms": 1692,
-            "output": "```json\n{\n  \"description\": \"La scena mostra un maestoso paesaggio montano alpino al tramonto. Tre frame consecutivi rivelano la stessa vista panoramica: imponenti cime rocciose illuminate da una luce "
-          },
-          "1757647896714_pbfrjk0l2": {
-            "timestamp": 1757647896714,
-            "tokens": 1217,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1217,
-            "response_time_ms": 2226,
-            "output": "```json\n{\n  \"description\": \"Una vista aerea mozzafiato di una baia tropicale con scogliere imponenti che si tuffano in acque cristalline turchesi. Diverse imbarcazioni, tra cui yacht e barche più picc"
-          },
-          "1757647898642_9w3dwxc46": {
-            "timestamp": 1757647898642,
-            "tokens": 1176,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1176,
-            "response_time_ms": 1921,
-            "output": "```json\n{\n  \"description\": \"La scena inizia in una camera da letto con un letto bianco e decorazioni murali rosa e bianche. Successivamente, una mano tiene uno spray giallo chiaro con il marchio \\\"sun"
-          },
           "1757724926227_xgc99wrh5": {
             "timestamp": 1757724926227,
             "tokens": 1214,
@@ -7787,6 +7652,33 @@
             "tokens_used": 2711,
             "response_time_ms": 4249,
             "output": "```json\n{\n  \"description\": \"Una strada tortuosa costeggia una scogliera a picco che si affaccia su un lago cristallino di un intenso colore turchese. Montagne verdi punteggiate di alberi fanno da sfon"
+          },
+          "1758252944199_dr6f67e4f": {
+            "timestamp": 1758252944199,
+            "tokens": 2689,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2689,
+            "response_time_ms": 5484,
+            "output": "```json\n{\n  \"description\": \"Il frame mostra una bellissima spiaggia di notte sotto un cielo stellato e una luna piena luminosa. Le onde che si infrangono sulla riva sono illuminate da una luminescenza"
+          },
+          "1758252949075_u5gm6aft1": {
+            "timestamp": 1758252949075,
+            "tokens": 2672,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2672,
+            "response_time_ms": 4869,
+            "output": "```json\n{\n  \"description\": \"L'immagine raffigura un maestoso paesaggio montano al tramonto o all'alba. Le cime delle montagne, illuminate da una luce calda e dorata, si stagliano contro un cielo azzur"
+          },
+          "1758252953291_xy54hu6lj": {
+            "timestamp": 1758252953291,
+            "tokens": 2675,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2675,
+            "response_time_ms": 4209,
+            "output": "```json\n{\n  \"description\": \"Una strada panoramica serpeggia lungo una scogliera ripida a picco su un lago blu brillante. Le montagne verdi e il cielo azzurro con nuvole bianche creano uno sfondo mozza"
           }
         }
       },

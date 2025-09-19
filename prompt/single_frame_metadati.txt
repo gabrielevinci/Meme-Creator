@@ -126,7 +126,7 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** seguendo questa struttura:
     "Encoded by": "Nome encoder credibile",
     "Encoder tool": "Nome software professionale",
     "Sottotitolo": "Sottotitolo descrittivo",
-    "Classificazione (esplicito)": "Si/No",
+    "Classificazione (esplicito)": "Si",
     "Motivo classificazione": "Motivazione specifica",
     "Tag": "tag1,tag2,tag3,tag4",
     "Umore": "Atmosfera del contenuto",

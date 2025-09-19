@@ -16,13 +16,13 @@
   "videoVolume": 0,
   "overlayImageEnabled": false,
   "overlayImagePath": "",
-  "overlayOpacity": 16,
+  "overlayOpacity": 87,
   "backgroundAudioEnabled": false,
   "backgroundAudioPath": "",
-  "backgroundAudioVolume": 6,
+  "backgroundAudioVolume": -21,
   "replaceAudioEnabled": false,
   "replaceAudioFolderPath": "",
-  "removeBlackFrameEnabled": false,
-  "addMetadataEnabled": false,
+  "removeBlackFrameEnabled": true,
+  "addMetadataEnabled": true,
   "removeMetadataEnabled": false
 }

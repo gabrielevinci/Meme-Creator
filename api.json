@@ -7760,6 +7760,33 @@
             "tokens_used": 2663,
             "response_time_ms": 3511,
             "output": "```json\n{\n  \"description\": \"Una strada serpeggiante si snoda lungo una scogliera a picco su un lago turchese cristallino. Le montagne verdi fanno da sfondo alla scena scenica, creando un paesaggio moz"
+          },
+          "1758249042954_tqwcycaob": {
+            "timestamp": 1758249042954,
+            "tokens": 2636,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2636,
+            "response_time_ms": 4513,
+            "output": "```json\n{\n  \"description\": \"Una vista notturna di una spiaggia con onde bioluminescenti che brillano di un blu intenso. Il cielo è scuro e punteggiato di stelle, con una luna piena luminosa in alto. L"
+          },
+          "1758249046306_6v4xf85nw": {
+            "timestamp": 1758249046306,
+            "tokens": 2669,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2669,
+            "response_time_ms": 3344,
+            "output": "```json\n{\n  \"description\": \"Un suggestivo paesaggio montano al tramonto, con le cime delle montagne illuminate da una calda luce dorata che contrasta con il blu intenso del cielo. In primo piano, una "
+          },
+          "1758249050562_9psb80m7h": {
+            "timestamp": 1758249050562,
+            "tokens": 2711,
+            "success": true,
+            "prompt": "## OBIETTIVO PRINCIPALE\r\n\r\nSei un esperto creatore di contenuti digitali specializzato nella produzi",
+            "tokens_used": 2711,
+            "response_time_ms": 4249,
+            "output": "```json\n{\n  \"description\": \"Una strada tortuosa costeggia una scogliera a picco che si affaccia su un lago cristallino di un intenso colore turchese. Montagne verdi punteggiate di alberi fanno da sfon"
           }
         }
       },

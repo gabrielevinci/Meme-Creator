@@ -2,7 +2,7 @@
 
 ## 1. OBIETTIVO PRINCIPALE
 
-Il tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi da una scena video continua (Frame 1 → Frame 2 → Frame 3). Considera questi frame come un clip video di 3 secondi suddiviso in immagini.
+Il tuo compito è **creare un meme perfetto** analizzando un frame video.
 **L'obiettivo finale è generare un meme che:**
 - Sia visivamente e concettualmente perfetto
 - Colleghi intelligentemente il contenuto visivo con l'obiettivo specificato
@@ -11,15 +11,15 @@ Il tuo compito è **creare un meme perfetto** analizzando tre frame consecutivi 
 - Include metadati completi per la distribuzione sui social
 
 ## 2. VERIFICA FILTRO IMMAGINE
-Devi analizzare se il contenuto dei tre frame corrisponde al filtro specificato dall'utente: **{{CONTENT_FILTER}}**
+Devi analizzare se il contenuto del frame corrisponde al filtro specificato dall'utente: **{{CONTENT_FILTER}}**
 **Criteri di valutazione:**
 - Osserva l'azione principale, i soggetti e l'ambiente
-- Considera la progressione attraverso i 3 frame
+- Considera la progressione attraverso il frame
 - Verifica se gli elementi richiesti dal filtro sono presenti e prominenti
 - Assegna `1` se corrisponde, `0` se non corrisponde
 
 ## 3. POSIZIONAMENTO BANNER
-Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) analizzando attentamente i frame.
+Determina la posizione ottimale del banner di testo (`"top"` o `"bottom"`) analizzando attentamente il frame.
 ### Regole di Posizionamento:
 - Se i **soggetti principali sono centrali** → posiziona `"top"`.  
 - Se i **soggetti partono dalla parte bassa fino a metà del frame** → posiziona `"top"`.  
@@ -42,18 +42,43 @@ Se il filtro è superato (`matches_filter = 1`), crea un meme che sia la **fusio
 3. **OBIETTIVO**: Integra l'obiettivo specificato: **{{BUSINESS_THEME}}**
 4. **CONNESSIONE**: Collega intelligentemente visuale e obiettivo
 
-## 5. GENERAZIONE TITOLO VIRALE
-Crea un titolo originale e accattivante che:
-- Comunichi alle piattaforme social (TikTok e Instagram) il potenziale virale del contenuto
+## 5. GENERAZIONE TITOLO VIRALE CON HASHTAG
+
+Crea un titolo completo che sia composto da **DUE PARTI DISTINTE**:
+
+### PARTE 1 - TITOLO PRINCIPALE:
+- Un titolo originale e accattivante (massimo 60 caratteri)
+- Comunichi alle piattaforme social il potenziale virale del contenuto
 - Sia intrigante e clickbait senza essere ingannevole
 - Rifletta il contenuto del meme e l'obiettivo business
 - Utilizzi parole chiave che favoriscono la viralità
-- Massimo 100 caratteri per ottimizzare la visualizzazione
 - **NON USARE CARATTERI SPECIALI O EMOJI**
+
+### PARTE 2 - HASHTAG:
+**IMMEDIATAMENTE DOPO IL TITOLO**, aggiungi una lista di hashtag seguendo queste regole:
+- **MINIMO 5 hashtag, MASSIMO 10 hashtag**
+- Ogni hashtag deve iniziare con il simbolo **#**
+- Gli hashtag devono essere **separati da spazi**
+- Devono essere **attinenti al contenuto del video** analizzato
+- Devono essere **rilevanti per l'obiettivo business** specificato
+- Usa hashtag **popolari e di tendenza** per massimizzare la visibilità
+- **NON USARE CARATTERI SPECIALI O EMOJI negli hashtag**
+
+### FORMATO FINALE DEL TITOLO:
+```
+[TITOLO PRINCIPALE] [#hashtag1 #hashtag2 #hashtag3 #hashtag4 #hashtag5]
+```
+
+### ESEMPIO PRATICO:
+```
+"Quando scopri il segreto del successo online #viral #meme #business #successo #trending #social #marketing"
+```
+
+**IMPORTANTE**: Il campo `"title"` nel JSON deve contenere TUTTO insieme: titolo principale + spazio + hashtag, formando un'unica stringa completa.
 
 ## 6. GENERAZIONE METADATI COMPLETI
 
-Genera metadati completi e ottimizzati per questi frame di video. I metadati devono essere pertinenti al contenuto, descrizione che hai dato, e "meme_text" che hai scritto. Tutti i metadati devono essere ricchi di keyword strategiche e coerenti con il tema, senza mai inserire caratteri speciali o emoji. Non devono comparire riferimenti a tecnologie, processi di generazione o intelligenza artificiale. L’obiettivo è creare metadati che favoriscano la massima visibilità e viralità sui social network, trasmettendo in maniera implicita segnali forti e rilevanti agli algoritmi delle piattaforme.
+Genera metadati completi e ottimizzati per questo frame di video. I metadati devono essere pertinenti al contenuto, descrizione che hai dato, e "meme_text" che hai scritto. Tutti i metadati devono essere ricchi di keyword strategiche e coerenti con il tema, senza mai inserire caratteri speciali o emoji. Non devono comparire riferimenti a tecnologie, processi di generazione o intelligenza artificiale. L'obiettivo è creare metadati che favoriscano la massima visibilità e viralità sui social network, trasmettendo in maniera implicita segnali forti e rilevanti agli algoritmi delle piattaforme.
 
 
 ## ISTRUZIONI TECNICHE
@@ -77,7 +102,7 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
      - SCRIVI L'INTERO MEME ALL'INTERNO DELLA STESSA RIGA SENZA FRASI SU DUE RIGHE
    - Se `"matches_filter" = 0`: lascia stringa vuota `""`
 
-5. **`"title"`**: Titolo virale originale per piattaforme social (massimo 100 caratteri).
+5. **`"title"`**: Titolo virale completo formato da: TITOLO PRINCIPALE + SPAZIO + HASHTAG (minimo 5, massimo 10 hashtag separati da spazi).
 
 6. **`"metadata"`**: Oggetto contenente tutti i metadati necessari (**SENZA caratteri speciali o emoji**):
    - **`"Title"`**: Titolo del contenuto
@@ -140,7 +165,7 @@ Rispondi **ESCLUSIVAMENTE in formato JSON** senza spiegazioni aggiuntive.
   "matches_filter": 1,
   "banner_position": "top",
   "meme_text": "Il tuo meme perfetto qui...",
-  "title": "Titolo virale per social media",
+  "title": "Quando scopri il segreto del successo online #viral #meme #business #successo #trending #social #marketing",
   "metadata": {
     "Title": "Titolo del video",
     "Artist": "Nome Creatore",

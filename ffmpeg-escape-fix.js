@@ -6,7 +6,7 @@ function escapeTextForFFmpeg(text) {
 
     // STEP 1: Pulizia caratteri UTF-8 corrotti
     let cleaned = text
-        .replace(/Ôé¼/g, 'EUR') // Euro corrotto
+        .replace(/Ôé¼/g, '€') // Euro corrotto
         .replace(/├î/g, 'i') // î corrotto (dall'errore utente)
         .replace(/├ê/g, 'e') // ê corrotto (dall'errore utente)  
         .replace(/├¿/g, 'e') // è corrotto
@@ -27,7 +27,7 @@ function escapeTextForFFmpeg(text) {
         .replace(/├³/g, 'o')
         .replace(/├¡/g, 'i')
         .replace(/├¢/g, 'a')
-        .replace(/€/g, 'EUR')
+        .replace(/€/g, '€')
         .replace(/£/g, 'GBP')
         .replace(/©/g, '(C)');
 

@@ -23,10 +23,10 @@ escapeTextForFFmpeg(text) {
     // FASE 1: PULIZIA TOTALE CARATTERI UTF-8 CORROTTI
     let cleanedText = text
         // Euro corrotto - PRIORITÀ MASSIMA
-        .replace(/Ôé¼/g, 'EUR')
-        .replace(/€/g, 'EUR')
-        .replace(/ôé¼/g, 'EUR')
-        .replace(/Ôé€/g, 'EUR')
+        .replace(/Ôé¼/g, '€')
+        .replace(/€/g, '€')
+        .replace(/ôé¼/g, '€')
+        .replace(/Ôé€/g, '€')
 
     // CARATTERI CRITICI DALL'ERRORE UTENTE
     .replace(/├î/g, 'i') // "COS├î" nell'errore -> "COSi" 

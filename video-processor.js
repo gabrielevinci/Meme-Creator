@@ -169,8 +169,8 @@ class VideoProcessor {
         const needsAudioReplacement = config && config.replaceAudioEnabled && config.replaceAudioFolderPath;
 
         console.log(`🔍 DEBUG AUDIO REPLACEMENT:`, {
-            replaceAudioEnabled: config?.replaceAudioEnabled,
-            replaceAudioFolderPath: config?.replaceAudioFolderPath,
+            replaceAudioEnabled: config ? .replaceAudioEnabled,
+            replaceAudioFolderPath: config ? .replaceAudioFolderPath,
             needsAudioReplacement: needsAudioReplacement
         });
 
@@ -203,11 +203,11 @@ class VideoProcessor {
             // Ottieni informazioni del video
             const videoInfo = await this.getVideoInfo(inputVideoPath);
             const videoStream = videoInfo.streams.find(s => s.codec_type === 'video');
-            
+
             if (!videoStream) {
                 throw new Error(`Nessun stream video trovato in: ${inputVideoPath}`);
             }
-            
+
             const width = videoStream.width;
             const height = videoStream.height;
 
@@ -319,7 +319,7 @@ class VideoProcessor {
             if (hasAudioModifications) {
                 // Ottieni il nome del video per tracking degli audio
                 const videoFilename = path.basename(inputVideoPath, path.extname(inputVideoPath));
-                
+
                 // Processa l'audio separatamente usando SOX (più veloce)
                 const processedAudioPath = await this.preprocessAudioWithSox(config, inputVideoPath, this.tempDir, videoFilename);
 
@@ -638,7 +638,7 @@ class VideoProcessor {
 
         // STEP 1: Pulizia caratteri UTF-8 corrotti
         let cleaned = text
-            .replace(/Ôé¼/g, 'EUR') // Euro corrotto
+            .replace(/Ôé¼/g, '€') // Euro corrotto
             .replace(/├î/g, 'i') // î corrotto (dall'errore utente)
             .replace(/├ê/g, 'e') // ê corrotto (dall'errore utente)  
             .replace(/├¿/g, 'e') // è corrotto
@@ -659,7 +659,7 @@ class VideoProcessor {
             .replace(/├³/g, 'o')
             .replace(/├¡/g, 'i')
             .replace(/├¢/g, 'a')
-            .replace(/€/g, 'EUR')
+            .replace(/€/g, '€')
             .replace(/£/g, 'GBP')
             .replace(/©/g, '(C)');
 
@@ -817,18 +817,18 @@ class VideoProcessor {
     generateVideoBasedName(videoName, suffix = '') {
         // Rimuovi estensione e caratteri speciali dal nome video
         let baseName = path.parse(videoName).name
-            .replace(/[^a-zA-Z0-9]/g, '_')              // Sostituisce caratteri speciali con underscore
-            .replace(/_+/g, '_')                        // Riduce underscore multipli a uno singolo
-            .replace(/^_|_$/g, '')                      // Rimuove underscore all'inizio e alla fine
-            .substring(0, 30);                          // Limita a 30 caratteri per evitare problemi con path lunghi
-        
+            .replace(/[^a-zA-Z0-9]/g, '_') // Sostituisce caratteri speciali con underscore
+            .replace(/_+/g, '_') // Riduce underscore multipli a uno singolo
+            .replace(/^_|_$/g, '') // Rimuove underscore all'inizio e alla fine
+            .substring(0, 30); // Limita a 30 caratteri per evitare problemi con path lunghi
+
         // Se il nome è troppo corto dopo la pulizia, usa un fallback
         if (baseName.length < 3) {
             baseName = `video_${Date.now().toString().slice(-8)}`;
         }
 
         console.log(`🔧 Nome video sanificato: "${videoName}" → "${baseName}"`);
-        
+
         return suffix ? `${baseName}_${suffix}` : baseName;
     }
 
@@ -1061,7 +1061,7 @@ class VideoProcessor {
             const path = require('path'); // Sposta require all'inizio
             const audioFiles = await fs.readdir(audioFolderPath);
             const supportedExtensions = ['.mp3', '.wav', '.aac', '.flac', '.m4a', '.ogg'];
-            
+
             // Filtra solo file audio supportati
             const validAudioFiles = audioFiles.filter(file => {
                 const ext = path.extname(file).toLowerCase();
@@ -1088,19 +1088,19 @@ class VideoProcessor {
             }
 
             // Prima passata: cerca audio non ancora usati che durano almeno quanto il video
-            const unusedAudio = validAudioFiles.filter(audioFile => 
+            const unusedAudio = validAudioFiles.filter(audioFile =>
                 !this.usedAudioFiles.has(audioFile)
             );
 
             let suitableAudio = [];
             let usedUnusedAudio = false; // Flag per sapere se abbiamo usato audio non usati
-            
+
             // Ottieni durata per ogni audio non usato
             for (const audioFile of unusedAudio) {
                 try {
                     const audioPath = path.join(audioFolderPath, audioFile);
                     const audioDuration = await this.getAudioDuration(audioPath);
-                    
+
                     if (audioDuration >= videoDuration) {
                         suitableAudio.push({
                             file: audioFile,
@@ -1117,12 +1117,12 @@ class VideoProcessor {
             // Se non ci sono audio non usati sufficienti, riusa quelli già usati
             if (suitableAudio.length === 0) {
                 console.log('🔄 Tutti gli audio non usati sono troppo corti, riuso audio già utilizzati...');
-                
+
                 for (const audioFile of validAudioFiles) {
                     try {
                         const audioPath = path.join(audioFolderPath, audioFile);
                         const audioDuration = await this.getAudioDuration(audioPath);
-                        
+
                         if (audioDuration >= videoDuration) {
                             suitableAudio.push({
                                 file: audioFile,
@@ -1144,14 +1144,14 @@ class VideoProcessor {
             // Scegli casualmente un audio tra quelli disponibili
             const randomIndex = Math.floor(Math.random() * suitableAudio.length);
             const selectedAudio = suitableAudio[randomIndex];
-            
+
             // Segna come usato
             this.usedAudioFiles.add(selectedAudio.file);
-            
+
             console.log(`✅ Audio selezionato: ${selectedAudio.file} (durata: ${selectedAudio.duration}s per video di ${videoDuration}s)`);
             console.log(`🎲 Scelto casualmente ${randomIndex + 1}/${suitableAudio.length} da audio ${usedUnusedAudio ? 'non usati' : 'già usati'}`);
             console.log(`📊 Audio già utilizzati: ${Array.from(this.usedAudioFiles).join(', ')}`);
-            
+
             return selectedAudio;
 
         } catch (error) {
@@ -1422,11 +1422,11 @@ class VideoProcessor {
 
         console.log(`🔍 DEBUG PREPROCESSING AUDIO:`, {
             hasVolumeChange,
-            hasBackgroundAudio, 
+            hasBackgroundAudio,
             hasSpeedChange,
             hasAudioReplacement,
-            replaceAudioEnabled: config?.replaceAudioEnabled,
-            replaceAudioFolderPath: config?.replaceAudioFolderPath
+            replaceAudioEnabled: config ? .replaceAudioEnabled,
+            replaceAudioFolderPath: config ? .replaceAudioFolderPath
         });
 
         if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange && !hasAudioReplacement) {
@@ -1440,30 +1440,30 @@ class VideoProcessor {
             // 🔄 STEP 1: SOSTITUZIONE AUDIO (se abilitata) - PRIMA DI TUTTO
             if (hasAudioReplacement) {
                 console.log(`🔄 Sostituzione audio abilitata...`);
-                
+
                 // Ottieni durata video
                 const videoDuration = await this.getVideoDuration(inputVideoPath);
                 console.log(`📏 Durata video: ${videoDuration}s`);
-                
+
                 // Scegli audio sostitutivo
                 const selectedAudio = await this.selectReplacementAudio(config.replaceAudioFolderPath, videoDuration, videoFilename);
-                
+
                 if (selectedAudio) {
                     console.log(`✅ Audio selezionato: ${selectedAudio.file} (${selectedAudio.duration}s)`);
-                    
+
                     // Taglia l'audio alla durata del video
                     const replacementAudioPath = path.join(tempDir, 'replacement_audio.wav');
                     await this.cropAudioToVideoDuration(selectedAudio.path, replacementAudioPath, videoDuration);
                     processedAudioPath = replacementAudioPath;
-                    
+
                     console.log(`🔄 Audio sostituito con successo: ${selectedAudio.file}`);
-                    
+
                     // Se la sostituzione audio è l'unica modifica (senza volume, background o speed), return direttamente
                     if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange) {
                         console.log(`✅ Solo sostituzione audio richiesta - skip ulteriore processing SOX`);
                         return processedAudioPath;
                     }
-                    
+
                     console.log(`🔧 Audio sostituito, continuando con ulteriori modifiche (volume: ${hasVolumeChange ? config.videoVolume + 'dB' : 'no'}, background: ${hasBackgroundAudio ? 'sì' : 'no'}, speed: ${hasSpeedChange ? 'sì' : 'no'})`);
                 } else {
                     console.log(`⚠️ Nessun audio compatibile trovato, mantengo audio originale`);
@@ -1521,15 +1521,15 @@ class VideoProcessor {
         } catch (error) {
             console.error(`❌ Errore nel preprocessing audio con SOX: ${error.message}`);
             console.log(`🔄 Fallback su elaborazione FFmpeg tradizionale`);
-            
+
             // Se la sostituzione audio è riuscita ma SOX ha fallito, applica modifiche con FFmpeg
             if (hasAudioReplacement) {
                 const replacementAudioPath = path.join(tempDir, 'replacement_audio.wav');
                 if (fsSync.existsSync(replacementAudioPath)) {
                     console.log(`✅ Fallback: audio sostitutivo trovato, applicando modifiche con FFmpeg`);
-                    
+
                     let currentAudioPath = replacementAudioPath;
-                    
+
                     // 1. Se c'è modifica volume, applicala con FFmpeg
                     if (hasVolumeChange) {
                         const volumeAdjustedPath = path.join(tempDir, 'fallback_volume_adjusted.wav');
@@ -1542,12 +1542,12 @@ class VideoProcessor {
                             // Continua comunque con l'audio senza volume
                         }
                     }
-                    
+
                     // 2. Se c'è audio di sottofondo, mixalo con FFmpeg
                     if (hasBackgroundAudio) {
                         const bgProcessedPath = path.join(tempDir, 'fallback_bg_processed.wav');
                         const mixedAudioPath = path.join(tempDir, 'fallback_mixed_audio.wav');
-                        
+
                         try {
                             // Prima processa il volume del background audio se necessario
                             if (config.backgroundAudioVolume && config.backgroundAudioVolume !== 0) {
@@ -1556,7 +1556,7 @@ class VideoProcessor {
                                 // Copia il file senza modifiche
                                 await this.copyAudioFile(config.backgroundAudioPath, bgProcessedPath);
                             }
-                            
+
                             // Poi mixa i due audio con FFmpeg
                             await this.mixAudioWithFFmpeg(currentAudioPath, bgProcessedPath, mixedAudioPath);
                             currentAudioPath = mixedAudioPath;
@@ -1566,12 +1566,12 @@ class VideoProcessor {
                             // Continua comunque con l'audio principale
                         }
                     }
-                    
+
                     console.log(`✅ Fallback completato: ${currentAudioPath}`);
                     return currentAudioPath;
                 }
             }
-            
+
             return null;
         }
     }
@@ -1644,7 +1644,7 @@ class VideoProcessor {
             ]);
 
             let errorOutput = '';
-            
+
             ffmpeg.stderr.on('data', (data) => {
                 errorOutput += data.toString();
             });
@@ -1671,18 +1671,18 @@ class VideoProcessor {
     async mixAudioWithFFmpeg(mainAudioPath, bgAudioPath, outputPath) {
         return new Promise((resolve, reject) => {
             const ffmpeg = spawn(this.ffmpegPath, [
-                '-i', mainAudioPath,      // Audio principale (sostituito)
-                '-i', bgAudioPath,        // Audio di sottofondo
+                '-i', mainAudioPath, // Audio principale (sostituito)
+                '-i', bgAudioPath, // Audio di sottofondo
                 '-filter_complex', '[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3[out]', // Mix audio
-                '-map', '[out]',          // Mappa l'output del filtro
-                '-c:a', 'pcm_s16le',     // Codec audio non compresso
-                '-ar', '44100',          // Sample rate standard
-                '-ac', '2',              // Stereo
+                '-map', '[out]', // Mappa l'output del filtro
+                '-c:a', 'pcm_s16le', // Codec audio non compresso
+                '-ar', '44100', // Sample rate standard
+                '-ac', '2', // Stereo
                 '-y', outputPath
             ]);
 
             let errorOutput = '';
-            
+
             ffmpeg.stderr.on('data', (data) => {
                 errorOutput += data.toString();
             });
@@ -2028,11 +2028,11 @@ class VideoProcessor {
         // Ottieni informazioni del video
         const videoInfo = await this.getVideoInfo(inputVideoPath);
         const videoStream = videoInfo.streams.find(s => s.codec_type === 'video');
-        
+
         if (!videoStream) {
             throw new Error(`Nessun stream video trovato in: ${inputVideoPath}`);
         }
-        
+
         const width = videoStream.width;
         const height = videoStream.height;
 
@@ -2220,7 +2220,7 @@ class VideoProcessor {
 
 
 
-                // Blocco bianco dimensione standard
+        // Blocco bianco dimensione standard
 
         // POSIZIONAMENTO BANNER - LOGICA SEMPLIFICATA
 
@@ -2237,7 +2237,7 @@ class VideoProcessor {
             // Banner in fondo al video
             bannerY = height - blockHeight;
             baseY = bannerY + marginTop;
-            
+
             console.log(`📍 BANNER BOTTOM:`);
             console.log(`   📏 Banner Y: ${bannerY}px`);
             console.log(`   📏 Base Y testo: ${baseY}px`);
@@ -2246,7 +2246,7 @@ class VideoProcessor {
             // Banner TOP
             bannerY = 0;
             baseY = bannerY + marginTop;
-            
+
             console.log(`📍 BANNER TOP:`);
             console.log(`   📏 Banner Y: ${bannerY}px`);
             console.log(`   📏 Base Y testo: ${baseY}px`);
@@ -2472,15 +2472,15 @@ class VideoProcessor {
 
                 if (code === 0) {
                     console.log(`✅ SUCCESSO: Video con banner completato: ${path.basename(outputVideoPath)}`);
-                    
+
                     // NUOVO: Applica metadati se disponibili e mainApp è collegato
                     if (this.mainApp && this.mainApp.processVideoComplete) {
                         try {
                             console.log(`📝 Applicazione metadati per: ${path.basename(outputVideoPath)}`);
-                            
+
                             // Prepara dati API dai dati AI response
                             const apiData = this.prepareApiDataFromAiResponse(processedAiResponse);
-                            
+
                             // Chiama il processamento metadati nel main app (asincrono) con configurazione
                             this.mainApp.processVideoComplete(outputVideoPath, apiData, config)
                                 .then(finalVideoPath => {
@@ -2613,20 +2613,20 @@ class VideoProcessor {
                 'Composer': 'AI Generated',
                 'Data di creazione': 'now', // Verrà convertito in data attuale
                 'Commenti': `Meme generato automaticamente. Posizione banner: ${aiResponse.banner_position}`,
-                
+
                 // Video Info
                 'Show': 'AI Meme Videos',
                 'HD Video': 'yes',
-                
+
                 // Dettagli tecnici
                 'Encoded by': 'Meme Creator v1.0',
                 'Encoder tool': 'FFmpeg + AI Processing',
-                
+
                 // Tag personalizzati iTunes
                 'Sottotitolo': aiResponse.meme_text || '',
                 'Tag': 'meme,ai,viral,social',
                 'Umore': 'humorous',
-                
+
                 // Crediti produzione (se si vuole essere creativi)
                 'Director': 'AI Director',
                 'Producer': 'Automated Content Creator',

@@ -12,69 +12,6 @@
           "TPM": 250000
         },
         "requests": {
-          "1757632823438_gmvhrvjkd": {
-            "timestamp": 1757632823438,
-            "tokens": 973,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 973,
-            "response_time_ms": 1977,
-            "output": "```json\n{\n  \"description\": \"Un vasto campo di margherite bianche e gialle si estende verso un tramonto infuocato. Le nuvole arancioni e grigie creano un cielo drammatico sopra l'orizzonte, dove il sol"
-          },
-          "1757632977507_bas7fgnsl": {
-            "timestamp": 1757632977507,
-            "tokens": 948,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 948,
-            "response_time_ms": 1982,
-            "output": "```json\n{\n  \"description\": \"Un campo di margherite bianche e gialle si estende verso l'orizzonte sotto un cielo drammatico. Le nuvole sono dense e striate di arancione e grigio, con il sole che tramon"
-          },
-          "1757632979148_1urqdboe8": {
-            "timestamp": 1757632979148,
-            "tokens": 963,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 963,
-            "response_time_ms": 1631,
-            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino verde e un gilet verde acceso sta ballando in un corridoio. Indossa abiti scuri aderenti e scarpe da ginnastica bianche. La persona ha un'espr"
-          },
-          "1757632981301_fw5xzg6e3": {
-            "timestamp": 1757632981301,
-            "tokens": 961,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 961,
-            "response_time_ms": 2150,
-            "output": "```json\n{\n  \"description\": \"Un campo sconfinato di tulipani rosa e gialli si estende verso l'orizzonte sotto un cielo drammatico al tramonto. Le nuvole sono striate di arancione e oro, creando un cont"
-          },
-          "1757635663338_xuoq2hvrj": {
-            "timestamp": 1757635663338,
-            "tokens": 1180,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1180,
-            "response_time_ms": 1421,
-            "output": "```json\n{\n  \"description\": \"Un campo di margherite bianche e gialle si estende fino all'orizzonte, punteggiato da alberi verdi sulla sinistra e da una leggera collina sulla destra. Il cielo è dominato"
-          },
-          "1757635664758_vdjg65nzw": {
-            "timestamp": 1757635664758,
-            "tokens": 1178,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1178,
-            "response_time_ms": 1414,
-            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino da baseball verde e un gilet verde acceso sta ballando in un corridoio. Indossa abiti sportivi scuri e scarpe da ginnastica bianche. L'espress"
-          },
-          "1757635668095_cglptuqg7": {
-            "timestamp": 1757635668095,
-            "tokens": 1185,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1185,
-            "response_time_ms": 3332,
-            "output": "```json\n{\n  \"description\": \"Un vasto campo di tulipani rosa e gialli fioriti si estende verso l'orizzonte, illuminato da un tramonto dorato e nuvoloso. Un grande albero solitario si staglia in lontana"
-          },
           "1757636626522_2xz3gggjc": {
             "timestamp": 1757636626522,
             "tokens": 995,
@@ -8129,6 +8066,60 @@
             "tokens_used": 1132,
             "response_time_ms": 1344,
             "output": "```json\n{\n  \"description\": \"Una strada serpeggiante corre lungo un ripido pendio roccioso coperto di vegetazione lussureggiante. A destra, un vasto e limpido lago turchese si estende fino a dolci coll"
+          },
+          "1758240933490_qhm7yadlu": {
+            "timestamp": 1758240933490,
+            "tokens": 3022,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3022,
+            "response_time_ms": 3280,
+            "output": "```json\n{\n  \"description\": \"La scena mostra una spiaggia di notte illuminata dalla luna piena e dalle stelle. Le onde dell'oceano brillano di una luce bioluminescente blu intensa, creando un effetto m"
+          },
+          "1758240937006_cqmhgd5t7": {
+            "timestamp": 1758240937006,
+            "tokens": 3006,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3006,
+            "response_time_ms": 3508,
+            "output": "```json\n{\n  \"description\": \"I tre frame consecutivi mostrano un maestoso paesaggio di montagna al tramonto. Le vette delle montagne sono illuminate da una calda luce dorata, mentre il cielo è un blu p"
+          },
+          "1758240940446_m42pcbst5": {
+            "timestamp": 1758240940446,
+            "tokens": 3036,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3036,
+            "response_time_ms": 3433,
+            "output": "```json\n{\n  \"description\": \"Una strada serpeggia lungo una scogliera rocciosa a picco su un lago azzurro brillante. Alberi verdi e lussureggianti coprono il pendio della montagna, mentre montagne più "
+          },
+          "1758241039967_l9kapj9rx": {
+            "timestamp": 1758241039967,
+            "tokens": 3007,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3007,
+            "response_time_ms": 3308,
+            "output": "```json\n{\n  \"description\": \"Una spiaggia di notte illuminata dal plenilunio e dalle bioluminescenza nell'acqua. Le onde azzurre scintillano mentre si infrangono dolcemente sulla sabbia scura, creando "
+          },
+          "1758241043363_wlu2m43yh": {
+            "timestamp": 1758241043363,
+            "tokens": 3017,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3017,
+            "response_time_ms": 3388,
+            "output": "```json\n{\n  \"description\": \"Il video presenta una maestosa catena montuosa illuminata dalla luce dorata del tramonto. Il cielo è di un blu profondo e limpido. Davanti alle montagne si estende una luss"
+          },
+          "1758241046237_1y5688meo": {
+            "timestamp": 1758241046237,
+            "tokens": 2995,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 2995,
+            "response_time_ms": 2868,
+            "output": "```json\n{\n  \"description\": \"Un carso costiero si snoda lungo un lago turchese limpido circondato da montagne verdi e rigogliose. La strada stretta, con guardrail di sicurezza, serpeggia adagiandosi ai"
           }
         }
       },

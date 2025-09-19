@@ -129,6 +129,9 @@ class ContentCreatorApp {
             const nomeInput = apiResponseData.originalVideoFullName || apiResponseData.originalVideoName || vecchioNome;
             const nomeOutput = nuovoNome;
             
+            // NUOVO: Leggi i metadati direttamente dal file di output dell'AI
+            const metadatiDaFile = await this.resocontoManager.leggiMetadatiDaOutputAI(nomeInput);
+            
             // Prepara i dati
             const datiRiga = {
                 nomeInput: nomeInput,
@@ -140,7 +143,7 @@ class ContentCreatorApp {
                 filtro: aiData.matches_filter === 1,
                 posizioneBanner: aiData.banner_position || '',
                 descrizione: aiData.description || '',
-                metadati: aiData.metadata || {},
+                metadati: metadatiDaFile, // Usa i metadati letti dal file AI
                 durata: infoVideo.durata,
                 dimensioneMB: infoVideo.dimensioneMB,
                 altezza: infoVideo.altezza,

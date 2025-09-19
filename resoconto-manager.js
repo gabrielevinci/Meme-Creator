@@ -174,6 +174,70 @@ class ResocontoManager {
     }
 
     /**
+     * Legge i metadati dal file di output dell'AI nella cartella temp_frames
+     * @param {string} nomeVideoOriginale - Nome del video originale
+     * @returns {Object} Metadati estratti dal file di output dell'AI
+     */
+    async leggiMetadatiDaOutputAI(nomeVideoOriginale) {
+        try {
+            const tempFramesDir = path.join(process.cwd(), 'temp_frames');
+            
+            // Rimuovi estensione e sostituisci caratteri non validi
+            const nomeBase = path.parse(nomeVideoOriginale).name;
+            const nomeBasePulito = nomeBase.replace(/#/g, '_');
+            
+            // Cerca file che iniziano con parte del nome (per gestire troncamenti)
+            const files = await fs.readdir(tempFramesDir);
+            
+            // Prima prova una corrispondenza esatta, poi parziale
+            let outputFile = files.find(file => 
+                file.startsWith(nomeBasePulito) && 
+                file.includes('_ai_output_') && 
+                file.endsWith('.txt')
+            );
+            
+            // Se non trovato, cerca per corrispondenza parziale (primi 25 caratteri)
+            if (!outputFile) {
+                const nomeRidotto = nomeBasePulito.substring(0, 25);
+                outputFile = files.find(file => 
+                    file.startsWith(nomeRidotto) && 
+                    file.includes('_ai_output_') && 
+                    file.endsWith('.txt')
+                );
+            }
+            
+            if (!outputFile) {
+                console.warn(`File di output AI non trovato per: ${nomeVideoOriginale}`);
+                console.warn(`Cercato: ${nomeBasePulito}`);
+                console.warn(`File disponibili:`, files.filter(f => f.includes('_ai_output_')));
+                return {};
+            }
+            
+            const filePath = path.join(tempFramesDir, outputFile);
+            const content = await fs.readFile(filePath, 'utf8');
+            
+            // Trova la sezione JSON nella risposta AI
+            const jsonStart = content.indexOf('```json');
+            const jsonEnd = content.indexOf('```', jsonStart + 7);
+            
+            if (jsonStart === -1 || jsonEnd === -1) {
+                console.warn(`JSON non trovato nel file: ${outputFile}`);
+                return {};
+            }
+            
+            const jsonContent = content.substring(jsonStart + 7, jsonEnd).trim();
+            const aiResponse = JSON.parse(jsonContent);
+            
+            console.log(`📖 Metadati letti da file AI: ${outputFile}`);
+            return aiResponse.metadata || {};
+            
+        } catch (error) {
+            console.error('Errore nella lettura metadati da output AI:', error);
+            return {};
+        }
+    }
+
+    /**
      * Mappa un nome di metadato alla sua chiave corrispondente nei dati AI
      * @param {string} nomeMetadato - Nome leggibile del metadato
      * @param {Object} metadatiAI - Oggetto metadati dall'AI
@@ -182,58 +246,19 @@ class ResocontoManager {
     mappaMetadato(nomeMetadato, metadatiAI) {
         if (!metadatiAI) return '';
         
-        // Mapping tra nomi leggibili e chiavi tecniche dei metadati
-        const mappingMetadati = {
-            'Artist': metadatiAI.artist || metadatiAI['©ART'] || '',
-            'Composer': metadatiAI.composer || metadatiAI['©wrt'] || '',
-            'Album': metadatiAI.album || metadatiAI['©alb'] || '',
-            'Album artist': metadatiAI.album_artist || metadatiAI.aART || '',
-            'Genre': metadatiAI.genre || metadatiAI['©gen'] || '',
-            'Grouping': metadatiAI.grouping || metadatiAI['©grp'] || '',
-            'Copyright': metadatiAI.copyright || metadatiAI.cprt || '',
-            'Commenti': metadatiAI.comment || metadatiAI['©cmt'] || '',
-            'Data di creazione': metadatiAI.date || metadatiAI['©day'] || '',
-            'Show': metadatiAI.show || metadatiAI.tvsh || '',
-            'TV Network': metadatiAI.tv_network || metadatiAI.tvnn || '',
-            'Season number': metadatiAI.season_number || metadatiAI.tvsn || '',
-            'Episode number': metadatiAI.episode_number || metadatiAI.tves || '',
-            'HD Video': metadatiAI.hd_video || metadatiAI.hdvd || '',
-            'Encoded by': metadatiAI.encoded_by || metadatiAI['©enc'] || '',
-            'Encoder tool': metadatiAI.encoder_tool || metadatiAI['©too'] || '',
-            'Sottotitolo': metadatiAI.subtitle || metadatiAI['----:com.apple.iTunes:SUBTITLE'] || '',
-            'Classificazione (esplicito)': metadatiAI.rating || metadatiAI['----:com.apple.iTunes:Rating'] || '',
-            'Motivo classificazione': metadatiAI.rating_annotation || metadatiAI['----:com.apple.iTunes:Rating Annotation'] || '',
-            'Tag': metadatiAI.keywords || metadatiAI['----:com.apple.iTunes:keywords'] || '',
-            'Umore': metadatiAI.mood || metadatiAI['----:com.apple.iTunes:MOOD'] || '',
-            'Chiave iniziale': metadatiAI.initial_key || metadatiAI['----:com.apple.iTunes:initialkey'] || '',
-            'Protetto': metadatiAI.protected || metadatiAI['----:com.apple.iTunes:isprotected'] || '',
-            'Director': metadatiAI.director || metadatiAI['----:com.apple.iTunes:DIRECTOR'] || '',
-            'Director of photography': metadatiAI.director_photography || metadatiAI['----:com.apple.iTunes:Director of Photography'] || '',
-            'Sound engineer': metadatiAI.sound_engineer || metadatiAI['----:com.apple.iTunes:Sound Engineer'] || '',
-            'Art director': metadatiAI.art_director || metadatiAI['----:com.apple.iTunes:Art Director'] || '',
-            'Production designer': metadatiAI.production_designer || metadatiAI['----:com.apple.iTunes:Production Designer'] || '',
-            'Choreographer': metadatiAI.choreographer || metadatiAI['----:com.apple.iTunes:Choreographer'] || '',
-            'Costume designer': metadatiAI.costume_designer || metadatiAI['----:com.apple.iTunes:Costume Designer'] || '',
-            'Writer': metadatiAI.writer || metadatiAI['----:com.apple.iTunes:Writer'] || '',
-            'Screenwriter': metadatiAI.screenwriter || metadatiAI['----:com.apple.iTunes:Screenwriters'] || '',
-            'Editor': metadatiAI.editor || metadatiAI['----:com.apple.iTunes:Editors'] || '',
-            'Producer': metadatiAI.producer || metadatiAI['----:com.apple.iTunes:PRODUCER'] || '',
-            'Co-producer': metadatiAI.co_producer || metadatiAI['----:com.apple.iTunes:Co-Producer'] || '',
-            'Executive producer': metadatiAI.executive_producer || metadatiAI['----:com.apple.iTunes:Executive Producer'] || '',
-            'Distributed by': metadatiAI.distributed_by || metadatiAI['----:com.apple.iTunes:Distributed By'] || '',
-            'Studio': metadatiAI.studio || metadatiAI['----:com.apple.iTunes:Studio'] || '',
-            'Editore': metadatiAI.publisher || metadatiAI['----:com.apple.iTunes:publisher'] || '',
-            'Provider di contenuti': metadatiAI.content_provider || metadatiAI['----:com.apple.iTunes:content_provider'] || '',
-            'Conduttori': metadatiAI.conductor || metadatiAI['----:com.apple.iTunes:Conductor'] || '',
-            'Title sort order': metadatiAI.title_sort || metadatiAI.sonm || '',
-            'Artist sort order': metadatiAI.artist_sort || metadatiAI.soar || '',
-            'Album sort order': metadatiAI.album_sort || metadatiAI.soal || '',
-            'Album artist sort order': metadatiAI.album_artist_sort || metadatiAI.soaa || '',
-            'Composer sort order': metadatiAI.composer_sort || metadatiAI.soco || '',
-            'Show sort order': metadatiAI.show_sort || metadatiAI.sosn || ''
-        };
-
-        return mappingMetadati[nomeMetadato] || '';
+        // I metadati dal file AI hanno già i nomi leggibili come chiavi
+        // Quindi possiamo accedere direttamente al valore
+        const valore = metadatiAI[nomeMetadato];
+        
+        // Gestisci valori booleani e numeri
+        if (typeof valore === 'boolean') {
+            return valore ? 'Sì' : 'No';
+        }
+        if (typeof valore === 'number') {
+            return valore.toString();
+        }
+        
+        return valore || '';
     }
 
     /**

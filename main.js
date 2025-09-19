@@ -126,7 +126,7 @@ class ContentCreatorApp {
             const infoVideo = await this.resocontoManager.ottieniInfoVideoCompleto(pathFinale);
             
             // Estrai i nomi dei file di input e output
-            const nomeInput = apiResponseData.originalVideoName || vecchioNome;
+            const nomeInput = apiResponseData.originalVideoFullName || apiResponseData.originalVideoName || vecchioNome;
             const nomeOutput = nuovoNome;
             
             // Prepara i dati

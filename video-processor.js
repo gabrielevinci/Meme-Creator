@@ -2484,6 +2484,7 @@ class VideoProcessor {
                             // Aggiungi dati originali dell'AI response per il resoconto
                             apiData.originalAiResponse = processedAiResponse;
                             apiData.originalVideoName = videoBaseName;
+                            apiData.originalVideoFullName = originalVideoName; // Nome completo con hashtag
 
                             // Chiama il processamento metadati nel main app (asincrono) con configurazione
                             this.mainApp.processVideoComplete(outputVideoPath, apiData, config)

@@ -12,60 +12,6 @@
           "TPM": 250000
         },
         "requests": {
-          "1757639939286_d1b7qmih2": {
-            "timestamp": 1757639939286,
-            "tokens": 1176,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1176,
-            "response_time_ms": 1476,
-            "output": "```json\n{\n  \"description\": \"Un campo di margherite bianche e gialle si estende verso un tramonto infuocato. Le nuvole arancioni e grigie creano un cielo drammatico sopra una linea di alberi scuri sull"
-          },
-          "1757639940516_b39ugwodw": {
-            "timestamp": 1757639940516,
-            "tokens": 1163,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1163,
-            "response_time_ms": 1225,
-            "output": "```json\n{\n  \"description\": \"Una persona con un cappellino verde e un gilet verde acceso sta ballando in un corridoio. Indossa abiti scuri aderenti e scarpe da ginnastica bianche. L'ambiente è un uffic"
-          },
-          "1757639941740_28hyov7en": {
-            "timestamp": 1757639941740,
-            "tokens": 1186,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1186,
-            "response_time_ms": 1220,
-            "output": "```json\n{\n  \"description\": \"Un campo di tulipani rosa e gialli si estende all'infinito sotto un cielo drammatico al tramonto. Le nuvole sono illuminate da una luce dorata e arancione, creando un contr"
-          },
-          "1757640092511_tmdhox9xk": {
-            "timestamp": 1757640092511,
-            "tokens": 1186,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1186,
-            "response_time_ms": 1492,
-            "output": "```json\n{\n  \"description\": \"Un campo di margherite bianche e gialle si estende a perdita d'occhio, con un bosco verde scuro sul lato sinistro e un cielo arancione acceso con nuvole striate che domina "
-          },
-          "1757640093683_ffd024i2s": {
-            "timestamp": 1757640093683,
-            "tokens": 1152,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1152,
-            "response_time_ms": 1167,
-            "output": "```json\n{\n  \"description\": \"Una donna con un cappellino verde e un gilet verde brillante sta ballando in un corridoio. Indossa leggings neri e scarpe da ginnastica bianche. Ha le braccia tese e sembra"
-          },
-          "1757640094930_2ymvekjph": {
-            "timestamp": 1757640094930,
-            "tokens": 1186,
-            "success": true,
-            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
-            "tokens_used": 1186,
-            "response_time_ms": 1243,
-            "output": "```json\n{\n  \"description\": \"Un campo di tulipani rosa e gialli fioriti si estende all'infinito sotto un cielo drammatico al tramonto. Le nuvole sono illuminate da raggi dorati che filtrano da dietro u"
-          },
           "1757640582803_1a8nctqpy": {
             "timestamp": 1757640582803,
             "tokens": 1185,
@@ -7958,6 +7904,33 @@
             "tokens_used": 3195,
             "response_time_ms": 3264,
             "output": "```json\n{\n  \"description\": \"Un'incredibile strada panoramica serpeggia lungo una ripida scogliera coperta di vegetazione lussureggiante. Sulla destra, un vasto lago turchese brilla sotto un cielo azzu"
+          },
+          "1758245325203_q9ef083vv": {
+            "timestamp": 1758245325203,
+            "tokens": 3272,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3272,
+            "response_time_ms": 3559,
+            "output": "```json\n{\n  \"description\": \"Un paesaggio notturno mozzafiato di una spiaggia illuminata dalla luna e dal bagliore bioluminescente del mare. Le onde lambiscono la sabbia scura, creando un contrasto sug"
+          },
+          "1758245328853_sbt18jxkz": {
+            "timestamp": 1758245328853,
+            "tokens": 3255,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3255,
+            "response_time_ms": 3643,
+            "output": "```json\n{\n  \"description\": \"Un vasto campo di erba alta e cespugli domina la parte inferiore dell'inquadratura, con una densa foresta che si estende in lontananza. Sopra la foresta, imponenti montagne"
+          },
+          "1758245332206_69oa5diro": {
+            "timestamp": 1758245332206,
+            "tokens": 3259,
+            "success": true,
+            "prompt": "# Prompt Template per Creazione Meme Perfetto\r\n\r\n## 1. OBIETTIVO PRINCIPALE\r\n\r\nIl tuo compito è **cr",
+            "tokens_used": 3259,
+            "response_time_ms": 3346,
+            "output": "```json\n{\n  \"description\": \"Un'incredibile strada panoramica si snoda lungo una scogliera ripida, dominando un lago azzurro scintillante. Le verdi colline ricoperte di alberi si estendono fino all'ori"
           }
         }
       },

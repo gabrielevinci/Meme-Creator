@@ -174,17 +174,84 @@ class ResocontoManager {
     }
 
     /**
+     * Mappa un nome di metadato alla sua chiave corrispondente nei dati AI
+     * @param {string} nomeMetadato - Nome leggibile del metadato
+     * @param {Object} metadatiAI - Oggetto metadati dall'AI
+     * @returns {string} Valore del metadato
+     */
+    mappaMetadato(nomeMetadato, metadatiAI) {
+        if (!metadatiAI) return '';
+        
+        // Mapping tra nomi leggibili e chiavi tecniche dei metadati
+        const mappingMetadati = {
+            'Artist': metadatiAI.artist || metadatiAI['©ART'] || '',
+            'Composer': metadatiAI.composer || metadatiAI['©wrt'] || '',
+            'Album': metadatiAI.album || metadatiAI['©alb'] || '',
+            'Album artist': metadatiAI.album_artist || metadatiAI.aART || '',
+            'Genre': metadatiAI.genre || metadatiAI['©gen'] || '',
+            'Grouping': metadatiAI.grouping || metadatiAI['©grp'] || '',
+            'Copyright': metadatiAI.copyright || metadatiAI.cprt || '',
+            'Commenti': metadatiAI.comment || metadatiAI['©cmt'] || '',
+            'Data di creazione': metadatiAI.date || metadatiAI['©day'] || '',
+            'Show': metadatiAI.show || metadatiAI.tvsh || '',
+            'TV Network': metadatiAI.tv_network || metadatiAI.tvnn || '',
+            'Season number': metadatiAI.season_number || metadatiAI.tvsn || '',
+            'Episode number': metadatiAI.episode_number || metadatiAI.tves || '',
+            'HD Video': metadatiAI.hd_video || metadatiAI.hdvd || '',
+            'Encoded by': metadatiAI.encoded_by || metadatiAI['©enc'] || '',
+            'Encoder tool': metadatiAI.encoder_tool || metadatiAI['©too'] || '',
+            'Sottotitolo': metadatiAI.subtitle || metadatiAI['----:com.apple.iTunes:SUBTITLE'] || '',
+            'Classificazione (esplicito)': metadatiAI.rating || metadatiAI['----:com.apple.iTunes:Rating'] || '',
+            'Motivo classificazione': metadatiAI.rating_annotation || metadatiAI['----:com.apple.iTunes:Rating Annotation'] || '',
+            'Tag': metadatiAI.keywords || metadatiAI['----:com.apple.iTunes:keywords'] || '',
+            'Umore': metadatiAI.mood || metadatiAI['----:com.apple.iTunes:MOOD'] || '',
+            'Chiave iniziale': metadatiAI.initial_key || metadatiAI['----:com.apple.iTunes:initialkey'] || '',
+            'Protetto': metadatiAI.protected || metadatiAI['----:com.apple.iTunes:isprotected'] || '',
+            'Director': metadatiAI.director || metadatiAI['----:com.apple.iTunes:DIRECTOR'] || '',
+            'Director of photography': metadatiAI.director_photography || metadatiAI['----:com.apple.iTunes:Director of Photography'] || '',
+            'Sound engineer': metadatiAI.sound_engineer || metadatiAI['----:com.apple.iTunes:Sound Engineer'] || '',
+            'Art director': metadatiAI.art_director || metadatiAI['----:com.apple.iTunes:Art Director'] || '',
+            'Production designer': metadatiAI.production_designer || metadatiAI['----:com.apple.iTunes:Production Designer'] || '',
+            'Choreographer': metadatiAI.choreographer || metadatiAI['----:com.apple.iTunes:Choreographer'] || '',
+            'Costume designer': metadatiAI.costume_designer || metadatiAI['----:com.apple.iTunes:Costume Designer'] || '',
+            'Writer': metadatiAI.writer || metadatiAI['----:com.apple.iTunes:Writer'] || '',
+            'Screenwriter': metadatiAI.screenwriter || metadatiAI['----:com.apple.iTunes:Screenwriters'] || '',
+            'Editor': metadatiAI.editor || metadatiAI['----:com.apple.iTunes:Editors'] || '',
+            'Producer': metadatiAI.producer || metadatiAI['----:com.apple.iTunes:PRODUCER'] || '',
+            'Co-producer': metadatiAI.co_producer || metadatiAI['----:com.apple.iTunes:Co-Producer'] || '',
+            'Executive producer': metadatiAI.executive_producer || metadatiAI['----:com.apple.iTunes:Executive Producer'] || '',
+            'Distributed by': metadatiAI.distributed_by || metadatiAI['----:com.apple.iTunes:Distributed By'] || '',
+            'Studio': metadatiAI.studio || metadatiAI['----:com.apple.iTunes:Studio'] || '',
+            'Editore': metadatiAI.publisher || metadatiAI['----:com.apple.iTunes:publisher'] || '',
+            'Provider di contenuti': metadatiAI.content_provider || metadatiAI['----:com.apple.iTunes:content_provider'] || '',
+            'Conduttori': metadatiAI.conductor || metadatiAI['----:com.apple.iTunes:Conductor'] || '',
+            'Title sort order': metadatiAI.title_sort || metadatiAI.sonm || '',
+            'Artist sort order': metadatiAI.artist_sort || metadatiAI.soar || '',
+            'Album sort order': metadatiAI.album_sort || metadatiAI.soal || '',
+            'Album artist sort order': metadatiAI.album_artist_sort || metadatiAI.soaa || '',
+            'Composer sort order': metadatiAI.composer_sort || metadatiAI.soco || '',
+            'Show sort order': metadatiAI.show_sort || metadatiAI.sosn || ''
+        };
+
+        return mappingMetadati[nomeMetadato] || '';
+    }
+
+    /**
      * Ottiene tutti i possibili metadati dalle configurazioni
      * @returns {Array} Lista delle chiavi dei metadati
      */
     ottieniChiaviMetadati() {
-        // Leggiamo le configurazioni esistenti per ottenere tutte le possibili chiavi metadati
+        // Metadati specifici richiesti dall'utente
         const metadatiPossibili = [
-            'Title', 'Artist', 'Album', 'Composer', 'Genre', 'Year', 'Track', 'Disc',
-            'Copyright', 'Description', 'Synopsis', 'Show', 'Episode ID', 'Season number',
-            'Episode sort order', 'Media type', 'Content rating', 'HD video', 'Gapless playbook',
-            'Podcast', 'Keywords', 'Category', 'Podcast URL', 'Episode URL', 'Author',
-            'Subtitle', 'Title sort order', 'Artist sort order', 'Album sort order'
+            'Artist', 'Composer', 'Album', 'Album artist', 'Genre', 'Grouping', 'Copyright',
+            'Commenti', 'Data di creazione', 'Show', 'TV Network', 'Season number', 'Episode number',
+            'HD Video', 'Encoded by', 'Encoder tool', 'Sottotitolo', 'Classificazione (esplicito)',
+            'Motivo classificazione', 'Tag', 'Umore', 'Chiave iniziale', 'Protetto', 'Director',
+            'Director of photography', 'Sound engineer', 'Art director', 'Production designer',
+            'Choreographer', 'Costume designer', 'Writer', 'Screenwriter', 'Editor', 'Producer',
+            'Co-producer', 'Executive producer', 'Distributed by', 'Studio', 'Editore',
+            'Provider di contenuti', 'Conduttori', 'Title sort order', 'Artist sort order',
+            'Album sort order', 'Album artist sort order', 'Composer sort order', 'Show sort order'
         ];
         return metadatiPossibili;
     }
@@ -240,11 +307,13 @@ class ResocontoManager {
             rigaExcel['Posizione Banner'] = riga.posizioneBanner || '';
             rigaExcel['Descrizione Video'] = riga.descrizione || '';
 
-            // Metadati
+            // Metadati - mostra i valori reali dell'AI con mappatura corretta
             const metadati = this.ottieniChiaviMetadati();
             metadati.forEach(meta => {
                 const colonnaMeta = `Metadato: ${meta}`;
-                rigaExcel[colonnaMeta] = (riga.metadati && riga.metadati[meta]) ? '1' : '0';
+                // Mappa i nomi dei metadati ai valori effettivi
+                const valore = this.mappaMetadato(meta, riga.metadati);
+                rigaExcel[colonnaMeta] = valore || '';
             });
 
             // Info tecniche

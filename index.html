@@ -1645,7 +1645,7 @@
                 <div class="form-group">
                     <label for="video-speed-slider">⚡ Velocità Video</label>
                     <div class="slider-container">
-                        <input type="range" id="video-speed-slider" class="range-input" min="0.1" max="10" value="1" step="0.1">
+                        <input type="range" id="video-speed-slider" class="range-input" min="0.1" max="10" value="1" step="0.01">
                         <div class="slider-labels">
                             <span class="slider-label-left">0.1x (Lento)</span>
                             <span id="video-speed-value" class="range-value">1.00x</span>
@@ -1657,7 +1657,7 @@
                 <div class="form-group">
                     <label for="video-zoom-slider">🔍 Zoom Video</label>
                     <div class="slider-container">
-                        <input type="range" id="video-zoom-slider" class="range-input" min="0" max="2" value="1" step="0.1">
+                        <input type="range" id="video-zoom-slider" class="range-input" min="0" max="2" value="1" step="0.01">
                         <div class="slider-labels">
                             <span class="slider-label-left">0x</span>
                             <span id="video-zoom-value" class="range-value">1.00x</span>
@@ -1670,7 +1670,7 @@
                 <div class="form-group">
                     <label for="contrast-slider">🎨 Contrasto</label>
                     <div class="slider-container">
-                        <input type="range" id="contrast-slider" class="range-input" min="0" max="2" value="1" step="0.1">
+                        <input type="range" id="contrast-slider" class="range-input" min="0" max="2" value="1" step="0.01">
                         <div class="slider-labels">
                             <span class="slider-label-left">0 (Min)</span>
                             <span id="contrast-value" class="range-value">1.00</span>
@@ -1686,7 +1686,7 @@
                         <input type="range" id="saturation-slider" class="range-input" min="0" max="100" value="50" step="1">
                         <div class="slider-labels">
                             <span class="slider-label-left">0 (B/N)</span>
-                            <span id="saturation-value" class="range-value">50</span>
+                            <span id="saturation-value" class="range-value">50.00</span>
                             <span class="slider-label-right">100 (Max)</span>
                         </div>
                     </div>
@@ -1696,7 +1696,7 @@
                 <div class="form-group">
                     <label for="gamma-slider">🔆 Gamma</label>
                     <div class="slider-container">
-                        <input type="range" id="gamma-slider" class="range-input" min="-1" max="1" value="0" step="0.1">
+                        <input type="range" id="gamma-slider" class="range-input" min="-1" max="1" value="0" step="0.01">
                         <div class="slider-labels">
                             <span class="slider-label-left">-1 (Scuro)</span>
                             <span id="gamma-value" class="range-value">0.00</span>
@@ -1709,7 +1709,7 @@
                 <div class="form-group">
                     <label for="lift-slider">🌅 Lift</label>
                     <div class="slider-container">
-                        <input type="range" id="lift-slider" class="range-input" min="-1" max="1" value="0" step="0.1">
+                        <input type="range" id="lift-slider" class="range-input" min="-1" max="1" value="0" step="0.01">
                         <div class="slider-labels">
                             <span class="slider-label-left">-1 (Scuro)</span>
                             <span id="lift-value" class="range-value">0.00</span>
@@ -1882,6 +1882,14 @@
                     </div>
                     <div id="progress-text" style="text-align: center; margin-top: 10px; font-size: 14px;">
                         Pronto per l'elaborazione
+                    </div>
+                </div>
+
+                <!-- Opzione per aprire cartella OUTPUT -->
+                <div class="form-group output-folder-option">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="open-output-folder" checked>
+                        <label for="open-output-folder">📂 Apri cartella OUTPUT al termine del processo</label>
                     </div>
                 </div>
             </div>
@@ -2244,12 +2252,23 @@
             // Funzione generale per rendere i valori degli slider editabili
             makeSliderValuesEditable() {
                 const sliderMappings = [
+                    // Slider esistenti
                     {sliderId: 'temperature-slider', valueId: 'temperature-input', min: 0, max: 2, step: 0.01, suffix: ''},
                     {sliderId: 'video-speed-slider', valueId: 'video-speed-value', min: 0.1, max: 10, step: 0.01, suffix: 'x'},
                     {sliderId: 'video-zoom-slider', valueId: 'video-zoom-value', min: 0, max: 2, step: 0.01, suffix: 'x'},
-                    {sliderId: 'contrast-slider', valueId: 'contrast-value', min: 0, max: 3, step: 0.01, suffix: ''},
+                    {sliderId: 'contrast-slider', valueId: 'contrast-value', min: 0, max: 2, step: 0.01, suffix: ''},
                     {sliderId: 'gamma-slider', valueId: 'gamma-value', min: -1, max: 1, step: 0.01, suffix: ''},
                     {sliderId: 'lift-slider', valueId: 'lift-value', min: -1, max: 1, step: 0.01, suffix: ''},
+                    // Slider aggiuntivi
+                    {sliderId: 'block-height', valueId: 'block-height-value', min: 200, max: 800, step: 1, suffix: 'px'},
+                    {sliderId: 'margin-top', valueId: 'margin-top-value', min: 0, max: 100, step: 1, suffix: 'px'},
+                    {sliderId: 'margin-bottom', valueId: 'margin-bottom-value', min: 0, max: 100, step: 1, suffix: 'px'},
+                    {sliderId: 'margin-left', valueId: 'margin-left-value', min: 0, max: 150, step: 1, suffix: 'px'},
+                    {sliderId: 'margin-right', valueId: 'margin-right-value', min: 0, max: 150, step: 1, suffix: 'px'},
+                    {sliderId: 'saturation-slider', valueId: 'saturation-value', min: 0, max: 100, step: 1, suffix: ''},
+                    {sliderId: 'video-volume-slider', valueId: 'video-volume-value', min: -100, max: 30, step: 1, suffix: 'db'},
+                    {sliderId: 'overlay-opacity-slider', valueId: 'overlay-opacity-value', min: 0, max: 100, step: 1, suffix: '%'},
+                    {sliderId: 'background-audio-volume-slider', valueId: 'background-audio-volume-value', min: -100, max: 30, step: 1, suffix: 'db'}
                 ];
 
                 sliderMappings.forEach(mapping => {
@@ -2284,19 +2303,37 @@
                 input.focus();
                 input.select();
                 
+                let isFinished = false; // Flag per evitare chiamate multiple
+                
                 const finishEditing = () => {
-                    const newValue = parseFloat(input.value);
-                    if (!isNaN(newValue) && newValue >= mapping.min && newValue <= mapping.max) {
-                        slider.value = newValue;
-                        valueElement.textContent = newValue.toFixed(2) + mapping.suffix;
-                        this.saveSettings();
+                    if (isFinished) return; // Evita chiamate multiple
+                    isFinished = true;
+                    
+                    try {
+                        const newValue = parseFloat(input.value);
+                        if (!isNaN(newValue) && newValue >= mapping.min && newValue <= mapping.max) {
+                            slider.value = newValue;
+                            valueElement.textContent = newValue.toFixed(2) + mapping.suffix;
+                            this.saveSettings();
+                        }
+                        
+                        // Verifica che l'input sia ancora nel DOM prima di sostituirlo
+                        if (input.parentNode === parent) {
+                            parent.replaceChild(valueElement, input);
+                        }
+                    } catch (error) {
+                        console.warn('Errore durante finishEditing:', error);
+                        // In caso di errore, assicurati che valueElement sia nel DOM
+                        if (!document.contains(valueElement) && document.contains(parent)) {
+                            parent.appendChild(valueElement);
+                        }
                     }
-                    parent.replaceChild(valueElement, input);
                 };
                 
                 input.addEventListener('blur', finishEditing);
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === 'Escape') {
+                        e.preventDefault();
                         finishEditing();
                     }
                 });
@@ -2429,10 +2466,10 @@
                 const saturationValue = document.getElementById('saturation-value');
                 if (saturationSlider && saturationValue) {
                     saturationSlider.addEventListener('input', (e) => {
-                        saturationValue.textContent = e.target.value;
+                        saturationValue.textContent = parseFloat(e.target.value).toFixed(2);
                         this.saveSettings();
                     });
-                    saturationValue.textContent = saturationSlider.value;
+                    saturationValue.textContent = parseFloat(saturationSlider.value).toFixed(2);
                 }
 
                 // Setup per Gamma

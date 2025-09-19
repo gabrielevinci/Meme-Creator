@@ -130,7 +130,7 @@ class ContentCreatorApp {
             const nomeOutput = nuovoNome;
             
             // NUOVO: Leggi i metadati direttamente dal file di output dell'AI
-            const metadatiDaFile = await this.resocontoManager.leggiMetadatiDaOutputAI(nomeInput);
+            const datiAI = await this.resocontoManager.leggiMetadatiDaOutputAI(nomeInput);
             
             // Prepara i dati
             const datiRiga = {
@@ -143,7 +143,9 @@ class ContentCreatorApp {
                 filtro: aiData.matches_filter === 1,
                 posizioneBanner: aiData.banner_position || '',
                 descrizione: aiData.description || '',
-                metadati: metadatiDaFile, // Usa i metadati letti dal file AI
+                metadati: datiAI.metadata, // Metadati dal file AI
+                inputAI: datiAI.inputAI, // Input dato all'AI
+                outputAI: datiAI.outputAI, // Output ricevuto dall'AI
                 durata: infoVideo.durata,
                 dimensioneMB: infoVideo.dimensioneMB,
                 altezza: infoVideo.altezza,
@@ -341,14 +343,21 @@ class ContentCreatorApp {
             height: 952,
             minWidth: 800,
             minHeight: 600,
-            resizable: true, // Mantieni resizable ma controlleremo tutto manualmente
+            resizable: true,
             icon: path.join(__dirname, 'icon.ico'),
+            show: false, // Non mostrare subito per permettere la massimizzazione
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
                 preload: path.join(__dirname, 'preload.js')
             },
             title: 'Content Creator - 0 Chiacchiere'
+        });
+
+        // Massimizza la finestra al caricamento
+        this.mainWindow.once('ready-to-show', () => {
+            this.mainWindow.maximize();
+            this.mainWindow.show();
         });
 
         // Carica l'interfaccia

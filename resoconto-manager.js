@@ -210,11 +210,20 @@ class ResocontoManager {
                 console.warn(`File di output AI non trovato per: ${nomeVideoOriginale}`);
                 console.warn(`Cercato: ${nomeBasePulito}`);
                 console.warn(`File disponibili:`, files.filter(f => f.includes('_ai_output_')));
-                return {};
+                return { metadata: {}, inputAI: '', outputAI: '' };
             }
             
             const filePath = path.join(tempFramesDir, outputFile);
             const content = await fs.readFile(filePath, 'utf8');
+            
+            // Estrai l'input dato all'AI (sezione CONFIGURAZIONE)
+            const configStart = content.indexOf('CONFIGURAZIONE:');
+            const responseStart = content.indexOf('RISPOSTA AI:');
+            let inputAI = '';
+            
+            if (configStart !== -1 && responseStart !== -1) {
+                inputAI = content.substring(configStart, responseStart).trim();
+            }
             
             // Trova la sezione JSON nella risposta AI
             const jsonStart = content.indexOf('```json');
@@ -222,18 +231,22 @@ class ResocontoManager {
             
             if (jsonStart === -1 || jsonEnd === -1) {
                 console.warn(`JSON non trovato nel file: ${outputFile}`);
-                return {};
+                return { metadata: {}, inputAI, outputAI: 'JSON non trovato' };
             }
             
             const jsonContent = content.substring(jsonStart + 7, jsonEnd).trim();
             const aiResponse = JSON.parse(jsonContent);
             
             console.log(`📖 Metadati letti da file AI: ${outputFile}`);
-            return aiResponse.metadata || {};
+            return { 
+                metadata: aiResponse.metadata || {},
+                inputAI,
+                outputAI: jsonContent
+            };
             
         } catch (error) {
             console.error('Errore nella lettura metadati da output AI:', error);
-            return {};
+            return { metadata: {}, inputAI: '', outputAI: '' };
         }
     }
 
@@ -296,6 +309,8 @@ class ResocontoManager {
             'Filtro (1/0)',
             'Posizione Banner',
             'Descrizione Video',
+            'Input Dato AI',
+            'Output Ricevuto AI'
         ];
 
         // Aggiungi colonne per tutti i possibili metadati
@@ -331,6 +346,8 @@ class ResocontoManager {
             rigaExcel['Filtro (1/0)'] = riga.filtro ? '1' : '0';
             rigaExcel['Posizione Banner'] = riga.posizioneBanner || '';
             rigaExcel['Descrizione Video'] = riga.descrizione || '';
+            rigaExcel['Input Dato AI'] = riga.inputAI || '';
+            rigaExcel['Output Ricevuto AI'] = riga.outputAI || '';
 
             // Metadati - mostra i valori reali dell'AI con mappatura corretta
             const metadati = this.ottieniChiaviMetadati();

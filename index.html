@@ -52,8 +52,8 @@
         .main-content {
             padding: 20px;
             display: grid;
-            /* Layout colonne: 1=AI, 2=Font/Banner, 3=Parametri Video, 4=Status/Video Lista */
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            /* Layout colonne: 1=AI, 2=Font/Banner, 3=Parametri Video, 4=Opzioni/Media, 5=Status/Video Lista */
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
             gap: 20px;
             flex: 1;
             overflow-y: auto;
@@ -67,9 +67,12 @@
         /* Colonna 3: Parametri Video */
         
         .right-panel,
-        /* Colonna 4: Status e Video Lista */
+        /* Colonna 4: Opzioni e Media Avanzati */
         
-        .fourth-panel {
+        .fourth-panel,
+        /* Colonna 5: Status e Video Lista */
+        
+        .fifth-panel {
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -1679,6 +1682,11 @@
                     </div>
                 </div>
 
+                <!-- Spazio per futuri parametri video -->
+            </div>
+
+            <!-- QUARTA COLONNA: Opzioni e Media Avanzati -->
+            <div class="fourth-panel">
                 <!-- Blocco Opzioni -->
                 <div class="form-group">
                     <div class="options-container" style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 1px solid #e0e0e0;">
@@ -1690,9 +1698,6 @@
                                 <input type="checkbox" id="remove-black-frame-enabled" class="checkbox-input">
                                 <label for="remove-black-frame-enabled" class="checkbox-label">🎞️ Rimuovi Frame Nero Iniziale</label>
                             </div>
-                            <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
-                                Se abilitato, rimuove automaticamente il primo frame se è completamente nero
-                            </div>
                         </div>
 
                         <!-- Aggiungi metadati -->
@@ -1701,9 +1706,6 @@
                                 <input type="checkbox" id="add-metadata-enabled" class="checkbox-input">
                                 <label for="add-metadata-enabled" class="checkbox-label">📋 Aggiungi Metadati</label>
                             </div>
-                            <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
-                                Se abilitato, genera metadati completi per massimizzare la viralità sui social
-                            </div>
                         </div>
 
                         <!-- Elimina metadati -->
@@ -1711,9 +1713,6 @@
                             <div class="checkbox-container">
                                 <input type="checkbox" id="remove-metadata-enabled" class="checkbox-input">
                                 <label for="remove-metadata-enabled" class="checkbox-label">🗑️ Elimina Metadati</label>
-                            </div>
-                            <div class="help-text" style="margin-top: 5px; font-size: 11px; color: #666; font-style: italic;">
-                                Se abilitato, rimuove tutti i metadati esistenti dal video senza aggiungerne di nuovi
                             </div>
                             <div id="metadata-conflict-warning" class="help-text" style="margin-top: 8px; color: #e74c3c; display: none; font-weight: 600;">
                                 ⚠️ Non puoi abilitare contemporaneamente "Aggiungi Metadati" e "Elimina Metadati"
@@ -1802,12 +1801,10 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Spazio per futuri parametri video -->
             </div>
 
-            <!-- QUARTA COLONNA: Video Input e Status -->
-            <div class="fourth-panel">
+            <!-- QUINTA COLONNA: Video Input e Status -->
+            <div class="fifth-panel">
                 <div class="form-group video-input">
                     <label>📹 Video nella cartella INPUT</label>
                     <div id="video-list" class="video-list">

@@ -1,6 +1,8 @@
 const XLSX = require('xlsx');
 const fs = require('fs').promises;
 const path = require('path');
+const { spawn } = require('child_process');
+const ffprobeStatic = require('ffprobe-static');
 
 class ResocontoManager {
     constructor() {
@@ -14,6 +16,132 @@ class ResocontoManager {
     aggiungiRiga(dati) {
         this.datiResoconto.push(dati);
         console.log(`📊 Aggiunta riga resoconto per: ${dati.vecchioNome}`);
+    }
+
+    /**
+     * Ottiene informazioni tecniche dettagliate di un file video usando FFprobe
+     * @param {string} filePath - Percorso del file video
+     * @returns {Object} Informazioni tecniche del video
+     */
+    async ottieniInfoVideoCompleto(filePath) {
+        try {
+            const stats = await fs.stat(filePath);
+            const dimensioneMB = (stats.size / (1024 * 1024)).toFixed(2);
+            
+            // Usa FFprobe per ottenere informazioni dettagliate del video
+            const videoInfo = await this.getVideoInfoWithFFprobe(filePath);
+            
+            return {
+                dimensioneMB: parseFloat(dimensioneMB),
+                durata: videoInfo.durata || 'N/A',
+                altezza: videoInfo.altezza || 'N/A',
+                larghezza: videoInfo.larghezza || 'N/A'
+            };
+        } catch (error) {
+            console.error('Errore nel recupero info video completo:', error);
+            return {
+                dimensioneMB: 0,
+                durata: 'Errore',
+                altezza: 'Errore',
+                larghezza: 'Errore'
+            };
+        }
+    }
+
+    /**
+     * Usa FFprobe per ottenere informazioni dettagliate del video
+     * @param {string} filePath - Percorso del file video
+     * @returns {Promise<Object>} Informazioni del video
+     */
+    async getVideoInfoWithFFprobe(filePath) {
+        return new Promise((resolve, reject) => {
+            const ffprobePath = ffprobeStatic.path;
+            
+            const args = [
+                '-v', 'quiet',
+                '-print_format', 'json',
+                '-show_format',
+                '-show_streams',
+                filePath
+            ];
+
+            const ffprobe = spawn(ffprobePath, args);
+            let output = '';
+            let errorOutput = '';
+
+            ffprobe.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            ffprobe.stderr.on('data', (data) => {
+                errorOutput += data.toString();
+            });
+
+            ffprobe.on('close', (code) => {
+                if (code !== 0) {
+                    console.warn(`FFprobe exit code: ${code}, stderr: ${errorOutput}`);
+                    // Anche se FFprobe fallisce, restituiamo valori di default
+                    resolve({
+                        durata: 'N/A',
+                        altezza: 'N/A',
+                        larghezza: 'N/A'
+                    });
+                    return;
+                }
+
+                try {
+                    const data = JSON.parse(output);
+                    const videoStream = data.streams.find(stream => stream.codec_type === 'video');
+                    
+                    let durata = 'N/A';
+                    let altezza = 'N/A';
+                    let larghezza = 'N/A';
+
+                    if (data.format && data.format.duration) {
+                        const durataSecondi = parseFloat(data.format.duration);
+                        durata = this.formatDurata(durataSecondi);
+                    }
+
+                    if (videoStream) {
+                        altezza = videoStream.height || 'N/A';
+                        larghezza = videoStream.width || 'N/A';
+                    }
+
+                    resolve({
+                        durata,
+                        altezza,
+                        larghezza
+                    });
+                } catch (parseError) {
+                    console.warn('Errore parsing FFprobe output:', parseError);
+                    resolve({
+                        durata: 'N/A',
+                        altezza: 'N/A',
+                        larghezza: 'N/A'
+                    });
+                }
+            });
+
+            ffprobe.on('error', (error) => {
+                console.warn('Errore FFprobe:', error);
+                resolve({
+                    durata: 'N/A',
+                    altezza: 'N/A',
+                    larghezza: 'N/A'
+                });
+            });
+        });
+    }
+
+    /**
+     * Formatta la durata da secondi a formato mm:ss
+     * @param {number} secondi - Durata in secondi
+     * @returns {string} Durata formattata
+     */
+    formatDurata(secondi) {
+        const minuti = Math.floor(secondi / 60);
+        const secondiRimasti = Math.floor(secondi % 60);
+        return `${minuti}:${secondiRimasti.toString().padStart(2, '0')}`;
     }
 
     /**
@@ -67,12 +195,15 @@ class ResocontoManager {
      */
     creaColonne() {
         const colonneBase = [
+            'Nome File Input',
+            'Nome File Output',
             'Vecchio Nome Video',
             'Nuovo Nome',
-            'Meme',
+            'Meme (Testo Banner)',
+            'Titolo Completo (con hashtag)',
             'Filtro (1/0)',
             'Posizione Banner',
-            'Descrizione',
+            'Descrizione Video',
         ];
 
         // Aggiungi colonne per tutti i possibili metadati
@@ -99,12 +230,15 @@ class ResocontoManager {
             const rigaExcel = {};
             
             // Colonne base
+            rigaExcel['Nome File Input'] = riga.nomeInput || '';
+            rigaExcel['Nome File Output'] = riga.nomeOutput || '';
             rigaExcel['Vecchio Nome Video'] = riga.vecchioNome || '';
             rigaExcel['Nuovo Nome'] = riga.nuovoNome || '';
-            rigaExcel['Meme'] = riga.meme || '';
+            rigaExcel['Meme (Testo Banner)'] = riga.meme || '';
+            rigaExcel['Titolo Completo (con hashtag)'] = riga.titoloCompleto || '';
             rigaExcel['Filtro (1/0)'] = riga.filtro ? '1' : '0';
             rigaExcel['Posizione Banner'] = riga.posizioneBanner || '';
-            rigaExcel['Descrizione'] = riga.descrizione || '';
+            rigaExcel['Descrizione Video'] = riga.descrizione || '';
 
             // Metadati
             const metadati = this.ottieniChiaviMetadati();

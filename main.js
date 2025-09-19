@@ -119,18 +119,28 @@ class ContentCreatorApp {
             const vecchioNome = path.basename(pathOriginale);
             const nuovoNome = path.basename(pathFinale);
             
-            // Ottieni informazioni tecniche del video finale
-            const infoVideo = await this.resocontoManager.ottieniInfoVideo(pathFinale);
+            // Usa i dati originali dell'AI response se disponibili
+            const aiData = apiResponseData.originalAiResponse || apiResponseData;
+            
+            // Ottieni informazioni tecniche del video finale usando FFprobe
+            const infoVideo = await this.resocontoManager.ottieniInfoVideoCompleto(pathFinale);
+            
+            // Estrai i nomi dei file di input e output
+            const nomeInput = apiResponseData.originalVideoName || vecchioNome;
+            const nomeOutput = nuovoNome;
             
             // Prepara i dati
             const datiRiga = {
+                nomeInput: nomeInput,
+                nomeOutput: nomeOutput,
                 vecchioNome: vecchioNome,
                 nuovoNome: nuovoNome,
-                meme: apiResponseData.meme_text || '',
-                filtro: config.filterEnabled || false,
-                posizioneBanner: config.bannerPosition || '',
-                descrizione: apiResponseData.metadata?.Description || '',
-                metadati: apiResponseData.metadata || {},
+                meme: aiData.meme_text || '',
+                titoloCompleto: aiData.title || '',
+                filtro: aiData.matches_filter === 1,
+                posizioneBanner: aiData.banner_position || '',
+                descrizione: aiData.description || '',
+                metadati: aiData.metadata || {},
                 durata: infoVideo.durata,
                 dimensioneMB: infoVideo.dimensioneMB,
                 altezza: infoVideo.altezza,

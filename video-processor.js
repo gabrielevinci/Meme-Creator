@@ -2481,6 +2481,10 @@ class VideoProcessor {
                             // Prepara dati API dai dati AI response
                             const apiData = this.prepareApiDataFromAiResponse(processedAiResponse);
 
+                            // Aggiungi dati originali dell'AI response per il resoconto
+                            apiData.originalAiResponse = processedAiResponse;
+                            apiData.originalVideoName = videoBaseName;
+
                             // Chiama il processamento metadati nel main app (asincrono) con configurazione
                             this.mainApp.processVideoComplete(outputVideoPath, apiData, config)
                                 .then(finalVideoPath => {
@@ -2603,10 +2607,10 @@ class VideoProcessor {
     prepareApiDataFromAiResponse(aiResponse) {
         // Crea un oggetto nel formato richiesto dall'API
         const apiData = {
-            title: aiResponse.meme_text || 'Video Meme Generato',
+            title: aiResponse.title || aiResponse.meme_text || 'Video Meme Generato',
             metadata: {
                 // Metadati di base
-                'Title': aiResponse.meme_text || 'Video Meme',
+                'Title': aiResponse.title || aiResponse.meme_text || 'Video Meme',
                 'Artist': 'AI Meme Creator',
                 'Album': 'Meme Collection',
                 'Genre': 'Meme',

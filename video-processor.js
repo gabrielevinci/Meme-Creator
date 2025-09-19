@@ -169,8 +169,8 @@ class VideoProcessor {
         const needsAudioReplacement = config && config.replaceAudioEnabled && config.replaceAudioFolderPath;
 
         console.log(`🔍 DEBUG AUDIO REPLACEMENT:`, {
-            replaceAudioEnabled: config ? .replaceAudioEnabled,
-            replaceAudioFolderPath: config ? .replaceAudioFolderPath,
+            replaceAudioEnabled: config?.replaceAudioEnabled,
+            replaceAudioFolderPath: config?.replaceAudioFolderPath,
             needsAudioReplacement: needsAudioReplacement
         });
 
@@ -1425,8 +1425,8 @@ class VideoProcessor {
             hasBackgroundAudio,
             hasSpeedChange,
             hasAudioReplacement,
-            replaceAudioEnabled: config ? .replaceAudioEnabled,
-            replaceAudioFolderPath: config ? .replaceAudioFolderPath
+            replaceAudioEnabled: config?.replaceAudioEnabled,
+            replaceAudioFolderPath: config?.replaceAudioFolderPath
         });
 
         if (!hasVolumeChange && !hasBackgroundAudio && !hasSpeedChange && !hasAudioReplacement) {
